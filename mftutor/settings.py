@@ -1,3 +1,5 @@
+from django.conf import global_settings
+
 # Django settings for mftutor project.
 
 DEBUG = True
@@ -157,3 +159,8 @@ LOGGING = {
 }
 
 AUTH_PROFILE_MODULE = 'tutor.Tutor'
+
+TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
+    "tutor.context_processors.login_form",)
+
+LOGIN_REDIRECT_URL = "/"
