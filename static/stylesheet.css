@@ -1,0 +1,427 @@
+/* vim:set noet ts=3 sts=3 sw=3: */
+html,body {
+	margin: 0;
+	font-family: Lucida-Grande, Calibri, Arial, Verdana, Sans-Serif;
+	font-size: 14px;
+	color: #787878;
+	background-image: url(images/background-square.jpg);
+	background-repeat: repeat;
+}
+
+a:focus {
+	-moz-outline: none;
+}
+
+img {
+	border: 0;
+}
+
+a {
+	text-decoration: none;
+	color: #117900;
+	outline: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+.clear {
+	clear: both;
+}
+
+#background {
+	background-image: url(images/background-horizontal.jpg);
+	background-repeat: repeat-x;
+	width: auto;
+	height: 550px;
+}
+
+#main {
+	width: 700px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.spacer {
+	height: 10px;
+}
+
+#header {
+	background-color: #fff;
+	width: 696px;
+	height: 146px;
+	border-radius: 7px;
+	box-shadow: rgba(0, 0, 0, 0.3) 0 1px 2px;
+	-moz-box-shadow: rgba(0, 0, 0, 0.3) 0 1px 2px;
+	-webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 1px 2px;
+	border: solid 2px #fff;
+	overflow: hidden;
+}
+
+#login {
+	float: right;
+	padding-right: 1em;
+}
+
+#login a {
+	color: white;
+	text-decoration: underline;
+}
+
+#content {
+	margin-top: 10px;
+	background-color: #fff;
+	border-radius: 7px;
+	box-shadow: rgba(0, 0, 0, 0.3) 0 1px 2px;
+	-moz-box-shadow: rgba(0, 0, 0, 0.3) 0 1px 2px;
+	-webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 1px 2px;
+	border: solid 2px #fff;
+	padding: 20px;
+}
+
+.entry-wrapper {
+	margin: 20px;
+	border-bottom: dashed 1px #C5C5C5;
+}
+
+h1 {
+	margin: 0px;
+}
+
+h3 {
+	margin: 0px;
+	font-size: 12px;
+	font-weight: normal;
+	color: #C5C5C5;
+}
+
+/** customer submit form styles **/
+
+#login fieldset {
+	padding: 0;
+	margin: 0;
+	border: none;
+	height: 44px;
+	width: 228px;
+   text-align: right;
+}
+
+#login input {
+	border: none;
+	border-radius: 4px;
+	font-size: 11px;
+	line-height: 11px;
+	outline: none;
+	background-color: #222;
+	color: #999;
+	width: 80px;
+	height: 22px;
+	padding-left: 5px;
+	-webkit-box-sizing: border-box;
+   	-moz-box-sizing: border-box;
+   	box-sizing: border-box; 
+}
+
+.win.ie input {
+	line-height: 22px;
+	padding: 6px;
+}
+
+#login input:focus {
+	border: none;
+	color: white;
+}
+
+#login input.submit-button {
+	width: 50px;
+	height: 22px;
+	cursor: pointer;
+	background-color: #eee;
+	border: none;
+	color: #333;
+	font-size: 11px;
+	line-height: 17px;
+}
+
+.gecko #login input.submit-button {
+	height: 23px;
+}
+
+.win.chrome #login input.submit-button {
+	height: 21px;
+	line-height: 21px;
+}
+
+.mac.chrome #login input.submit-button {
+	height: 23px;
+	line-height: 21px;
+	margin-top: 10px;
+}
+
+.win.ie #login input.submit-button {
+	line-height: 11px;
+}
+
+.win.ie9 #login input.submit-button {
+	line-height: 12px;
+}
+
+
+/* Menu */
+
+#menu {
+	margin-top: 10px;
+	height: 44px;
+	line-height: 44px;
+	color: white;
+	background-color: #444;
+	border-radius: 7px;
+	box-shadow: rgba(0, 0, 0, 0.3) 0 1px 2px;
+	-moz-box-shadow: rgba(0, 0, 0, 0.3) 0 1px 2px;
+	-webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 1px 2px;
+	border: solid 2px #fff;
+}
+
+#menu-list {
+	float: left;
+	margin-left: 5px;
+}
+
+ul.topnav {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	float: left;
+	height: 44px;
+	line-height: 44px;
+	color: white;
+	background-color: #444;
+}
+
+ul.topnav li {
+	float: left;
+	margin: 0;
+	padding: 0px 20px 0px 20px;
+	border-right: solid 1px #333;
+	position: relative; /*--Declare X and Y axis base for sub navigation--*/
+}
+
+ul.topnav li a{
+	color: #fff;
+	display: block;
+	text-decoration: none;
+	float: left;
+}
+
+ul.topnav li ul.subnav {
+	list-style: none;
+	position: absolute; /*--Important - Keeps subnav from affecting main navigation flow--*/
+	left: -1px;
+	top: 44px;
+	background-color: #444;
+	margin: 0;
+	padding: 0;
+	display: none;
+	float: left;
+	border-radius: 0px 0px 7px 7px;
+	box-shadow: rgba(0, 0, 0, 0.3) 0 1px 2px;
+	-moz-box-shadow: rgba(0, 0, 0, 0.3) 0 1px 2px;
+	-webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 1px 2px;
+	font-size: 12px;
+	border-left: solid 1px #333;
+	border-right: solid 1px #333;
+	border-bottom: solid 1px #333;
+   z-index: 1;
+}
+
+ul.topnav li ul.subnav li{
+	height: 30px;
+	line-height: 30px;
+	margin: 0;
+	padding: 0;
+	clear: both;
+	border-right: none;
+	border-top: solid 1px #333;
+}
+
+html ul.topnav li ul.subnav li a {
+	float: left;
+	width: 100px;
+	background: #444;
+	padding-left: 20px;
+	border-radius: 0px 0px 7px 7px;
+	cursor: pointer;
+}
+
+.trigger:hover ul.subnav {
+	display: block;
+	}
+
+.trigger ul.subnav {
+	display: none;
+}
+
+html ul.topnav li ul.subnav li a:hover { /*--Hover effect for subnav links--*/
+	text-decoration: underline;
+}
+
+.groupselect {
+   text-align: right;
+}
+.tutoraddress {
+   float: left;
+   transition: height 0.2s;
+   -moz-transition: height 0.2s;
+   -o-transition: height 0.2s;
+   -webkit-transition: height 0.2s;
+   width: 50%;
+   margin: 0;
+   padding: 0;
+   height: 150px;
+   position: relative;
+   word-wrap: break-word;
+}
+#groupleadlabel {
+   margin-bottom: 3px;
+}
+.tutoraddress:first-child {
+   height: 170px;
+}
+.tutoraddress:first-child + * {
+   clear: left;
+}
+.searchresults .tutoraddress:first-child {
+   height: 150px;
+}
+.searchresults .tutoraddress:first-child + * {
+   clear: none;
+}
+
+/* Tutor pictures.
+ * When the client has JavaScript disabled, the following CSS will resize and
+ * crop images to 130px in height and at most 130px in width. Image will be
+ * anchored at the top left corner.
+ * When the client has JavaScript enabled, a piece of JS will detect if the
+ * image is portrait (height > width). If so, the image will get the "portrait"
+ * class.
+ * In any case, the JavaScript will center the image in the 130px x 130px
+ * container.
+ */
+.tutoraddress .pic {
+   position: absolute;
+   left: 0; top: 0;
+   width: 130px;
+   height: 130px;
+   background-color: #f8f8f8;
+   overflow: hidden;
+}
+.tutoraddress .pic img {
+   height: 100%;
+}
+.tutoraddress .pic img.portrait {
+   height: auto;
+   width: 100%;
+}
+
+.tutoraddress .detailscontainer, #groupleadlabel {
+   padding-left: 140px;
+}
+.detailscontainer {
+   position: relative;
+}
+.detailscontainer.collapsed {
+   height: 130px;
+   overflow: hidden;
+}
+.detailsoverflow {
+   background-image: -moz-linear-gradient(center top , rgba(255, 255, 255, 0) 20%, #FFFFFF 95%);
+   position: absolute;
+   width: 100%;
+   height: 20px;
+   bottom: 0;
+   display: none;
+}
+.detailscontainer.collapsed .detailsoverflow {
+   display: block;
+}
+.tutoraddress .name {
+   font-size: 110%;
+   font-weight: bold;
+}
+.tutoraddress .name, #groupleadlabel {
+   color: #333;
+}
+.tutoraddress .details {
+   font-size: 90%;
+}
+.tutoraddress .details ul, .tutoraddress .details li {
+   list-style-type: none;
+   margin: 0;
+   padding: 0;
+}
+.aftertutoraddress {
+   clear: left;
+}
+
+.tutoraddress:hover .detailsoverflow {
+   display: none;
+}
+.tutoraddress:hover .detailscontainer {
+   overflow: visible;
+}
+.tutoraddress:hover .detailscontainer {
+   position: static;
+   padding: 0;
+}
+.tutoraddress:hover .pic {
+   z-index: 3;
+   position: absolute;
+   top: 0;
+   left: 0;
+}
+.tutoraddress:hover .details {
+   z-index: 2;
+   position: absolute;
+   left: -21px;
+   right: -21px;
+   top: -21px;
+   padding: 20px 20px 20px 160px;
+   padding-bottom: 20px;
+   border: 1px solid #999;
+   background-color: white;
+}
+
+/* */
+table.uploadform, table.uploadform td {
+	margin: 0;
+	padding: 0;
+}
+table.uploadform td {
+	border: 0;
+	border-bottom: 1px solid black;
+	padding: 5px 0;
+	vertical-align: top;
+	width:50%;
+}
+table.uploadform td.left {
+	width: 348px;
+}
+table.uploadform td.right {
+	width: 348px;
+}
+table.uploadform input.field, table.uploadform textarea {
+	width: 350px;
+}
+table.uploadform textarea {
+	height: 100px;
+}
+
+/* Hvis man ønsker alternerende tabel baggrund */
+td.altTabBg1, td.altTabBg2 {
+	color: black;
+}
+td.altTabBg1 {
+	background-color: #c7ccd7;
+}
+

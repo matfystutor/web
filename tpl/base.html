@@ -1,10 +1,95 @@
 <!DOCTYPE html>
+<!-- vim:set sw=2 sts=2 et: -->
 <html>
 <head>
-<meta charset="utf-8" />
-<title>{% block fulltitle %}{% block title %}Forside{% endblock %} - Mat/Fys-tutorgruppen{% endblock %}</title>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="{{ STATIC_URL }}stylesheet.css" type="text/css" media="screen, projection" />
+  <title>{% block fulltitle %}{% block title %}Forside{% endblock %} - Mat/Fys-Tutorgruppen{% endblock %}</title>
+  <meta name="description" content="" />
+  <script type="text/javascript" src="{{ STATIC_URL }}css_browser_selector.js"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}MainJavaScripts.js"></script>
 </head>
 <body>
-{% block content %}{% endblock %}
+<div id="background">
+<div id="main">
+<div class="spacer"></div>
+<div id="header"><a href="TODO url"><img src="{{ STATIC_URL }}images/header.jpg" /></a></div>
+<div id="menu">
+  <div id="menu-list">
+    <ul class="topnav">
+      <li class="trigger">
+      <a href="TODO url">Info</a>
+      <ul class="subnav">
+        <li><a href="TODO url">Nyheder</a></li>
+        <li><a href="TODO url">Bestyrelsen</a></li>
+        <li><a href="TODO url">Vedtægter</a></li>
+        <li><a href="TODO url">Kalender</a></li>
+        <li><a href="TODO url">Gruppekatalog</a></li>
+        <li><a href="TODO url">Rus2Tur</a></li>
+        <li><a href="TODO url">Sponsor</a></li>
+        <li><a href="TODO url">Kontakt</a></li>
+      </ul>
+      </li>
+      {% if logged_in %}
+      <li class="trigger">
+      <a href="TODO url">Tutorer</a>
+      <ul class="subnav">
+        <li><a href="TODO url">Billeder</a></li>
+        <li><a href="TODO url">Adresser</a></li>
+        <li><a href="TODO url">Kalender</a></li>
+        <li><a href="TODO url">Rus2Tur</a></li>
+        <li><a href="TODO url">Mailalias</a></li>
+      </ul>
+      </li>
+      <li class="trigger">
+      <a href="#" style="cursor: default" onclick="return false">Personligt</a>
+      <ul class="subnav">
+        <li><a href="TODO url">Profil</a></li>
+        <li><a href="TODO url">Mine Grupper</a></li>
+        <li><a href="TODO url">Ændre kodeord</a></li>
+        <li><a href="TODO url">Tilmeldinger</a></li>
+        <li><a href="TODO url">Upload Billede</a></li>
+      </ul>
+      </li>
+      {% endif %}
+      {% if is_admin %}
+      <li class="trigger">
+      <a href="admin/">Administration</a>
+      <ul class="subnav">
+        <li><a href="TODO url">Aliaser</a></li>
+        <li><a href="TODO url">Evalueringer</a></li>
+        <li><a href="TODO url">Forsidenyheder</a></li>
+        <li><a href="TODO url">Kalender</a></li>
+        <li><a href="TODO url">Menupunkter</a></li>
+        <li><a href="TODO url">Referater</a></li>
+        <li><a href="TODO url">Tilmeldinger</a></li>
+      </ul>
+      </li>
+      {% endif %}
+    </ul>
+  </div>
+  <div id="login">
+    {% if logged_in %}
+    Du er logget ind.
+    <a href="TODO url">Log ud</a>
+    {% else %}
+    <form method="post" action="TODO url">
+      <input type="hidden" name="loginUser" value="true" />
+      <fieldset>
+        <input name="brugerid" type="text" id="user-login" value="Årskortnr" onfocus="if (this.value == 'Årskortnr') {this.value = '';}" onblur="if (this.value == '') {this.value = 'Årskortnr';}" />
+        <input name="password" type="text" id="password-login" value="Password" onfocus="if (this.value == 'Password') {this.value = '';} if (this.type == 'text') {this.type = 'password'};" onblur="if (this.value == '') {this.value = 'Password';} if (this.type == 'password' &amp;&amp; this.value == 'Password') {this.type = 'text'};" />
+        <input name="login" type="submit" class="submit-button" value="LOGIN" />
+      </fieldset>
+    </form>
+    {% endif %}
+  </div>
+</div>
+<div id="content">
+  {% block content %}{% endblock %}
+</div>
+</div>
+<div class="clear"></div>
+<div class="spacer"></div>
+</div>
 </body>
 </html>
