@@ -24,7 +24,7 @@ class TutorProfile(models.Model):
 
 def create_tutor_profile(sender, instance, created, **kwargs):
     if created:
-        Tutor.objects.create(user=instance)
+        TutorProfile.objects.create(user=instance)
 
 post_save.connect(create_tutor_profile, sender=User)
 
