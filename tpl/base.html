@@ -30,12 +30,12 @@
         <li><a href="TODO url">Kontakt</a></li>
       </ul>
       </li>
-      {% if logged_in %}
+      {% if user.is_authenticated %}
       <li class="trigger">
-      <a href="TODO url">Tutorer</a>
+      <a href="{% url tutors %}">Tutorer</a>
       <ul class="subnav">
         <li><a href="TODO url">Billeder</a></li>
-        <li><a href="TODO url">Adresser</a></li>
+        <li><a href="{% url tutors %}">Adresser</a></li>
         <li><a href="TODO url">Kalender</a></li>
         <li><a href="TODO url">Rus2Tur</a></li>
         <li><a href="TODO url">Mailalias</a></li>
@@ -52,7 +52,7 @@
       </ul>
       </li>
       {% endif %}
-      {% if is_admin %}
+      {% if perms.tutor.is_admin %}
       <li class="trigger">
       <a href="admin/">Administration</a>
       <ul class="subnav">
@@ -69,7 +69,7 @@
     </ul>
   </div>
   <div id="login">
-    {% if logged_in %}
+    {% if user.is_authenticated %}
     Du er logget ind.
     <a href="TODO url">Log ud</a>
     {% else %}

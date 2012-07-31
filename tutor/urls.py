@@ -8,5 +8,6 @@ urlpatterns = patterns('',
         ListView.as_view(
             queryset=Tutor.objects.filter(year=2012, early_termination__isnull=True),
             template_name="tutors.html",
-            context_object_name="tutor_list"))),
+            context_object_name="tutor_list")),
+        name='tutors'),
 )
