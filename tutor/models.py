@@ -17,7 +17,7 @@ class TutorProfile(models.Model):
     #email = models.EmailField(verbose_name="E-mailadresse")
     # Email address exists in django.contrib.auth.models.User
 
-    birthday = models.DateField(verbose_name="Født")
+    birthday = models.DateField(verbose_name="Født", blank=True, null=True)
 
     study = models.CharField(max_length=20, verbose_name="Studieretning")
     studentnumber = models.CharField(max_length=20, verbose_name="Årskortnummer")
@@ -48,9 +48,9 @@ class Tutor(models.Model):
     groups = models.ManyToManyField(TutorGroup, verbose_name="Arbejdsgrupper")
     early_termination = models.DateTimeField(null=True, blank=True, verbose_name="Ekskluderet",
         help_text="Tidspunkt i året hvor tutoren stopper i foreningen")
-    early_termination_reason = models.TextField(verbose_name="Eksklusionsårsag",
+    early_termination_reason = models.TextField(null=True, blank=True, verbose_name="Eksklusionsårsag",
         help_text="Årsag til at tutoren stopper")
-    rusclass = models.ForeignKey(RusClass)
+    rusclass = models.ForeignKey(RusClass, null=True, blank=True)
 
 # Freshman semester of a user for a single year
 class Rus(models.Model):
