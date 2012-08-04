@@ -159,9 +159,13 @@ LOGGING = {
     }
 }
 
-AUTH_PROFILE_MODULE = 'tutor.Tutor'
+AUTH_PROFILE_MODULE = 'tutor.TutorProfile'
 
 TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
-    "tutor.context_processors.login_form",)
+    "tutor.context_processors.login_form",
+    "tutor.context_processors.tutor_data",
+)
 
 LOGIN_REDIRECT_URL = "/"
+
+LOGIN_URL = '/login/'

@@ -22,6 +22,9 @@ class TutorProfile(models.Model):
     study = models.CharField(max_length=20, verbose_name="Studieretning")
     studentnumber = models.CharField(max_length=20, verbose_name="Årskortnummer")
 
+    def __unicode__(self):
+        return self.user.username
+
 def create_tutor_profile(sender, instance, created, **kwargs):
     if created:
         TutorProfile.objects.create(user=instance)
@@ -45,14 +48,32 @@ class RusClass(models.Model):
 class Tutor(models.Model):
     profile = models.ForeignKey(TutorProfile)
     year = models.IntegerField(verbose_name="Tutorår")
-    groups = models.ManyToManyField(TutorGroup, verbose_name="Arbejdsgrupper")
+    groups = models.ManyToManyField(TutorGroup, verbose_name="Arbejdsgrupper", blank=True)
     early_termination = models.DateTimeField(null=True, blank=True, verbose_name="Ekskluderet",
         help_text="Tidspunkt i året hvor tutoren stopper i foreningen")
     early_termination_reason = models.TextField(null=True, blank=True, verbose_name="Eksklusionsårsag",
         help_text="Årsag til at tutoren stopper")
     rusclass = models.ForeignKey(RusClass, null=True, blank=True)
 
+    def __unicode__(self):
+        return str(self.profile)+' (tutor in '+str(self.year)+')'
+
 # Freshman semester of a user for a single year
 class Rus(models.Model):
     profile = models.ForeignKey(TutorProfile)
     year = models.IntegerField(verbose_name="Tutorår")
+
+def user_tutor_data(user):
+    if user is None or not user.is_authenticated():
+        return {'err': 'failauth'}
+    if not user.is_active:
+        return {'err': 'djangoinactive'}
+    try:
+        profile = user.get_profile()
+    except TutorProfile.DoesNotExist:
+        return {'err': 'notutorprofile'}
+    try:
+        tut = Tutor.objects.get(profile=profile, year=2012)
+    except Tutor.DoesNotExist:
+        return {'err': 'notutoryear'}
+    return {'err': None, 'data': {'tutorprofile': profile, 'tutor': tut}}

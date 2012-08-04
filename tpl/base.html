@@ -69,13 +69,13 @@
     </ul>
   </div>
   <div id="login">
-    {% if user.is_authenticated %}
-    Du er logget ind.
-    <a href="{% url tutor.views.logout_view %}">Log ud</a>
+    {% if tutor %}
+    {{ tutorprofile.user.get_full_name }}&nbsp;&nbsp;
+    <a href="{% url tutor.views.logout_view %}?next={{ request.get_full_path }}">Log ud</a>
     {% else %}
-    <form method="post" action="{% url django.contrib.auth.views.login %}">
+    <form method="post" action="{% url tutor.views.login_view %}">
       {% csrf_token %}
-      <input type="hidden" name="next" value="{{ request.get_full_path }}" />
+      <input type="hidden" name="next" value="{{ request }}" />
       <fieldset>
         <input name="username" type="text" id="user-login" value="Årskortnr" onfocus="if (this.value == 'Årskortnr') {this.value = '';}" onblur="if (this.value == '') {this.value = 'Årskortnr';}" />
         <input name="password" type="text" id="password-login" value="Password" onfocus="if (this.value == 'Password') {this.value = '';} if (this.type == 'text') {this.type = 'password'};" onblur="if (this.value == '') {this.value = 'Password';} if (this.type == 'password' &amp;&amp; this.value == 'Password') {this.type = 'text'};" />
