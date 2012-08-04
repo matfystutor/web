@@ -10,7 +10,8 @@ from django.db.models.signals import post_save
 class TutorProfile(models.Model):
     user = models.OneToOneField(User)
 
-    name = models.CharField(max_length=60, verbose_name="Fulde navn")
+    #name = models.CharField(max_length=60, verbose_name="Fulde navn")
+    # first name and last name exist in User
     street = models.CharField(max_length=80, verbose_name="Adresse")
     city = models.CharField(max_length=40, verbose_name="Postnr. og by")
     phone = models.CharField(max_length=20, verbose_name="Telefonnr.")
@@ -21,6 +22,8 @@ class TutorProfile(models.Model):
 
     study = models.CharField(max_length=20, verbose_name="Studieretning")
     studentnumber = models.CharField(max_length=20, verbose_name="Årskortnummer")
+
+    gender = models.CharField(max_length=1, choices=(('m', 'Mand',),('f','Kvinde',),))
 
     def __unicode__(self):
         return self.user.username

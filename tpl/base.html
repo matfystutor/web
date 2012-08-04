@@ -44,8 +44,8 @@
       <li class="trigger">
       <a href="#" style="cursor: default" onclick="return false">Personligt</a>
       <ul class="subnav">
-        <li><a href="TODO url">Profil</a></li>
-        <li><a href="TODO url">Mine Grupper</a></li>
+        <li><a href="{% url profile_view %}">Profil</a></li>
+        <li><a href="{% url groups_view %}">Mine Grupper</a></li>
         <li><a href="TODO url">Ændre kodeord</a></li>
         <li><a href="TODO url">Tilmeldinger</a></li>
         <li><a href="TODO url">Upload Billede</a></li>
@@ -87,9 +87,9 @@
 </div>
 <div id="content">
   {% block content %}{% endblock %}
-</div>
-</div>
 <div class="clear"></div>
+</div>
+</div>
 <div class="spacer"></div>
 </div>
 </body>
