@@ -7,6 +7,7 @@ from tutor.models import Tutor, TutorProfile, user_tutor_data
 from django.contrib.auth import logout, authenticate, login
 
 def logout_view(request):
+    logout(request)
     try:
         return redirect(request.GET['next'])
     except NoReverseMatch:
