@@ -54,7 +54,7 @@
       {% endif %}
       {% if perms.tutor.is_admin %}
       <li class="trigger">
-      <a href="admin/">Administration</a>
+      <a href="{% url admin:index %}">Administration</a>
       <ul class="subnav">
         <li><a href="TODO url">Aliaser</a></li>
         <li><a href="TODO url">Evalueringer</a></li>
