@@ -67,18 +67,3 @@ class Tutor(models.Model):
 class Rus(models.Model):
     profile = models.ForeignKey(TutorProfile)
     year = models.IntegerField(verbose_name="Tutorår")
-
-def user_tutor_data(user):
-    if user is None or not user.is_authenticated():
-        return {'err': 'failauth'}
-    if not user.is_active:
-        return {'err': 'djangoinactive'}
-    try:
-        profile = user.get_profile()
-    except TutorProfile.DoesNotExist:
-        return {'err': 'notutorprofile'}
-    try:
-        tut = Tutor.objects.get(profile=profile, year=2012)
-    except Tutor.DoesNotExist:
-        return {'err': 'notutoryear'}
-    return {'err': None, 'data': {'tutorprofile': profile, 'tutor': tut}}

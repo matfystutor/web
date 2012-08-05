@@ -3,7 +3,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import logout, authenticate, login
 from django.core.urlresolvers import NoReverseMatch
 from django.contrib.auth.models import User
-from tutor.models import TutorProfile, user_tutor_data
+from tutor.models import TutorProfile
+from tutor.auth import user_tutor_data
 def logout_view(request):
     logout(request)
     try:

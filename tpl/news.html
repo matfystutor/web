@@ -2,6 +2,9 @@
 {% block title %}Nyheder{% endblock %}
 {% block content %}
 <h1>Nyheder</h1>
+{% if can_add_newspost %}
+<a href="{% url admin:news_newspost_add %}">Ny</a>
+{% endif %}
 {% for news in news_list %}
 <div class="newsItem">
     <p class="newsItemHeadLine"><b>{{ news.title }}</b>&nbsp;&nbsp;<i class="dato">{{ news.posted }}</i></p>
