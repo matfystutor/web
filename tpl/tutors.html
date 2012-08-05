@@ -2,11 +2,10 @@
 {% block title %}Adresseliste{% endblock %}
 {% block content %}
 {% for tutor in tutor_list %}
-{#<p>{{ tutor.profile.user.username }}</p>#}
 <div class="tutoraddress">
  <div class="pic">
-  <a target="_blank" href="{{ tutor.pictureurl }}">
-<img class="tutorpicture" src="{{ tutor.pictureurl }}" /></a>
+  <a target="_blank" href="{{ tutor.profile.picture.url }}">
+<img class="tutorpicture" src="{{ tutor.profile.picture.url }}" /></a>
  </div> <!-- /pic -->
  <div class="detailscontainer">
   <div class="details">
