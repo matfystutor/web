@@ -1,4 +1,8 @@
 from django.conf import global_settings
+try:
+    from mftutor import siteconfig
+except ImportError:
+    siteconfig = {}
 
 # Django settings for mftutor project.
 
@@ -11,16 +15,26 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mftutor',
-        'USER': 'mftutor',
-        'PASSWORD': 'hunter2',
-        'HOST': '',
-        'PORT': '',
+try:
+    DATABASES = {
+        'default': siteconfig.db
     }
-}
+except AttributeError:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'mftutor',
+            'USER': 'mftutor',
+            'PASSWORD': 'hunter2',
+            'HOST': '',
+            'PORT': '',
+        }
+    }
+
+try:
+    basedir = siteconfig.basedir
+except AttributeError:
+    basedir = '/home/mftutor/web'
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -48,15 +62,6 @@ USE_L10N = True
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
 
-# Absolute filesystem path to the directory that will hold user-uploaded files.
-# Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = ''
-
-# URL that handles the media served from MEDIA_ROOT. Make sure to use a
-# trailing slash.
-# Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = ''
-
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
@@ -67,9 +72,18 @@ STATIC_ROOT = ''
 # Example: "http://media.lawrence.com/static/"
 STATIC_URL = '/static/'
 
+# URL that handles the media served from MEDIA_ROOT. Make sure to use a
+# trailing slash.
+# Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
+MEDIA_URL = STATIC_URL+'upload/'
+
+# Absolute filesystem path to the directory that will hold user-uploaded files.
+# Example: "/home/media/media.lawrence.com/media/"
+MEDIA_ROOT = basedir+MEDIA_URL
+
 # Additional locations of static files
 STATICFILES_DIRS = (
-    '/home/mftutor/web/static',
+    basedir+'/static',
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -84,7 +98,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'hunter2'
+SECRET_KEY = siteconfig.secret
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -109,7 +123,7 @@ ROOT_URLCONF = 'mftutor.urls'
 WSGI_APPLICATION = 'mftutor.wsgi.application'
 
 TEMPLATE_DIRS = (
-    "/home/mftutor/web/tpl"
+    basedir+"/tpl"
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.

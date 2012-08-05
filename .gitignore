@@ -2,3 +2,4 @@
 .*.swp
 .swp
 /static/upload
+/mftutor/siteconfig.py
