@@ -30,12 +30,6 @@ class TutorProfile(models.Model):
     def __unicode__(self):
         return self.user.username
 
-def create_tutor_profile(sender, instance, created, **kwargs):
-    if created:
-        TutorProfile.objects.create(user=instance)
-
-post_save.connect(create_tutor_profile, sender=User)
-
 # "Arbejdsgruppe"
 class TutorGroup(models.Model):
     handle = models.CharField(max_length=20, primary_key=True, verbose_name="Kort navn",
