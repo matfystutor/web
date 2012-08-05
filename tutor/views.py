@@ -6,6 +6,7 @@ from django.template import RequestContext
 from tutor.models import Tutor, TutorProfile, user_tutor_data
 from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.models import User
+from django.contrib.auth.views import password_change
 from django import forms
 from django.forms.extras import SelectDateWidget
 from django.views.generic import ListView
@@ -136,3 +137,10 @@ class GroupsView(ListView):
     template_name = 'groups.html'
     def get_queryset(self):
         return Tutor.objects.get(profile=self.request.user.get_profile(), year=2012).groups.all()
+
+def tutor_password_change_view(request):
+    if 'back' in request.GET:
+        back = request.GET['back']
+    else:
+        back = reverse('news')
+    return password_change(request, 'registration/password_change_form.html', back)
