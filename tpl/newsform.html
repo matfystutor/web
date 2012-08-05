@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}
+{% if create %}
+Opret nyhed
+{% else %}
+Ret nyhed
+{% endif %}
+{% endblock %}
+{% block content %}
+{% if not create %}
+<form method="post" action="{% url news_delete pk=form.instance.pk %}">{% csrf_token %}
+<input type="submit" value="Slet" />
+</form>
+{% endif %}
+<form method="post" action="">{% csrf_token %}
+{{ form.as_p }}
+<input type="submit" value="{% if create %}Opret nyhed{% else %}Ret nyhed{% endif %}" />
+</form>
+{% endblock %}

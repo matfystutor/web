@@ -7,7 +7,12 @@ from tutor.auth import tutorbest_required
 
 class NewsCreateView(CreateView):
     model = NewsPost
-    template_name = "newscreate.html"
+    template_name = "newsform.html"
+
+    def get_context_data(self, **kwargs):
+        d = super(NewsCreateView, self).get_context_data(**kwargs)
+        d['create'] = True
+        return d
 
     def get_initial(self):
         initial = super(NewsCreateView, self).get_initial()
@@ -22,3 +27,14 @@ class NewsCreateView(CreateView):
     @method_decorator(tutorbest_required)
     def dispatch(self, *args, **kwargs):
         return super(CreateView, self).dispatch(*args, **kwargs)
+
+class NewsUpdateView(UpdateView):
+    model = NewsPost
+    template_name = "newsform.html"
+
+    def get_success_url(self):
+        return reverse("news")
+
+    @method_decorator(tutorbest_required)
+    def dispatch(self, *args, **kwargs):
+        return super(UpdateView, self).dispatch(*args, **kwargs)

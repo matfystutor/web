@@ -2,15 +2,19 @@
 {% block title %}Nyheder{% endblock %}
 {% block content %}
 <h1>Nyheder</h1>
-{% if can_add_newspost %}
-<a href="{% url admin:news_newspost_add %}">Ny</a>
+{% if tutor.is_tutorbest %}
+<a href="{% url news_add %}">Ny</a>
 {% endif %}
 {% for news in news_list %}
 <div class="newsItem">
-    <p class="newsItemHeadLine"><b>{{ news.title }}</b>&nbsp;&nbsp;<i class="dato">{{ news.posted }}</i></p>
-    <p class="newsItem">
-    {{ news.body }}
-    </p>
+<p class="newsItemHeadLine"><b>{{ news.title }}</b>&nbsp;&nbsp;<i class="dato">{{ news.posted }}</i>
+{% if tutor.is_tutorbest %}
+<a href="{% url news_edit news.pk %}">Ret</a>
+{% endif %}
+</p>
+<p class="newsItem">
+{{ news.body }}
+</p>
 </div>
 {% endfor %}
 {% endblock %}
