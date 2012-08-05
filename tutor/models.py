@@ -37,6 +37,9 @@ class TutorGroup(models.Model):
     name = models.CharField(max_length=40, verbose_name="Langt navn",
         help_text="Vises på hjemmesiden")
 
+    def __unicode__(self):
+        return self.handle
+
 # "Rushold"
 class RusClass(models.Model):
     handle = models.CharField(max_length=20, verbose_name="Navn",
