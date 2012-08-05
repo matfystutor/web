@@ -25,6 +25,8 @@ class TutorProfile(models.Model):
 
     gender = models.CharField(max_length=1, choices=(('m', 'Mand',),('f','Kvinde',),))
 
+    picture = models.ImageField(upload_to='tutorpics')
+
     def __unicode__(self):
         return self.user.username
 

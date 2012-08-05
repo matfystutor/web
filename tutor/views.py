@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.views import password_change
 from django import forms
 from django.forms.extras import SelectDateWidget
-from django.views.generic import ListView
+from django.views.generic import ListView, UpdateView
 
 def logout_view(request):
     logout(request)
@@ -144,3 +144,15 @@ def tutor_password_change_view(request):
     else:
         back = reverse('news')
     return password_change(request, 'registration/password_change_form.html', back)
+
+class UploadPictureForm(forms.ModelForm):
+    class Meta:
+        model = TutorProfile
+        fields = ('picture',)
+
+class UploadPictureView(UpdateView):
+    model = TutorProfile
+    template_name = 'uploadpicture.html'
+    form_class = UploadPictureForm
+    def get_object(self):
+        return self.request.user.get_profile()
