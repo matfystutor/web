@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse, NoReverseMatch
 from django.template import RequestContext
 from tutor.models import Tutor, TutorProfile, user_tutor_data
 from django.contrib.auth import logout, authenticate, login
+from django.contrib.auth.models import User
 from django import forms
 from django.forms.extras import SelectDateWidget
 from django.views.generic import ListView
@@ -19,7 +20,44 @@ def logout_view(request):
 
 def login_view(request, err=''):
     if request.method == 'POST':
-        username = request.POST['username']
+        loginname = request.POST['username']
+        username = None
+
+        if username is None:
+            try:
+                i = int(loginname)
+                u = User.objects.get(id=i)
+                username = u.username
+            except ValueError:
+                pass
+            except User.DoesNotExist:
+                pass
+
+        if username is None:
+            try:
+                u = User.objects.get(username=username)
+                username = u.username
+            except User.DoesNotExist:
+                pass
+
+        if username is None:
+            try:
+                u = User.objects.get(email=username)
+                username = u.username
+            except User.DoesNotExist:
+                pass
+
+        if username is None:
+            try:
+                tp = TutorProfile.objects.get(studentnumber=username)
+                u = tp.user
+                username = u.username
+            except TutorProfile.DoesNotExist:
+                pass
+
+        if username is None:
+            return redirect('login_error', err='failauth')
+
         password = request.POST['password']
         user = authenticate(username=username, password=password)
         tutordata = user_tutor_data(user)
