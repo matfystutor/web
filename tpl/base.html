@@ -52,7 +52,7 @@
       </ul>
       </li>
       {% endif %}
-      {% if perms.tutor.is_admin %}
+      {% if tutor.is_tutorbest %}
       <li class="trigger">
       <a href="{% url admin:index %}">Administration</a>
       <ul class="subnav">

@@ -57,6 +57,10 @@ class Tutor(models.Model):
         help_text="Årsag til at tutoren stopper")
     rusclass = models.ForeignKey(RusClass, null=True, blank=True)
 
+    def is_tutorbest(self):
+        import tutor.auth
+        return tutor.auth.is_tutorbest(self)
+
     def __unicode__(self):
         return str(self.profile)+' (tutor in '+str(self.year)+')'
 
