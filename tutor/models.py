@@ -21,7 +21,7 @@ class TutorProfile(models.Model):
     birthday = models.DateField(verbose_name="Født", blank=True, null=True)
 
     study = models.CharField(max_length=20, verbose_name="Studieretning")
-    studentnumber = models.CharField(max_length=20, verbose_name="Årskortnummer")
+    studentnumber = models.CharField(max_length=20, verbose_name="Årskortnummer", unique=True)
 
     gender = models.CharField(max_length=1, choices=(('m', 'Mand',),('f','Kvinde',),))
 
