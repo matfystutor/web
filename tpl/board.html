@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Adresseliste{% endblock %}
+{% block content %}
+{% for tutor in tutor_list %}
+<div class="tutoraddress">
+ <div class="pic">
+  <a target="_blank" href="{{ tutor.tutor.profile.picture.url }}">
+<img class="tutorpicture" src="{{ tutor.tutor.profile.picture.url }}" /></a>
+ </div> <!-- /pic -->
+ <div class="detailscontainer">
+  <div class="details">
+   <div class="name">
+    {{ tutor.tutor.profile.user.get_full_name }}
+   </div> <!-- /name -->
+   <ul>
+    <li>{{ tutor.title }}</li>
+    <li>{{ tutor.tutor.profile.user.email }}</li>
+   </ul>
+  </div> <!-- /details -->
+  <div class="detailsoverflow"></div>
+ </div> <!-- /detailscontainer -->
+</div> <!-- /tutoraddress -->
+
+{% endfor %}
+{% endblock %}

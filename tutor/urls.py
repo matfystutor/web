@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, url
 from django.views.generic import DetailView, ListView
-from tutor.models import Tutor, TutorGroup
+from tutor.models import Tutor, TutorGroup, BoardMember
 from tutor.views import logout_view, login_view, profile_view, GroupsView, tutor_password_change_view, UploadPictureView
 from django.contrib.auth.decorators import login_required
 
@@ -13,8 +13,8 @@ urlpatterns = patterns('',
         name='tutors'),
     url(r'^board/$',
         ListView.as_view(
-            queryset=TutorGroup.objects.get(handle='best').tutor_set.filter(year=2012),
-            template_name="tutors.html",
+            queryset=BoardMember.objects.filter(tutor__year=2012),
+            template_name="board.html",
             context_object_name="tutor_list"),
         name='board'),
     url(r'^logout/$', logout_view),

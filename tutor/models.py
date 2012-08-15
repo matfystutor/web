@@ -64,6 +64,14 @@ class Tutor(models.Model):
     def __unicode__(self):
         return str(self.profile)+' (tutor in '+str(self.year)+')'
 
+class BoardMember(models.Model):
+    tutor = models.ForeignKey(Tutor)
+    position = models.IntegerField(verbose_name="Rækkefølge")
+    title = models.CharField(max_length=50, verbose_name="Titel")
+
+    def __unicode__(self):
+        return '[BoardMember "'+str(self.title)+'" '+str(self.tutor)+']'
+
 # Freshman semester of a user for a single year
 class Rus(models.Model):
     profile = models.ForeignKey(TutorProfile)
