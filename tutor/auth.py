@@ -23,7 +23,6 @@ def tutorbest_required_error(request):
     return HttpResponse(t.render(c), status=403)
 
 def is_tutorbest(tutor):
-    print 'is tutorbest?',tutor
     return tutor.profile.user.is_superuser or tutor.groups.filter(handle='best').count() > 0
 
 # Decorator
