@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 urlpatterns = patterns('',
     url(r'^tutors/$', login_required(
         ListView.as_view(
-            queryset=Tutor.objects.filter(year=2012, early_termination__isnull=True),
+            queryset=Tutor.objects.filter(year=2012, early_termination__isnull=True).order_by('profile__user__first_name'),
             template_name="tutors.html",
             context_object_name="tutor_list")),
         name='tutors'),
