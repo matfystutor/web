@@ -17,4 +17,5 @@ urlpatterns = patterns('',
     url(r'^$', include('news.urls'), name='news'),
     url(r'^news/', include('news.urls')),
     url(r'^', include('tutor.urls')),
+    url(r'^events/', include('events.urls')),
 )

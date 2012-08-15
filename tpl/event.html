@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Begivenheder{% endblock %}
+
+{% block content %}
+<h1>{{ event.title }}</h1>
+<p><strong>Beskrivelse:</strong> {{ event.description }}</p>
+
+{% if rsvpform %}
+<form action="" method="post">{% csrf_token %}
+{{ rsvpform.as_p }}
+<input type="submit" value="Opdater tilbagemelding" />
+</form>
+{% endif %}
+
+{% if event.rsvp %}
+<h2>RSVP</h2>
+<ul>
+{% for participant in event.participants.all %}
+<li>{{ participant.tutor.profile.user.get_full_name }}: {{ participant.status }}</li>
+{% endfor %}
+</ul>
+{% endif %}
+
+
+{% endblock %}

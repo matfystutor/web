@@ -23,7 +23,7 @@
         <li><a href="{% url news %}">Nyheder</a></li>
         <li><a href="{% url board %}">Bestyrelsen</a></li>
         <li><a href="TODO url">Vedtægter</a></li>
-        <li><a href="TODO url">Kalender</a></li>
+        <li><a href="{% url events %}">Kalender</a></li>
         <li><a href="TODO url">Gruppekatalog</a></li>
         <li><a href="TODO url">Rus2Tur</a></li>
         <li><a href="TODO url">Sponsor</a></li>
@@ -47,7 +47,7 @@
         <li><a href="{% url profile_view %}">Profil</a></li>
         <li><a href="{% url groups_view %}">Mine Grupper</a></li>
         <li><a href="{% url password_change %}">Ændre kodeord</a></li>
-        <li><a href="TODO url">Tilmeldinger</a></li>
+        <li><a href="{% url events %}">Tilmeldinger</a></li>
         <li><a href="{% url upload_picture_view %}">Upload Billede</a></li>
       </ul>
       </li>
@@ -62,7 +62,7 @@
         <li><a href="TODO url">Kalender</a></li>
         <li><a href="TODO url">Menupunkter</a></li>
         <li><a href="TODO url">Referater</a></li>
-        <li><a href="TODO url">Tilmeldinger</a></li>
+        <li><a href="{% url admin:app_list app_label='events' %}">Tilmeldinger</a></li>
       </ul>
       </li>
       {% endif %}

@@ -142,6 +142,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'tutor',
     'news',
+    'events',
 )
 
 # A sample logging configuration. The only tangible logging
