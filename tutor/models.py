@@ -36,6 +36,7 @@ class TutorGroup(models.Model):
         help_text="Bruges i gruppens emailadresse")
     name = models.CharField(max_length=40, verbose_name="Langt navn",
         help_text="Vises på hjemmesiden")
+    visible = models.BooleanField()
 
     def __unicode__(self):
         return self.handle
