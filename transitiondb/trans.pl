@@ -1,11 +1,45 @@
 use warnings;
 use strict;
 
+print <<PYTHON;
+from tutor.models import *
+from django.contrib.auth.models import User
+
+def mk_user(username, **kwargs):
+    try:
+        if username == '20103940':
+            username = 'rav'
+        u = User.objects.get(username=username)
+        return u
+    except User.DoesNotExist:
+        u = User(username=username, **kwargs)
+        u.set_password('tutor'+username)
+        u.save()
+        return u
+
+def mk_profile(user, **kwargs):
+    try:
+        p = TutorProfile.objects.get(user=user)
+        return p
+    except TutorProfile.DoesNotExist:
+        p = TutorProfile(user=user, **kwargs)
+        p.save()
+        return p
+
+def mk_tutor(profile, year):
+    try:
+        t = Tutor.objects.get(profile=profile, year=year)
+        return t
+    except Tutor.DoesNotExist:
+        t = Tutor(profile=profile, year=year)
+        t.save()
+        return t
+
+PYTHON
+
 my $year = 2012;
 my $MYSQL = 'mysql --defaults-extra-file=~/tutordb.cnf';
-my $fromgroup = 'web'; # 'alle'
-
-print "from tutor.models import *\n";
+my $fromgroup = 'best'; # 'alle'
 
 sub sql {
 	return "echo '$_[0]' |
@@ -26,31 +60,14 @@ while (<GROUPS>) {
 close GROUPS;
 
 open TUTORS, sql("SELECT tutorid, navn, email, gade, postby, mobil, studret, aarskort FROM ${year}_tutors WHERE tutorid IN (SELECT tutorid FROM ${year}_tutorInGroup WHERE mailalias = \"$fromgroup\")");
-#	| navn         | varchar(40)           | YES  |     | NULL    |                |
-#	| gade         | varchar(60)           | YES  |     | NULL    |                |
-#	| postby       | varchar(25)           | YES  |     | NULL    |                |
-#	| mobil        | varchar(30)           | YES  |     | NULL    |                |
-#	| email        | varchar(127)          | YES  |     | NULL    |                |
-#	| studret      | varchar(30)           | YES  |     | NULL    |                |
-#	| yat          | int(11)               | YES  |     | NULL    |                |
-#	| fsy          | int(11)               | YES  |     | NULL    |                |
-#	| password     | varchar(32)           | NO   |     |         |                |
-#	| Hold_ID      | int(11)               | YES  |     | 0       |                |
-#	| allemail     | tinyint(4)            | NO   |     | 1       |                |
-#	| aarskort     | int(8)                | YES  |     | 0       |                |
-#	| birthday     | date                  | YES  |     | NULL    |                |
-#	| addGroupName | enum('y','n')         | NO   |     | n       |                |
-#	| gender       | enum('male','female') | YES  | MUL | NULL    |                |
 <TUTORS>;
 while (<TUTORS>) {
 	my ($tutorid, $navn, $email, $gade, $postby, $mobil, $studret, $aarskort) = /([^\t\n]+)/g;
 	my ($first, $last) = ($navn =~ /([^ ]*) (.*)/);
-	print "u$tutorid = User(username='$aarskort', first_name='$first', last_name='$last',\n";
+	print "u$tutorid = mk_user(username='$aarskort', first_name='$first', last_name='$last',\n";
 	print "	email='$email')\n";
-	print "u$tutorid.set_password('$aarskort')\nu$tutorid.save()\n";
-	print "tp$tutorid = TutorProfile(user=u$tutorid, street='$gade', city='$postby', phone='$mobil', study='$studret', studentnumber='$aarskort', gender='m')\n";
-	print "tp$tutorid.save()\n";
-	print "tu$tutorid = Tutor(profile=tp$tutorid, year=$year)\ntu$tutorid.save()\n";
+	print "tp$tutorid = mk_profile(user=u$tutorid, street='$gade', city='$postby', phone='$mobil', study='$studret', studentnumber='$aarskort', gender='m')\n";
+	print "tu$tutorid = mk_tutor(profile=tp$tutorid, year=$year)\n";
 }
 close TUTORS;
 
