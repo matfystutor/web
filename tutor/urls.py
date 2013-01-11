@@ -3,17 +3,18 @@ from django.views.generic import DetailView, ListView
 from tutor.models import Tutor, TutorGroup, BoardMember
 from tutor.views import logout_view, login_view, profile_view, GroupsView, tutor_password_change_view, UploadPictureView
 from django.contrib.auth.decorators import login_required
+from mftutor import siteconfig
 
 urlpatterns = patterns('',
     url(r'^tutors/$', login_required(
         ListView.as_view(
-            queryset=Tutor.objects.filter(year=2012, early_termination__isnull=True).order_by('profile__user__first_name'),
+            queryset=Tutor.objects.filter(year=siteconfig.year, early_termination__isnull=True).order_by('profile__user__first_name'),
             template_name="tutors.html",
             context_object_name="tutor_list")),
         name='tutors'),
     url(r'^board/$',
         ListView.as_view(
-            queryset=BoardMember.objects.filter(tutor__year=2012),
+            queryset=BoardMember.objects.filter(tutor__year=siteconfig.year),
             template_name="board.html",
             context_object_name="tutor_list"),
         name='board'),
