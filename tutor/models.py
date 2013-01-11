@@ -8,6 +8,7 @@ from django.db.models.signals import post_save
 
 # User data for the project that does not vary from year to year
 class TutorProfile(models.Model):
+    id = models.AutoField(primary_key=True)
     user = models.OneToOneField(User)
 
     #name = models.CharField(max_length=60, verbose_name="Fulde navn")
@@ -43,12 +44,14 @@ class TutorGroup(models.Model):
 
 # "Rushold"
 class RusClass(models.Model):
+    id = models.AutoField(primary_key=True)
     handle = models.CharField(max_length=20, verbose_name="Navn",
         help_text="Bruges i holdets emailadresse")
     year = models.IntegerField(verbose_name="Tutorår")
 
 # Membership of a user for a single year
 class Tutor(models.Model):
+    id = models.AutoField(primary_key=True)
     profile = models.ForeignKey(TutorProfile)
     year = models.IntegerField(verbose_name="Tutorår")
     groups = models.ManyToManyField(TutorGroup, verbose_name="Arbejdsgrupper", blank=True)
@@ -66,6 +69,7 @@ class Tutor(models.Model):
         return str(self.profile)+' (tutor in '+str(self.year)+')'
 
 class BoardMember(models.Model):
+    id = models.AutoField(primary_key=True)
     tutor = models.ForeignKey(Tutor)
     position = models.IntegerField(verbose_name="Rækkefølge")
     title = models.CharField(max_length=50, verbose_name="Titel")
@@ -75,5 +79,6 @@ class BoardMember(models.Model):
 
 # Freshman semester of a user for a single year
 class Rus(models.Model):
+    id = models.AutoField(primary_key=True)
     profile = models.ForeignKey(TutorProfile)
     year = models.IntegerField(verbose_name="Tutorår")
