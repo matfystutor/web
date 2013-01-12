@@ -4,8 +4,10 @@
 {% for tutor in tutor_list %}
 <div class="tutoraddress">
  <div class="pic">
+  {% if tutor.profile.picture %}
   <a target="_blank" href="{{ tutor.profile.picture.url }}">
 <img class="tutorpicture" src="{{ tutor.profile.picture.url }}" /></a>
+{% endif %}
  </div> <!-- /pic -->
  <div class="detailscontainer">
   <div class="details">
