@@ -8,13 +8,13 @@
 {% for news in news_list %}
 <div class="newsItem">
 <p class="newsItemHeadLine"><b>{{ news.title }}</b><br>
-{{ news.author.first_name }} {{ news.author.last_name }} <i class="dato">{{ news.posted }}</i>
+{{ news.author.first_name }} {{ news.author.last_name }} <i class="dato">{{ news.posted|date:"j. F Y" }}</i>
 {% if tutor.is_tutorbest %}
 <a href="{% url news_edit news.pk %}">Ret</a>
 {% endif %}
 </p>
 <p class="newsItem">
-{{ news.body }}
+{{ news.body|safe }}
 </p>
 </div>
 {% endfor %}
