@@ -7,7 +7,8 @@
   <title>{% block fulltitle %}{% block title %}Forside{% endblock %} - Mat/Fys-Tutorgruppen{% endblock %}</title>
   <meta name="description" content="" />
   <script type="text/javascript" src="{{ STATIC_URL }}css_browser_selector.js"></script>
-  <script type="text/javascript" src="{{ STATIC_URL }}MainJavaScripts.js"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}script.js"></script>
+  {% block head %}{% endblock %}
 </head>
 <body>
 <div id="background">

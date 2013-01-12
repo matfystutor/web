@@ -143,6 +143,7 @@ INSTALLED_APPS = (
     'tutor',
     'news',
     'events',
+    'django_wysiwyg',
 )
 
 # A sample logging configuration. The only tangible logging

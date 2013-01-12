@@ -1,13 +1,30 @@
+from django.forms import ModelForm, ModelChoiceField, DateTimeField
 from django.views.generic import CreateView, UpdateView, DeleteView
 from django.utils.decorators import method_decorator
 from news.models import NewsPost
 from django.core.urlresolvers import reverse
 from datetime import datetime
 from tutor.auth import tutorbest_required
+from django.contrib.auth.models import User
+from mftutor import siteconfig
+from datetime import datetime
+
+class AuthorModelChoiceField(ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.get_full_name()
 
 class NewsCreateView(CreateView):
     model = NewsPost
     template_name = "newsform.html"
+
+    def get_form(self, form_class):
+        f = form_class(**self.get_form_kwargs())
+        f.fields['author'] = AuthorModelChoiceField(
+                label = 'Forfatter',
+                empty_label = None,
+                queryset = User.objects.filter(tutorprofile__tutor__groups__handle='best',
+                    tutorprofile__tutor__year__in=[siteconfig.year]))
+        return f
 
     def get_context_data(self, **kwargs):
         d = super(NewsCreateView, self).get_context_data(**kwargs)
@@ -26,15 +43,24 @@ class NewsCreateView(CreateView):
 
     @method_decorator(tutorbest_required)
     def dispatch(self, *args, **kwargs):
-        return super(CreateView, self).dispatch(*args, **kwargs)
+        return super(NewsCreateView, self).dispatch(*args, **kwargs)
 
 class NewsUpdateView(UpdateView):
     model = NewsPost
     template_name = "newsform.html"
+
+    def get_form(self, form_class):
+        f = form_class(**self.get_form_kwargs())
+        f.fields['author'] = AuthorModelChoiceField(
+                label = 'Forfatter',
+                empty_label = None,
+                queryset = User.objects.filter(tutorprofile__tutor__groups__handle='best',
+                    tutorprofile__tutor__year__in=[siteconfig.year]))
+        return f
 
     def get_success_url(self):
         return reverse("news")
 
     @method_decorator(tutorbest_required)
     def dispatch(self, *args, **kwargs):
-        return super(UpdateView, self).dispatch(*args, **kwargs)
+        return super(NewsUpdateView, self).dispatch(*args, **kwargs)

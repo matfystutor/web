@@ -1,10 +1,14 @@
 {% extends "base.html" %}
+{% load wysiwyg %}
 {% block title %}
 {% if create %}
 Opret nyhed
 {% else %}
 Ret nyhed
 {% endif %}
+{% endblock %}
+{% block head %}
+{% wysiwyg_setup %}
 {% endblock %}
 {% block content %}
 {% if not create %}
@@ -14,6 +18,7 @@ Ret nyhed
 {% endif %}
 <form method="post" action="">{% csrf_token %}
 {{ form.as_p }}
+{% wysiwyg_editor "id_body" %}
 <input type="submit" value="{% if create %}Opret nyhed{% else %}Ret nyhed{% endif %}" />
 </form>
 {% endblock %}
