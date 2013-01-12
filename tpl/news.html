@@ -7,7 +7,8 @@
 {% endif %}
 {% for news in news_list %}
 <div class="newsItem">
-<p class="newsItemHeadLine"><b>{{ news.title }}</b>&nbsp;&nbsp;<i class="dato">{{ news.posted }}</i>
+<p class="newsItemHeadLine"><b>{{ news.title }}</b><br>
+{{ news.author.first_name }} {{ news.author.last_name }} <i class="dato">{{ news.posted }}</i>
 {% if tutor.is_tutorbest %}
 <a href="{% url news_edit news.pk %}">Ret</a>
 {% endif %}
