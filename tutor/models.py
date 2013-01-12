@@ -29,7 +29,7 @@ class TutorProfile(models.Model):
     picture = models.ImageField(upload_to='tutorpics')
 
     def __unicode__(self):
-        return self.user.username
+        return unicode(self.user.get_full_name())+u' '+unicode(self.user.username)
 
 # "Arbejdsgruppe"
 class TutorGroup(models.Model):
@@ -66,7 +66,7 @@ class Tutor(models.Model):
         return tutor.auth.is_tutorbest(self)
 
     def __unicode__(self):
-        return str(self.profile)+' (tutor in '+str(self.year)+')'
+        return unicode(self.profile)+' ('+unicode(self.year)+')'
 
 class BoardMember(models.Model):
     id = models.AutoField(primary_key=True)
@@ -75,7 +75,7 @@ class BoardMember(models.Model):
     title = models.CharField(max_length=50, verbose_name="Titel")
 
     def __unicode__(self):
-        return '[BoardMember "'+str(self.title)+'" '+str(self.tutor)+']'
+        return unicode(self.title)+u' '+unicode(self.tutor)
 
 # Freshman semester of a user for a single year
 class Rus(models.Model):
