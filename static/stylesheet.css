@@ -275,8 +275,8 @@ html ul.topnav li ul.subnav li a:hover { /*--Hover effect for subnav links--*/
    -moz-transition: height 0.2s;
    -o-transition: height 0.2s;
    -webkit-transition: height 0.2s;
-   width: 50%;
-   margin: 0;
+   width: 290px;
+   margin: 5px 15px;
    padding: 0;
    height: 150px;
    position: relative;
@@ -315,6 +315,7 @@ html ul.topnav li ul.subnav li a:hover { /*--Hover effect for subnav links--*/
    height: 130px;
    background-color: #f8f8f8;
    overflow: hidden;
+	text-align: center;
 }
 .tutoraddress .pic img {
    height: 100%;
@@ -322,6 +323,9 @@ html ul.topnav li ul.subnav li a:hover { /*--Hover effect for subnav links--*/
 .tutoraddress .pic img.portrait {
    height: auto;
    width: 100%;
+	position: absolute;
+	left: 0;
+	top: 0;
 }
 
 .tutoraddress .detailscontainer, #groupleadlabel {
@@ -354,6 +358,7 @@ html ul.topnav li ul.subnav li a:hover { /*--Hover effect for subnav links--*/
 }
 .tutoraddress .details {
    font-size: 90%;
+	height: 130px;
 }
 .tutoraddress .details ul, .tutoraddress .details li {
    list-style-type: none;
