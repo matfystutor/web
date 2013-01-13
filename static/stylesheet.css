@@ -89,11 +89,24 @@ h1 {
 	margin: 0px;
 }
 
+/*
 h3 {
 	margin: 0px;
 	font-size: 12px;
 	font-weight: normal;
 	color: #C5C5C5;
+}
+*/
+
+.vedt h2 {
+	text-align: center;
+}
+
+.vedt h3 {
+	font-size: 100%;
+	margin: 0 1em 0 0;
+	padding: 0;
+	float: left;
 }
 
 /** customer submit form styles **/
