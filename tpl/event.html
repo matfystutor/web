@@ -3,16 +3,26 @@
 
 {% block content %}
 <h1>{{ event.title }}</h1>
-<p><strong>Beskrivelse:</strong> {{ event.description }}</p>
 
+<p>
+{% if event.description %}
+<strong>Beskrivelse:</strong> {{ event.description }}
+{% else %}
+Ingen beskrivelse.
+{% endif %}
+</p>
+
+{% if user.is_authenticated %}
+{% if event.rsvp %}
 {% if rsvpform %}
 <form action="" method="post">{% csrf_token %}
 {{ rsvpform.as_p }}
 <input type="submit" value="Opdater tilbagemelding" />
 </form>
 {% endif %}
+{% endif %}
 
-{% if event.rsvp %}
+{% if event.rsvp or event.participants.all %}
 <h2>RSVP</h2>
 <ul>
 {% for participant in event.participants.all %}
@@ -20,6 +30,6 @@
 {% endfor %}
 </ul>
 {% endif %}
-
+{% endif %}
 
 {% endblock %}
