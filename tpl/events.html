@@ -3,10 +3,10 @@
 {% block content %}
 <h1>Begivenheder</h1>
 {% for event in event_list %}
-{% ifchanged %}<h2 style="margin-bottom: 0">{{ event.start_date|date:"F, Y" }}</h2>{% endifchanged %}
+{% ifchanged %}<h2 style="margin-bottom: 0">{{ event.start_date|date:"F Y"|capfirst }}</h2>{% endifchanged %}
 <div style="padding: 20px 0; border-bottom: 1px solid #aaa">
 <a style="font-weight: bold" href="{% url event event.pk %}">{{ event.title }}</a><br>
-{{ event.start_date|date:"l j. M" }}
+{{ event.start_date|date:"l j. F"|lower|capfirst }}
 </div>
 {% endfor %}
 {% endblock %}
