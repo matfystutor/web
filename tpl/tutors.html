@@ -15,17 +15,12 @@
     {{ tutor.profile.user.get_full_name }}
    </div> <!-- /name -->
    <ul>
-{# <?php if ($bestpage): ?> #}
-{#     <li><?php echo $data->getBoardRole(); ?></li> #}
-{#     <li><?php echo obfuscateEmailAddress($mail); ?></li> #}
-{# <?php else: // $bestpage ?> #}
     <li>{{ tutor.profile.street }}</li>
     <li>{{ tutor.profile.city }}</li>
     <li>{{ tutor.profile.phone }}</li>
     <li>{{ tutor.profile.user.email }}</li>
     <li>{{ tutor.profile.study }}</li>
     <li>{{ tutor.profile.studentnumber }}</li>
-{#<?php endif; // $bestpage ?>#}
    </ul>
   </div> <!-- /details -->
   <div class="detailsoverflow"></div>
