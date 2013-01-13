@@ -13,6 +13,11 @@ class Event(models.Model):
     def __unicode__(self):
         return '[Event '+self.title+' on '+str(self.start_date)+']'
 
+    class Meta:
+        ordering = ['start_date', 'start_time']
+        verbose_name = 'begivenhed'
+        verbose_name_plural = verbose_name + 'er'
+
 class EventParticipant(models.Model):
     event = models.ForeignKey(Event, related_name="participants")
     tutor = models.ForeignKey(Tutor, related_name="events")
@@ -28,3 +33,6 @@ class EventParticipant(models.Model):
 
     class Meta:
         unique_together = (('event', 'tutor',),)
+        verbose_name = 'tilbagemelding'
+        verbose_name_plural = verbose_name + 'er'
+        ordering = ['event', 'status']

@@ -10,3 +10,7 @@ class NewsPost(models.Model):
 
     def __unicode__(self):
         return self.title
+
+    class Meta:
+        verbose_name = 'nyhed'
+        verbose_name_plural = verbose_name + 'er'

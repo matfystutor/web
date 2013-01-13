@@ -31,6 +31,10 @@ class TutorProfile(models.Model):
     def __unicode__(self):
         return unicode(self.user.get_full_name())+u' '+unicode(self.user.username)
 
+    class Meta:
+        verbose_name = 'tutorprofil'
+        verbose_name_plural = verbose_name + 'er'
+
 # "Arbejdsgruppe"
 class TutorGroup(models.Model):
     handle = models.CharField(max_length=20, primary_key=True, verbose_name="Kort navn",
@@ -41,6 +45,11 @@ class TutorGroup(models.Model):
 
     def __unicode__(self):
         return self.handle
+
+    class Meta:
+        ordering = ['handle']
+        verbose_name = 'arbejdsgruppe'
+        verbose_name_plural = verbose_name + 'r'
 
 # "Rushold"
 class RusClass(models.Model):
@@ -63,10 +72,16 @@ class Tutor(models.Model):
 
     def is_tutorbest(self):
         import tutor.auth
-        return tutor.auth.is_tutorbest(self)
+        return bool(tutor.auth.is_tutorbest(self))
+    is_tutorbest.boolean = True
 
     def __unicode__(self):
         return unicode(self.profile)+' ('+unicode(self.year)+')'
+
+    class Meta:
+        ordering = ['-year']
+        verbose_name = 'tutor'
+        verbose_name_plural = verbose_name + 'er'
 
 class BoardMember(models.Model):
     id = models.AutoField(primary_key=True)
@@ -76,6 +91,12 @@ class BoardMember(models.Model):
 
     def __unicode__(self):
         return unicode(self.title)+u' '+unicode(self.tutor)
+
+    class Meta:
+        ordering = ['tutor__year', 'position']
+        verbose_name = 'bestyrelsesmedlem'
+        verbose_name_plural = verbose_name + 'mer'
+
 
 # Freshman semester of a user for a single year
 class Rus(models.Model):
