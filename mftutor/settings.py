@@ -115,6 +115,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 ROOT_URLCONF = 'mftutor.urls'
@@ -144,6 +145,7 @@ INSTALLED_APPS = (
     'news',
     'events',
     'django_wysiwyg',
+    'debug_toolbar',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -185,3 +187,5 @@ TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
 LOGIN_REDIRECT_URL = "/"
 
 LOGIN_URL = '/login/'
+
+INTERNAL_IPS = ('127.0.0.1',)
