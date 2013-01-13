@@ -1,17 +1,13 @@
 from django.conf.urls import patterns, url
 from django.views.generic import DetailView, ListView
 from tutor.models import Tutor, TutorGroup, BoardMember
-from tutor.views import logout_view, login_view, profile_view, GroupsView, tutor_password_change_view, UploadPictureView
+from tutor.views import logout_view, login_view, profile_view, GroupsView, tutor_password_change_view, UploadPictureView, tutors_view
 from django.contrib.auth.decorators import login_required
 from mftutor import siteconfig
 
 urlpatterns = patterns('',
-    url(r'^tutors/$', login_required(
-        ListView.as_view(
-            queryset=Tutor.objects.filter(year=siteconfig.year, early_termination__isnull=True).order_by('profile__user__first_name').select_related(),
-            template_name="tutors.html",
-            context_object_name="tutor_list")),
-        name='tutors'),
+    url(r'^tutors/$', login_required(tutors_view), name='tutors'),
+    url(r'^tutors/(?P<group>[^/?]+)/$', login_required(tutors_view)),
     url(r'^board/$',
         ListView.as_view(
             queryset=BoardMember.objects.filter(tutor__year=siteconfig.year).select_related(),
