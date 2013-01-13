@@ -8,7 +8,7 @@ from django.core.urlresolvers import reverse_lazy
 urlpatterns = patterns('',
     url(r'^$',
         ListView.as_view(
-            queryset=NewsPost.objects.order_by('-posted'),
+            queryset=NewsPost.objects.order_by('-posted').select_related(),
             template_name="news.html",
             context_object_name="news_list"),
         name='news'),

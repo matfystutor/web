@@ -14,7 +14,7 @@ class GroupsView(ListView):
     context_object_name = 'groups'
     template_name = 'groups.html'
     def get_queryset(self):
-        return Tutor.objects.get(profile=self.request.user.get_profile(), year=2012).groups.all()
+        return Tutor.objects.select_related().get(profile=self.request.user.get_profile(), year=2012).groups.select_related().all()
 
 def tutor_password_change_view(request):
     if 'back' in request.GET:

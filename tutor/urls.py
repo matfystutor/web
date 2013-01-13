@@ -8,13 +8,13 @@ from mftutor import siteconfig
 urlpatterns = patterns('',
     url(r'^tutors/$', login_required(
         ListView.as_view(
-            queryset=Tutor.objects.filter(year=siteconfig.year, early_termination__isnull=True).order_by('profile__user__first_name'),
+            queryset=Tutor.objects.filter(year=siteconfig.year, early_termination__isnull=True).order_by('profile__user__first_name').select_related(),
             template_name="tutors.html",
             context_object_name="tutor_list")),
         name='tutors'),
     url(r'^board/$',
         ListView.as_view(
-            queryset=BoardMember.objects.filter(tutor__year=siteconfig.year),
+            queryset=BoardMember.objects.filter(tutor__year=siteconfig.year).select_related(),
             template_name="board.html",
             context_object_name="tutor_list"),
         name='board'),
