@@ -1,19 +1,19 @@
 {% extends "base.html" %}
 {% block title %}Nyheder{% endblock %}
 {% block content %}
-<h1>Nyheder</h1>
 {% if tutor.is_tutorbest %}
-<a href="{% url news_add %}">Ny</a>
+<div style="float: right"><a href="{% url news_add %}">Ny</a></div>
 {% endif %}
 {% for news in news_list %}
 <div class="newsItem">
-<p class="newsItemHeadLine"><b>{{ news.title }}</b><br>
+<h2>{{ news.title }}</h2>
+<div class="newsBy">
 {{ news.author.first_name }} {{ news.author.last_name }} <i class="dato">{{ news.posted|date:"j. F Y" }}</i>
 {% if tutor.is_tutorbest %}
 <a href="{% url news_edit news.pk %}">Ret</a>
 {% endif %}
-</p>
-<p class="newsItem">
+</div>
+<p class="newsBody">
 {{ news.body|safe }}
 </p>
 </div>

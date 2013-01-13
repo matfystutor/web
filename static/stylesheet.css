@@ -430,3 +430,33 @@ td.altTabBg1 {
 	background-color: #c7ccd7;
 }
 
+.newsItem h2, .newsBody {
+	border-bottom: 3px solid #ddd;
+}
+
+.newsItem h2 {
+	margin-bottom: .5em;
+	padding-bottom: .5em;
+}
+
+.newsItem + .newsItem {
+	margin-top: 2em;
+}
+
+.newsItem h2 {
+	margin-top: 0;
+}
+
+.newsBy {
+	font-size: 90%;
+}
+
+.newsBy .dato {
+	margin: 0 1em;
+}
+
+.newsBody {
+	padding: .5em 0;
+	color: #333;
+	margin: 0;
+}
