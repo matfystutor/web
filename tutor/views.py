@@ -38,16 +38,25 @@ class UploadPictureView(UpdateView):
     def get_success_url(self):
         return reverse('upload_picture_view')
 
-def tutors_view(request, group='alle'):
-    tutorgroup = get_object_or_404(TutorGroup, handle=group)
+def tutors_view(request, group=None):
+    tutorgroup = get_object_or_404(TutorGroup, handle=(group or 'alle'))
 
     leader = tutorgroup.leader
 
-    tutors = Tutor.objects.filter(year=siteconfig.year, early_termination__isnull=True, groups__handle=group) \
+    tutors = Tutor.objects.filter(year=siteconfig.year, early_termination__isnull=True, groups__handle=(group or 'alle')) \
             .order_by('profile__user__first_name').select_related()
+
+    groups = TutorGroup.objects.filter(visible=True, tutor__year__in=[siteconfig.year]).distinct()
 
     if leader:
         tutors = tutors.exclude(pk=leader.pk)
         tutors = [leader] + list(tutors.all())
 
-    return render_to_response('tutors.html', {'group': group, 'leader': leader, 'tutor_list': tutors}, RequestContext(request))
+    return render_to_response('tutors.html',
+            {
+                'group': group,
+                'leader': leader,
+                'tutor_list': tutors,
+                'groups': groups,
+                },
+            RequestContext(request))

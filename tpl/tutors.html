@@ -1,6 +1,19 @@
 {% extends "base.html" %}
 {% block title %}Adresseliste{% endblock %}
 {% block content %}
+<p>
+Vælg gruppe:
+<select onchange="location = this.value">
+<option value="{% url tutors %}">----</option>
+{% for g in groups %}
+<option value="{% url tutorgroup g.handle %}"{% if group == g.handle %} selected="selected"{% endif %}>{{ g.name }}</option>
+{% endfor %}
+</select>
+</p>
+<p>
+Gruppeansvarlig:
+</p>
+<div>
 {% for tutor in tutor_list %}
 <div class="tutoraddress">
  <div class="pic">
@@ -28,4 +41,5 @@
 </div> <!-- /tutoraddress -->
 
 {% endfor %}
+</div>
 {% endblock %}

@@ -7,7 +7,7 @@ from mftutor import siteconfig
 
 urlpatterns = patterns('',
     url(r'^tutors/$', login_required(tutors_view), name='tutors'),
-    url(r'^tutors/(?P<group>[^/?]+)/$', login_required(tutors_view)),
+    url(r'^tutors/([^/?]+)/$', login_required(tutors_view), name='tutorgroup'),
     url(r'^board/$',
         ListView.as_view(
             queryset=BoardMember.objects.filter(tutor__year=siteconfig.year).select_related(),
