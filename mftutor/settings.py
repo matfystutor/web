@@ -146,6 +146,7 @@ INSTALLED_APPS = (
     'events',
     'django_wysiwyg',
     'debug_toolbar',
+    'aliases',
 )
 
 # A sample logging configuration. The only tangible logging
