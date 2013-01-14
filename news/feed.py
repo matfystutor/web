@@ -2,7 +2,7 @@ from django.contrib.syndication.views import Feed
 from news.models import NewsPost
 
 class NewsFeed(Feed):
-    title = 'Mat/Fys-Tutorgruppens nyheder'
+    title = 'Mat/Fys-Tutorgruppen'
     link = '/news/'
     description = 'Forsidenyheder fra Mat/Fys-Tutorgruppens bestyrelse.'
 
