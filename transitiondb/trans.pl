@@ -1,6 +1,10 @@
 use warnings;
 use strict;
 
+my $year = 2012;
+my $MYSQL = 'mysql --defaults-extra-file=~/tutordb.cnf';
+my $fromgroup = 'alle';
+
 print <<PYTHON;
 from tutor.models import *
 from django.contrib.auth.models import User
@@ -36,10 +40,6 @@ def mk_tutor(profile, year):
         return t
 
 PYTHON
-
-my $year = 2012;
-my $MYSQL = 'mysql --defaults-extra-file=~/tutordb.cnf';
-my $fromgroup = 'best'; # 'alle'
 
 sub sql {
 	return "echo '$_[0]' |
