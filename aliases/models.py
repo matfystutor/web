@@ -31,3 +31,21 @@ def resolve_alias(recipient, visited=None):
             result = result.union(resolve_alias(a.destination, visited))
 
     return result
+
+def resolve_alias_reversed(destination, visited=None):
+    """Given a destination, return all the recipients whose mail will be
+    delivered to the destination."""
+    if visited:
+        visited = frozenset([destination]).union(visited)
+    else:
+        visited = frozenset([destination])
+
+    aliases = list(Alias.objects.filter(destination=destination))
+    result = frozenset([destination])
+    for a in aliases:
+        if a.source in visited:
+            logging.warning("Cycle involving "+a)
+        else:
+            result = result.union(resolve_alias_reversed(a.source, visited))
+
+    return result

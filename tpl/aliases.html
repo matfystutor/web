@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Aliaser{% endblock %}
+
+{% block content %}
+<h1>Aliaser</h1>
+
+{% for g in groups %}
+{% if forloop.counter|divisibleby:2 %}
+<div style="width: 50%; float: left">
+{% else %}
+<div style="width: 50%; float: left; clear: left">
+{% endif %}
+<div style="margin: 0 1em 0 0">
+<h2>{{ g.name }}</h2>
+<ul class="emails">
+    {% for e in g.aliases %}
+    <li>{{ e }}</li>
+    {% endfor %}
+</ul>
+<ul class="tutors">
+{% if g.handle == 'alle' %}
+    <li>Se <a href="{% url tutors %}">Adresser</a></li>
+{% else %}
+{% for t in g.tutors %}
+    <li>{{ t.profile.user.get_full_name }}</li>
+{% endfor %}
+{% endif %}
+</ul>
+</div></div>
+{% endfor %}
+
+{% endblock %}
