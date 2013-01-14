@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 {% block title %}Nyheder{% endblock %}
+{% block head %}
+<link rel="alternate" type="application/rss+xml" title="RSS" href="{% url news_feed %}">
+{% endblock %}
 {% block content %}
 {% if tutor.is_tutorbest %}
 <div style="float: right"><a href="{% url news_add %}">Ny</a></div>
@@ -8,7 +11,7 @@
 <div class="newsItem">
 <h2>{{ news.title }}</h2>
 <div class="newsBy">
-{{ news.author.first_name }} {{ news.author.last_name }} <i class="dato">{{ news.posted|date:"j. F Y" }}</i>
+{{ news.author.first_name }} {{ news.author.last_name }} <i class="dato"><a href="{{ news.get_absolute_url }}">{{ news.posted|date:"j. F Y" }}</a></i>
 {% if tutor.is_tutorbest %}
 <a href="{% url news_edit news.pk %}">Ret</a>
 {% endif %}

@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import datetime
+from django.core.urlresolvers import reverse
 
 class NewsPost(models.Model):
     author = models.ForeignKey(User, verbose_name='Forfatter')
@@ -10,6 +11,10 @@ class NewsPost(models.Model):
 
     def __unicode__(self):
         return self.title
+
+    def get_absolute_url(self):
+        p = self.posted
+        return reverse('news', kwargs={'year':p.year, 'month':p.month, 'day':p.day, 'pk':self.pk})
 
     class Meta:
         verbose_name = 'nyhed'

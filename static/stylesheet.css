@@ -468,6 +468,14 @@ td.altTabBg1 {
 	margin: 0 1em;
 }
 
+.newsBy .dato a:link, .newsBy .dato a:visited {
+	color: inherit;
+}
+
+.newsBy .dato a:hover {
+	color: #117900;
+}
+
 .newsBody {
 	padding: .5em 0;
 	color: #333;
