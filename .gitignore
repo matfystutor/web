@@ -3,3 +3,5 @@
 .swp
 /static/upload
 /mftutor/siteconfig.py
+*.aux
+*.log

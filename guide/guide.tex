@@ -1,0 +1,52 @@
+\documentclass[article,oneside,a4paper]{memoir}
+
+\usepackage[utf8]{inputenc}
+\usepackage[sc]{mathpazo}
+\usepackage{xspace}
+\usepackage{listings}
+\usepackage{url}
+
+\newcommand{\pulerau}{\texttt{pulerau}\xspace}
+
+\begin{document}
+
+\chapter{Guide til webgruppens arbejde}
+
+\section{GitHub}
+
+Udvikling af tutorgruppens hjemmeside og mailsystem fungerer via GitHub. Webfar
+håndterer integration af kode i produktionen og stiller udviklingssites på
+\pulerau til rådighed for de i webgruppen der ønsker det.
+
+\section{Generel vejledning til git}
+
+\paragraph{Identitet}
+Det første, man gør, når man begynder at bruge Git, er at fortælle Git sit navn
+og sin emailadresse. For eksempel:
+\begin{lstlisting}
+git config --global user.name 'Mathias Rav'
+git config --global user.email 'rav@cs.au.dk'
+\end{lstlisting}
+Dette skal gøres på alle computere, hvorfra man udvikler, og det er vigtigt at
+man altid bruger den samme identitet (dvs. navn og email).
+
+\paragraph{Brug af Git}
+Git er en del af webgruppens arbejde; \url{http://gitref.org/} er en glimrende
+guide til at komme igang med brug af Git. Læs siden igennem fra start til slut.
+
+\section{Vision}
+
+Målet er en hjemmeside og et mailsystem med en overskuelig kodebase.
+Det gamle mailsystem, som var i brug fra 2007 til 2012, var 2729 linjers
+write-once read-never PHP.
+
+Lamson er valgt til det nuværende mailsystem, fordi det skjuler alle de grumme
+detaljer om SMTP.  Det betyder, at det er tilstrækkeligt med et par hundrede
+linjers kode for at opfylde tutorgruppens emailbehov.
+
+Django er et velunderstøttet web framework, og der er mange features, der kan
+implementeres med få linjers kode. Vil du lave et RSS feed? Okay - du skal lave
+en 40 linjers subclass af \texttt{Feed} og pege på den i din \texttt{urls.py}.
+Den største udfordring er ofte at finde ud af præcis hvad man skal skrive.
+
+\end{document}
