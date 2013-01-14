@@ -14,3 +14,6 @@ class NewsFeed(Feed):
 
     def item_description(self, item):
         return item.body
+
+    def item_author_name(self, item):
+        return item.author.get_full_name()
