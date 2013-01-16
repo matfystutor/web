@@ -39,11 +39,13 @@ class UploadPictureView(UpdateView):
         return reverse('upload_picture_view')
 
 def tutors_view(request, group=None):
-    tutorgroup = get_object_or_404(TutorGroup, handle=(group or 'alle'))
+    lookup_group = group or 'alle'
 
-    leader = tutorgroup.leader
+    tutorgroup = get_object_or_404(TutorGroup, handle=lookup_group)
 
-    tutors = Tutor.objects.filter(year=siteconfig.year, early_termination__isnull=True, groups__handle=(group or 'alle')) \
+    leader = tutor_group_leader(lookup_group, siteconfig.year)
+
+    tutors = Tutor.objects.filter(year=siteconfig.year, early_termination__isnull=True, groups__handle=lookup_group) \
             .order_by('profile__user__first_name').select_related()
 
     groups = TutorGroup.objects.filter(visible=True, tutor__year__in=[siteconfig.year]).distinct()

@@ -84,6 +84,24 @@ class Tutor(models.Model):
         verbose_name = 'tutor'
         verbose_name_plural = verbose_name + 'er'
 
+class TutorGroupLeader(models.Model):
+    group = models.ForeignKey(TutorGroup)
+    year = models.IntegerField()
+    tutor = models.ForeignKey(Tutor)
+
+    class Meta:
+        ordering = ['-year', 'group']
+        verbose_name = 'gruppeansvarlig'
+        verbose_name_plural = verbose_name + 'e'
+        unique_together = (('group', 'year'),)
+
+def tutor_group_leader(group, year):
+    try:
+        leader_object = TutorGroupLeader.objects.get(group=group, year=year)
+        return leader_object.tutor
+    except TutorGroupLeader.DoesNotExist:
+        return None
+
 class BoardMember(models.Model):
     id = models.AutoField(primary_key=True)
     tutor = models.ForeignKey(Tutor)

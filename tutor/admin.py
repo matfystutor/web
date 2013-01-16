@@ -28,6 +28,11 @@ class GroupAdmin(admin.ModelAdmin):
     list_filter = ('visible',)
     search_fields = ['name', 'handle']
 
+class LeaderAdmin(admin.ModelAdmin):
+    list_select_related = True
+    list_display = ('year', 'group', 'tutor')
+    list_display_links = ('tutor',)
+
 def board_full_name(bm):
     return bm.tutor.profile.user.get_full_name()
 board_full_name.short_description = 'Navn'
@@ -46,4 +51,5 @@ class BoardAdmin(admin.ModelAdmin):
 admin.site.register(Tutor, TutorAdmin)
 admin.site.register(TutorProfile, ProfileAdmin)
 admin.site.register(TutorGroup, GroupAdmin)
+admin.site.register(TutorGroupLeader, LeaderAdmin)
 admin.site.register(BoardMember, BoardAdmin)
