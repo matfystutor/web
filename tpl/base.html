@@ -55,13 +55,11 @@
       <li class="trigger">
       <a href="{% url admin:index %}">Administration</a>
       <ul class="subnav">
-        <li><a href="{% url todo %}">Aliaser</a></li>
+        <li><a href="{% url admin:aliases_alias_changelist %}">Aliaser</a></li>
         <li><a href="{% url todo %}">Evalueringer</a></li>
-        <li><a href="{% url todo %}">Forsidenyheder</a></li>
-        <li><a href="{% url todo %}">Kalender</a></li>
-        <li><a href="{% url todo %}">Menupunkter</a></li>
+        <li><a href="{% url admin:news_newspost_changelist %}">Forsidenyheder</a></li>
+        <li><a href="{% url admin:events_event_changelist %}">Kalender</a></li>
         <li><a href="{% url todo %}">Referater</a></li>
-        <li><a href="{% url admin:app_list app_label='events' %}">Tilmeldinger</a></li>
       </ul>
       </li>
       {% endif %}
