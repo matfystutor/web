@@ -17,7 +17,7 @@ class ReadOnlyWidget(forms.Widget):
         final_attrs = self.build_attrs(attrs, name=name)
         if hasattr(self, 'initial'):
             value = self.initial
-        return value
+        return unicode(value)
 
     def _has_changed(self, initial, data):
         return False
@@ -78,6 +78,6 @@ def profile_view(request):
             'gender': tp.gender,
         }
         form = ProfileForm(initial=initial)
-        form.fields['studentnumber'].widget.initial = tp.studentnumber
 
+    form.fields['studentnumber'].widget.initial = tp.studentnumber
     return render(request, 'profile.html', {'form': form})
