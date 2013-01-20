@@ -7,6 +7,7 @@ static_pages = [url('^'+x+'/', TemplateView.as_view(template_name=x+'.html'), na
         'rus2tur',
         'sponsor',
         'kontakt',
+        'todo',
         )]
 urlpatterns = patterns('',
     *static_pages)
