@@ -1,7 +1,7 @@
 from django.views.generic import DetailView
 from events.models import Event, EventParticipant
 from django.forms import ModelForm
-from tutor.auth import user_tutor_data
+from tutor.auth import user_tutor_data, NotTutor
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 
@@ -27,9 +27,9 @@ class RSVPForm(ModelForm):
 
 def event_detail_view(request, eventid):
     event = get_object_or_404(Event.objects.filter(pk=eventid))
-    tutordata = user_tutor_data(request.user)
-    if tutordata['err'] is None:
-        tutor = tutordata['data']['tutor']
+    try:
+        tutordata = user_tutor_data(request.user)
+        tutor = tutordata.tutor
 
         try:
             instance = EventParticipant.objects.get(event=event, tutor=tutor)
@@ -42,6 +42,6 @@ def event_detail_view(request, eventid):
                 form.save()
         else:
             form = RSVPForm(instance=instance, expect_event=event, expect_tutor=tutor)
-    else:
+    except NotTutor:
         form = None
     return render_to_response('event.html', {'event': event, 'rsvpform': form}, RequestContext(request))

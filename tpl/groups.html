@@ -4,8 +4,8 @@
 {% for group in groups %}
 <h1>{{ group.name }}</h1>
 <ul>
-    {% for tutor in group.tutor_set.all %}
-    <li>{{ tutor.profile.user.get_full_name }}</li>
+    {% for tutor in group.tutors %}
+    <li>{{ tutor.get_full_name }}</li>
     {% endfor %}
 </ul>
 {% endfor %}

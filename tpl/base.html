@@ -67,7 +67,7 @@
   </div>
   <div id="login">
     {% if tutor %}
-    {{ tutorprofile.user.get_full_name }}&nbsp;&nbsp;
+    {{ profile.user.get_full_name }}&nbsp;&nbsp;
     <a href="{% url tutor.views.logout_view %}?next={{ request.get_full_path }}">Log ud</a>
     {% else %}
     <form method="post" action="{% url tutor.views.login_view %}">

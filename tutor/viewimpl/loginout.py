@@ -4,7 +4,7 @@ from django.contrib.auth import logout, authenticate, login
 from django.core.urlresolvers import NoReverseMatch
 from django.contrib.auth.models import User
 from tutor.models import TutorProfile
-from tutor.auth import user_tutor_data
+from tutor.auth import user_tutor_data, NotTutor
 def logout_view(request):
     logout(request)
     try:
@@ -55,9 +55,10 @@ def login_view(request, err=''):
 
         password = request.POST['password']
         user = authenticate(username=username, password=password)
-        tutordata = user_tutor_data(user)
-        if tutordata['err'] is not None:
-            return redirect('login_error', err=tutordata['err'])
+        try:
+            tutordata = user_tutor_data(user)
+        except NotTutor as e:
+            return redirect('login_error', err=e.value)
         login(request, user)
         try:
             return redirect(request.POST['next'])

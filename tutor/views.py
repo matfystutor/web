@@ -10,12 +10,16 @@ from tutor.viewimpl.loginout import logout_view, login_view
 from tutor.viewimpl.profile import profile_view
 from django import forms
 from mftutor import siteconfig
+from tutor.auth import tutor_required, user_tutor_data
 
-class GroupsView(ListView):
-    context_object_name = 'groups'
-    template_name = 'groups.html'
-    def get_queryset(self):
-        return Tutor.objects.select_related().get(profile=self.request.user.get_profile(), year=2012).groups.select_related().all()
+@tutor_required
+def groups_view(request, tutor, profile):
+    def group_data(g):
+        return {'name': g.name,
+                'tutors': User.objects.filter(tutorprofile__tutor__year__exact=siteconfig.year, tutorprofile__tutor__groups=g).distinct()}
+    groups = [group_data(g) for g in tutor.groups.all()]
+    data = {'groups': groups}
+    return render_to_response('groups.html', data, RequestContext(request))
 
 def tutor_password_change_view(request):
     if 'back' in request.GET:
