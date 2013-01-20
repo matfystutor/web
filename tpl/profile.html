@@ -1,10 +1,13 @@
 {% extends "base.html" %}
 {% block title %}Mine oplysninger{% endblock %}
 {% block content %}
-<form action="{% url profile_view %}" method="post">{% csrf_token %}
-<table>
-{{ form.as_p }}
-</table>
-<input type="submit" value="Gem oplysninger" />
+<form class="twocol" action="{% url profile_view %}" method="post">{% csrf_token %}
+{{ form.non_field_errors }}
+{% for field in form %}
+<div class="label">{{ field.label_tag }}:</div>
+<div class="field">{{ field }}</div>
+{{ field.errors }}
+{% endfor %}
+<div class="field"><input type="submit" value="Gem oplysninger" /></div>
 </form>
 {% endblock %}

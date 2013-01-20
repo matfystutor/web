@@ -2,6 +2,7 @@
 from django import forms
 from django.forms.extras import SelectDateWidget
 from django.shortcuts import render, redirect
+from mftutor import siteconfig
 
 class ProfileForm(forms.Form):
     first_name = forms.CharField(label='Fornavn')
@@ -12,8 +13,8 @@ class ProfileForm(forms.Form):
     email = forms.EmailField(label='Email')
     study = forms.CharField(label='Studium')
     studentnumber = forms.CharField(label='Årskortnummer')
-    birthday = forms.DateField(label='Fødselsdag', widget=SelectDateWidget(years=range(1970,2012)))
-    gender = forms.ChoiceField(choices=(('m', 'Mand',), ('f', 'Kvinde',),),label='Køn')
+    birthday = forms.DateField(label='Fødselsdag', widget=SelectDateWidget(years=range(1970,siteconfig.year)))
+    gender = forms.ChoiceField(widget=forms.RadioSelect, choices=(('m', 'Mand',), ('f', 'Kvinde',),),label='Køn')
 
 def profile_view(request):
     u = request.user

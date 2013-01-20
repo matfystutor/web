@@ -481,3 +481,30 @@ td.altTabBg1 {
 	color: #333;
 	margin: 0;
 }
+
+.twocol .field {
+	margin-left: 160px;
+}
+
+.twocol .errorlist {
+	margin: 0 0 10px 160px;
+	font-size: 90%;
+	line-height: normal;
+}
+
+.twocol .field ul, .twocol .field li {
+	list-style-type: none;
+	display: inline;
+	margin: 0;
+	padding: 0;
+}
+
+.twocol .label {
+	float: left;
+	width: 150px;
+	text-align: right;
+}
+
+.twocol {
+	line-height: 30px;
+}
