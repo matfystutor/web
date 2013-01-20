@@ -3,6 +3,35 @@ from django import forms
 from django.forms.extras import SelectDateWidget
 from django.shortcuts import render, redirect
 from mftutor import siteconfig
+from django.contrib.sites.models import get_current_site
+
+# ReadOnlyWidget and Field
+# http://lazypython.blogspot.dk/2008/12/building-read-only-field-in-django.html
+# Tommi Penttinen, May 19, 2009 at 10:28 AM
+from django.utils.html import escape
+from django.utils.safestring import mark_safe
+from django.forms.util import flatatt
+
+class ReadOnlyWidget(forms.Widget):
+    def render(self, name, value, attrs):
+        final_attrs = self.build_attrs(attrs, name=name)
+        if hasattr(self, 'initial'):
+            value = self.initial
+        return value
+
+    def _has_changed(self, initial, data):
+        return False
+
+class ReadOnlyField(forms.Field):
+    widget = ReadOnlyWidget
+    def __init__(self, widget=None, label=None, initial=None, help_text=None):
+        super(type(self), self).__init__(self, label=label, initial=initial,
+            help_text=help_text, widget=widget)
+        self.widget.initial = initial
+
+    def clean(self, value):
+        return self.widget.initial
+
 
 class ProfileForm(forms.Form):
     first_name = forms.CharField(label='Fornavn')
@@ -12,7 +41,7 @@ class ProfileForm(forms.Form):
     phone = forms.CharField(label='Telefon')
     email = forms.EmailField(label='Email')
     study = forms.CharField(label='Studium')
-    studentnumber = forms.CharField(label='Årskortnummer')
+    studentnumber = ReadOnlyField(label='Årskortnummer')
     birthday = forms.DateField(label='Fødselsdag', widget=SelectDateWidget(years=range(1970,siteconfig.year)))
     gender = forms.ChoiceField(widget=forms.RadioSelect, choices=(('m', 'Mand',), ('f', 'Kvinde',),),label='Køn')
 
@@ -29,7 +58,7 @@ def profile_view(request):
             tp.phone = form.cleaned_data['phone']
             u.email = form.cleaned_data['email']
             tp.study = form.cleaned_data['study']
-            tp.studentnumber = form.cleaned_data['studentnumber']
+            #tp.studentnumber = form.cleaned_data['studentnumber']
             tp.birthday = form.cleaned_data['birthday']
             tp.gender = form.cleaned_data['gender']
             u.save()
@@ -49,5 +78,6 @@ def profile_view(request):
             'gender': tp.gender,
         }
         form = ProfileForm(initial=initial)
+        form.fields['studentnumber'].widget.initial = tp.studentnumber
 
-    return render(request, 'profile.html', { 'form': form, })
+    return render(request, 'profile.html', {'form': form})
