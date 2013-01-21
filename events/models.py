@@ -1,3 +1,4 @@
+# vim:set fileencoding=utf-8:
 from django.db import models
 from tutor.models import Tutor
 
@@ -9,6 +10,16 @@ class Event(models.Model):
     start_time = models.TimeField(blank=True, null=True)
     end_time = models.TimeField(blank=True, null=True)
     rsvp = models.BooleanField(verbose_name="Tilmelding mulig")
+
+    def category(self):
+        if u'stormøde' in self.title:
+            return 'stormoede'
+        if u'RKFL' in self.title:
+            return 'rkfl'
+        if u'RKFW' in self.title:
+            return 'rkfw'
+        if u'fest' in self.title:
+            return 'fest'
 
     def __unicode__(self):
         return '[Event '+self.title+' on '+str(self.start_date)+']'
