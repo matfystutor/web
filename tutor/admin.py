@@ -10,6 +10,7 @@ class TutorAdmin(admin.ModelAdmin):
     list_display_links = ('profile',)
     list_filter = ('year',)
     search_fields = ['profile__user__first_name', 'profile__user__last_name']
+    filter_horizontal = ('groups',)
 
 def get_full_name(tutor):
     return tutor.user.get_full_name()
