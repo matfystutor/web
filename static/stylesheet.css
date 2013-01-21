@@ -443,7 +443,12 @@ td.altTabBg1 {
 	background-color: #c7ccd7;
 }
 
-.newsItem h2, .newsBody {
+.eventsevent {
+	padding: 20px 0;
+	overflow: auto; /*floatfix*/
+}
+
+.newsItem h2, .newsBody, .eventsevent {
 	border-bottom: 3px solid #ddd;
 }
 
@@ -507,4 +512,37 @@ td.altTabBg1 {
 
 .twocol {
 	line-height: 30px;
+}
+
+.eventdate {
+	float: left;
+	width: 40px;
+	text-align: center;
+	margin-right: 10px;
+	border: 1px solid #eee;
+	border-bottom-color: #bbb;
+	border-right-color: #bbb;
+}
+
+.eventdate .month {
+	display: block;
+	background-color: #3c3;
+	color: white;
+	font-weight: bold;
+	font-size: 10px;
+	line-height: 150%;
+}
+
+.eventdate.stormoede .month { background-color: #c33; }
+.eventdate.fest .month { background-color: #d92; }
+.eventdate.rkfw .month { background-color: #d92; }
+.eventdate.rkfl .month { background-color: #c39; }
+
+.eventdate .day {
+	display: block;
+	background-color: #f8f8f8;
+	color: black;
+	font-weight: bold;
+	font-size: 16px;
+	line-height: 150%;
 }
