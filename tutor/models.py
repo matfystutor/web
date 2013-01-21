@@ -29,7 +29,10 @@ class TutorProfile(models.Model):
     picture = models.ImageField(upload_to='tutorpics')
 
     def __unicode__(self):
-        return unicode(self.user.get_full_name())+u' '+unicode(self.user.username)
+        try:
+            return unicode(self.user.get_full_name())+u' '+unicode(self.user.username)
+        except User.DoesNotExist:
+            return unicode(self.studentnumber)+u' (no user)'
 
     class Meta:
         verbose_name = 'tutorprofil'
