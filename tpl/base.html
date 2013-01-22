@@ -50,6 +50,10 @@
         <li><a href="{% url upload_picture_view %}">Upload Billede</a></li>
       </ul>
       </li>
+      {% else %}
+      <li class="trigger">
+      <a href="{% url kontakt %}">Kontakt</a>
+      </li>
       {% endif %}
       {% if tutor.is_tutorbest %}
       <li class="trigger">
