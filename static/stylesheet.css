@@ -4,8 +4,7 @@ html,body {
 	font-family: Lucida-Grande, Calibri, Arial, Verdana, Sans-Serif;
 	font-size: 14px;
 	color: #444;
-	background-image: url(images/background-square.jpg);
-	background-repeat: repeat;
+	background-color: #eee;
 }
 
 a:focus {
@@ -31,7 +30,13 @@ a:hover {
 }
 
 #background {
-	background-image: url(images/background-horizontal.jpg);
+	background-color: #eee;
+	background-image: -moz-linear-gradient(top, rgb(221,221,221) 0%, rgb(238,238,238) 100%); /* FF3.6+ */
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgb(221,221,221)), color-stop(100%,rgb(238,238,238))); /* Chrome,Safari4+ */
+	background-image: -webkit-linear-gradient(top, rgb(221,221,221) 0%,rgb(238,238,238) 100%); /* Chrome10+,Safari5.1+ */
+	background-image: -o-linear-gradient(top, rgb(221,221,221) 0%,rgb(238,238,238) 100%); /* Opera 11.10+ */
+	background-image: -ms-linear-gradient(top, rgb(221,221,221) 0%,rgb(238,238,238) 100%); /* IE10+ */
+	background-image: linear-gradient(to bottom, rgb(221,221,221) 0%,rgb(238,238,238) 100%); /* W3C */
 	background-repeat: repeat-x;
 	width: auto;
 	height: 550px;
@@ -39,8 +44,8 @@ a:hover {
 
 #main {
 	width: 700px;
-	margin-left: auto;
-	margin-right: auto;
+	margin: 0 auto;
+	padding: 10px 0;
 }
 
 .spacer {
