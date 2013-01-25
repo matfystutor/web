@@ -141,12 +141,12 @@ class TutorAdminView(ProcessFormView, FormMixin, TemplateResponseMixin):
                 groups_remove = prev_groupset - in_groupset
 
                 for handle in groups_insert:
-                    changes.append("%s tilføj gruppe %s" % (str(tutor), handle))
-                    tutor.groups.add(TutorGroup.objects.filter(handle=handle))
+                    changes.append(u"%s tilføj gruppe %s" % (unicode(tutor), handle))
+                    tutor.groups.add(TutorGroup.objects.get(handle=handle))
 
                 for handle in groups_remove:
-                    changes.append("%s fjern gruppe %s" % (str(tutor), handle))
-                    tutor.groups.remove(TutorGroup.objects.filter(handle=handle))
+                    changes.append(u"%s fjern gruppe %s" % (unicode(tutor), handle))
+                    tutor.groups.remove(TutorGroup.objects.get(handle=handle))
 
                 data_origin.save()
                 profile.save()
