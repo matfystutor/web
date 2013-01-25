@@ -3,7 +3,6 @@ from django.conf.urls import patterns, url
 from activation.views import register_view, activate_view
 #from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
-from mftutor import siteconfig
 
 urlpatterns = patterns('',
     url(r'^$', register_view, name='register'),
