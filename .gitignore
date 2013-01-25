@@ -2,6 +2,6 @@
 .*.swp
 .swp
 /static/upload
-/mftutor/siteconfig.py
+/mftutor/settings/local.py
 *.aux
 *.log
