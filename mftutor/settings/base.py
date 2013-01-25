@@ -5,6 +5,12 @@ from django.conf import global_settings
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+import os
+here = lambda * x: os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
+
+PROJECT_ROOT = here("../..")
+root = lambda * x: os.path.join(os.path.abspath(PROJECT_ROOT), *x)
+
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
@@ -65,11 +71,11 @@ MEDIA_URL = STATIC_URL+'upload/'
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = basedir+MEDIA_URL
+MEDIA_ROOT = root('static/upload/')
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    basedir+'/static',
+    root('static'),
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -110,7 +116,7 @@ ROOT_URLCONF = 'mftutor.urls'
 WSGI_APPLICATION = 'mftutor.wsgi.application'
 
 TEMPLATE_DIRS = (
-    basedir+"/tpl"
+    root("tpl")
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -177,8 +183,3 @@ LOGIN_URL = '/login/'
 
 INTERNAL_IPS = ('127.0.0.1',)
 
-import os
-here = lambda * x: os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
-
-PROJECT_ROOT = here("../..")
-root = lambda * x: os.path.join(os.path.abspath(PROJECT_ROOT), *x)
