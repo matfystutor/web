@@ -148,9 +148,6 @@ class TutorAdminView(ProcessFormView, FormMixin, TemplateResponseMixin):
                     changes.append("%s fjern gruppe %s" % (str(tutor), handle))
                     tutor.groups.remove(TutorGroup.objects.filter(handle=handle))
 
-                if groups_insert or groups_remove:
-                    tutor.save_related()
-
                 data_origin.save()
                 profile.save()
 
