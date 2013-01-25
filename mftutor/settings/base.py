@@ -183,3 +183,4 @@ LOGIN_URL = '/login/'
 
 INTERNAL_IPS = ('127.0.0.1',)
 
+BODY_CLASS = 'production'
