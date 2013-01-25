@@ -42,6 +42,12 @@ a:hover {
 	height: 550px;
 }
 
+body.test #background {
+	background-color: #ff0;
+	height: 80px;
+	background-image: none;
+}
+
 #main {
 	width: 700px;
 	margin: 0 auto;

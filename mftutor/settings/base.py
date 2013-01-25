@@ -175,6 +175,7 @@ AUTH_PROFILE_MODULE = 'tutor.TutorProfile'
 TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
     "tutor.context_processors.login_form",
     "tutor.context_processors.tutor_data",
+    "tutor.context_processors.settings",
 )
 
 LOGIN_REDIRECT_URL = "/"
