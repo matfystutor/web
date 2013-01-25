@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Aktiver{% endblock %}
+
+{% block content %}
+<h1>Aktiver</h1>
+
+<form method="post">{% csrf_token %}
+{{ form.non_field_errors }}
+{% for field in form %}
+{{ field.errors }}
+{{ field.label }}: {{ field }}<br>
+{% endfor %}
+<input type="submit" value="Aktiver" />
+</form>
+
+<p>Brugernavnet kan du selv vælge frit. Du kan bruge det til at logge ind med i
+stedet for dit årskortnummer, hvis du vil.</p>
+
+{% endblock %}
