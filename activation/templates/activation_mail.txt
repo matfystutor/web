@@ -1,0 +1,13 @@
+Hej {{ full_name }},
+
+Velkommen til Mat/Fys-Tutorgruppen.
+For at aktivere din tutorkonto, skal du besøge følgende link:
+
+{{ link }}
+
+Hvis du har spørgsmål eller problemer, kan du kontakte
+tutorgruppens bestyrelse <best@matfystutor.dk>, eller skrive
+direkte til den webansvarlige <webfar@matfystutor.dk>.
+
+Med venlig hilsen
+Mat/Fys-Tutorgruppen
