@@ -3,7 +3,7 @@ from .base import *
 # For inspiration on ways to spell ENGINE, see
 # https://docs.djangoproject.com/en/1.4/ref/settings/#std:setting-DATABASES
 
-db = {
+DATABASES['default'] = {
     'ENGINE': 'django.db.backends.mysql',
     'NAME': 'mftutor',
     'USER': 'mftutor',
@@ -18,3 +18,7 @@ SECRET_KEY = '...'
 YEAR = 2013
 
 BODY_CLASS = 'test'
+
+DEBUG_TOOLBAR_CONFIG = {
+    'INTERCEPT_REDIRECTS': False,
+}
