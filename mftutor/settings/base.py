@@ -1,8 +1,4 @@
 from django.conf import global_settings
-try:
-    from mftutor import siteconfig
-except ImportError:
-    siteconfig = {}
 
 # Django settings for mftutor project.
 
@@ -15,26 +11,16 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-try:
-    DATABASES = {
-        'default': siteconfig.db
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'mftutor',
+        'USER': 'mftutor',
+        'PASSWORD': 'hunter2',
+        'HOST': '',
+        'PORT': '',
     }
-except AttributeError:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'mftutor',
-            'USER': 'mftutor',
-            'PASSWORD': 'hunter2',
-            'HOST': '',
-            'PORT': '',
-        }
-    }
-
-try:
-    basedir = siteconfig.basedir
-except AttributeError:
-    basedir = '/home/mftutor/web'
+}
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -98,7 +84,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = siteconfig.secret
+SECRET_KEY = 'not.so.secret.right.now'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -190,3 +176,9 @@ LOGIN_REDIRECT_URL = "/"
 LOGIN_URL = '/login/'
 
 INTERNAL_IPS = ('127.0.0.1',)
+
+import os
+here = lambda * x: os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
+
+PROJECT_ROOT = here("../..")
+root = lambda * x: os.path.join(os.path.abspath(PROJECT_ROOT), *x)
