@@ -150,6 +150,7 @@ class TutorAdminView(ProcessFormView, FormMixin, TemplateResponseMixin):
 
                 data_origin.save()
                 profile.save()
+                tutor.save()
 
             except Tutor.DoesNotExist:
                 pass
