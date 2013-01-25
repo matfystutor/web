@@ -3,29 +3,18 @@ use strict;
 
 my $year = $ARGV[0] or die "Usage: $0 year";
 my $MYSQL = 'mysql --defaults-extra-file=~/tutordb.cnf';
-my $fromgroup = 'alle';
+my $fromgroup = 'best';
 
 print <<PYTHON;
 from tutor.models import *
 from django.contrib.auth.models import User
 
-def mk_user(username, **kwargs):
+def mk_profile(studentnumber, **kwargs):
     try:
-        if username == '20103940':
-            username = 'rav'
-        u = User.objects.get(username=username)
-        return u
-    except User.DoesNotExist:
-        u = User(username=username, **kwargs)
-        u.save()
-        return u
-
-def mk_profile(user, **kwargs):
-    try:
-        p = TutorProfile.objects.get(user=user)
+        p = TutorProfile.objects.get(studentnumber=studentnumber)
         return p
     except TutorProfile.DoesNotExist:
-        p = TutorProfile(user=user, **kwargs)
+        p = TutorProfile(studentnumber=studentnumber, **kwargs)
         p.save()
         return p
 
@@ -74,8 +63,7 @@ while (<TUTORS>) {
 	s/([\\'])/\\$1/g;
 	my ($tutorid, $navn, $email, $gade, $postby, $mobil, $studret, $aarskort) = split /[\t\n]+/;
 	my ($first, $last) = ($navn =~ /([^ ]*) (.*)/);
-	print "u$tutorid = mk_user(username='$aarskort', first_name='$first', last_name='$last', email='$email')\n";
-	print "tp$tutorid = mk_profile(user=u$tutorid, street='$gade', city='$postby', phone='$mobil', study='$studret', studentnumber='$aarskort', gender='m')\n";
+	print "tp$tutorid = mk_profile(street='$gade', city='$postby', phone='$mobil', study='$studret', studentnumber='$aarskort', gender='m', activation_email='$email')\n";
 	print "tu$tutorid = mk_tutor(profile=tp$tutorid, year=$year)\n";
 }
 close TUTORS;

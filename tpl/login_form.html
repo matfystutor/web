@@ -2,7 +2,7 @@
 {% block title %}Login{% endblock %}
 {% block content %}
 {% if error %}
-<p class="error">{{ error }}</p>
+<p class="error">{{ error|safe }}</p>
 {% endif %}
 <p>Du bedes logge ind med formularen foroven.</p>
 {% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Ny bruger{% endblock %}
+
+{% block content %}
+<h1>Ny bruger</h1>
+
+<p>For at blive bruger på hjemmesiden, skal du være tutor i Mat/Fys-Tutorgruppen.</p>
+
+<form method="post" action=".">{% csrf_token %}
+{{ form.non_field_errors }}
+{% for field in form %}
+    <div class="fieldWrapper">
+    {{ field.errors }}
+    {{ field.label_tag }}: {{ field }}
+    </div>
+{% endfor %}
+<p><input type="submit" value="Aktiver" /></p>
+</form>
+
+{% endblock %}

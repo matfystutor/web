@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+{% block title %}Tutoradmin{% endblock %}
+{% block head %}
+<script>
+function MultiSelect(el) {
+    var self = this;
+    this.el = el;
+    el.style.display = 'none';
+    var link = this.link = document.createElement('a');
+    link.href = '#';
+    link.onclick = function (ev) {
+        self.open();
+        ev.preventDefault();
+        return false;
+    };
+    el.parentNode.insertBefore(link, el);
+    this.update_link_text();
+}
+
+MultiSelect.prototype.save = function () {
+    if (!this.container) return;
+    this.container.parentNode.removeChild(this.container);
+    this.container = null;
+    this.update_link_text();
+};
+
+var active_multiselect = null;
+
+MultiSelect.prototype.open = function () {
+    var self = this;
+    var container = this.container = document.createElement('ul');
+    container.className = 'multiselect_dropdown';
+
+    function change_handler(i) {
+        return function (event) {
+            self.el.options[i].selected = this.checked;
+        };
+    }
+
+    for (var i = 0, l = this.el.options.length; i < l; ++i) {
+        var o = this.el.options[i];
+        var li = document.createElement('li');
+        var label = document.createElement('label');
+        var chk = document.createElement('input');
+        chk.type = 'checkbox';
+        chk.onchange = change_handler(i);
+        chk.checked = o.selected;
+        label.appendChild(chk);
+        label.appendChild(document.createTextNode(o.innerHTML));
+        li.appendChild(label);
+        container.appendChild(li);
+    }
+    this.el.parentNode.insertBefore(container, this.el);
+
+    var remove_click_listener;
+
+    var click_listener = function (ev) {
+        var e = ev.target;
+        if (!e) { remove_click_listener(); return; }
+        while (e != null) {
+            if (e == container.parentNode) return;
+            e = e.parentNode;
+        }
+        self.save();
+        remove_click_listener();
+    };
+
+    window.addEventListener('click', click_listener, false);
+    remove_click_listener = function () {
+        window.removeEventListener('click', click_listener, false);
+    };
+};
+
+MultiSelect.prototype.update_link_text = function () {
+    var txt = [];
+    for (var i = 0, l = this.el.options.length; i < l; ++i) {
+        var o = this.el.options[i];
+        if (o.selected) txt.push(o.value);
+    }
+    var label = txt.length ? txt.join(', ') : '(ingen)';
+    this.link.innerHTML = label;
+};
+
+var multiselects = [];
+window.addEventListener('load', function () {
+    var els = document.getElementsByTagName('select');
+    for (var i = 0, l = els.length; i < l; ++i) {
+        var el = els[i];
+        if (el.parentNode.className != 'groups') continue;
+        multiselects.push(new MultiSelect(el));
+    }
+}, false);
+</script>
+<style>
+.tutoradmin .groups {
+    position: relative;
+}
+
+.multiselect_dropdown {
+    list-style-type: none;
+
+    margin: 0;
+    padding: 5px;
+    border: 1px solid black;
+    background-color: white;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+.multiselect_dropdown li {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.multiselect_dropdown label {
+    display: block;
+    width: 10em;
+    margin-right: 5px;
+}
+
+.multiselect_dropdown label:hover {
+    background-color: #eef;
+}
+
+.multiselect_dropdown {
+    column-count: 2;
+    -moz-column-count: 2;
+}
+
+.silk_exclamation {
+    width: 16px;
+    height: 16px;
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAKgSURBVHjaYvz//z8DJQAggFjQBf62ZSv/+/8/6v+/f3H//v2TAGIGIH4BxIv+/f23TKBj0V1k9QABxIjsgt+tWcH///2f/JWRTZJNWYWBhY8PIv7pI8O369cZmL59fP7v399csb6Va2F6AAIIbsCvlkyg5n8Lf4rJcXOpqTL8ffaQ4R8QgwCTpBwDk5Q8w6dr1xl+3Lr89d/fv/Gy0zaADQEIILABP5sylIBOPPxLQk6KW02N4dfRXWCNXLVzwPSX+iQGhn//Gdhs3Rg+XrnK8OX6+Wd///2zVZm7/R5AADGB/f33T8w3JnaEZqChQK/Avfbvzz+Gv3/+M3zbu52BT0OL4T+PsNSf379jQHIAAQQ24M+fP7HsqkBnP7kP1vjvL9AAoCZkA/79/svw99c/hp/37jLwa+gw/P79OxYkBxBAMAOkWQUEGP48vg/WCLMRHjNAjX9/Q8R/3LnLwCogxPDn9x9pkBxAAEEM+P2H4T/QVphGmI2/b11BeOE31JC/QJcB8Z8/v8FyAAEEdcHvpz/fvAOGtjzcqSDF34/sZfiyYTnc9n9AmkVWgeHbmzcgS5+C9AIEEMwFiz9cucTALKUAVwyi+ZLyGXgCIsEa/4LEgDazKygxvLpwGuTtxSC9AAEENgAYIEt+vX327P3VKwxcTp5wQ95N7mJ4O7kTrBHEF/DyYXh95QLD+8e3nwENWALSCxBA8IR0LdY5GJhAFgpom3ELAkP5x/174AADybMrKoHxG6DmR8d3fQWmmXinfTfACQkggFCS8oVQ62BgApnMISQlKaxjxMAuIAhKEgw/3r9jeHn+JMP7J3eASflfrsuBm/CkDBBAjOi58aSfiTJQURQwtIGZ6S9qZvr3b5nrwdsomQkggBgpzc4AAQYAldGvTIbO+90AAAAASUVORK5CYII=);
+    display: inline-block;
+}
+
+.tutoradmin td {
+    white-space: nowrap;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>Tutoradmin</h1>
+
+<form method="post" action="" class="tutoradmin">{% csrf_token %}
+{{ form.management_form }}
+{% if changes %}
+Følgende ændringer er gemt.
+<ul>
+{% for change in changes %}
+<li>{{ change }}</li>
+{% endfor %}
+</ul>
+{% endif %}
+{{ form.non_field_errors }}
+<table>
+    {% for row in form %}
+    {% ifchanged %}
+    <tr>
+        {% for field in row %}
+        <th>{{ field.label }}</th>
+        {% endfor %}
+    </tr>
+    {% endifchanged %}
+    <tr id="tutor{{ row.pk.value }}">
+        {% for field in row %}
+        <td>{% if field.errors %}
+            <span class="silk_exclamation" title="{% for error in field.errors %}{{ error|escape }}
+{% endfor %}"></span>
+            {% endif %}<span class="{{ field.name }}">{{ field }}</span></td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+<input name="preview" type="submit" value="Gennemse ændringer" />
+<input name="save" type="submit" value="Gem ændringer" />
+</form>
+
+{% endblock %}

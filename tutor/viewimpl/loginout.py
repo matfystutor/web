@@ -1,10 +1,12 @@
 # encoding: utf-8
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout, authenticate, login
-from django.core.urlresolvers import NoReverseMatch
+from django.core.urlresolvers import NoReverseMatch, reverse
 from django.contrib.auth.models import User
 from tutor.models import TutorProfile
 from tutor.auth import user_tutor_data, NotTutor
+from activation.models import ProfileActivation
+
 def logout_view(request):
     logout(request)
     try:
@@ -46,9 +48,13 @@ def login_view(request, err=''):
             try:
                 tp = TutorProfile.objects.get(studentnumber=loginname)
                 u = tp.user
-                username = u.username
+                if u:
+                    username = u.username
+                elif ProfileActivation.objects.filter(profile=tp).count() > 0:
+                    return redirect('login_error', err='activate')
             except TutorProfile.DoesNotExist:
                 pass
+
 
         if username is None:
             return redirect('login_error', err='failauth')
@@ -77,4 +83,6 @@ def login_view(request, err=''):
                 errormessage = 'Din bruger har ingen tutorprofil.'
             elif err == 'notutoryear':
                 errormessage = 'Du er ikke tutor i år.'
+            elif err == 'activate':
+                errormessage = 'Velkommen til tutorgruppen. Du bedes <a href="'+reverse('register')+'">aktivere din bruger</a>.'
         return render(request, 'login_form.html', {'error': errormessage})

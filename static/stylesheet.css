@@ -127,8 +127,11 @@ h3 {
 	margin: 0;
 	border: none;
 	height: 44px;
-	width: 228px;
    text-align: right;
+}
+
+#login fieldset a {
+	margin-left: .5em;
 }
 
 #login input {

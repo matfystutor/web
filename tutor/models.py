@@ -9,7 +9,7 @@ from django.db.models.signals import post_save
 # User data for the project that does not vary from year to year
 class TutorProfile(models.Model):
     id = models.AutoField(primary_key=True)
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, null=True, blank=True, on_delete=models.SET_NULL)
 
     #name = models.CharField(max_length=60, verbose_name="Fulde navn")
     # first name and last name exist in User
@@ -21,22 +21,29 @@ class TutorProfile(models.Model):
 
     birthday = models.DateField(verbose_name="Født", blank=True, null=True)
 
-    study = models.CharField(max_length=20, verbose_name="Studieretning")
+    study = models.CharField(max_length=60, verbose_name="Studieretning")
     studentnumber = models.CharField(max_length=20, verbose_name="Årskortnummer", unique=True)
 
     gender = models.CharField(max_length=1, choices=(('m', 'Mand',),('f','Kvinde',),))
 
-    picture = models.ImageField(upload_to='tutorpics')
+    picture = models.ImageField(upload_to='tutorpics', blank=True)
 
     def __unicode__(self):
-        try:
-            return unicode(self.user.get_full_name())+u' '+unicode(self.user.username)
-        except User.DoesNotExist:
+        if self.user:
+            return unicode(self.studentnumber)+u' '+unicode(self.get_full_name())+u' '+unicode(self.user.username)
+        else:
             return unicode(self.studentnumber)+u' (no user)'
 
     class Meta:
         verbose_name = 'tutorprofil'
         verbose_name_plural = verbose_name + 'er'
+
+    def get_full_name(self):
+        if self.user:
+            return self.user.get_full_name()
+        if self.activation.count():
+            return self.activation.get().get_full_name()
+        return None
 
 # "Arbejdsgruppe"
 class TutorGroup(models.Model):

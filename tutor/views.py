@@ -8,6 +8,7 @@ from django.contrib.auth.views import password_change
 from django.views.generic import ListView, UpdateView
 from tutor.viewimpl.loginout import logout_view, login_view
 from tutor.viewimpl.profile import profile_view
+from tutor.viewimpl.admin import TutorAdminView
 from django import forms
 from mftutor.settings import YEAR
 from tutor.auth import tutor_required, user_tutor_data

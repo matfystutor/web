@@ -139,6 +139,7 @@ INSTALLED_APPS = (
     'django_wysiwyg',
     'debug_toolbar',
     'aliases',
+    'activation',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -185,3 +186,6 @@ LOGIN_URL = '/login/'
 INTERNAL_IPS = ('127.0.0.1',)
 
 BODY_CLASS = 'production'
+
+# If True, activation will print the email to be sent rather than sending it.
+ACTIVATION_DEBUG = True
