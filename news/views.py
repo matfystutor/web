@@ -8,7 +8,7 @@ from django.core.urlresolvers import reverse
 from datetime import datetime
 from tutor.auth import tutorbest_required
 from django.contrib.auth.models import User
-from mftutor import siteconfig
+from mftutor.settings import YEAR
 from datetime import datetime
 
 class AuthorModelChoiceField(ModelChoiceField):
@@ -48,7 +48,7 @@ class NewsCreateView(CreateView):
                 label = 'Forfatter',
                 empty_label = None,
                 queryset = User.objects.filter(tutorprofile__tutor__groups__handle='best',
-                    tutorprofile__tutor__year__in=[siteconfig.year]))
+                    tutorprofile__tutor__year__in=[YEAR]))
         return f
 
     def get_context_data(self, **kwargs):
@@ -80,7 +80,7 @@ class NewsUpdateView(UpdateView):
                 label = 'Forfatter',
                 empty_label = None,
                 queryset = User.objects.filter(tutorprofile__tutor__groups__handle='best',
-                    tutorprofile__tutor__year__in=[siteconfig.year]))
+                    tutorprofile__tutor__year__in=[YEAR]))
         return f
 
     def get_success_url(self):

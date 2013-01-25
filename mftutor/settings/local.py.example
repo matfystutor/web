@@ -10,10 +10,8 @@ db = {
     'PORT': '',
 }
 
-# Directory containing the site code
-#basedir = '/ssd/home/work/tutorweb'
-
 # Generate using pwgen -sy 50 1
-#secret = '...'
+SECRET_KEY = '...'
 
-year = 2013
+YEAR = 2013
+

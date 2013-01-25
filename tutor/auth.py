@@ -1,7 +1,7 @@
 from tutor.models import TutorProfile, Tutor
 from django.http import HttpResponse
 from django.template import RequestContext, loader
-from mftutor import siteconfig
+from mftutor.settings import YEAR
 
 class NotTutor(Exception):
     def __init__(self, value):
@@ -24,7 +24,7 @@ def user_tutor_data(user):
     except TutorProfile.DoesNotExist:
         raise NotTutor('notutorprofile')
     try:
-        d.tutor = Tutor.objects.get(profile=d.profile, year=siteconfig.year)
+        d.tutor = Tutor.objects.get(profile=d.profile, year=YEAR)
     except Tutor.DoesNotExist:
         raise NotTutor('notutoryear')
     return d

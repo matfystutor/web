@@ -2,7 +2,7 @@
 from django import forms
 from django.forms.extras import SelectDateWidget
 from django.shortcuts import render, redirect
-from mftutor import siteconfig
+from mftutor.settings import YEAR
 from django.contrib.sites.models import get_current_site
 
 # ReadOnlyWidget and Field
@@ -42,7 +42,7 @@ class ProfileForm(forms.Form):
     email = forms.EmailField(label='Email')
     study = forms.CharField(label='Studium')
     studentnumber = ReadOnlyField(label='Årskortnummer')
-    birthday = forms.DateField(label='Fødselsdag', widget=SelectDateWidget(years=range(1970,siteconfig.year)))
+    birthday = forms.DateField(label='Fødselsdag', widget=SelectDateWidget(years=range(1970,YEAR)))
     gender = forms.ChoiceField(widget=forms.RadioSelect, choices=(('m', 'Mand',), ('f', 'Kvinde',),),label='Køn')
 
 def profile_view(request):
