@@ -128,7 +128,7 @@ class TutorAdminView(ProcessFormView, FormMixin, TemplateResponseMixin):
                 if in_email != prev_data['email']:
                     data_origin.email = in_email
                     changes.append("%s: Email ændret fra %s til %s"
-                        % (str(tutor), str(prev_data['email']), str(email)))
+                        % (str(tutor), str(prev_data['email']), str(in_email)))
 
                 if in_studentnumber != profile.studentnumber:
                     changes.append("%s: Årskort ændret fra %s til %s"
