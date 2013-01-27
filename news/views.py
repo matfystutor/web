@@ -1,5 +1,5 @@
 from django.forms import ModelForm, ModelChoiceField, DateTimeField
-from django.views.generic import CreateView, UpdateView, DeleteView
+from django.views.generic import CreateView, UpdateView, DeleteView, TemplateView
 from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404, render, redirect, render_to_response
 from django.template import RequestContext
@@ -15,28 +15,31 @@ class AuthorModelChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.get_full_name()
 
-def news_view(request, year=None, month=None, day=None, pk=None):
-    news_list = NewsPost.objects.order_by('-posted').select_related()
+class NewsView(TemplateView):
+    template_name = 'news.html'
 
-    if pk:
-        news_list = news_list.filter(pk=pk)
-    elif day:
-        news_list = news_list.filter(posted__year=year,
-                posted__month=month,
-                posted__day=day)
-    elif month:
-        news_list = news_list.filter(posted__year=year,
-                posted__month=month)
-    elif year:
-        news_list = news_list.filter(posted__year=year)
+    def get(self, request, year=None, month=None, day=None, pk=None):
+        news_list = NewsPost.objects.order_by('-posted').select_related()
 
-    params = {
-            'news_list': news_list,
-            'year': year,
-            'month': month,
-            'day': day,
-            }
-    return render_to_response('news.html', params, RequestContext(request))
+        if pk:
+            news_list = news_list.filter(pk=pk)
+        elif day:
+            news_list = news_list.filter(posted__year=year,
+                    posted__month=month,
+                    posted__day=day)
+        elif month:
+            news_list = news_list.filter(posted__year=year,
+                    posted__month=month)
+        elif year:
+            news_list = news_list.filter(posted__year=year)
+
+        params = {
+                'news_list': news_list,
+                'year': year,
+                'month': month,
+                'day': day,
+                }
+        return self.render_to_response(params)
 
 class NewsCreateView(CreateView):
     model = NewsPost

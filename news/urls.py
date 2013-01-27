@@ -8,7 +8,7 @@ from news.feed import NewsFeed
 
 urlpatterns = patterns('',
     url(r'^(?:(?P<year>\d+)/(?:(?P<month>\d+)/(?:(?P<day>\d+)/(?:(?P<pk>\d+)/)?)?)?)?$',
-        news_view, name='news'),
+        NewsView.as_view(), name='news'),
     url(r'^add/$', NewsCreateView.as_view(), name='news_add'),
     url(r'^edit/(?P<pk>\d+)/$', NewsUpdateView.as_view(), name='news_edit'),
     url(r'^delete/(?P<pk>\d+)/$',
