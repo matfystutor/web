@@ -19,7 +19,8 @@ class ProfileActivation(models.Model):
 
     def generate_new_key(self):
         self.activation_request_time = datetime.now()
-        self.activation_key = hashlib.sha1(repr(self)).hexdigest()
+        signature = repr(self)
+        self.activation_key = hashlib.sha1(signature).hexdigest()
         self.save()
 
     def generate_mail(self, domain):
@@ -39,10 +40,10 @@ class ProfileActivation(models.Model):
         return msg
 
     def __repr__(self):
-        return (unicode(self.profile.pk) + '#' +
-                unicode(self.email) + '#' +
-                unicode(self.first_name) + '#' +
-                unicode(self.last_name) + '#' +
-                unicode(self.activation_key) + '#' +
-                unicode(self.activation_request_time) + '#' +
-                '')
+        return (unicode(self.profile.pk) + u'#' +
+                (self.email) + u'#' +
+                (self.first_name) + u'#' +
+                (self.last_name) + u'#' +
+                (self.activation_key) + u'#' +
+                unicode(self.activation_request_time) + u'#' +
+                u'').encode('ascii', 'ignore')
