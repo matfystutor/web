@@ -3,5 +3,5 @@ from django.contrib.auth.decorators import login_required
 from aliases.views import *
 
 urlpatterns = patterns('',
-    url(r'^$', login_required(aliases_view), name='aliases'),
+    url(r'^$', login_required(AliasesView.as_view()), name='aliases'),
 )
