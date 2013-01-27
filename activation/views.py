@@ -8,6 +8,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from activation.models import ProfileActivation
 from mftutor import settings
+from tutor.models import Tutor
 
 class RegisterForm(forms.Form):
     studentnumber = forms.CharField(label="Årskortnummer")
@@ -18,6 +19,12 @@ class RegisterForm(forms.Form):
             activation = ProfileActivation.objects.get(profile__studentnumber=sn)
         except ProfileActivation.DoesNotExist:
             raise ValidationError('Dette årskortnummer har ingen udestående aktiveringer. Kontakt webfar@matfystutor.dk hvis du mener dette er en fejl.')
+        if activation.profile.user is not None:
+            raise ValidationError('Din bruger er allerede aktiveret.')
+        try:
+            tutor = Tutor.objects.get(year=settings.YEAR, profile=activation.profile)
+        except Tutor.DoesNotExist:
+            raise ValidationError('Du er ikke tutor i år.')
         return sn
 
 def register_view(request):
@@ -47,7 +54,7 @@ class ActivateForm(forms.Form):
     def clean_username(self):
         data = self.cleaned_data['username']
         if User.objects.filter(username=data).count() > 0:
-            raise ValidationError("Der findes allerede en bruger med dette navn.")
+            raise ValidationError("Det brugernavn er allerede taget.")
         return data
 
     def clean_pw2(self):
