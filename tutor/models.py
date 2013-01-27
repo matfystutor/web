@@ -13,18 +13,18 @@ class TutorProfile(models.Model):
 
     #name = models.CharField(max_length=60, verbose_name="Fulde navn")
     # first name and last name exist in User
-    street = models.CharField(max_length=80, verbose_name="Adresse")
-    city = models.CharField(max_length=40, verbose_name="Postnr. og by")
-    phone = models.CharField(max_length=20, verbose_name="Telefonnr.")
+    street = models.CharField(max_length=80, blank=True, verbose_name="Adresse")
+    city = models.CharField(max_length=40, blank=True, verbose_name="Postnr. og by")
+    phone = models.CharField(max_length=20, blank=True, verbose_name="Telefonnr.")
     #email = models.EmailField(verbose_name="E-mailadresse")
     # Email address exists in django.contrib.auth.models.User
 
     birthday = models.DateField(verbose_name="Født", blank=True, null=True)
 
-    study = models.CharField(max_length=60, verbose_name="Studieretning")
+    study = models.CharField(max_length=60, blank=True, verbose_name="Studieretning")
     studentnumber = models.CharField(max_length=20, verbose_name="Årskortnummer", unique=True)
 
-    gender = models.CharField(max_length=1, choices=(('m', 'Mand',),('f','Kvinde',),))
+    gender = models.CharField(max_length=1, choices=(('m', 'Mand',),('f','Kvinde',),), default='m')
 
     picture = models.ImageField(upload_to='tutorpics', blank=True)
 
