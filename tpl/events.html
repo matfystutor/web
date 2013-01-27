@@ -4,13 +4,13 @@
 <h1>Begivenheder</h1>
 {% for event in event_list %}
 {% ifchanged %}<h2 style="margin-bottom: 0">{{ event.start_date|date:"F Y"|capfirst }}</h2>{% endifchanged %}
-<div class="eventsevent">
-<div class="eventdate {{ event.category }}">
+<div class="eventsevent {{ event.category }}">
+<div class="eventdate">
     <span class="month">{{ event.start_date|date:"M"|upper }}</span>
     <span class="day">{{ event.start_date|date:"j" }}</span>
 </div>
-<a style="font-weight: bold" href="{% url event event.pk %}">{{ event.title }}</a><br>
-{{ event.start_date|date:"l j. F"|lower|capfirst }}
+<div class="eventtitle"><a href="{% url event event.pk %}">{{ event.title }}</a></div>
+<div class="eventtime">{{ event.start_date|date:"l j. F"|lower|capfirst }}</div>
 </div>
 {% endfor %}
 {% endblock %}

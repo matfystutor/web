@@ -547,10 +547,10 @@ td.altTabBg1 {
 	line-height: 150%;
 }
 
-.eventdate.stormoede .month { background-color: #c33; }
-.eventdate.fest .month { background-color: #d92; }
-.eventdate.rkfw .month { background-color: #d92; }
-.eventdate.rkfl .month { background-color: #c39; }
+.stormoede .month { background-color: #c33; }
+.fest .month { background-color: #d92; }
+.rkfw .month { background-color: #d92; }
+.rkfl .month { background-color: #c39; }
 
 .eventdate .day {
 	display: block;
@@ -559,4 +559,12 @@ td.altTabBg1 {
 	font-weight: bold;
 	font-size: 16px;
 	line-height: 150%;
+}
+
+.eventsevent .eventtitle {
+	font-weight: bold;
+}
+
+.eventtitle, .eventtime {
+	margin-left: 50px;
 }
