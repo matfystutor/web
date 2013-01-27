@@ -18,7 +18,7 @@ class TutorForm(forms.Form):
     last_name = forms.CharField(label='Efternavn', required=False, widget=classy('last_name'))
     studentnumber = forms.CharField(label='Årskort', widget=classy('studentnumber', 7))
     email = forms.EmailField(label='Email', required=False, widget=classy('email', 25))
-    groups = forms.ModelMultipleChoiceField(label='Grupper', queryset=TutorGroup.objects.filter(visible=True))
+    groups = forms.ModelMultipleChoiceField(label='Grupper', queryset=TutorGroup.objects.filter(visible=True), required=False)
 
     def clean_pk(self):
         data = self.cleaned_data['pk']
