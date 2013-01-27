@@ -82,7 +82,7 @@
         <input name="username" type="text" id="user-login" value="Årskortnr" onfocus="if (this.value == 'Årskortnr') {this.value = '';}" onblur="if (this.value == '') {this.value = 'Årskortnr';}" />
         <input name="password" type="text" id="password-login" value="Password" onfocus="if (this.value == 'Password') {this.value = '';} if (this.type == 'text') {this.type = 'password'};" onblur="if (this.value == '') {this.value = 'Password';} if (this.type == 'password' &amp;&amp; this.value == 'Password') {this.type = 'text'};" />
         <input name="login" type="submit" class="submit-button" value="LOGIN" />
-        <a href="{% url register %}">Aktivering</a>
+        <!--<a href="{% url register %}">Aktivering</a> -->
       </fieldset>
     </form>
     {% endif %}
