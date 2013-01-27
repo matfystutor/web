@@ -3,35 +3,45 @@ use strict;
 
 my $year = $ARGV[0] or die "Usage: $0 year";
 my $MYSQL = 'mysql --defaults-extra-file=~/tutordb.cnf';
-my $fromgroup = 'best';
+my $fromgroup = 'alle';
 
 print <<PYTHON;
+from activation.models import *
 from tutor.models import *
 from django.contrib.auth.models import User
 
-def mk_profile(studentnumber, **kwargs):
+def mk_tutor(first_name, last_name, email, street, city, phone, study, studentnumber):
+    gender = 'm'
     try:
-        p = TutorProfile.objects.get(studentnumber=studentnumber)
-        return p
+        tp = TutorProfile.objects.get(studentnumber=studentnumber)
+        tp.street = street
+        tp.city = city
+        tp.phone = phone
+        tp.study = study
+        tp.studentnumber = studentnumber
+	tp.save()
+        ta = ProfileActivation.objects.get(profile=tp)
+        ta.first_name = first_name
+        ta.last_name = last_name
+        ta.email = email
     except TutorProfile.DoesNotExist:
-        p = TutorProfile(studentnumber=studentnumber, **kwargs)
-        p.save()
-        return p
+        tp = TutorProfile(street=street, city=city, phone=phone, study=study, studentnumber=studentnumber, gender=gender)
+	tp.save()
+        ta = ProfileActivation(profile=tp, first_name=first_name, last_name=last_name, email=email)
+    ta.save()
+    tu = Tutor(year=$year, profile=tp)
+    tu.save()
+    return tu
 
-def mk_tutor(profile, year):
-    try:
-        t = Tutor.objects.get(profile=profile, year=year)
-        return t
-    except Tutor.DoesNotExist:
-        t = Tutor(profile=profile, year=year)
-        t.save()
-        return t
+groups = {}
 
 def mk_group(handle, name, visible):
     try:
-        g = TutorGroup.objects.get(handle=handle)
+        return TutorGroup.objects.get(handle=handle)
     except TutorGroup.DoesNotExist:
-        TutorGroup(handle=handle, name=name, visible=visible).save()
+        g = TutorGroup(handle=handle, name=name, visible=visible)
+        g.save()
+        return g
 
 PYTHON
 
@@ -42,7 +52,7 @@ sub sql {
 
 my $WHEREmailalias = " (mailalias NOT LIKE \"\%+\%\" AND mailalias NOT LIKE \"\%-\%\")";
 
-open GROUPS, sql("SELECT mailalias, navn, visible FROM ${year}_groups WHERE $WHEREmailalias");
+open GROUPS, sql("SELECT mailalias, navn, visible FROM ${year}_groups WHERE $WHEREmailalias ORDER BY visible DESC, mailalias ASC");
 
 my @groups = ();
 
@@ -50,33 +60,34 @@ my @groups = ();
 while (<GROUPS>) {
 	my ($mailalias, $navn, $visible) = /([^\t]+)/g;
 	if ($visible == 1) { $visible = 'True'; } else { $visible = 'False'; }
-	print "mk_group(handle='$mailalias', name='$navn', visible=$visible)\n";
+	print "tutorgroup_$mailalias = mk_group(handle='$mailalias', name='$navn', visible=$visible)\n";
         push @groups, $mailalias;
 }
 close GROUPS;
 
 print "\n";
 
-open TUTORS, sql("SELECT tutorid, navn, email, gade, postby, mobil, studret, aarskort FROM ${year}_tutors WHERE tutorid IN (SELECT tutorid FROM ${year}_tutorInGroup WHERE mailalias = \"$fromgroup\")");
+open TUTORS, sql("SELECT tutorid, navn, email, gade, postby, mobil, studret, aarskort FROM ${year}_tutors WHERE tutorid IN (SELECT tutorid FROM ${year}_tutorInGroup WHERE mailalias = \"$fromgroup\") ORDER BY tutorid ASC");
 <TUTORS>;
 while (<TUTORS>) {
 	s/([\\'])/\\$1/g;
-	my ($tutorid, $navn, $email, $gade, $postby, $mobil, $studret, $aarskort) = split /[\t\n]+/;
+        s/\n//;
+	my ($tutorid, $navn, $email, $gade, $postby, $mobil, $studret, $aarskort) = split /\t/;
 	my ($first, $last) = ($navn =~ /([^ ]*) (.*)/);
-	print "tp$tutorid = mk_profile(street='$gade', city='$postby', phone='$mobil', study='$studret', studentnumber='$aarskort', gender='m', activation_email='$email')\n";
-	print "tu$tutorid = mk_tutor(profile=tp$tutorid, year=$year)\n";
+        if ($email !~ /@/) {
+            print "# XXX invalid email?\n";
+        }
+        if ($aarskort !~ /^\d+$/) {
+            print "# XXX invalid student number?\n";
+        }
+
+        print "tu$tutorid = mk_tutor(street='$gade', city='$postby', phone='$mobil', study='$studret', studentnumber='$aarskort', email='$email', first_name='$first', last_name='$last')\n";
 }
 close TUTORS;
 
 print "\n";
 
-for my $group (sort @groups) {
-	print "tutorgroup_$group = TutorGroup.objects.get(handle='$group')\n";
-}
-
-print "\n";
-
-open TUTORGROUPS, sql("SELECT tutorid, mailalias FROM ${year}_tutorInGroup WHERE tutorid IN (SELECT tutorid FROM ${year}_tutorInGroup WHERE mailalias = \"$fromgroup\") AND $WHEREmailalias");
+open TUTORGROUPS, sql("SELECT tutorid, mailalias FROM ${year}_tutorInGroup WHERE tutorid IN (SELECT tutorid FROM ${year}_tutorInGroup WHERE mailalias = \"$fromgroup\") AND $WHEREmailalias AND mailalias IN (SELECT mailalias FROM ${year}_groups) AND tutorid IN (SELECT tutorid FROM ${year}_tutors) ORDER BY mailalias ASC");
 <TUTORGROUPS>;
 while (<TUTORGROUPS>) {
 	my ($tutorid, $mailalias) = /([^\t\n]+)/g;
