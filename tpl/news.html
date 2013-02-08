@@ -17,9 +17,9 @@
 <a href="{% url news_edit news.pk %}">Ret</a>
 {% endif %}
 </div>
-<p class="newsBody">
+<div class="newsBody">
 {{ news.body|safe }}
-</p>
+</div>
 </div>
 {% endfor %}
 {% endblock %}
