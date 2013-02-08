@@ -189,3 +189,6 @@ BODY_CLASS = 'production'
 
 # If True, activation will print the email to be sent rather than sending it.
 ACTIVATION_DEBUG = True
+
+# If True, use HTML Tidy to clean up news post HTML bodies.
+TIDY_NEWS_HTML = False

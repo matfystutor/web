@@ -1,4 +1,6 @@
+from django import forms
 from django.forms import ModelForm, ModelChoiceField, DateTimeField
+from django.core.exceptions import ValidationError
 from django.views.generic import CreateView, UpdateView, DeleteView, TemplateView
 from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404, render, redirect, render_to_response
@@ -8,7 +10,7 @@ from django.core.urlresolvers import reverse
 from datetime import datetime
 from tutor.auth import tutorbest_required
 from django.contrib.auth.models import User
-from mftutor.settings import YEAR
+from mftutor.settings import YEAR, TIDY_NEWS_HTML
 from datetime import datetime
 
 class AuthorModelChoiceField(ModelChoiceField):
@@ -41,18 +43,50 @@ class NewsView(TemplateView):
                 }
         return self.render_to_response(params)
 
+class NewsPostForm(ModelForm):
+    class Meta:
+        model = NewsPost
+
+    author = AuthorModelChoiceField(
+        label = 'Forfatter',
+        empty_label = None,
+        queryset = User.objects.filter(tutorprofile__tutor__groups__handle='best',
+            tutorprofile__tutor__year__in=[YEAR]))
+
+    def clean_body(self):
+        data = self.cleaned_data['body']
+
+        if not TIDY_NEWS_HTML:
+            return data
+
+        from subprocess import Popen, PIPE
+        p = Popen(
+            ["tidy", "-utf8", "--bare", "yes",
+                "--show-body-only", "yes", "-q",
+                "--show-warnings", "no",
+                "--enclose-block-text", "yes"],
+            stdin=PIPE,
+            stdout=PIPE,
+            stderr=PIPE,
+            close_fds=True)
+
+        p.stdin.write(data)
+        p.stdin.close()
+        tidied = p.stdout.read()
+        errors = p.stderr.read()
+
+        if errors:
+            raise ValidationError(errors)
+
+        if not tidied:
+            raise ValidationError("Empty body")
+
+        return tidied
+
 class NewsCreateView(CreateView):
     model = NewsPost
     template_name = "newsform.html"
-
-    def get_form(self, form_class):
-        f = form_class(**self.get_form_kwargs())
-        f.fields['author'] = AuthorModelChoiceField(
-                label = 'Forfatter',
-                empty_label = None,
-                queryset = User.objects.filter(tutorprofile__tutor__groups__handle='best',
-                    tutorprofile__tutor__year__in=[YEAR]))
-        return f
+    form_class = NewsPostForm
 
     def get_context_data(self, **kwargs):
         d = super(NewsCreateView, self).get_context_data(**kwargs)
@@ -76,6 +110,7 @@ class NewsCreateView(CreateView):
 class NewsUpdateView(UpdateView):
     model = NewsPost
     template_name = "newsform.html"
+    form_class = NewsPostForm
 
     def get_form(self, form_class):
         f = form_class(**self.get_form_kwargs())
