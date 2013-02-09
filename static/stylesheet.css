@@ -53,6 +53,11 @@ body.test #background {
 	padding: 10px 0;
 }
 
+body.tutors #main {
+	width: auto;
+	max-width: 850px;
+}
+
 .spacer {
 	height: 10px;
 }
@@ -67,6 +72,7 @@ body.test #background {
 	-webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 1px 2px;
 	border: solid 2px #fff;
 	overflow: hidden;
+	margin: 0 auto;
 }
 
 #login {
@@ -302,7 +308,7 @@ html ul.topnav li ul.subnav li a:hover { /*--Hover effect for subnav links--*/
    -moz-transition: height 0.2s;
    -o-transition: height 0.2s;
    -webkit-transition: height 0.2s;
-   width: 290px;
+   width: 360px;
    margin: 5px 15px;
    padding: 0;
    height: 150px;
@@ -382,6 +388,9 @@ html ul.topnav li ul.subnav li a:hover { /*--Hover effect for subnav links--*/
 }
 .tutoraddress .name, #groupleadlabel {
    color: #333;
+   white-space: nowrap;
+   text-overflow: ellipsis;
+   overflow: hidden;
 }
 .tutoraddress .details {
    font-size: 90%;
@@ -398,6 +407,9 @@ html ul.topnav li ul.subnav li a:hover { /*--Hover effect for subnav links--*/
 
 .tutoraddress:hover .detailsoverflow {
    display: none;
+}
+.tutoraddress:hover .name {
+   white-space: normal;
 }
 .tutoraddress:hover .detailscontainer {
    overflow: visible;
