@@ -70,7 +70,7 @@ class NewsPostForm(ModelForm):
             stderr=PIPE,
             close_fds=True)
 
-        p.stdin.write(data)
+        p.stdin.write(data.encode('utf8'))
         p.stdin.close()
         tidied = p.stdout.read()
         errors = p.stderr.read()
