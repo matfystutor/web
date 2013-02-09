@@ -315,6 +315,9 @@ html ul.topnav li ul.subnav li a:hover { /*--Hover effect for subnav links--*/
    position: relative;
    word-wrap: break-word;
 }
+body.board .tutoraddress {
+   width: 290px;
+}
 #groupleadlabel {
    margin-bottom: 3px;
 }
@@ -408,7 +411,7 @@ html ul.topnav li ul.subnav li a:hover { /*--Hover effect for subnav links--*/
 .tutoraddress:hover .detailsoverflow {
    display: none;
 }
-.tutoraddress:hover .name {
+.tutoraddress:hover .name, body.board .name {
    white-space: normal;
 }
 .tutoraddress:hover .detailscontainer {
