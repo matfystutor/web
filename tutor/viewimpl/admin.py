@@ -28,7 +28,7 @@ class TutorForm(forms.Form):
                 raise forms.ValidationError('Tutor med dette interne ID findes ikke.')
         return data
 
-TutorFormSet = formset_factory(TutorForm, extra=5)
+TutorFormSet = formset_factory(TutorForm, extra=50)
 
 class TutorAdminView(ProcessFormView, FormMixin, TemplateResponseMixin):
     form_class = TutorFormSet
