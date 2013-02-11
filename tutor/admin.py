@@ -13,7 +13,7 @@ class TutorAdmin(admin.ModelAdmin):
     filter_horizontal = ('groups',)
 
 def get_full_name(tutor):
-    return tutor.user.get_full_name()
+    return tutor.get_full_name()
 get_full_name.short_description = 'Navn'
 
 class ProfileAdmin(admin.ModelAdmin):

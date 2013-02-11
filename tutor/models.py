@@ -32,7 +32,7 @@ class TutorProfile(models.Model):
         if self.user:
             return unicode(self.studentnumber)+u' '+unicode(self.get_full_name())+u' '+unicode(self.user.username)
         else:
-            return unicode(self.studentnumber)+u' (no user)'
+            return unicode(self.studentnumber)+u' '+unicode(self.get_full_name())+u' (no user)'
 
     class Meta:
         verbose_name = 'tutorprofil'
