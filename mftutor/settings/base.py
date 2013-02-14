@@ -140,6 +140,7 @@ INSTALLED_APPS = (
     'debug_toolbar',
     'aliases',
     'activation',
+    'tutormail',
 )
 
 # A sample logging configuration. The only tangible logging

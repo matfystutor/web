@@ -58,6 +58,10 @@ body.tutors #main {
 	max-width: 850px;
 }
 
+body.fullwidth #main {
+	width: auto;
+}
+
 .spacer {
 	height: 10px;
 }

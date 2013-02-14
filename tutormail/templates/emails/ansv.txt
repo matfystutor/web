@@ -1,0 +1,34 @@
+Hej {{ navn }}
+
+Vi har desuden vurderet, at du er ansvarlig og pålidelig, og derfor har vi
+gjort dig til gruppeansvarlig for {{ group }} :)
+
+Som ansvarlig har du til opgave at:
+- indkalde til gruppemøder; heriblandt første gruppemøde, hvor der
+udarbejdes en arbejdsplan (deadline d. 28. februar), det kan være en god
+ide at finde inspiration til denne i guiden fra sidste år (den
+kan findes på tutorhjemmesiden)
+- tjekke, at gruppens medlemmer deltager aktivt i arbejdet. Hvis en
+person uden grund udebliver fra et gruppemøde, eller på anden vis ikke
+lever op til sit ansvar i gruppen, vil bestyrelsen gerne have det at
+vide på best@matfystutor.dk.
+- fortælle foreningen om gruppens arbejde på stormøderne
+
+Husk at når jeres arbejde afsluttes, skal I sørge for, at der bliver
+lavet en guide til næste års gruppe.
+
+Dit ansvar som gruppeansvarlig er at koordinere og fordele arbejdet -
+ikke at lave det hele selv :)
+
+Hvis du er blevet ansvarlig for SOL eller en af boggrupperne, skal du
+huske at LaTeX-gruppen er til for jer :) Det er altså vigtigt at huske
+at kontakte dem (latex@matfystutor.dk), hvis I har problemer, eller
+har brug for at de er med til nogle møder.
+
+Hvis der er en grund til, at du ikke ønsker at være gruppeansvarlig,
+skal bestyrelsen godkende et eventuelt bytte.
+
+God fornøjelse med gruppearbejdet!
+
+På vegne af tutorbestyrelsen
+Mathias Rav

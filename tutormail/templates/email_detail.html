@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Email{% endblock %}
+
+{% block content %}
+<h1>Email</h1>
+
+<p>Fra: {{ email.sender }}</p>
+<p>Til: {{ email.recipient }}</p>
+<p>Emne: {{ email.subject }}</p>
+<p>Slags: {{ email.kind }}</p>
+<p>Sendt: {% if email.sent %}{{ email.sent }}{% else %}Nej{% endif %}</p>
+<p>Ændret: {% if email.manually_changed %}{{ email.manually_changed }}{% else %}Nej{% endif %}</p>
+<p>Tilbagehold: {% if email.retain %}Ja{% else %}Nej{% endif %}</p>
+<hr>
+{% if email.html %}
+<p>{{ email.body|safe }}</p>
+{% else %}
+<pre>{{ email.body }}</pre>
+{% endif %}
+
+{% endblock %}

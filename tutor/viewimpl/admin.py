@@ -102,7 +102,7 @@ class TutorAdminView(ProcessFormView, FormMixin, TemplateResponseMixin):
             profile = None
             if data['pk'] is None:
                 try:
-                    profile = TutorProfile.objects.get(studentnumber=in_studentnumber)
+                    profile = TutorProfile.objects.get(studentnumber__exact=in_studentnumber)
                     tutor = Tutor.objects.get(year=YEAR, profile=profile)
                 except TutorProfile.DoesNotExist:
                     profile = TutorProfile(studentnumber=in_studentnumber)
@@ -158,6 +158,8 @@ class TutorAdminView(ProcessFormView, FormMixin, TemplateResponseMixin):
             prev_groupset = frozenset(g.handle for g in prev_data['groups'])
             groups_insert = in_groupset - prev_groupset
             groups_remove = prev_groupset - in_groupset
+            if data['pk'] is None:
+                groups_remove = []  # don't remove existing groups if entry is new
 
             for handle in groups_insert:
                 changes.append(u"%s tilføj gruppe %s" % (unicode(tutor), handle))

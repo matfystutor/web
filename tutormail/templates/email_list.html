@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Emails{% endblock %}
+{% block bodyclass %}fullwidth{% endblock %}
+
+{% block content %}
+<h1>Emails</h1>
+
+<table>
+<thead>
+<tr>
+<th>Fra</th>
+<th>Til</th>
+<th>Emne</th>
+<th>Slags</th>
+<th>Sendt?</th>
+<th>Tilbagehold?</th>
+<th>Ændret?</th>
+</tr>
+</thead>
+<tbody>
+{% for email in email_list %}
+{% ifchanged %}
+<tr>
+<th colspan="7"><h2>{{ email.kind }}</h2></th>
+</tr>
+{% endifchanged %}
+<tr>
+<td>{{ email.sender }}</td>
+<td><a href="{% url email pk=email.pk %}">{{ email.recipient }}</a></td>
+<td>{{ email.subject }}</td>
+<td>{{ email.kind }}</td>
+<td title="{{ email.sent }}">{% if email.sent %}Ja{% else %}Nej{% endif %}</td>
+<td>{% if email.retain %}Ja{% else %}Nej{% endif %}</td>
+<td title="{{ email.manually_changed }}">{% if email.manually_changed %}Ja{% else %}Nej{% endif %}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+{% endblock %}

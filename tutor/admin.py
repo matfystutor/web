@@ -24,10 +24,19 @@ class ProfileAdmin(admin.ModelAdmin):
     radio_fields = {'gender': admin.HORIZONTAL}
     search_fields = ['user__first_name', 'user__last_name']
 
+def make_visible(modeladmin, request, queryset):
+    queryset.update(visible=True)
+make_visible.short_description = 'Gør synlig'
+
+def make_invisible(modeladmin, request, queryset):
+    queryset.update(visible=False)
+make_invisible.short_description = 'Gør ikke synlig'
+
 class GroupAdmin(admin.ModelAdmin):
     list_display = ('name', 'handle', 'visible')
     list_filter = ('visible',)
     search_fields = ['name', 'handle']
+    actions = [make_visible, make_invisible]
 
 class LeaderAdmin(admin.ModelAdmin):
     list_select_related = True

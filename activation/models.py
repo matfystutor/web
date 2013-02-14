@@ -1,9 +1,10 @@
 from django.core.urlresolvers import reverse
 from django.db import models
-from tutor.models import TutorProfile
+from tutor.models import TutorProfile, Tutor
 from datetime import datetime
 from django.core.mail import send_mail as django_send_mail
 from django.core.mail import EmailMessage
+from mftutor.settings import YEAR
 import hashlib
 
 class ProfileActivation(models.Model):
@@ -23,15 +24,43 @@ class ProfileActivation(models.Model):
         self.activation_key = hashlib.sha1(signature).hexdigest()
         self.save()
 
-    def generate_mail(self, domain):
-        path = reverse('activate', args=(self.activation_key,))
+    def get_activation_path(self):
+        if not self.activation_key:
+            self.generate_new_key()
+        key = self.activation_key
+        return reverse('activate', kwargs={'activation_key': key})
+
+    def generate_mail(self, domain, template=None, title_template=None):
+        if template is None:
+            from django.template.loader import get_template
+            template = get_template('activation_mail.txt')
+        if title_template is None:
+            from django.template import Template
+            title_template = Template("Aktiver tutorkonto")
+        path = self.get_activation_path()
         link = 'http://' + domain + path
-        from django.template.loader import render_to_string
+
+        try:
+            groups = [group.name for group in Tutor.objects.get(
+                    profile=self.profile,
+                    year__exact=YEAR,
+                ).groups.filter(
+                    visible=True,
+                ).exclude(
+                    handle__exact='alle'
+                ).all()]
+        except Tutor.DoesNotExist:
+            groups = []
+
         data = {
             'full_name': self.get_full_name(),
+            'year': YEAR,
             'link': link,
+            'groups': groups,
         }
-        body = render_to_string('activation_mail.txt', data)
+        from django.template import Context
+        context = Context(data)
+        body = template.render(context)
         msg = EmailMessage(
                 subject="Aktiver tutorkonto",
                 body=body,
@@ -40,10 +69,14 @@ class ProfileActivation(models.Model):
         return msg
 
     def __repr__(self):
+        activation_data = u''
+        if self.activation_request_time:
+            activation_data += unicode(self.activation_request_time) + u'#'
+        if self.activation_key:
+            activation_data += unicode(self.activation_key) + u'#'
         return (unicode(self.profile.pk) + u'#' +
                 (self.email) + u'#' +
                 (self.first_name) + u'#' +
                 (self.last_name) + u'#' +
-                (self.activation_key) + u'#' +
-                unicode(self.activation_request_time) + u'#' +
+                activation_data +
                 u'').encode('ascii', 'ignore')
