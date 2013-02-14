@@ -57,7 +57,7 @@ class TutorGroup(models.Model):
         return self.handle
 
     class Meta:
-        ordering = ['handle']
+        ordering = ['name', 'handle']
         verbose_name = 'arbejdsgruppe'
         verbose_name_plural = verbose_name + 'r'
 
