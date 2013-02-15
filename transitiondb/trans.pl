@@ -10,28 +10,31 @@ from activation.models import *
 from tutor.models import *
 from django.contrib.auth.models import User
 
-def mk_tutor(first_name, last_name, email, street, city, phone, study, studentnumber):
+def mk_tutor(first_name, last_name, email, street, city, phone, study, studentnumber, year=None):
     gender = 'm'
     try:
         tp = TutorProfile.objects.get(studentnumber=studentnumber)
-        tp.street = street
-        tp.city = city
-        tp.phone = phone
-        tp.study = study
-        tp.studentnumber = studentnumber
-	tp.save()
-        ta = ProfileActivation.objects.get(profile=tp)
-        ta.first_name = first_name
-        ta.last_name = last_name
-        ta.email = email
+        #tp.street = street
+        #tp.city = city
+        #tp.phone = phone
+        #tp.study = study
+        #tp.studentnumber = studentnumber
+        #tp.save()
+        #ta = ProfileActivation.objects.get(profile=tp)
+        #ta.first_name = first_name
+        #ta.last_name = last_name
+        #ta.email = email
     except TutorProfile.DoesNotExist:
         tp = TutorProfile(street=street, city=city, phone=phone, study=study, studentnumber=studentnumber, gender=gender)
-	tp.save()
+        tp.save()
         ta = ProfileActivation(profile=tp, first_name=first_name, last_name=last_name, email=email)
-    ta.save()
-    tu = Tutor(year=$year, profile=tp)
-    tu.save()
-    return tu
+        ta.save()
+    if year is not None:
+        tu = Tutor(year=year, profile=tp)
+        tu.save()
+        return tu
+    else:
+        return None
 
 groups = {}
 
@@ -94,3 +97,21 @@ while (<TUTORGROUPS>) {
 	print "tu$tutorid.groups.add(tutorgroup_$mailalias)\n";
 }
 close TUTORGROUPS;
+
+open RUSSES, sql("SELECT r.navn, r.email, r.gade, r.postby, r.telefon, c.navn, r.aarskort from ${year}_russes r, ${year}_rusClasses c where r.Hold_ID = c.Hold_ID and aarskort <> \"\" order by r.navn asc");
+<RUSSES>;
+while (<RUSSES>) {
+	s/([\\'])/\\$1/g;
+        s/\n//;
+	my ($tutorid, $navn, $email, $gade, $postby, $mobil, $studret, $aarskort) = split /\t/;
+	my ($first, $last) = ($navn =~ /([^ ]*) (.*)/);
+        if ($email !~ /@/) {
+            print "# XXX invalid email?\n";
+        }
+        if ($aarskort !~ /^\d+$/) {
+            print "# XXX invalid student number?\n";
+        }
+
+        print "mk_tutor(street='$gade', city='$postby', phone='$mobil', study='$studret', studentnumber='$aarskort', email='$email', first_name='$first', last_name='$last')\n";
+}
+close RUSSES;
