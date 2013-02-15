@@ -6,6 +6,11 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 
+def tutorpicture_upload_to(instance, filename):
+    import re
+    extension = re.sub(r'^.*\.', '', filename)
+    return 'tutorpics/'+instance.studentnumber+'.'+extension
+
 # User data for the project that does not vary from year to year
 class TutorProfile(models.Model):
     id = models.AutoField(primary_key=True)
@@ -26,7 +31,10 @@ class TutorProfile(models.Model):
 
     gender = models.CharField(max_length=1, choices=(('m', 'Mand',),('f','Kvinde',),), default='m')
 
-    picture = models.ImageField(upload_to='tutorpics', blank=True)
+    picture = models.ImageField(
+            upload_to=tutorpicture_upload_to,
+            blank=True,
+            )
 
     def __unicode__(self):
         if self.user:
