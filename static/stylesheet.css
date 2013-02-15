@@ -58,6 +58,11 @@ body.tutors #main {
 	max-width: 850px;
 }
 
+body.wide #main {
+	width: auto;
+	max-width: 950px;
+}
+
 body.fullwidth #main {
 	width: auto;
 }
