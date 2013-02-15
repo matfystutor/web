@@ -59,8 +59,9 @@ body.tutors #main {
 }
 
 body.wide #main {
-	width: auto;
-	max-width: 950px;
+	width: 950px;
+	overflow-x: scroll;
+	resize: horizontal;
 }
 
 body.fullwidth #main {
