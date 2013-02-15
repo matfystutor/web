@@ -17,6 +17,7 @@ class TutorForm(forms.Form):
     first_name = forms.CharField(label='Fornavn', required=False, widget=classy('first_name'))
     last_name = forms.CharField(label='Efternavn', required=False, widget=classy('last_name'))
     studentnumber = forms.CharField(label='Årskort', widget=classy('studentnumber', 7))
+    study = forms.CharField(label='Studium', widget=classy('study', 7))
     email = forms.EmailField(label='Email', required=False, widget=classy('email', 25))
     groups = forms.ModelMultipleChoiceField(label='Grupper', queryset=TutorGroup.objects.filter(visible=True), required=False)
 
@@ -38,6 +39,7 @@ class TutorAdminView(ProcessFormView, FormMixin, TemplateResponseMixin):
         profile = tutor.profile
 
         studentnumber = profile.studentnumber
+        study = profile.study
         groups = tutor.groups.filter(visible=True)
         status = 'ghost'
 
@@ -61,6 +63,7 @@ class TutorAdminView(ProcessFormView, FormMixin, TemplateResponseMixin):
             'first_name': first_name,
             'last_name': last_name,
             'studentnumber': studentnumber,
+            'study': study,
             'email': email,
             'groups': groups,
         }
@@ -88,6 +91,7 @@ class TutorAdminView(ProcessFormView, FormMixin, TemplateResponseMixin):
             in_first_name = data['first_name']
             in_last_name = data['last_name']
             in_studentnumber = data['studentnumber']
+            in_study = data['study']
             in_email = data['email']
             in_groups = data['groups']
 
@@ -95,6 +99,7 @@ class TutorAdminView(ProcessFormView, FormMixin, TemplateResponseMixin):
                 'first_name': in_first_name,
                 'last_name': in_last_name,
                 'studentnumber': in_studentnumber,
+                'study': in_study,
                 'email': in_email,
                 'groups': in_groups,
             }
@@ -115,6 +120,7 @@ class TutorAdminView(ProcessFormView, FormMixin, TemplateResponseMixin):
                 if not in_first_name: data['first_name'] = in_first_name = prev_data['first_name']
                 if not in_last_name: data['last_name'] = in_last_name = prev_data['last_name']
                 if not in_email: data['email'] = in_email = prev_data['email']
+                if not in_study: data['study'] = in_study = prev_data['study']
                 if not in_groups: data['groups'] = in_groups = prev_data['groups']
 
             else:
@@ -153,6 +159,11 @@ class TutorAdminView(ProcessFormView, FormMixin, TemplateResponseMixin):
                 changes.append(u"%s: Årskort ændret fra %s til %s"
                     % (unicode(tutor), unicode(profile.studentnumber), unicode(in_studentnumber)))
                 profile.studentnumber = in_studentnumber
+
+            if in_study != profile.study:
+                changes.append(u"%s: Studium ændret fra %s til %s"
+                    % (unicode(tutor), unicode(profile.study), unicode(in_study)))
+                profile.study = in_study
 
             in_groupset = frozenset(g.handle for g in in_data['groups'])
             prev_groupset = frozenset(g.handle for g in prev_data['groups'])
