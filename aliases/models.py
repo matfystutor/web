@@ -15,37 +15,48 @@ class Alias(models.Model):
         verbose_name_plural = verbose_name + 'er'
         unique_together = (('source', 'destination'),)
 
-def resolve_alias(recipient, visited=None):
-    """Given a recipient, return the transitive closure of the alias graph."""
-    if visited:
-        visited = frozenset([recipient]).union(visited)
-    else:
-        visited = frozenset([recipient])
+def transitive_closure(u, edges, visited=None):
+    if not isinstance(u, basestring):
+        res = {}
+        for uu in u:
+            res[uu] = transitive_closure(uu, edges)
+        return res
 
-    aliases = list(Alias.objects.filter(source=recipient))
-    result = frozenset([recipient])
-    for a in aliases:
-        if a.destination in visited:
-            logging.warning("Cycle involving "+a)
+    if visited:
+        visited = frozenset([u]).union(visited)
+    else:
+        visited = frozenset([u])
+
+    result = frozenset([u])
+
+    if u not in edges:
+        return result
+
+    for v in edges[u]:
+        if v in visited:
+            logging.warning("Cycle involving "+v)
         else:
-            result = result.union(resolve_alias(a.destination, visited))
+            result = result.union(transitive_closure(v, edges, visited))
 
     return result
 
-def resolve_alias_reversed(destination, visited=None):
+def resolve_alias(recipient):
+    """Given a recipient, return the transitive closure of the alias graph."""
+    aliases = {}
+    for a in Alias.objects.all():
+        if a.source not in aliases:
+            aliases[a.source] = set()
+        aliases[a.source].add(a.destination)
+
+    return transitive_closure(recipient, aliases)
+
+def resolve_alias_reversed(destination):
     """Given a destination, return all the recipients whose mail will be
     delivered to the destination."""
-    if visited:
-        visited = frozenset([destination]).union(visited)
-    else:
-        visited = frozenset([destination])
+    aliases = {}
+    for a in Alias.objects.all():
+        if a.destination not in aliases:
+            aliases[a.destination] = set()
+        aliases[a.destination].add(a.source)
 
-    aliases = list(Alias.objects.filter(destination=destination))
-    result = frozenset([destination])
-    for a in aliases:
-        if a.source in visited:
-            logging.warning("Cycle involving "+a)
-        else:
-            result = result.union(resolve_alias_reversed(a.source, visited))
-
-    return result
+    return transitive_closure(destination, aliases)

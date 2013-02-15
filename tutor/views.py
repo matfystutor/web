@@ -13,15 +13,6 @@ from django import forms
 from mftutor.settings import YEAR
 from tutor.auth import tutor_required, user_tutor_data
 
-@tutor_required
-def groups_view(request, tutor, profile):
-    def group_data(g):
-        return {'name': g.name,
-                'tutors': User.objects.filter(tutorprofile__tutor__year__exact=YEAR, tutorprofile__tutor__groups=g).distinct()}
-    groups = [group_data(g) for g in tutor.groups.all()]
-    data = {'groups': groups}
-    return render_to_response('groups.html', data, RequestContext(request))
-
 def tutor_password_change_view(request):
     if 'back' in request.GET:
         back = request.GET['back']

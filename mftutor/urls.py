@@ -19,7 +19,6 @@ urlpatterns = patterns('',
     url(r'^', include('page.urls')),
     url(r'^', include('tutor.urls')),
     url(r'^events/', include('events.urls')),
-    url(r'^aliases/', include('aliases.urls')),
     url(r'^activation/', include('activation.urls')),
     url(r'^email/', include('tutormail.urls')),
 )
