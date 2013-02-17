@@ -10,7 +10,11 @@
     <span class="day">{{ event.start_date|date:"j" }}</span>
 </div>
 <div class="eventtitle"><a href="{% url event event.pk %}">{{ event.title }}</a></div>
-<div class="eventtime">{{ event.start_date|date:"l j. F"|lower|capfirst }}</div>
+<div class="eventtime">{{ event.start_date|date:"l j. F"|lower|capfirst }}
+{% if event.start_date != event.end_date %}
+til {{ event.end_date|date:"l j. F"|lower }}
+{% endif %}
+</div>
 </div>
 {% endfor %}
 {% endblock %}
