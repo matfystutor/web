@@ -21,6 +21,10 @@ def tutor_password_change_view(request):
     return password_change(request, 'registration/password_change_form.html', back)
 
 class UploadPictureForm(forms.ModelForm):
+    picture = forms.FileField(
+            required=True,
+            label='Billede')
+
     class Meta:
         model = TutorProfile
         fields = ('picture',)
