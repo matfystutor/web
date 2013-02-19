@@ -2,7 +2,13 @@
 {% block title %}Upload billede{% endblock %}
 {% block content %}
 <form enctype="multipart/form-data" method="post" action="">{% csrf_token %}
-{{ form.as_p }}
-<input type="submit" value="Upload">
+<div>{{ form.non_field_errors }}</div>
+{% if form.picture.errors %}
+<div>{{ form.picture.errors }}</div>
+{% endif %}
+<div>Nuværende:<br>
+<img src="{{ MEDIA_URL }}{{ tutorprofile.picture }}" style="max-width: 150px; max-height: 150px" /></div>
+<div>Nyt billede: <input type="file" name="picture" /></div>
+<div><input type="submit" value="Upload" /></div>
 </form>
 {% endblock %}
