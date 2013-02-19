@@ -1,24 +1,56 @@
 from .base import *
 
+# Disable in production
+DEBUG = True
+TEMPLATE_DEBUG = DEBUG
+
+#ADMINS = ( ('Mathias Rav', 'mathiasrav@gmail.com'), )
+#MANAGERS = ADMINS
+
 # For inspiration on ways to spell ENGINE, see
 # https://docs.djangoproject.com/en/1.4/ref/settings/#std:setting-DATABASES
 
 DATABASES['default'] = {
-    'ENGINE': 'django.db.backends.mysql',
-    'NAME': 'mftutor',
-    'USER': 'mftutor',
-    'PASSWORD': 'hunter2',
+    'ENGINE': 'django.db.backends.sqlite3',
+    'NAME': 'db.sqlite3',
+    'USER': '',
+    'PASSWORD': '',
     'HOST': '',
     'PORT': '',
 }
+
+#DATABASES['default'] = {
+#    'ENGINE': 'django.db.backends.mysql',
+#    'NAME': 'mftutor',
+#    'USER': 'mftutor',
+#    'PASSWORD': 'hunter2',
+#    'HOST': '',
+#    'PORT': '',
+#}
 
 # Generate using pwgen -sy 50 1
 SECRET_KEY = '...'
 
 YEAR = 2013
 
+# set to production in production
 BODY_CLASS = 'test'
 
 DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECTS': False,
 }
+
+# Disable in production
+ACTIVATION_DEBUG = True
+
+# Enable in production
+#STATIC_ROOT = root('../static')
+
+#STATIC_URL = 'http://matfystutor.dk/static/'
+
+#MEDIA_URL = 'http://matfystutor.dk/upload/'
+
+#MEDIA_ROOT = root('../upload/')
+
+# Enable if you have HTML tidy installed
+#TIDY_NEWS_HTML = True
