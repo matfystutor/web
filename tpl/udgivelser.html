@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Udgivelser{% endblock %}
+
+{% block content %}
+<h1>Udgivelser</h1>
+
+<p>Her finder du tutorgruppens nye og gamle udgivelser.
+Ikke alle gamle udgivelser er repræsenteret her på den nye hjemmeside endnu;
+kontakt webfar@matfystutor.dk hvis du mangler noget som ikke er i listen nedenfor.</p>
+
+<ul>
+<li><a href="{{ MEDIA_URL }}udgivelser/rusbog12-datit.pdf">Rushåndbog (2012, dat/it)</a></li>
+<li><a href="{{ MEDIA_URL }}udgivelser/rusbog12-fysnan.pdf">Rushåndbog (2012, fys/nano)</a></li>
+<li><a href="{{ MEDIA_URL }}udgivelser/rusbog12-matmok.pdf">Rushåndbog (2012, mat/møk)</a></li>
+<li><a href="{{ MEDIA_URL }}udgivelser/russangbog12.pdf">Sangbog (2012)</a></li>
+<li><a href="{{ MEDIA_URL }}udgivelser/tutorbog2012.pdf">Tutorbog (2012)</a></li>
+</ul>
+
+{% endblock %}

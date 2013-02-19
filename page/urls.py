@@ -11,6 +11,7 @@ static_pages = [url('^'+x+'/', TemplateView.as_view(template_name=x+'.html'), na
         'intro',
         'gallery',
         'guides',
+        'udgivelser',
         )]
 urlpatterns = patterns('',
     *static_pages)
