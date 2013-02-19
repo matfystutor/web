@@ -16,7 +16,9 @@ Gruppeansvarlig:
 </p>
 <div>
 {% for tutor in tutor_list %}
-<div class="tutoraddress">
+<div class="tutoraddress tutor{{ tutor.profile.studentnumber }}">
+{% if tutor.profile.studentnumber == "201205922" %}<!-- det her billede vender forkert af en eller anden grund -->
+{% endif %}
  <div class="pic">
   {% if tutor.profile.picture %}
   <a target="_blank" href="{{ tutor.profile.picture.url }}">
