@@ -54,3 +54,6 @@ ACTIVATION_DEBUG = True
 
 # Enable if you have HTML tidy installed
 #TIDY_NEWS_HTML = True
+
+# For security measures, set this to only your domain.
+#ALLOWED_HOSTS = ['matfystutor.dk', 'www.matfystutor.dk', '127.0.0.1']
