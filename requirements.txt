@@ -1,4 +1,4 @@
-Django==1.4.3
+Django==1.4.4
 PIL==1.1.7
 django-debug-toolbar==0.9.4
 django-wysiwyg==0.5
