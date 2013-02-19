@@ -2,15 +2,18 @@
 {% block title %}Begivenheder{% endblock %}
 
 {% block content %}
+<div class="eventdate">
+    <span class="month">{{ event.start_date|date:"M"|upper }}</span>
+    <span class="day">{{ event.start_date|date:"j" }}</span>
+</div>
 <h1>{{ event.title }}</h1>
-
-<p>
-{% if event.description %}
-<strong>Beskrivelse:</strong> {{ event.description }}
-{% else %}
-Ingen beskrivelse.
+<div style="clear: both; padding-top: 10px;">{{ event.start_date|date:"l j. F"|lower|capfirst }}
+{% if event.start_date != event.end_date %}
+til {{ event.end_date|date:"l j. F"|lower }}
 {% endif %}
-</p>
+</div>
+
+<p style="white-space: pre-wrap">{% if event.description %}<strong>Beskrivelse:</strong> {{ event.description }}{% else %}Ingen beskrivelse.{% endif %}</p>
 
 {% if user.is_authenticated %}
 {% if event.rsvp %}
