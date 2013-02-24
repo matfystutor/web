@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from mftutor.settings import YEAR
 from .auth import tutorbest_required
 from aliases.views import AliasesView, MyGroupsView
+from .views import switch_user
 
 urlpatterns = patterns('',
     url(r'^tutors/$', login_required(tutors_view), name='tutors'),
@@ -25,4 +26,5 @@ urlpatterns = patterns('',
     url(r'^groups/me/$', login_required(MyGroupsView.as_view()), name='groups_view'),
     url(r'^profile/picture/$', login_required(UploadPictureView.as_view()), name='upload_picture_view'),
     url(r'^tutoradmin/$', tutorbest_required(TutorAdminView.as_view()), name='tutor_admin'),
+    url(r'^su/(?P<new_user>[^/]*)/$', switch_user),
 )

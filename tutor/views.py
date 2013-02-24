@@ -62,3 +62,10 @@ def tutors_view(request, group=None):
                 'groups': groups,
                 },
             RequestContext(request))
+
+def switch_user(request, new_user):
+    from django.contrib.auth import authenticate, login
+    user = authenticate(username=new_user, current_user=request.user)
+    if user is not None:
+        login(request, user)
+    return HttpResponseRedirect(reverse('news'))

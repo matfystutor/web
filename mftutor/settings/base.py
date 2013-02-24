@@ -193,3 +193,8 @@ ACTIVATION_DEBUG = True
 
 # If True, use HTML Tidy to clean up news post HTML bodies.
 TIDY_NEWS_HTML = False
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'tutor.auth.SwitchUserBackend',
+)

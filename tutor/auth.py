@@ -2,6 +2,7 @@ from tutor.models import TutorProfile, Tutor
 from django.http import HttpResponse
 from django.template import RequestContext, loader
 from mftutor.settings import YEAR
+import django.contrib.auth.backends
 
 class NotTutor(Exception):
     def __init__(self, value):
@@ -77,3 +78,15 @@ def tutor_required(fn):
         return fn(request, *args, **kwargs)
     wrapper.__name__ = fn.__name__
     return wrapper
+
+class SwitchUserBackend(django.contrib.auth.backends.ModelBackend):
+    def authenticate(self, username, current_user):
+        if not current_user.is_superuser:
+            return None
+
+        from django.contrib.auth.models import User
+
+        try:
+            return User.objects.get(username=username)
+        except User.DoesNotExist:
+            return None
