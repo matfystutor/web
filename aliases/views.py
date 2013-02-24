@@ -12,13 +12,15 @@ from tutor.auth import user_tutor_data
 class AliasesView(TemplateView):
     template_name = 'aliases.html'
 
+    def get_queryset(self, request):
+        return TutorGroup.objects.filter(tutor__year__exact=YEAR, visible=True)
+
     def filter_queryset(self, request, queryset):
         return queryset.filter(visible=True)
 
     def get(self, request):
         current_site = get_current_site(request)
-        queryset = TutorGroup.objects.filter(tutor__year__exact=YEAR)
-        queryset = self.filter_queryset(request, queryset).distinct()
+        queryset = self.get_queryset(request).distinct()
         aliases_list = resolve_alias_reversed([g.handle for g in queryset])
 
         groups = [{'name': g.name,
@@ -30,6 +32,6 @@ class AliasesView(TemplateView):
         return self.render_to_response(params)
 
 class MyGroupsView(AliasesView):
-    def filter_queryset(self, request, queryset):
+    def get_queryset(self, request):
         utd = user_tutor_data(request.user)
-        return queryset.filter(tutor__profile=utd.profile)
+        return utd.tutor.groups
