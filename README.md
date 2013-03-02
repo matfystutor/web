@@ -12,7 +12,7 @@ You should run the Django project in a virtualenv. For a local non-root virtuale
 
     mkdir web-venv; cd web-venv
     wget https://raw.github.com/pypa/virtualenv/master/virtualenv.py
-    python virtualenv.py .
+    python2 virtualenv.py .
     source bin/activate
     cd ../tutorweb
     pip install -r requirements.txt
