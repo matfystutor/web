@@ -44,20 +44,16 @@ def tutors_view(request, group=None):
     tutorgroup = get_object_or_404(TutorGroup, handle=lookup_group)
 
     leader = tutor_group_leader(lookup_group, YEAR)
+    leader_pk = leader.pk if leader else -1
 
-    tutors = Tutor.objects.filter(year=YEAR, early_termination__isnull=True, groups__handle=lookup_group) \
-            .order_by('profile__user__first_name').select_related()
+    tutors = list(Tutor.members.group(lookup_group))
+    tutors.sort(key=lambda t: (t.pk != leader_pk, t.profile.get_full_name()))
 
     groups = TutorGroup.objects.filter(visible=True, tutor__year__in=[YEAR]).distinct()
-
-    if leader:
-        tutors = tutors.exclude(pk=leader.pk)
-        tutors = [leader] + list(tutors.all())
 
     return render_to_response('tutors.html',
             {
                 'group': group,
-                'leader': leader,
                 'tutor_list': tutors,
                 'groups': groups,
                 },
