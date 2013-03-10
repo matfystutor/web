@@ -5,6 +5,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
+from ..settings import YEAR
+from .managers import TutorProfileManager, TutorManager, TutorMembers
 
 def tutorpicture_upload_to(instance, filename):
     import re
@@ -13,6 +15,8 @@ def tutorpicture_upload_to(instance, filename):
 
 # User data for the project that does not vary from year to year
 class TutorProfile(models.Model):
+    objects = TutorProfileManager()
+
     id = models.AutoField(primary_key=True)
     user = models.OneToOneField(User, null=True, blank=True, on_delete=models.SET_NULL)
 
@@ -78,6 +82,9 @@ class RusClass(models.Model):
 
 # Membership of a user for a single year
 class Tutor(models.Model):
+    objects = TutorManager()
+    members = TutorMembers()
+
     id = models.AutoField(primary_key=True)
     profile = models.ForeignKey(TutorProfile)
     year = models.IntegerField(verbose_name="Tutorår")
