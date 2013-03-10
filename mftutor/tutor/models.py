@@ -6,7 +6,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from ..settings import YEAR
-from .managers import TutorProfileManager, TutorManager, TutorMembers
+from .managers import TutorProfileManager, TutorManager, TutorMembers, VisibleTutorGroups
 
 def tutorpicture_upload_to(instance, filename):
     import re
@@ -59,6 +59,9 @@ class TutorProfile(models.Model):
 
 # "Arbejdsgruppe"
 class TutorGroup(models.Model):
+    objects = models.Manager()
+    visible_groups = VisibleTutorGroups()
+
     handle = models.CharField(max_length=20, primary_key=True, verbose_name="Kort navn",
         help_text="Bruges i gruppens emailadresse")
     name = models.CharField(max_length=40, verbose_name="Langt navn",

@@ -49,7 +49,7 @@ def tutors_view(request, group=None):
     tutors = list(Tutor.members.group(lookup_group))
     tutors.sort(key=lambda t: (t.pk != leader_pk, t.profile.get_full_name()))
 
-    groups = TutorGroup.objects.filter(visible=True, tutor__year__in=[YEAR]).distinct()
+    groups = TutorGroup.visible_groups.all()
 
     return render_to_response('tutors.html',
             {

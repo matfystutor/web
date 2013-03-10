@@ -25,3 +25,8 @@ class TutorMembers(TutorManager):
             return self.filter(groups=group)
         else:
             return self.filter(groups__handle__exact=group)
+
+class VisibleTutorGroups(models.Manager):
+    def get_query_set(self):
+        qs = super(VisibleTutorGroups, self).get_query_set()
+        return qs.filter(visible=True, tutor__year__in=[YEAR]).distinct()
