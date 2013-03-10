@@ -2,30 +2,12 @@
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404, render
 from django.template import RequestContext
-from django import forms
-from django.forms import ValidationError
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from activation.models import ProfileActivation
 from mftutor import settings
 from tutor.models import Tutor
-
-class RegisterForm(forms.Form):
-    studentnumber = forms.CharField(label="Årskortnummer")
-
-    def clean_studentnumber(self):
-        sn = self.cleaned_data['studentnumber']
-        try:
-            activation = ProfileActivation.objects.get(profile__studentnumber=sn)
-        except ProfileActivation.DoesNotExist:
-            raise ValidationError('Dette årskortnummer har ingen udestående aktiveringer. Kontakt webfar@matfystutor.dk hvis du mener dette er en fejl.')
-        if activation.profile.user is not None:
-            raise ValidationError('Din bruger er allerede aktiveret.')
-        try:
-            tutor = Tutor.objects.get(year=settings.YEAR, profile=activation.profile)
-        except Tutor.DoesNotExist:
-            raise ValidationError('Du er ikke tutor i år.')
-        return sn
+from .forms import RegisterForm, ActivateForm
 
 def register_view(request):
     if request.method == 'POST':
@@ -45,24 +27,6 @@ def register_view(request):
     else:
         form = RegisterForm()
     return render(request, 'activation/register.html', {'form': form})
-
-class ActivateForm(forms.Form):
-    username = forms.CharField(label="Brugernavn", required=True)
-    pw = forms.CharField(label="Kodeord", widget=forms.PasswordInput, required=True)
-    pw2 = forms.CharField(label="Kodeord (gentag)", widget=forms.PasswordInput, required=True)
-
-    def clean_username(self):
-        data = self.cleaned_data['username']
-        if User.objects.filter(username=data).count() > 0:
-            raise ValidationError("Det brugernavn er allerede taget.")
-        return data
-
-    def clean_pw2(self):
-        pw = self.cleaned_data['pw']
-        data = self.cleaned_data['pw2']
-        if pw != data:
-            raise ValidationError("Kodeordene stemmer ikke overens.")
-        return data
 
 def activate_view(request, activation_key):
     activation = get_object_or_404(ProfileActivation, activation_key=activation_key)
