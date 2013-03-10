@@ -49,8 +49,8 @@ class TutorProfile(models.Model):
     def get_full_name(self):
         if self.user:
             return self.user.get_full_name()
-        if self.activation.count():
-            return self.activation.get().get_full_name()
+        if self.activation:
+            return self.activation.get_full_name()
         return None
 
 # "Arbejdsgruppe"

@@ -10,7 +10,7 @@ from ..settings import YEAR
 from ..tutor.models import TutorProfile, Tutor
 
 class ProfileActivation(models.Model):
-    profile = models.ForeignKey(TutorProfile, unique=True, related_name='activation')
+    profile = models.OneToOneField(TutorProfile, null=True, blank=True, related_name='activation')
     email = models.EmailField(verbose_name="E-mailadresse til aktivering")
     first_name = models.CharField(max_length=60)
     last_name = models.CharField(max_length=60)
