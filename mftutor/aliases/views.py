@@ -22,7 +22,7 @@ class AliasesView(TemplateView):
 
         groups = [{'name': g.name,
             'handle': g.handle,
-            'tutors': Tutor.members.filter(groups=g),
+            'tutors': sorted(t.profile.get_full_name() for t in Tutor.members.filter(groups=g)),
             'aliases': [a + '@' + current_site.domain for a in aliases_list[g.handle]],
             } for g in queryset]
         params = {'groups': groups}

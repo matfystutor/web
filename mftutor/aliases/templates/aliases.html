@@ -22,7 +22,7 @@
     <li>Se <a href="{% url tutors %}">Adresser</a></li>
 {% else %}
 {% for t in g.tutors %}
-    <li>{{ t.profile.get_full_name }}</li>
+    <li>{{ t }}</li>
 {% endfor %}
 {% endif %}
 </ul>
