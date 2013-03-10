@@ -3,7 +3,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.models import User
 from django.contrib.sites.models import get_current_site
-from ..tutor.models import TutorGroup, TutorProfile
+from ..tutor.models import TutorGroup, TutorProfile, Tutor
 from ..activation.models import ProfileActivation
 from ..settings import YEAR
 from ..tutor.auth import user_tutor_data
@@ -13,10 +13,7 @@ class AliasesView(TemplateView):
     template_name = 'aliases.html'
 
     def get_queryset(self, request):
-        return TutorGroup.objects.filter(tutor__year__exact=YEAR, visible=True)
-
-    def filter_queryset(self, request, queryset):
-        return queryset.filter(visible=True)
+        return TutorGroup.visible_groups.all()
 
     def get(self, request):
         current_site = get_current_site(request)
@@ -25,7 +22,7 @@ class AliasesView(TemplateView):
 
         groups = [{'name': g.name,
             'handle': g.handle,
-            'tutors': g.tutor_set.filter(year__exact=YEAR).distinct().select_related('profile__user'),
+            'tutors': Tutor.members.filter(groups=g),
             'aliases': [a + '@' + current_site.domain for a in aliases_list[g.handle]],
             } for g in queryset]
         params = {'groups': groups}
