@@ -1,4 +1,4 @@
-# vim:set encoding=utf-8 :
+# vim:set fileencoding=utf-8 :
 from django.db import models
 
 #Modelfelter: fra, til, emne, tekst, slags, sendt?, tilbagehold, ændret manuelt, arkiveret
