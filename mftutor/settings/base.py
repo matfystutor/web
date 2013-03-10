@@ -143,6 +143,7 @@ INSTALLED_APPS = (
     'mftutor.aliases',
     'mftutor.activation',
     'mftutor.tutormail',
+    'mftutor.page',
 )
 
 # A sample logging configuration. The only tangible logging
