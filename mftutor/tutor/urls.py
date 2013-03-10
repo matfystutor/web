@@ -1,12 +1,11 @@
 from django.conf.urls import patterns, url
 from django.views.generic import DetailView, ListView
-from tutor.models import Tutor, TutorGroup, BoardMember
-from tutor.views import logout_view, login_view, profile_view, tutor_password_change_view, UploadPictureView, tutors_view, TutorAdminView
 from django.contrib.auth.decorators import login_required
-from mftutor.settings import YEAR
+from ..settings import YEAR
+from ..aliases.views import AliasesView, MyGroupsView
+from .models import Tutor, TutorGroup, BoardMember
+from .views import logout_view, login_view, profile_view, tutor_password_change_view, UploadPictureView, tutors_view, TutorAdminView, switch_user
 from .auth import tutorbest_required
-from aliases.views import AliasesView, MyGroupsView
-from .views import switch_user
 
 urlpatterns = patterns('',
     url(r'^tutors/$', login_required(tutors_view), name='tutors'),

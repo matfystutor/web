@@ -1,6 +1,6 @@
 # vim:set fileencoding=utf-8:
 from django.db import models
-from tutor.models import Tutor
+from ..tutor.models import Tutor
 
 class Event(models.Model):
     title = models.CharField(max_length=200)

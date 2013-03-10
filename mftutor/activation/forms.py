@@ -1,8 +1,8 @@
 # vim:set fileencoding=utf-8:
 
 from django import forms
-from activation.models import ProfileActivation
-from tutor.models import Tutor
+from ..tutor.models import Tutor
+from .models import ProfileActivation
 
 class RegisterForm(forms.Form):
     studentnumber = forms.CharField(label="Årskortnummer")

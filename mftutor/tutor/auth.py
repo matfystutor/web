@@ -1,8 +1,8 @@
-from tutor.models import TutorProfile, Tutor
 from django.http import HttpResponse
 from django.template import RequestContext, loader
-from mftutor.settings import YEAR
 import django.contrib.auth.backends
+from ..settings import YEAR
+from .models import TutorProfile, Tutor
 
 class NotTutor(Exception):
     def __init__(self, value):

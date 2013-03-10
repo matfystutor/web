@@ -1,4 +1,4 @@
-from news.models import NewsPost
+from .models import NewsPost
 from django.contrib import admin
 
 def forfatter(post):

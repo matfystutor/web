@@ -1,5 +1,5 @@
 # vim: set fileencoding=utf8 :
-from tutor.models import *
+from .models import *
 from django.contrib import admin
 
 class TutorInline(admin.TabularInline):

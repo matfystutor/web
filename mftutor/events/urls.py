@@ -1,10 +1,10 @@
 from django.conf.urls import patterns, url
 from django.views.generic import DetailView, ListView
-from tutor.models import Tutor, TutorGroup, BoardMember
-from events.models import Event
 from django.contrib.auth.decorators import login_required
-from events.views import *
-from mftutor.settings import YEAR
+from ..tutor.models import Tutor, TutorGroup, BoardMember
+from ..settings import YEAR
+from .models import Event
+from .views import *
 
 urlpatterns = patterns('',
     url(r'^$',

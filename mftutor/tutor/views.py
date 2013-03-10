@@ -3,15 +3,15 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect, render_to_response
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
-from tutor.models import *
+from django import forms
 from django.contrib.auth.views import password_change
 from django.views.generic import ListView, UpdateView
-from tutor.viewimpl.loginout import logout_view, login_view
-from tutor.viewimpl.profile import profile_view
-from tutor.viewimpl.admin import TutorAdminView
-from django import forms
-from mftutor.settings import YEAR
-from tutor.auth import tutor_required, user_tutor_data
+from ..settings import YEAR
+from .models import *
+from .viewimpl.loginout import logout_view, login_view
+from .viewimpl.profile import profile_view
+from .viewimpl.admin import TutorAdminView
+from .auth import tutor_required, user_tutor_data
 
 def tutor_password_change_view(request):
     if 'back' in request.GET:

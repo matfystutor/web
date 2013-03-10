@@ -2,12 +2,12 @@ from django.views.generic import TemplateView
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.models import User
-from tutor.models import TutorGroup, TutorProfile
-from activation.models import ProfileActivation
-from aliases.models import Alias, resolve_alias_reversed
-from mftutor.settings import YEAR
 from django.contrib.sites.models import get_current_site
-from tutor.auth import user_tutor_data
+from ..tutor.models import TutorGroup, TutorProfile
+from ..activation.models import ProfileActivation
+from ..settings import YEAR
+from ..tutor.auth import user_tutor_data
+from .models import Alias, resolve_alias_reversed
 
 class AliasesView(TemplateView):
     template_name = 'aliases.html'

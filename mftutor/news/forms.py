@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
+from ..settings import YEAR, TIDY_NEWS_HTML
 from .models import NewsPost
-from mftutor.settings import YEAR, TIDY_NEWS_HTML
 
 class AuthorModelChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, obj):

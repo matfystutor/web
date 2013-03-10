@@ -3,9 +3,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import logout, authenticate, login
 from django.core.urlresolvers import NoReverseMatch, reverse
 from django.contrib.auth.models import User
-from tutor.models import TutorProfile
-from tutor.auth import user_tutor_data, NotTutor
-from activation.models import ProfileActivation
+from ...activation.models import ProfileActivation
+from ..models import TutorProfile
+from ..auth import user_tutor_data, NotTutor
 
 def logout_view(request):
     logout(request)

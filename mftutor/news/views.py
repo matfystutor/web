@@ -1,15 +1,14 @@
+from datetime import datetime
 from django.views.generic import CreateView, UpdateView, DeleteView, TemplateView
 from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404, render, redirect, render_to_response
 from django.template import RequestContext
-from news.models import NewsPost
 from django.core.urlresolvers import reverse
-from datetime import datetime
-from tutor.auth import tutorbest_required
 from django.contrib.auth.models import User
-from mftutor.settings import YEAR
-from datetime import datetime
+from ..tutor.auth import tutorbest_required
+from ..settings import YEAR
 from .forms import AuthorModelChoiceField, NewsPostForm
+from .models import NewsPost
 
 class NewsView(TemplateView):
     template_name = 'news.html'

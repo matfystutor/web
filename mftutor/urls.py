@@ -14,11 +14,11 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^$', include('news.urls'), name='news'),
-    url(r'^news/', include('news.urls')),
-    url(r'^', include('page.urls')),
-    url(r'^', include('tutor.urls')),
-    url(r'^events/', include('events.urls')),
-    url(r'^activation/', include('activation.urls')),
-    url(r'^email/', include('tutormail.urls')),
+    url(r'^$', include('mftutor.news.urls'), name='news'),
+    url(r'^news/', include('mftutor.news.urls')),
+    url(r'^', include('mftutor.page.urls')),
+    url(r'^', include('mftutor.tutor.urls')),
+    url(r'^events/', include('mftutor.events.urls')),
+    url(r'^activation/', include('mftutor.activation.urls')),
+    url(r'^email/', include('mftutor.tutormail.urls')),
 )

@@ -1,10 +1,10 @@
 from django.conf.urls import patterns, url
 from django.views.generic import DetailView, ListView, DeleteView
-from news.models import NewsPost
-from news.views import *
-from tutor.auth import tutorbest_required
 from django.core.urlresolvers import reverse_lazy
-from news.feed import NewsFeed
+from ..tutor.auth import tutorbest_required
+from .feed import NewsFeed
+from .models import NewsPost
+from .views import *
 
 urlpatterns = patterns('',
     url(r'^(?:(?P<year>\d+)/(?:(?P<month>\d+)/(?:(?P<day>\d+)/(?:(?P<pk>\d+)/)?)?)?)?$',

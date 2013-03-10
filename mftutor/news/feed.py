@@ -1,5 +1,5 @@
 from django.contrib.syndication.views import Feed
-from news.models import NewsPost
+from .models import NewsPost
 
 class NewsFeed(Feed):
     title = 'Mat/Fys-Tutorgruppen'

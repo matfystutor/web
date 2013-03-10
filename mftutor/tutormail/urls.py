@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, url
+from ..tutor.auth import tutorbest_required
 from .views import *
-from tutor.auth import tutorbest_required
 
 urlpatterns = patterns('',
     url(r'^$', tutorbest_required(EmailListView.as_view()), name='emails'),

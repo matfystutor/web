@@ -1,13 +1,13 @@
 # encoding: utf-8
 from django import forms
-from ..models import Tutor, TutorGroup, TutorProfile
 from django.views.generic.base import TemplateResponseMixin
 from django.views.generic.edit import FormMixin, ProcessFormView
 from django.forms.formsets import formset_factory, BaseFormSet
-from mftutor.settings import YEAR
-from activation.models import ProfileActivation
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
+from ...settings import YEAR
+from ...activation.models import ProfileActivation
+from ..models import Tutor, TutorGroup, TutorProfile
 
 def classy(cl, size=10):
     return forms.TextInput(attrs={'class':cl, 'size':size})

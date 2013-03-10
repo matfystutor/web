@@ -1,11 +1,13 @@
+import hashlib
+from datetime import datetime
+
 from django.core.urlresolvers import reverse
 from django.db import models
-from tutor.models import TutorProfile, Tutor
-from datetime import datetime
 from django.core.mail import send_mail as django_send_mail
 from django.core.mail import EmailMessage
-from mftutor.settings import YEAR
-import hashlib
+
+from ..settings import YEAR
+from ..tutor.models import TutorProfile, Tutor
 
 class ProfileActivation(models.Model):
     profile = models.ForeignKey(TutorProfile, unique=True, related_name='activation')

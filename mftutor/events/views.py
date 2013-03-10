@@ -1,7 +1,7 @@
 from django.views.generic import DetailView
-from tutor.auth import user_tutor_data, NotTutor
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
+from ..tutor.auth import user_tutor_data, NotTutor
 from .models import Event, EventParticipant
 from .forms import RSVPForm
 

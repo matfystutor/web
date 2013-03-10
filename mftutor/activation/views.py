@@ -4,9 +4,9 @@ from django.shortcuts import render_to_response, get_object_or_404, render
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
-from activation.models import ProfileActivation
-from mftutor import settings
-from tutor.models import Tutor
+from ..settings import ACTIVATION_DEBUG
+from ..tutor.models import Tutor
+from .models import ProfileActivation
 from .forms import RegisterForm, ActivateForm
 
 def register_view(request):
@@ -18,7 +18,7 @@ def register_view(request):
             from django.contrib.sites.models import get_current_site
             domain = get_current_site(request).domain
             mail = activation.generate_mail(domain)
-            if settings.ACTIVATION_DEBUG:
+            if ACTIVATION_DEBUG:
                 txt = 'From: %s\nTo: %s\nSubject: %s\n\n%s' % (mail.from_email, mail.to, mail.subject, mail.body)
                 return HttpResponse(txt, content_type='text/plain')
             else:

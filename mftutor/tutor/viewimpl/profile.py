@@ -2,8 +2,8 @@
 from django import forms
 from django.forms.extras import SelectDateWidget
 from django.shortcuts import render, redirect
-from mftutor.settings import YEAR
 from django.contrib.sites.models import get_current_site
+from ...settings import YEAR
 
 # ReadOnlyWidget and Field
 # http://lazypython.blogspot.dk/2008/12/building-read-only-field-in-django.html

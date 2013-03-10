@@ -89,8 +89,8 @@ class Tutor(models.Model):
     rusclass = models.ForeignKey(RusClass, null=True, blank=True)
 
     def is_tutorbest(self):
-        import tutor.auth
-        return bool(tutor.auth.is_tutorbest(self))
+        import auth
+        return bool(auth.is_tutorbest(self))
     is_tutorbest.boolean = True
 
     def __unicode__(self):

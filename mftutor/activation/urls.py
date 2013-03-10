@@ -1,8 +1,6 @@
 from django.conf.urls import patterns, url
-#from django.views.generic import DetailView, ListView
-from activation.views import register_view, activate_view
-#from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
+from .views import register_view, activate_view
 
 urlpatterns = patterns('',
     url(r'^$', register_view, name='register'),

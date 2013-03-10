@@ -133,14 +133,16 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    'tutor',
-    'news',
-    'events',
+
     'django_wysiwyg',
     'debug_toolbar',
-    'aliases',
-    'activation',
-    'tutormail',
+
+    'mftutor.tutor',
+    'mftutor.news',
+    'mftutor.events',
+    'mftutor.aliases',
+    'mftutor.activation',
+    'mftutor.tutormail',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -175,9 +177,9 @@ LOGGING = {
 AUTH_PROFILE_MODULE = 'tutor.TutorProfile'
 
 TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
-    "tutor.context_processors.login_form",
-    "tutor.context_processors.tutor_data",
-    "tutor.context_processors.settings",
+    "mftutor.tutor.context_processors.login_form",
+    "mftutor.tutor.context_processors.tutor_data",
+    "mftutor.tutor.context_processors.settings",
 )
 
 LOGIN_REDIRECT_URL = "/"
@@ -196,5 +198,5 @@ TIDY_NEWS_HTML = False
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'tutor.auth.SwitchUserBackend',
+    'mftutor.tutor.auth.SwitchUserBackend',
 )
