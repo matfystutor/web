@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Vælg t-shirt{% endblock %}
+
+{% block content %}
+<h1>Vælg t-shirt</h1>
+
+<form method="post">{% csrf_token %}
+{{ form.as_p }}
+<p>
+<input type="submit" value="Opdater">
+</p>
+</form>
+
+{% endblock %}
