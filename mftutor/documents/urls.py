@@ -1,11 +1,13 @@
 from django.conf.urls import patterns, url
 from django.views.generic import DetailView, ListView, DeleteView
 from ..tutor.auth import tutorbest_required
-from .views import DocumentListView, UploadDocumentView, EditDocumentView, DeleteDocumentView
+from .views import GuidesView, MinutesView, PublicationsView, UploadDocumentView, EditDocumentView, DeleteDocumentView
 from .models import Document
 
 urlpatterns = patterns('',
-    url(r'^(?P<kind>guides|referater|udgivelser)/(?:(?P<year>\d+)/)?$', DocumentListView.as_view(), name='list_documents'),
+    url(r'^guides/(?:(?P<year>\d+)/)?$', GuidesView.as_view(), name='list_guides'),
+    url(r'^referater/(?:(?P<year>\d+)/)?$', MinutesView.as_view(), name='list_referater'),
+    url(r'^udgivelser/(?:(?P<year>\d+)/)?$', PublicationsView.as_view(), name='list_udgivelser'),
     url(r'^upload/$', UploadDocumentView.as_view(), name='upload_document'),
     url(r'^edit/(?P<pk>\d+)/$', EditDocumentView.as_view(), name='edit_document'),
     url(r'^delete/(?P<pk>\d+)/$',

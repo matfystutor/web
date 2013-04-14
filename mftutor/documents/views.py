@@ -22,11 +22,14 @@ class UploadDocumentView(CreateView):
     model = Document
     template_name = "documentuploader.html"
     form_class = UploadDocumentForm
+
     def get_success_url(self):
-        return reverse("list_documents", kwargs={'kind': self.object.type})
+        return reverse("list_"+self.object.type)
+
     @method_decorator(tutorbest_required)
     def dispatch(self, *args, **kwargs):
-        return super(UploadDocumentView, self).dispatch(*args, **kwargs)   
+        return super(UploadDocumentView, self).dispatch(*args, **kwargs)
+
     def get_context_data(self, **kwargs):
         d = super(UploadDocumentView, self).get_context_data(**kwargs)
         d['create'] = True
@@ -35,9 +38,11 @@ class UploadDocumentView(CreateView):
 class EditDocumentView(UpdateView):
     model = Document
     template_name = "documentuploader.html"
-    #form_class = UploadDocumentForm
+    form_class = UploadDocumentForm
+
     def get_success_url(self):
-        return reverse("list_documents", kwargs={'kind': self.object.type})
+        return reverse("list_"+self.object.type)
+
     @method_decorator(tutorbest_required)
     def dispatch(self, *args, **kwargs):
         return super(EditDocumentView, self).dispatch(*args, **kwargs)
@@ -48,27 +53,43 @@ class EditDocumentView(UpdateView):
 
 class DeleteDocumentView(DeleteView):
     model=Document
+
     def get_success_url(self):
-        return reverse('list_documents', kwargs={'kind': self.object.type})
+        return reverse("list_"+self.object.type)
+
     @method_decorator(tutorbest_required)
     def dispatch(self, *args, **kwargs):
         return super(DeleteDocumentView, self).dispatch(*args, **kwargs)
 
 
 class DocumentListView(TemplateView):
-    template_name = "documents.html"
-    def get(self, request, kind, year=None):
-        document_list = Document.objects.select_related()
-        document_list = document_list.filter(type=kind)
+    def get_queryset(self):
+        return Document.objects.filter(type__exact=self.kind)
+
+    def get(self, request, year=None):
+        document_list = self.get_queryset()
         if year:        
             document_list = document_list.filter(year=year)
         params = {
                  "document_list":document_list,
-                 "kind":kind,
+                 "kind":self.kind,
                  "year":year
         }        
         return self.render_to_response(params)
+
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super(DocumentListView, self).dispatch(*args, **kwargs)
-    
+
+    def get_template_names(self):
+        return ('documents/' + self.kind + '.html',)
+
+
+class GuidesView(DocumentListView):
+    kind = 'guides'
+
+class MinutesView(DocumentListView):
+    kind = 'referater'
+
+class PublicationsView(DocumentListView):
+    kind = 'udgivelser'

@@ -13,10 +13,13 @@
 {% endfor %}
 <div class="field">
 <input type="submit" value="Upload">
+</div>
+</form>
 {% if not create %}
-<form method="post" action="{% url document_delete document.pk %}">{% csrf_token %}
+<form class="twocol" method="post" action="{% url document_delete document.pk %}">{% csrf_token %}
+<div class="field">
 <input type="submit" value="Slet">
 </div>
-{% endif %}
 </form>
+{% endif %}
 {% endblock %}
