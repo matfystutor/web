@@ -1,7 +1,8 @@
-from django.views.generic import DetailView
+from django.views.generic import DetailView, ListView
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from ..tutor.auth import user_tutor_data, NotTutor
+from .. import settings
 from .models import Event, EventParticipant
 from .forms import RSVPForm
 
@@ -25,3 +26,17 @@ def event_detail_view(request, eventid):
     except NotTutor:
         form = None
     return render_to_response('event.html', {'event': event, 'rsvpform': form}, RequestContext(request))
+
+class CalendarFeedView(ListView):
+    model = Event
+    template_name = 'ical.txt'
+
+    def get_context_data(self, **kwargs):
+        d = super(CalendarFeedView, self).get_context_data(**kwargs)
+        d['CALENDAR_NAME'] = settings.CALENDAR_NAME
+        d['CALENDAR_DESCRIPTION'] = settings.CALENDAR_DESCRIPTION
+        d['SITE_URL'] = settings.SITE_URL
+        return d
+
+    def get_queryset(self):
+        return Event.objects.filter(start_date__year=settings.YEAR).order_by('start_date')

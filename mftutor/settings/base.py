@@ -204,3 +204,9 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'mftutor.tutor.auth.SwitchUserBackend',
 )
+
+SITE_URL = 'http://example.com'
+
+CALENDAR_NAME = 'Calendar name'
+
+CALENDAR_DESCRIPTION = 'Calendar description'

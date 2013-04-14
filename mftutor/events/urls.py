@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from ..tutor.models import Tutor, TutorGroup, BoardMember
 from ..settings import YEAR
 from .models import Event
-from .views import *
+from .views import event_detail_view, CalendarFeedView
 
 urlpatterns = patterns('',
     url(r'^$',
@@ -17,9 +17,6 @@ urlpatterns = patterns('',
         event_detail_view,
         name="event"),
     url(r'^ical/$',
-        ListView.as_view(
-            queryset=Event.objects.filter(start_date__year=YEAR).order_by('start_date'),
-            template_name="ical.txt",
-            context_object_name="event_list"),
+        CalendarFeedView.as_view(),
         name="events_ical"),
 )
