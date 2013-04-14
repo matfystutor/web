@@ -3,8 +3,14 @@ from datetime import datetime
 from django.db import models
 from ..settings import YEAR
 
-# Create your models here.
+class ReferaterManager(models.Manager):
+    def get_query_set(self):
+        return super(ReferaterManager, self).get_query_set().filter(type__exact='referater').order_by('-year', '-published')
+
 class Document(models.Model):
+    objects = models.Manager()
+    referater = ReferaterManager()
+
     title = models.CharField(max_length=100,
             verbose_name='Titel')
     year = models.IntegerField(verbose_name="Tutorår", default=YEAR)

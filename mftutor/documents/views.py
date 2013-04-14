@@ -91,5 +91,8 @@ class GuidesView(DocumentListView):
 class MinutesView(DocumentListView):
     kind = 'referater'
 
+    def get_queryset(self):
+        return Document.referater.all()
+
 class PublicationsView(DocumentListView):
     kind = 'udgivelser'
