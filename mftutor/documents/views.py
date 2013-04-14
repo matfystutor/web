@@ -1,5 +1,6 @@
 # coding: utf-8
 from django import forms
+from django.forms.extras import SelectDateWidget
 from django.views.generic import UpdateView, TemplateView, CreateView, DeleteView
 from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
@@ -11,13 +12,16 @@ from ..tutor.auth import tutorbest_required
 class UploadDocumentForm(forms.ModelForm):
     class Meta:
         model = Document
-    #year = forms.IntegerField(required = True, label = "Tutorår", initial=settings.YEAR)
-    #document = forms.FileField(required = True,label = "Dokument")
+
+    published = forms.DateField(widget=SelectDateWidget(years=range(1970,YEAR+1)),
+            label='Dato',
+            initial=Document._meta.get_field('published').default)
+
 
 class UploadDocumentView(CreateView):
     model = Document
     template_name = "documentuploader.html"
-    #form_class = UploadDocumentForm
+    form_class = UploadDocumentForm
     def get_success_url(self):
         return reverse("list_documents", kwargs={'kind': self.object.type})
     @method_decorator(tutorbest_required)
