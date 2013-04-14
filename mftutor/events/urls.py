@@ -16,4 +16,10 @@ urlpatterns = patterns('',
     url(r'^(\d+)/$',
         event_detail_view,
         name="event"),
+    url(r'^ical/$',
+        ListView.as_view(
+            queryset=Event.objects.filter(start_date__year=YEAR).order_by('start_date'),
+            template_name="ical.txt",
+            context_object_name="event_list"),
+        name="events_ical"),
 )
