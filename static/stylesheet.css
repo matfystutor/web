@@ -561,7 +561,7 @@ td.altTabBg1 {
 	line-height: 30px;
 }
 
-.eventdate {
+.datebox {
 	float: left;
 	width: 40px;
 	text-align: center;
@@ -571,7 +571,7 @@ td.altTabBg1 {
 	border-right-color: #bbb;
 }
 
-.eventdate .month {
+.datebox .month {
 	display: block;
 	background-color: #3c3;
 	color: white;
@@ -585,7 +585,7 @@ td.altTabBg1 {
 .rkfw .month { background-color: #d92; }
 .rkfl .month { background-color: #c39; }
 
-.eventdate .day {
+.datebox .day {
 	display: block;
 	background-color: #f8f8f8;
 	color: black;
@@ -600,4 +600,9 @@ td.altTabBg1 {
 
 .eventtitle, .eventtime {
 	margin-left: 50px;
+}
+
+.referat {
+	clear: both;
+	margin: 0 0 1em 0;
 }

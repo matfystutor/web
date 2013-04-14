@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Upload dokument{% endblock %}
+
+{% block content %}
+<h1>Upload dokument</h1>
+
+<form class="twocol" method="post" enctype="multipart/form-data">{% csrf_token %}
+{{ form.non_field_errors }}
+{% for field in form %}
+<div class="label">{{ field.label_tag }}:</div>
+<div class="field">{{ field }}</div>
+{{ field.errors }}
+{% endfor %}
+<div class="field">
+<input type="submit" value="Upload">
+</div>
+</form>
+{% if not create %}
+<form class="twocol" method="post" action="{% url document_delete document.pk %}">{% csrf_token %}
+<div class="field">
+<input type="submit" value="Slet">
+</div>
+</form>
+{% endif %}
+{% endblock %}
