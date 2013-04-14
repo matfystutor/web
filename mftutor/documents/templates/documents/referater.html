@@ -6,8 +6,16 @@
 <a href="{% url upload_document %}">Tilføj nyt dokument</a>
 {% endif %}
 {% for document in document_list %}
-{% ifchanged %}<a href="{% url list_referater year=document.year %}"><h2 style="margin-bottom: 0">{{ document.year}}</h2></a>{% endifchanged %}
-<div class="document"><a href="{{MEDIA_URL}}{{document.doc_file}}">{{ document.title }}</a> {% if tutor.is_tutorbest %}| <a href="{% url edit_document document.pk %}">Ret</a>{% endif %}</div>
-<br />
+{% ifchanged %}<a href="{% url list_referater year=document.year %}"><h2 style="clear: both">{{ document.year}}</h2></a>{% endifchanged %}
+<div class="referat">
+<div class="datebox">
+    <span class="month">{{ document.published|date:"M"|upper }}</span>
+    <span class="day">{{ document.published|date:"j" }}</span>
+</div>
+<strong><a href="{{MEDIA_URL}}{{document.doc_file}}">{{ document.title }}</a></strong>
+	{% if tutor.is_tutorbest %}(<a href="{% url edit_document document.pk %}">ret</a>){% endif %}
+	<br>
+{{ document.published|date:"l j. F"|lower|capfirst }}
+</div>
 {% endfor %}
 {% endblock %}
