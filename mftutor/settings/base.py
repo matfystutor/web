@@ -145,7 +145,7 @@ INSTALLED_APPS = (
     'mftutor.tutormail',
     'mftutor.page',
     'mftutor.shirt',
-    'mftutor.docUploader',
+    'mftutor.documents',
 )
 
 # A sample logging configuration. The only tangible logging

@@ -22,5 +22,5 @@ urlpatterns = patterns('',
     url(r'^activation/', include('mftutor.activation.urls')),
     url(r'^email/', include('mftutor.tutormail.urls')),
     url(r'^shirt/', include('mftutor.shirt.urls')),
-    url(r'^document/', include('mftutor.docUploader.urls')),
+    url(r'^document/', include('mftutor.documents.urls')),
 )
