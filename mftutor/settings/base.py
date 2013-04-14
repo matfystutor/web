@@ -182,6 +182,7 @@ TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
     "mftutor.tutor.context_processors.login_form",
     "mftutor.tutor.context_processors.tutor_data",
     "mftutor.tutor.context_processors.settings",
+    "mftutor.events.context_processors.site",
 )
 
 LOGIN_REDIRECT_URL = "/"

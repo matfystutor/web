@@ -52,6 +52,8 @@ ACTIVATION_DEBUG = True
 
 #MEDIA_ROOT = root('../upload/')
 
+#SITE_URL = 'http://matfystutor.dk'
+
 # Enable if you have HTML tidy installed
 #TIDY_NEWS_HTML = True
 
