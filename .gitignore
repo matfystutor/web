@@ -5,3 +5,4 @@
 /mftutor/settings/local.py
 *.aux
 *.log
+*~
