@@ -4,17 +4,19 @@
 {% block content %}
 <h1>Upload dokument</h1>
 
-<form method="post" enctype="multipart/form-data">{% csrf_token %}
-{{ form.as_p }}
-<p>
+<form class="twocol" method="post" enctype="multipart/form-data">{% csrf_token %}
+{{ form.non_field_errors }}
+{% for field in form %}
+<div class="label">{{ field.label_tag }}:</div>
+<div class="field">{{ field }}</div>
+{{ field.errors }}
+{% endfor %}
+<div class="field">
 <input type="submit" value="Upload">
-</p>
-</form>
 {% if not create %}
-<p>
 <form method="post" action="{% url document_delete document.pk %}">{% csrf_token %}
 <input type="submit" value="Slet">
-</form>
-</p>
+</div>
 {% endif %}
+</form>
 {% endblock %}
