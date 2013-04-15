@@ -325,14 +325,6 @@ html ul.topnav li ul.subnav li a:hover { /*--Hover effect for subnav links--*/
    position: relative;
    word-wrap: break-word;
 }
-.tutor201205922 {
-	/* fix badly rotated image */
-	transform: rotate(2deg);
-}
-.tutor201205922 img {
-	/* fix badly rotated image */
-	transform: rotate(-2deg);
-}
 body.board .tutoraddress {
    width: 290px;
 }
