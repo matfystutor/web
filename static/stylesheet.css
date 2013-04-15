@@ -310,38 +310,42 @@ html ul.topnav li ul.subnav li a:hover { /*--Hover effect for subnav links--*/
 }
 
 .groupselect {
-   text-align: right;
+	text-align: right;
 }
+
 .tutoraddress {
-   float: left;
-   transition: height 0.2s;
-   -moz-transition: height 0.2s;
-   -o-transition: height 0.2s;
-   -webkit-transition: height 0.2s;
-   width: 360px;
-   margin: 5px 15px;
-   padding: 0;
-   height: 150px;
-   position: relative;
-   word-wrap: break-word;
+	float: left;
+	width: 360px;
+	margin: 5px 15px;
+	padding: 0;
+	height: 130px;
+	position: relative;
+	word-wrap: break-word;
+	border: 1px solid #ccc;
+}
+.tutoraddress.selected {
+	width: 752px;
 }
 body.board .tutoraddress {
-   width: 290px;
+	width: 290px;
 }
 #groupleadlabel {
-   margin-bottom: 3px;
+	margin-bottom: 3px;
 }
+
+.tutoraddress {
+	font-size: 90%;
+	position: relative;
+}
+
 .tutoraddress:first-child {
-   height: 170px;
+	margin-bottom: 45px;
 }
 .tutoraddress:first-child + * {
-   clear: left;
-}
-.searchresults .tutoraddress:first-child {
-   height: 150px;
+	clear: left;
 }
 .searchresults .tutoraddress:first-child + * {
-   clear: none;
+	clear: none;
 }
 
 /* Tutor pictures.
@@ -355,98 +359,92 @@ body.board .tutoraddress {
  * container.
  */
 .tutoraddress .pic {
-   position: absolute;
-   left: 0; top: 0;
-   width: 130px;
-   height: 130px;
-   background-color: #f8f8f8;
-   overflow: hidden;
+	position: absolute;
+	top: 0; left: 0;
+	width: 130px;
+	height: 130px;
+	background-color: #f8f8f8;
+	overflow: hidden;
 	text-align: center;
 }
 .tutoraddress .pic img {
-   height: 100%;
+	height: 100%;
 }
 .tutoraddress .pic img.portrait {
-   height: auto;
-   width: 100%;
+	height: auto;
+	width: 100%;
 	position: absolute;
 	left: 0;
 	top: 0;
 }
 
-.tutoraddress .detailscontainer, #groupleadlabel {
-   padding-left: 140px;
-}
 .detailscontainer {
-   position: relative;
-}
-.detailscontainer.collapsed {
-   height: 130px;
-   overflow: hidden;
-}
-.detailsoverflow {
-   background-image: -moz-linear-gradient(center top , rgba(255, 255, 255, 0) 20%, #FFFFFF 95%);
-   position: absolute;
-   width: 100%;
-   height: 20px;
-   bottom: 0;
-   display: none;
-}
-.detailscontainer.collapsed .detailsoverflow {
-   display: block;
-}
-.tutoraddress .name {
-   font-size: 110%;
-   font-weight: bold;
-}
-.tutoraddress .name, #groupleadlabel {
-   color: #333;
-   white-space: nowrap;
-   text-overflow: ellipsis;
-   overflow: hidden;
-}
-.tutoraddress .details {
-   font-size: 90%;
-	height: 130px;
-}
-.tutoraddress .details ul, .tutoraddress .details li {
-   list-style-type: none;
-   margin: 0;
-   padding: 0;
-}
-.aftertutoraddress {
-   clear: left;
+	margin-left: 140px;
+	white-space: nowrap;
 }
 
-.tutoraddress:hover .detailsoverflow {
-   display: none;
+.detailsmagic, .details {
+	vertical-align: middle;
+	display: inline-block;
 }
-.tutoraddress:hover .name, body.board .name {
-   white-space: normal;
+
+.detailsmagic {
+	height: 130px;
 }
-.tutoraddress:hover .detailscontainer {
-   overflow: visible;
+
+.details {
+	width: 100%;
 }
-.tutoraddress:hover .detailscontainer {
-   position: static;
-   padding: 0;
+
+
+
+.tutoraddress .name {
+	font-weight: bold;
+	font-size: 105%;
+	color: #3B5998;
 }
-.tutoraddress:hover .pic {
-   z-index: 3;
-   position: absolute;
-   top: 0;
-   left: 0;
+
+.tutors .tutoraddress .name, .tutors .tutoraddress li {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
 }
-.tutoraddress:hover .details {
-   z-index: 2;
-   position: absolute;
-   left: -21px;
-   right: -21px;
-   top: -21px;
-   padding: 20px 20px 20px 160px;
-   padding-bottom: 20px;
-   border: 1px solid #999;
-   background-color: white;
+
+.board .tutoraddress .name, .board .tutoraddress li {
+	white-space: normal;
+}
+
+.tutoraddress a {
+	color: inherit;
+}
+
+.tutoraddress ul, .tutoraddress li {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+.tutoraddress.selected li:before {
+	display: inline-block;
+	content: attr(title);
+	color: #999;
+	width: 100px;
+}
+
+.tutoraddress li.street, .tutoraddress li.city {
+	display: none;
+}
+
+.tutoraddress.selected li.street, .tutoraddress.selected li.city {
+	display: block;
+}
+
+.tutors .tutoraddress .name {
+	cursor: pointer;
+}
+
+.tutors .tutoraddress.selected .name {
+	cursor: auto;
 }
 
 /* */

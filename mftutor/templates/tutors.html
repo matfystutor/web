@@ -232,17 +232,17 @@ Gruppeansvarlig:
 {% endif %}
  </div> <!-- /pic -->
  <div class="detailscontainer">
-  <div class="details">
+  <div class="detailsmagic"></div><div class="details">
    <div class="name">
     {{ tutor.full_name }}
    </div> <!-- /name -->
    <ul>
-    <li class="street">{{ tutor.street }}</li>
-    <li class="city">{{ tutor.city }}</li>
-    <li class="phone">{{ tutor.phone }}</li>
-    <li class="email">{{ tutor.email }}</li>
-    <li class="study">{{ tutor.study }}</li>
-    <li class="studentnumber">{{ tutor.studentnumber }}</li>
+    <li title="Adresse" class="street">{{ tutor.street }}</li>
+    <li title="By" class="city">{{ tutor.city }}</li>
+    <li title="Telefon" class="phone">{{ tutor.phone }}</li>
+    <li title="Email" class="email"><a href="mailto:{{ tutor.email }}">{{ tutor.email }}</a></li>
+    <li title="Studium" class="study">{{ tutor.study }}</li>
+    <li title="Årskort" class="studentnumber">{{ tutor.studentnumber }}</li>
    </ul>
   </div> <!-- /details -->
   <div class="detailsoverflow"></div>
