@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Feeds{% endblock %}
+
+{% block content %}
+<h1>Feeds</h1>
+
+<p>Følgende feeds kan man tilføje til sin RSS-læser og/eller kalender.</p>
+
+<p><a href="{{ STATIC_URL }}gcal-tutor.png">Guide til Google Calendar</a></p>
+
+<ul>
+<li>Begivenheder (iCal): <a href="{% url events_ical %}">{{ SITE_URL }}{% url events_ical %}</a></li>
+<li>Nyheder (RSS): <a href="{% url news_feed %}">{{ SITE_URL }}{% url news_feed %}</a></li>
+<li>Referater (RSS): <a href="{% url referater_feed %}">{{ SITE_URL }}{% url referater_feed %}</a></li>
+</ul>
+
+{% endblock %}
