@@ -313,7 +313,7 @@ html ul.topnav li ul.subnav li a:hover { /*--Hover effect for subnav links--*/
 	text-align: right;
 }
 
-.tutoraddress {
+.tutorlist .tutoraddress {
 	float: left;
 	width: 360px;
 	margin: 5px 15px;
@@ -323,28 +323,28 @@ html ul.topnav li ul.subnav li a:hover { /*--Hover effect for subnav links--*/
 	word-wrap: break-word;
 	border: 1px solid #ccc;
 }
-.tutoraddress.selected {
+.tutorlist .tutoraddress.selected {
 	width: 752px;
 }
-body.board .tutoraddress {
+body.board .tutorlist .tutoraddress {
 	width: 290px;
 }
 #groupleadlabel {
 	margin-bottom: 3px;
 }
 
-.tutoraddress {
+.tutorlist .tutoraddress {
 	font-size: 90%;
 	position: relative;
 }
 
-.tutoraddress:first-child {
+.tutorlist .tutoraddress:first-child {
 	margin-bottom: 45px;
 }
-.tutoraddress:first-child + * {
+.tutorlist .tutoraddress:first-child + * {
 	clear: left;
 }
-.searchresults .tutoraddress:first-child + * {
+.tutorlist .searchresults .tutoraddress:first-child + * {
 	clear: none;
 }
 
@@ -358,7 +358,7 @@ body.board .tutoraddress {
  * In any case, the JavaScript will center the image in the 130px x 130px
  * container.
  */
-.tutoraddress .pic {
+.tutorlist .tutoraddress .pic {
 	position: absolute;
 	top: 0; left: 0;
 	width: 130px;
@@ -367,10 +367,10 @@ body.board .tutoraddress {
 	overflow: hidden;
 	text-align: center;
 }
-.tutoraddress .pic img {
+.tutorlist .tutoraddress .pic img {
 	height: 100%;
 }
-.tutoraddress .pic img.portrait {
+.tutorlist .tutoraddress .pic img.portrait {
 	height: auto;
 	width: 100%;
 	position: absolute;
@@ -378,74 +378,110 @@ body.board .tutoraddress {
 	top: 0;
 }
 
-.detailscontainer {
+.tutorlist .detailscontainer {
 	margin-left: 140px;
 	white-space: nowrap;
 }
 
-.detailsmagic, .details {
+.tutorlist .detailsmagic, .tutorlist .details {
 	vertical-align: middle;
 	display: inline-block;
 }
 
-.detailsmagic {
+.tutorlist .detailsmagic {
 	height: 130px;
 }
 
-.details {
+.tutorlist .details {
 	width: 100%;
 }
 
 
 
-.tutoraddress .name {
+.tutorlist .tutoraddress .name {
 	font-weight: bold;
 	font-size: 105%;
 	color: #3B5998;
 }
 
-.tutors .tutoraddress .name, .tutors .tutoraddress li {
+.tutors .tutorlist .tutoraddress .name, .tutors .tutorlist .tutoraddress li {
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;
 }
 
-.board .tutoraddress .name, .board .tutoraddress li {
+.board .tutorlist .tutoraddress .name, .board .tutorlist .tutoraddress li {
 	white-space: normal;
 }
 
-.tutoraddress a {
+.tutorlist .tutoraddress a {
 	color: inherit;
 }
 
-.tutoraddress ul, .tutoraddress li {
+.tutorlist .tutoraddress ul, .tutorlist .tutoraddress li {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
 }
 
-.tutoraddress.selected li:before {
+.tutorlist .tutoraddress.selected li:before {
 	display: inline-block;
 	content: attr(title);
 	color: #999;
 	width: 100px;
 }
 
-.tutoraddress li.street, .tutoraddress li.city {
+.tutorlist .tutoraddress li.street, .tutorlist .tutoraddress li.city {
 	display: none;
 }
 
-.tutoraddress.selected li.street, .tutoraddress.selected li.city {
+.tutorlist .tutoraddress.selected li.street, .tutorlist .tutoraddress.selected li.city {
 	display: block;
 }
 
-.tutors .tutoraddress .name {
+.tutors .tutorlist .tutoraddress .name {
 	cursor: pointer;
 }
 
-.tutors .tutoraddress.selected .name {
+.tutors .tutorlist .tutoraddress.selected .name {
 	cursor: auto;
 }
+
+.tutortable {
+	font-size: 12px;
+}
+
+.tutortable .pic {
+	display: none;
+}
+
+.tutortable .tutoraddress {
+	display: block;
+	clear: both;
+}
+
+.tutortable ul, .tutortable li {
+	display: block;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+.tutortable .name, .tutortable li {
+	float: left;
+	width: 150px;
+	overflow: hidden;
+	white-space: nowrap;
+	margin-right: 10px;
+}
+
+.tutortable .name { width: 160px; }
+.tutortable .street { width: 160px; }
+.tutortable .city { width: 100px; }
+.tutortable .phone { width: 63px; }
+.tutortable .email { width: 150px; }
+.tutortable .study { width: 40px; }
+.tutortable .studentnumber { width: 70px; margin-right: 0; }
 
 /* */
 table.uploadform, table.uploadform td {

@@ -219,10 +219,18 @@ Vælg gruppe:
 {% endfor %}
 </select>
 </p>
+<p>Vis som:
+<label>
+<input onclick="document.getElementsByClassName('tutorcontainer')[0].className = 'tutorcontainer tutorlist'"
+name="tutorcontainer" type="radio" value="tutorlist" checked="checked"> Liste</label>
+<label>
+<input onclick="document.getElementsByClassName('tutorcontainer')[0].className = 'tutorcontainer tutortable'"
+name="tutorcontainer" type="radio" value="tutortable"> Tabel</label>
+</p>
 <p>
 Gruppeansvarlig:
 </p>
-<div>
+<div class="tutorcontainer tutorlist">
 {% for tutor in tutor_list %}
 <div class="tutoraddress tutor{{ tutor.studentnumber }}">
  <div class="pic">

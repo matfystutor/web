@@ -2,6 +2,7 @@
 {% block title %}Bestyrelsen{% endblock %}
 {% block bodyclass %}board{% endblock %}
 {% block content %}
+<div class="tutorlist">
 {% for tutor in tutor_list %}
 <div class="tutoraddress">
  <div class="pic">
@@ -25,4 +26,5 @@
 </div> <!-- /tutoraddress -->
 
 {% endfor %}
+</div>
 {% endblock %}
