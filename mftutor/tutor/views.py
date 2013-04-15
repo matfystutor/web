@@ -47,7 +47,18 @@ def tutors_view(request, group=None):
     leader_pk = leader.pk if leader else -1
 
     tutors = list(Tutor.members.group(lookup_group))
-    tutors.sort(key=lambda t: (t.pk != leader_pk, t.profile.get_full_name()))
+    tutors = [{
+        'pk': t.pk,
+        'studentnumber': t.profile.studentnumber,
+        'picture': t.profile.picture.url,
+        'full_name': t.profile.get_full_name(),
+        'street': t.profile.street,
+        'city': t.profile.city,
+        'phone': t.profile.phone,
+        'email': t.profile.user.email if t.profile.user else '',
+        'study': t.profile.study,
+        } for t in tutors]
+    tutors.sort(key=lambda t: (t['pk'] != leader_pk, t['full_name']))
 
     groups = TutorGroup.visible_groups.all()
 

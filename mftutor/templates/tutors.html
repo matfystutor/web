@@ -224,25 +224,25 @@ Gruppeansvarlig:
 </p>
 <div>
 {% for tutor in tutor_list %}
-<div class="tutoraddress tutor{{ tutor.profile.studentnumber }}">
+<div class="tutoraddress tutor{{ tutor.studentnumber }}">
  <div class="pic">
-  {% if tutor.profile.picture %}
-  <a target="_blank" href="{{ tutor.profile.picture.url }}">
-<img class="tutorpicture" src="{{ tutor.profile.picture.url }}" /></a>
+  {% if tutor.picture %}
+  <a target="_blank" href="{{ tutor.picture }}">
+<img class="tutorpicture" src="{{ tutor.picture }}" /></a>
 {% endif %}
  </div> <!-- /pic -->
  <div class="detailscontainer">
   <div class="details">
    <div class="name">
-    {{ tutor.profile.get_full_name }}
+    {{ tutor.full_name }}
    </div> <!-- /name -->
    <ul>
-    <li>{{ tutor.profile.street }}</li>
-    <li>{{ tutor.profile.city }}</li>
-    <li>{{ tutor.profile.phone }}</li>
-    <li>{{ tutor.profile.user.email }}</li>
-    <li>{{ tutor.profile.study }}</li>
-    <li>{{ tutor.profile.studentnumber }}</li>
+    <li class="street">{{ tutor.street }}</li>
+    <li class="city">{{ tutor.city }}</li>
+    <li class="phone">{{ tutor.phone }}</li>
+    <li class="email">{{ tutor.email }}</li>
+    <li class="study">{{ tutor.study }}</li>
+    <li class="studentnumber">{{ tutor.studentnumber }}</li>
    </ul>
   </div> <!-- /details -->
   <div class="detailsoverflow"></div>
