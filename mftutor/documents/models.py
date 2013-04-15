@@ -1,7 +1,7 @@
 # coding: utf-8
 from datetime import datetime
 from django.db import models
-from ..settings import YEAR
+from .. import settings
 
 class ReferaterManager(models.Manager):
     def get_query_set(self):
@@ -13,7 +13,7 @@ class Document(models.Model):
 
     title = models.CharField(max_length=100,
             verbose_name='Titel')
-    year = models.IntegerField(verbose_name="Tutorår", default=YEAR)
+    year = models.IntegerField(verbose_name="Tutorår", default=settings.YEAR)
     published = models.DateField(default=lambda: datetime.now(),
             verbose_name='Dato')
     time_of_upload = models.DateTimeField(editable=False, auto_now_add=True)
@@ -29,10 +29,6 @@ class Document(models.Model):
         ordering = ("-year","title")
     def __unicode__(self):
         return '[Document '+self.type+': '+self.title+']'
-  
-    
-    
 
-
-
-
+    def get_absolute_url(self):
+        return settings.MEDIA_URL + unicode(self.doc_file)
