@@ -43,7 +43,6 @@ class ProfileForm(forms.Form):
     study = forms.CharField(label='Studium')
     studentnumber = ReadOnlyField(label='Årskortnummer')
     birthday = forms.DateField(label='Fødselsdag', widget=SelectDateWidget(years=range(1970,YEAR)))
-    gender = forms.ChoiceField(widget=forms.RadioSelect, choices=(('m', 'Mand',), ('f', 'Kvinde',),),label='Køn')
 
 def profile_view(request):
     u = request.user
@@ -60,7 +59,6 @@ def profile_view(request):
             tp.study = form.cleaned_data['study']
             #tp.studentnumber = form.cleaned_data['studentnumber']
             tp.birthday = form.cleaned_data['birthday']
-            tp.gender = form.cleaned_data['gender']
             u.save()
             tp.save()
             return redirect('profile_view')
@@ -75,7 +73,6 @@ def profile_view(request):
             'study': tp.study,
             'studentnumber': tp.studentnumber,
             'birthday': tp.birthday,
-            'gender': tp.gender,
         }
         form = ProfileForm(initial=initial)
 
