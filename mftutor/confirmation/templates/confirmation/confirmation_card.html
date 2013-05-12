@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Tutorbekræftelse{% endblock %}
+{% block head %}
+<style>
+    .confirmation {
+        display: inline-block;
+        border: 1px solid black;
+        width: 400px;
+        height: 400px;
+        vertical-align: middle;
+    }
+    .confirmation .picture {
+        float: left;
+        width: 100px;
+        height: 180px;
+    }
+    .confirmation .picture img {
+        max-width: 100px;
+        max-height: 180px;
+    }
+    .confirmation .study {
+        clear: left;
+        float: left;
+        width: 100px;
+        height: 100px;
+        text-transform: uppercase;
+        font-size: 200%;
+        text-align: center;
+        word-break: break-all;
+    }
+    .confirmation .resits,
+    .confirmation .rusfriends,
+    .confirmation .comment {
+        height: 5em;
+    }
+    .confirmation .tutor, .confirmation .study {
+        font-weight: bold;
+    }
+    .confirmation .tutor, .confirmation .experience,
+    .confirmation .resits, .confirmation .priorities, .confirmation .firstaid,
+    .confirmation .rusfriends, .confirmation .comment,
+    .confirmation .internal_notes {
+        margin-left: 100px;
+    }
+</style>
+{% endblock %}
+{% block bodyclass %}fullwidth{% endblock %}
+
+{% block content %}
+<h1>Tutorbekræftelser</h1>
+
+{% for confirmation in confirmation_list %}<div class="confirmation">
+    <div class="picture">
+        {% if confirmation.tutor.profile.picture %}
+        <img src="{{ confirmation.tutor.profile.picture.url }}">
+        {% else %}
+        Intet billede
+        {% endif %}
+    </div>
+    <div class="study">{{ confirmation.study }}</div>
+    <div class="tutor">{{ confirmation.tutor.profile.get_full_name }}</div>
+    <div class="priorities">Ønsker: {{ confirmation.priorities }}</div>
+    <div class="experience">Erfaring: {{ confirmation.experience }}</div>
+    <div class="firstaid">Førstehjælp: {{ confirmation.firstaid }}</div>
+    <div class="resits">Reeksamener: {{ confirmation.resits }}</div>
+    <div class="rusfriends">Kendte russer: {{ confirmation.rusfriends|linebreaksbr }}</div>
+    <div class="comment">Kommentar: {{ confirmation.comment|linebreaksbr }}</div>
+    <div class="internal_notes">Notat: {{ confirmation.internal_notes }}</div>
+</div>{% endfor %}
+
+{% endblock %}

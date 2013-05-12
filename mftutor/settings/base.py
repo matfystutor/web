@@ -145,6 +145,7 @@ INSTALLED_APPS = (
     'mftutor.tutormail',
     'mftutor.page',
     'mftutor.shirt',
+    'mftutor.confirmation',
     'mftutor.documents',
     'mftutor.sampledata',
 )
