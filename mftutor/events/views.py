@@ -40,3 +40,20 @@ class CalendarFeedView(ListView):
 
     def get_queryset(self):
         return Event.objects.filter(start_date__year=settings.YEAR).order_by('start_date')
+
+class EventListView(ListView):
+    def get_queryset(self):
+        return Event.objects.filter(start_date__year=settings.YEAR).order_by('start_date')
+
+    def get_context_data(self, **kwargs):
+        d = super(EventListView, self).get_context_data(**kwargs)
+        for e in d['event_list']:
+            try:
+                e.rsvp_status = EventParticipant.objects.get(
+                    event=e, tutor__profile__user=self.request.user).status
+            except EventParticipant.DoesNotExist:
+                e.rsvp_status = 'none'
+        return d
+
+    template_name = "events.html"
+    context_object_name = "event_list"
