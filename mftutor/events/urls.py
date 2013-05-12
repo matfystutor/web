@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from ..tutor.models import Tutor, TutorGroup, BoardMember
 from ..settings import YEAR
 from .models import Event
-from .views import event_detail_view, CalendarFeedView, EventListView
+from .views import event_detail_view, CalendarFeedView, EventListView, RSVPFormView
 
 urlpatterns = patterns('',
     url(r'^$',
@@ -16,4 +16,7 @@ urlpatterns = patterns('',
     url(r'^ical/$',
         CalendarFeedView.as_view(),
         name="events_ical"),
+    url(r'^rsvp/(\d+)/$',
+        RSVPFormView.as_view(),
+        name="rsvpform"),
 )

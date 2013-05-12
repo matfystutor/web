@@ -1,4 +1,16 @@
 {% extends "base.html" %}
+{% block head %}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script type="text/javascript">
+function selectchange(element) {
+    $('span.saved').html("<img src=\"/static/images/loading.gif\"> Gemmer...");
+    $.post(element.form.action, $(element.form).serialize())
+        .done(function() { $('span.saved').html("<img src=\"/static/images/ok.gif\"> Gemt!"); })
+        .fail(function() { $('span.saved').html("<img src=\"/static/images/error.gif\"> Fejl!"); })
+    ;
+}
+</script>
+{% endblock %}
 {% block title %}Begivenheder{% endblock %}
 {% block content %}
 <h1>Begivenheder</h1>
@@ -21,6 +33,26 @@
 til {{ event.end_date|date:"l j. F"|lower }}
 {% endif %}
 </div>
+{% if event.is_rsvp_possible %}
+<div class="rsvp">
+    <form method="post" action="/events/rsvp/{{ event.id }}/">
+        {% csrf_token %}
+        RSVP:
+        <select name="status" onchange="selectchange(this)">
+            <option value="yes"{% if event.rsvp_status = "yes" %} selected{% endif %}>Kommer</option>
+            <option value="no"{% if event.rsvp_status = "no" %} selected{% endif %}>Kommer ikke</option>
+            <option value="maybe"{% if event.rsvp_status = "maybe" %} selected{% endif %}>Har ikke taget beslutning</option>
+        </select>
+        <span class="saved"></span>
+    </form>
+</div>
+{% endif %}
+{% if not event.is_rsvp_possible %}
+{% if event.rsvp_status != 'none' %}RSVP: {% endif %}
+{% if event.rsvp_status = "yes" %}Kommer{% endif %}
+{% if event.rsvp_status = "no" %}Kommer ikke{% endif %}
+{% if event.rsvp_status = "maybe" %}Har ikke taget beslutning{% endif %}
+{% endif %}
 </div>
 {% endif %}
 {% endfor %}

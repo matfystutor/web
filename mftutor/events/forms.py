@@ -18,3 +18,10 @@ class RSVPForm(forms.ModelForm):
         super(RSVPForm, self).__init__(*args, **kwargs)
         self.expect_tutor = expect_tutor
         self.expect_event = expect_event
+
+class RSVPFormAjax(forms.Form):
+    status = forms.ChoiceField(choices=(
+        ('yes', 'Kommer',),
+        ('no', 'Kommer ikke',),
+        ('maybe', 'Har ikke taget stilling',),
+        ))
