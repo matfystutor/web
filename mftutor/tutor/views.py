@@ -50,7 +50,7 @@ def tutors_view(request, group=None):
     tutors = [{
         'pk': t.pk,
         'studentnumber': t.profile.studentnumber,
-        'picture': t.profile.picture.url,
+        'picture': t.profile.picture.url if t.profile.picture else '',
         'full_name': t.profile.get_full_name(),
         'street': t.profile.street,
         'city': t.profile.city,
