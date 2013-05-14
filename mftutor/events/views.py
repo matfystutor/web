@@ -49,12 +49,18 @@ class EventListView(ListView):
 
     def get_context_data(self, **kwargs):
         d = super(EventListView, self).get_context_data(**kwargs)
+        try:
+            tutordata = user_tutor_data(self.request.user)
+        except NotTutor:
+            tutordata = None
         for e in d['event_list']:
-            try:
-                e.rsvp_status = EventParticipant.objects.get(
-                    event=e, tutor__profile__user=self.request.user).status
-            except EventParticipant.DoesNotExist:
-                e.rsvp_status = 'none'
+            e.rsvp_status = 'none'
+            if tutordata:
+                try:
+                    e.rsvp_status = EventParticipant.objects.get(
+                        event=e, tutor=tutordata.tutor).status
+                except EventParticipant.DoesNotExist:
+                    pass
         return d
 
     template_name = "events.html"

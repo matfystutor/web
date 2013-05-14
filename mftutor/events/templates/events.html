@@ -33,6 +33,7 @@ function selectchange(element) {
 til {{ event.end_date|date:"l j. F"|lower }}
 {% endif %}
 </div>
+{% if user.is_authenticated %}
 {% if event.is_rsvp_possible %}
 <div class="rsvp">
     <form method="post" action="/events/rsvp/{{ event.id }}/">
@@ -52,6 +53,7 @@ til {{ event.end_date|date:"l j. F"|lower }}
 {% if event.rsvp_status = "yes" %}Kommer{% endif %}
 {% if event.rsvp_status = "no" %}Kommer ikke{% endif %}
 {% if event.rsvp_status = "maybe" %}Har ikke taget beslutning{% endif %}
+{% endif %}
 {% endif %}
 </div>
 {% endif %}
