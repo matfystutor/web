@@ -1,4 +1,16 @@
 {% extends "base.html" %}
+{% block head %}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script type="text/javascript">
+function selectchange(element) {
+    $('span.saved').html("<img src=\"/static/images/loading.gif\"> Gemmer...");
+    $.post(element.form.action, $(element.form).serialize())
+        .done(function() { $('span.saved').html("<img src=\"/static/images/ok.gif\"> Gemt!"); })
+        .fail(function() { $('span.saved').html("<img src=\"/static/images/error.gif\"> Fejl!"); })
+    ;
+}
+</script>
+{% endblock %}
 {% block title %}Begivenheder{% endblock %}
 {% block content %}
 <h1>Begivenheder</h1>
@@ -8,6 +20,48 @@
 </p>
 {% endif %}
 {% for event in event_list %}
+{% if not event.is_completed %}
+{% ifchanged %}<h2 style="margin-bottom: 0">{{ event.start_date|date:"F Y"|capfirst }}</h2>{% endifchanged %}
+<div class="eventsevent {{ event.category }}">
+<div class="datebox">
+    <span class="month">{{ event.start_date|date:"M"|upper }}</span>
+    <span class="day">{{ event.start_date|date:"j" }}</span>
+</div>
+<div class="eventtitle"><a href="{% url event event.pk %}">{{ event.title }}</a></div>
+<div class="eventtime">{{ event.start_date|date:"l j. F"|lower|capfirst }}
+{% if event.start_date != event.end_date %}
+til {{ event.end_date|date:"l j. F"|lower }}
+{% endif %}
+</div>
+{% if event.is_rsvp_possible %}
+<div class="rsvp">
+    <form method="post" action="/events/rsvp/{{ event.id }}/">
+        {% csrf_token %}
+        RSVP:
+        <select name="status" onchange="selectchange(this)">
+            <option value="yes"{% if event.rsvp_status = "yes" %} selected{% endif %}>Kommer</option>
+            <option value="no"{% if event.rsvp_status = "no" %} selected{% endif %}>Kommer ikke</option>
+            <option value="maybe"{% if event.rsvp_status = "maybe" %} selected{% endif %}>Har ikke taget beslutning</option>
+        </select>
+        <span class="saved"></span>
+    </form>
+</div>
+{% endif %}
+{% if not event.is_rsvp_possible %}
+{% if event.rsvp_status != 'none' %}RSVP: {% endif %}
+{% if event.rsvp_status = "yes" %}Kommer{% endif %}
+{% if event.rsvp_status = "no" %}Kommer ikke{% endif %}
+{% if event.rsvp_status = "maybe" %}Har ikke taget beslutning{% endif %}
+{% endif %}
+</div>
+{% endif %}
+{% endfor %}
+
+<p>&nbsp;</p>
+
+<h1>Overståede begivenheder</h1>
+{% for event in event_list %}
+{% if event.is_completed %}
 {% ifchanged %}<h2 style="margin-bottom: 0">{{ event.start_date|date:"F Y"|capfirst }}</h2>{% endifchanged %}
 <div class="eventsevent {{ event.category }}">
 <div class="datebox">
@@ -21,5 +75,6 @@ til {{ event.end_date|date:"l j. F"|lower }}
 {% endif %}
 </div>
 </div>
+{% endif %}
 {% endfor %}
 {% endblock %}

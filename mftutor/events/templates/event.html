@@ -16,7 +16,7 @@ til {{ event.end_date|date:"l j. F"|lower }}
 <p style="white-space: pre-wrap">{% if event.description %}<strong>Beskrivelse:</strong> {{ event.description }}{% else %}Ingen beskrivelse.{% endif %}</p>
 
 {% if user.is_authenticated %}
-{% if event.rsvp %}
+{% if event.is_rsvp_possible %}
 {% if rsvpform %}
 <form action="" method="post">{% csrf_token %}
 {{ rsvpform.as_p }}

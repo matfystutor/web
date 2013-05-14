@@ -1,6 +1,7 @@
 # vim:set fileencoding=utf-8:
 from django.db import models
 from ..tutor.models import Tutor
+from datetime import date, datetime
 
 class Event(models.Model):
     title = models.CharField(max_length=200)
@@ -9,7 +10,7 @@ class Event(models.Model):
     end_date = models.DateField()
     start_time = models.TimeField(blank=True, null=True)
     end_time = models.TimeField(blank=True, null=True)
-    rsvp = models.BooleanField(verbose_name="Tilmelding mulig")
+    rsvp = models.DateTimeField(blank=True, null=True, verbose_name="Tilmeldingsfrist")
 
     def category(self):
         if u'stormøde' in self.title:
@@ -20,6 +21,14 @@ class Event(models.Model):
             return 'rkfw'
         if u'fest' in self.title:
             return 'fest'
+
+    @property
+    def is_completed(self):
+        return self.end_date < date.today()
+
+    @property
+    def is_rsvp_possible(self):
+        return not self.rsvp < datetime.now(self.rsvp.tzinfo)
 
     def __unicode__(self):
         return '[Event '+self.title+' on '+str(self.start_date)+']'
