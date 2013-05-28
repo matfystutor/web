@@ -40,9 +40,9 @@ til {{ event.end_date|date:"l j. F"|lower }}
         {% csrf_token %}
         RSVP:
         <select name="status" onchange="selectchange(this)">
+            <option value="maybe"{% if event.rsvp_status = "maybe" %} selected{% endif %}>Har ikke taget beslutning</option>
             <option value="yes"{% if event.rsvp_status = "yes" %} selected{% endif %}>Kommer</option>
             <option value="no"{% if event.rsvp_status = "no" %} selected{% endif %}>Kommer ikke</option>
-            <option value="maybe"{% if event.rsvp_status = "maybe" %} selected{% endif %}>Har ikke taget beslutning</option>
         </select>
         <span class="saved"></span>
     </form>
