@@ -167,3 +167,17 @@ GROUP = (
 (u'hacker', u'Wiki'),
 (u'oekonomi', u'Økonomi'),
 )
+
+RESITS = (
+u'dWebTek om tirsdagen og statdat om torsdagen',
+u'Vektoranalyse om onsdagen',
+u'Elektromagnetisme fredag formiddag',
+u'Bølger og optik',
+u'Mekanik og termodynamik, lineær algebra',
+u'Ja, matematisk analyse og omkostning og regnskab',
+u'Algoritmer og Datastrukturer 2, Computere og Netværk',
+u'Udviklingsprocesser, Innovationsprocesser',
+u'Nej', u'Nej', u'Nej', u'Nej', u'Nej', u'nej', u'nej', u'nej',
+u'Ingen', u'ingen',
+u'', u'', u'', u'', u'', u'', u'', u'', u'', u'', u'', u'', u'', u'', u'', u'',
+)
