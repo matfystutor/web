@@ -72,6 +72,18 @@ body.fullwidth #main {
 	height: 10px;
 }
 
+.success_message {
+	border: 1px solid #666;
+	background-color: #bfb;
+	padding: 1em;
+}
+
+.errorlist {
+	border: 1px solid #666;
+	background-color: #fbb;
+	padding: 1em;
+}
+
 #header {
 	background-color: #fff;
 	width: 696px;
