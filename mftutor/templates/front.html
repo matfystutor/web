@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Mat/Fys-Tutorgruppen{% endblock %}
+
+{% block content %}
+<h1>Mat/Fys-Tutorgruppen</h1>
+
+<p>
+Velkommen til Mat/Fys-Tutorgruppens hjemmeside.
+Vi er en forening af omtrent 140 tutorer,
+der varetager studiestarten for de nye studerende på
+Matematik, Matematik/Økonomi, Fysik, Nanoteknologi, Datalogi og IT
+på Aarhus Universitet.
+</p>
+
+<p>
+Hvis du er interesseret i at læse mere om tutorarbejdet,
+har vi skrevet en side med en
+<a href="{% url intro %}">introduktion til det at være Tutor</a>.
+</p>
+
+<p>
+Hvis du vil kontakte <a href="{% url board %}">bestyrelsen</a>,
+skal du skrive til <a href="mailto:best@matfystutor.dk">best@matfystutor.dk</a>.
+</p>
+
+<p style="text-align: center">
+<img src="{{ STATIC_URL }}uploads/2011_Torsdag_img_0675_crop.jpg" style="max-width: 80%">
+</p>
+
+{% endblock %}

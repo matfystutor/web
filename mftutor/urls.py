@@ -14,7 +14,6 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^$', include('mftutor.news.urls'), name='news'),
     url(r'^news/', include('mftutor.news.urls')),
     url(r'^', include('mftutor.page.urls')),
     url(r'^', include('mftutor.tutor.urls')),

@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django import forms
 from django.contrib.auth.views import password_change
-from django.views.generic import ListView, UpdateView
+from django.views.generic import ListView, UpdateView, TemplateView
 from ..settings import YEAR
 from .models import *
 from .viewimpl.loginout import logout_view, login_view
@@ -76,3 +76,12 @@ def switch_user(request, new_user):
     if user is not None:
         login(request, user)
     return HttpResponseRedirect(reverse('news'))
+
+class FrontView(TemplateView):
+    template_name = 'front.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated():
+            return HttpResponseRedirect(reverse('news'))
+
+        return super(FrontView, self).get(request, *args, **kwargs)
