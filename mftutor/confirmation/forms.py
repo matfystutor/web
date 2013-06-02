@@ -14,7 +14,7 @@ class OwnConfirmationForm(forms.ModelForm):
     firstaid = forms.CharField(widget=forms.RadioSelect(choices=(('ja', 'Ja'), ('nej', 'Nej'))), required=True,
             label='Har du haft førstehjælpskursus inden for de sidste to år?')
     resits = forms.CharField(widget=forms.Textarea, required=False,
-            label='Har du reeksamener i rusugen? Hvis ja, hvilke?')
+            label='Har du reeksamener i rusugen? Hvis ja, hvilke og hvornår?')
     rusfriends = forms.CharField(widget=forms.Textarea, required=False,
             label='Kender du nogen studerende, der skal til at starte på mat/fys? Hvis ja, anfør navn og fag')
     comment = forms.CharField(widget=forms.Textarea, required=False,
