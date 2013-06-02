@@ -8,7 +8,7 @@ from django.views.generic import UpdateView, TemplateView, View
 from django.views.generic.edit import FormMixin
 
 from ..settings import YEAR
-from ..tutor.auth import user_tutor_data, NotTutor, tutorbest_required_error, is_tutorbest
+from ..tutor.auth import user_tutor_data, NotTutor, tutorbest_required_error, is_tutorbest, tutor_required_error
 from ..tutor.models import Tutor
 from .models import Confirmation
 from .forms import OwnConfirmationForm, EditNoteForm
