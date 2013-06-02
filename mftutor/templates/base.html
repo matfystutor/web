@@ -54,6 +54,7 @@
         <li><a href="{% url events %}">Tilmeldinger</a></li>
         <li><a href="{% url upload_picture_view %}">Upload Billede</a></li>
         <!--<li><a href="{% url shirt_preference %}">T-shirt-størrelse</a></li>-->
+        <li><a href="{% url own_confirmation %}">Tutorbekræftelse</a></li>
       </ul>
       </li>
       {% else %}
@@ -70,6 +71,8 @@
         <li><a href="{% url admin:news_newspost_changelist %}">Forsidenyheder</a></li>
         <li><a href="{% url admin:events_event_changelist %}">Kalender</a></li>
         <li><a href="{% url todo %}">Referater</a></li>
+        <li><a href="{% url confirmation_table %}">Tutorbekræftelser</a></li>
+        <li><a href="{% url confirmation_card %}">Tutorkort</a></li>
       </ul>
       </li>
       {% endif %}
