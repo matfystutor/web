@@ -58,8 +58,19 @@ class BoardAdmin(admin.ModelAdmin):
     search_fields = ['tutor__profile__user__first_name', 'tutor__profile__user__last_name', 'title']
     list_editable = ('title', 'position',)
 
+class RusClassAdmin(admin.ModelAdmin):
+    list_display = ('year', 'internal_name', 'official_name', 'handle')
+    list_display_links = ('internal_name',)
+    search_fields = ['internal_name', 'official_name', 'handle']
+
+class RusAdmin(admin.ModelAdmin):
+    list_display = ('profile', 'year', 'rusclass')
+    search_fields = ['profile__user__first_name', 'profile__user__last_name']
+
 admin.site.register(Tutor, TutorAdmin)
 admin.site.register(TutorProfile, ProfileAdmin)
 admin.site.register(TutorGroup, GroupAdmin)
 admin.site.register(TutorGroupLeader, LeaderAdmin)
 admin.site.register(BoardMember, BoardAdmin)
+admin.site.register(RusClass, RusClassAdmin)
+admin.site.register(Rus, RusAdmin)

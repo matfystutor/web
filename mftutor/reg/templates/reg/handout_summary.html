@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}{{ handout }}{% endblock %}
+{% block head %}
+<style>
+.response_table td, .response_table th {
+    border-bottom: 1px solid black;
+    padding: 3px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>{{ handout }}</h1>
+
+<p>Besvarelser: {{ class_response_count }}/{{ class_total_count }}</p>
+<p>Valgt i alt: {{ rus_checked_count }}/{{ rus_total_count }}</p>
+
+<table class="response_table" cellspacing="0">
+<col span="4" />
+{% for rusclass in classes %}
+<tr><td colspan="4">
+<h2>{{ rusclass }}</h2>
+
+{% if rusclass.has_response %}
+<p>Oprettet {{ rusclass.response.created }}. Sidst ændret {{ rusclass.response.updated }}.</p>
+{% if rusclass.response.note %}
+<p>Note: {{ rusclass.response.note }}</p>
+{% endif %}
+{% else %}
+<p>Ej besvaret.</p>
+{% endif %}
+
+<p>{{ rusclass.rus_checked_count }}/{{ rusclass.rus_total_count }} valgt.</p>
+</td></tr>
+
+<tr>
+    <th style="min-width: 1em">&nbsp;</th>
+    <th>Årskort</th>
+    <th>Navn</th>
+    <th>Note</th>
+</tr>
+{% for rus in rusclass.russes %}
+<tr>
+    <td>{% if rus.response.checkmark %}&#x2714;{% else %}&bullet;{% endif %}</td>
+    <td>{{ rus.profile.studentnumber }}</td>
+    <td>{{ rus.profile.get_full_name }}</td>
+    <td>{{ rus.response.note }}</td>
+</tr>
+{% endfor %}
+{% endfor %}
+</table>
+
+{% endblock %}

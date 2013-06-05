@@ -76,12 +76,48 @@ class TutorGroup(models.Model):
         verbose_name = 'arbejdsgruppe'
         verbose_name_plural = verbose_name + 'r'
 
+class RusClassManager(models.Manager):
+    def create_from_official(self, year, official_name):
+        translate_to_handle = {
+                u'MA': u'mat',
+                u'MØ': u'mok',
+                u'FY': u'fys',
+                u'NA': u'nano',
+                u'IT': u'it',
+                u'DA': u'dat'}
+        translate_to_internal = {
+                u'MA': u'Mat',
+                u'MØ': u'Møk',
+                u'FY': u'Fys',
+                u'NA': u'Nano',
+                u'IT': u'It',
+                u'DA': u'Dat'}
+        handle = translate_to_handle[official_name[0:2]] + official_name[2:]
+        internal_name = translate_to_internal[official_name[0:2]] + u' ' + official_name[2:]
+        return self.model(year=year, official_name=official_name,
+                handle=handle, internal_name=internal_name)
+
 # "Rushold"
 class RusClass(models.Model):
+    objects = RusClassManager()
+
     id = models.AutoField(primary_key=True)
-    handle = models.CharField(max_length=20, verbose_name="Navn",
-        help_text="Bruges i holdets emailadresse")
+    official_name = models.CharField(max_length=20, verbose_name="AU-navn",
+            help_text=u"DA1, MØ3, osv.")
+    internal_name = models.CharField(max_length=20, verbose_name="Internt navn",
+            help_text=u"Dat1, Møk3, osv.")
+    handle = models.CharField(max_length=20, verbose_name="Email",
+        help_text=u"dat1, mok3, osv. Bruges i holdets emailadresse")
     year = models.IntegerField(verbose_name="Tutorår")
+
+    def __unicode__(self):
+        return self.internal_name
+
+    class Meta:
+        verbose_name = 'rushold'
+        verbose_name_plural = verbose_name
+
+        ordering = ['year', 'internal_name']
 
 # Membership of a user for a single year
 class Tutor(models.Model):
@@ -112,9 +148,24 @@ class Tutor(models.Model):
     is_member.boolean = True
 
     def is_tutorbest(self):
-        import auth
-        return bool(auth.is_tutorbest(self))
+        if not self.is_member():
+            return False
+        elif self.groups.filter(handle__exact='best').exists():
+            return True
+        else:
+            return False
     is_tutorbest.boolean = True
+
+    def is_tutorbur(self):
+        if not self.is_member():
+            return False
+        elif self.is_tutorbest():
+            return True
+        elif self.groups.filter(handle__exact='buret').exists():
+            return True
+        else:
+            return False
+    is_tutorbur.boolean = True
 
     def __unicode__(self):
         return unicode(self.profile)+' ('+unicode(self.year)+')'
@@ -162,3 +213,11 @@ class Rus(models.Model):
     id = models.AutoField(primary_key=True)
     profile = models.ForeignKey(TutorProfile)
     year = models.IntegerField(verbose_name="Tutorår")
+    rusclass = models.ForeignKey(RusClass, null=True)
+    arrived = models.BooleanField(verbose_name="Ankommet")
+
+    class Meta:
+        verbose_name = 'rus'
+        verbose_name_plural = verbose_name + 'ser'
+
+        ordering = ['rusclass', 'profile']

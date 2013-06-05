@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{{ rusclass }} - {{ handout }}{% endblock %}
+
+{% block content %}
+<h1>Slet tilmeldingsliste</h1>
+
+<p>
+Er du sikker på, at du vil slette tilmeldingslisten for {{ handout }}, afleveret af {{ rusclass }}?
+</p>
+
+<form method="post">{% csrf_token %}
+    <input type="submit" value="Slet" />
+</form>
+
+{% endblock %}

@@ -68,6 +68,16 @@ Kildekoden er frit tilgængelig: https://github.com/matfystutor/web/
       <a href="{% url kontakt %}">Kontakt</a>
       </li>
       {% endif %}
+      {% if tutor.is_tutorbur %}
+      <li class="trigger">
+      <a href="#" style="cursor: default" onclick="return false">Buret</a>
+      <ul class="subnav">
+        <li><a href="{% url reg_rus_list %}">Registrering</a></li>
+        <li><a href="{% url handout_list %}">Tilmeldinger</a></li>
+        <li><a href="{% url import_session_choose %}">Importer russer</a></li>
+      </ul>
+      </li>
+      {% endif %}
       {% if tutor.is_tutorbest %}
       <li class="trigger">
       <a href="{% url admin:index %}">Administration</a>

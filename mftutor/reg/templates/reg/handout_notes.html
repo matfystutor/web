@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}{{ handout }}{% endblock %}
+{% block head %}
+<style>
+.response_table td, .response_table th {
+    border-bottom: 1px solid black;
+    padding: 3px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>{{ handout }}</h1>
+
+<p>Besvarelser: {{ class_response_count }}/{{ class_total_count }}</p>
+
+<table class="response_table" cellspacing="0">
+<tr>
+<th>Hold</th>
+<th>Note</th>
+</tr>
+{% for rusclass in classes %}
+<tr>
+<td>{{ rusclass }}</td>
+<td>{{ rusclass.response.note }}</td>
+</tr>
+{% endfor %}
+</table>
+
+{% endblock %}
