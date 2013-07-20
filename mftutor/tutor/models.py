@@ -98,6 +98,19 @@ class Tutor(models.Model):
         help_text="Årsag til at tutoren stopper")
     rusclass = models.ForeignKey(RusClass, null=True, blank=True)
 
+    def is_member(self, year=None):
+        if year is None:
+            from ..settings import YEAR
+            year = YEAR
+
+        if self.year != YEAR:
+            return False
+        elif self.early_termination is not None:
+            return False
+        else:
+            return True
+    is_member.boolean = True
+
     def is_tutorbest(self):
         import auth
         return bool(auth.is_tutorbest(self))
