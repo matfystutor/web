@@ -19,7 +19,10 @@ class NewsPost(models.Model):
 
     def get_absolute_url(self):
         p = self.posted
-        return reverse('news', kwargs={'year':p.year, 'month':p.month, 'day':p.day, 'pk':self.pk})
+        base_name = 'news'
+        if self.group_handle == u'rus':
+            base_name = 'rus_nyheder'
+        return reverse(base_name, kwargs={'year':p.year, 'month':p.month, 'day':p.day, 'pk':self.pk})
 
     class Meta:
         verbose_name = 'nyhed'

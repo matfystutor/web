@@ -12,5 +12,5 @@ static_pages = [url('^'+x+'/', TemplateView.as_view(template_name='rus/'+x+'.htm
         )]
 urlpatterns = patterns('',
     url(r'^$', TemplateView.as_view(template_name='rus/start.html'), name='rus_start'),
-    url(r'^nyheder/$', RusNewsView.as_view(), name='rus_nyheder'),
+    url(r'^nyheder/(?:(?P<year>\d+)/(?:(?P<month>\d+)/(?:(?P<day>\d+)/(?:(?P<pk>\d+)/)?)?)?)?$', RusNewsView.as_view(), name='rus_nyheder'),
     *static_pages)
