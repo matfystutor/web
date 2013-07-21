@@ -17,7 +17,16 @@ Ret nyhed
 </form>
 {% endif %}
 <form method="post" action="">{% csrf_token %}
-{{ form.as_p }}
+<p><label>Forfatter: {{ form.author }}</label></p>
+<p><label>Titel: {{ form.title }}</label></p>
+<p><label>Kategori: <select onchange="this.form.group_handle.value = this.value">
+{% for handle in group_handles %}
+<option value="{{ handle.handle }}">{{ handle.name }}</option>
+{% endfor %}
+</select></label>
+{{ form.group_handle }}</p>
+<p>Dato: {{ form.posted }}</p>
+<p>{{ form.body }}</p>
 {% wysiwyg_editor "id_body" %}
 <input type="submit" value="{% if create %}Opret nyhed{% else %}Ret nyhed{% endif %}" />
 </form>

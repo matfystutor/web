@@ -2,4 +2,19 @@
 {% block title %}Nyheder{% endblock %}
 
 {% block content %}
+{% for news in news_list %}
+<div class="newsItem">
+<h2>{{ news.title }}</h2>
+<div class="newsBy">
+{{ news.author.first_name }} {{ news.author.last_name }}
+<i class="dato" title="{{ news.posted|date:"j. F Y H:i:s" }}"><a href="{{ news.get_absolute_url }}">{{ news.posted|date:"j. F Y" }}</a></i>
+{% if tutor.is_tutorbest %}
+<a href="{% url news_edit news.pk %}">Ret</a>
+{% endif %}
+</div>
+<div class="newsBody">
+{{ news.body|safe }}
+</div>
+</div>
+{% endfor %}
 {% endblock %}
