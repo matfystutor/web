@@ -148,6 +148,7 @@ INSTALLED_APPS = (
     'mftutor.confirmation',
     'mftutor.documents',
     'mftutor.sampledata',
+    'mftutor.rus',
 )
 
 # A sample logging configuration. The only tangible logging

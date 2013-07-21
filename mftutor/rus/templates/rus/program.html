@@ -1,0 +1,26 @@
+{% extends "rus/base.html" %}
+{% block title %}Program{% endblock %}
+
+{% block content %}
+<h1>Studiestartsprogram</h1>
+
+<p>De tre første dage på Universitetet (rusdagene) er tæt pakkede med aktiviteter af enhver slags; både faglige, administrative men ikke mindst også sociale.</p>
+
+<p>Programmet er (så vidt vi ved) endeligt.
+Skulle der komme småændringer kommer de ikke til at påvirke hvornår du skal møde eller får fri.
+Arrangementer så som SØØL og ParXafari kan du finde information om i
+<a href="{% url rus_rusbog %}">Rusbogen</a>.
+Studiestartsprogrammet dækker kun de tre første dage (som vi kalder rusdagene eller intro-dagene),
+så husk at tjekke <a href="{% url rus_kalender %}">kalenderen</a> for vigtige datoer.</p>
+
+<p>Herunder kan du finde programmet for de enkelte uddannelser:</p>
+
+<ul>
+    <li><a href="http://studerende.au.dk/studier/fagportaler/datalogi/studiestart/min-studiestart/program-for-introdagene/">Datalogi</a></li>
+    <li><a href="http://studerende.au.dk/studier/fagportaler/fysik/studiestart/min-studiestart/program-for-introdagene/">Fysik</a></li>
+    <li><a href="http://studerende.au.dk/studier/fagportaler/datalogi/studiestart/min-studiestart/program-for-introdagene/">IT</a></li>
+    <li><a href="http://studerende.au.dk/studier/fagportaler/matematik/studiestart/min-studiestart/program-for-introdagene/">Matematik</a></li>
+    <li><a href="http://studerende.au.dk/studier/fagportaler/matematik/studiestart/min-studiestart/program-for-introdagene/">Matematik-Økonomi</a></li>
+    <li><a href="http://studerende.au.dk/studier/fagportaler/nanoscience/studiestart/min-studiestart/program-for-introdagene/">Nanoscience</a></li>
+</ul>
+{% endblock %}

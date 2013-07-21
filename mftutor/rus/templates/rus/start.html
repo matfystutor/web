@@ -1,0 +1,61 @@
+{% extends "rus/base.html" %}
+{% block title %}Start{% endblock %}
+
+{% block content %}
+
+<h1>Information til kommende russer</h1>
+
+<p>
+Hvad og hvornår er rusdagene?
+Hvornår modtager du dit rusbrev?
+Er du helt fortabt?
+Så er du kommet til det rette sted, hvis du skal starte på et af følgende studier:
+</p>
+
+<ul>
+    <li><a href="http://studerende.au.dk/studier/fagportaler/matematik/studiestart/">
+        Matematik og matematik/økonomi</a></li>
+    <li><a href="http://studerende.au.dk/studier/fagportaler/fysik/studiestart/">
+        Fysik</a></li>
+    <li><a href="http://studerende.au.dk/studier/fagportaler/nanoscience/studiestart/">
+        Nanoscience</a></li>
+    <li><a href="http://studerende.au.dk/studier/fagportaler/datalogi/studiestart/">
+        Datalogi og it</a></li>
+</ul>
+
+<h2>Om rusdagene</h2>
+
+<p>Rusdagene (eller introduktionsdagene) er tre dage, der afholdes inden
+studiestart. Formålet med dagene er at give dig og dit hold en god start på
+studiet. I rusdagene vil dine tutorer sørge for, at holdet bliver rystet samme,
+at I får købt bøger, og der vil også være oplæg om arbejdsformer og læsegrupper.
+Rusdagene er ikke obligatoriske, men vi vil på det stærkeste anbefale, at du
+deltager. Hvis du er forhindret (eller ikke ønsker at deltage) vil vi meget
+gerne <a href="{% url rus_kontakt %}">have besked om det</a>.</p>
+
+<h2>Hjælpen er nær</h2>
+
+<p>
+På denne hjemmeside kan du blandt andet finde en <a href="{% url rus_kalender %}">kalender</a>
+med de vigtigste datoer for studiestarten
+(f.eks. hvorn&aring;r du skal starte og hvorn&aring;r du skal p&aring; rustur),
+en onlineudgave af <a href="{% url rus_rusbog %}">rusbogen</a>
+og ikke mindst <a href="{% url rus_program %}">studiestartsprogrammet</a>,
+s&aring; du kan se, hvad du skal lave de f&oslash;rste dage p&aring; universitetet.
+</p>
+
+<p>
+Hvis du har sp&oslash;rgm&aring;l eller kommentarer skal du v&aelig;re mere end velkommen til at kontakte os.
+Se hvordan under <a href="{% url rus_kontakt %}">Kontakt os</a>.
+</p>
+
+<p>
+Vi gl&aelig;der os til at se dig!
+</p>
+
+<p><b>Vejviser</b></p>
+
+<p><iframe width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=ny+munkegade+118,+8000+%C3%A5rhus,+denmark&amp;aq=&amp;sll=56.16617,10.199861&amp;sspn=0.009271,0.033023&amp;g=ny+munkegade+116,+8000+%C3%A5rhus,+denmark&amp;ie=UTF8&amp;hq=&amp;hnear=Ny+Munkegade+118,+8000+Aarhus,+Aarhus+C,+Denmark&amp;ll=56.166164,10.199862&amp;spn=0.001159,0.004128&amp;t=m&amp;z=14&amp;output=embed"></iframe><br /><small><a href="https://maps.google.com/maps?f=q&amp;source=embed&amp;hl=en&amp;geocode=&amp;q=ny+munkegade+118,+8000+%C3%A5rhus,+denmark&amp;aq=&amp;sll=56.16617,10.199861&amp;sspn=0.009271,0.033023&amp;g=ny+munkegade+116,+8000+%C3%A5rhus,+denmark&amp;ie=UTF8&amp;hq=&amp;hnear=Ny+Munkegade+118,+8000+Aarhus,+Aarhus+C,+Denmark&amp;ll=56.166164,10.199862&amp;spn=0.001159,0.004128&amp;t=m&amp;z=14" style="color:#0000FF;text-align:left">Vis st&oslash;rre kort</a></small></p>
+</p>
+
+{% endblock %}

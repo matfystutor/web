@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block menu %}
+<li class="trigger">
+<a href="{% url rus_start %}">Start</a>
+<ul class="subnav">
+  <li><a href="{% url rus_kontakt %}">Kontakt</a></li>
+  <li><a href="{% url rus_nyheder %}">Nyheder</a></li>
+</ul>
+</li>
+<li class="trigger">
+<a href="{% url rus_program %}">Program</a>
+<ul class="subnav">
+  <li><a href="{% url rus_kalender %}">Kalender</a></li>
+</ul>
+</li>
+<li class="trigger">
+<a href="{% url rus_rusbrev %}">Rusbrev</a>
+<ul class="subnav">
+  <li><a href="{% url rus_rusbog %}">Rusbog</a></li>
+</ul>
+</li>
+<li class="trigger">
+<a href="{% url rus_holdlister %}">Holdlister</a>
+<ul class="subnav">
+</ul>
+</li>
+{% endblock %}

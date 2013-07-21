@@ -23,4 +23,5 @@ urlpatterns = patterns('',
     url(r'^shirt/', include('mftutor.shirt.urls')),
     url(r'^document/', include('mftutor.documents.urls')),
     url(r'^confirmation/', include('mftutor.confirmation.urls')),
+    url(r'^rus/', include('mftutor.rus.urls')),
 )
