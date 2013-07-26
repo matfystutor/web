@@ -55,7 +55,7 @@ def tutors_view(request, group=None):
         'street': t.profile.street,
         'city': t.profile.city,
         'phone': t.profile.phone,
-        'email': t.profile.user.email if t.profile.user else '',
+        'email': t.profile.email,
         'study': t.profile.study,
         } for t in tutors]
     tutors.sort(key=lambda t: (t['pk'] != leader_pk, t['full_name']))

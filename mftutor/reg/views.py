@@ -863,7 +863,7 @@ class RusInfoView(FormView):
         data = {}
 
         for rus in self.rus_list:
-            data['rus_%s_email' % rus.pk] = rus.profile.user.email
+            data['rus_%s_email' % rus.pk] = rus.profile.email
             data['rus_%s_phone' % rus.pk] = rus.profile.phone
 
         return data
@@ -916,9 +916,9 @@ class RusInfoView(FormView):
                     rus.profile.user.save()
                     changes += 1
 
-                if in_email != rus.profile.user.email:
-                    rus.profile.user.email = in_email
-                    rus.profile.user.save()
+                if in_email != rus.profile.email:
+                    rus.profile.email = in_email
+                    rus.profile.save()
                     changes += 1
 
                 if in_phone != rus.profile.phone:

@@ -42,9 +42,10 @@ class LoginView(TemplateView):
 
         if username is None:
             try:
-                u = User.objects.get(email=loginname)
+                tp = TutorProfile.objects.get(email=loginname)
+                u = tp.user
                 username = u.username
-            except User.DoesNotExist:
+            except TutorProfile.DoesNotExist:
                 pass
 
         if username is None:

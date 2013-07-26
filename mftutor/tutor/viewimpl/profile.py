@@ -34,8 +34,7 @@ class ReadOnlyField(forms.Field):
 
 
 class ProfileForm(forms.Form):
-    first_name = forms.CharField(label='Fornavn')
-    last_name = forms.CharField(label='Efternavn')
+    name = forms.CharField(label='Navn')
     street = forms.CharField(label='Gade')
     city = forms.CharField(label='Postnr. og by')
     phone = forms.CharField(label='Telefon')
@@ -50,12 +49,18 @@ def profile_view(request):
     if request.method == 'POST':
         form = ProfileForm(request.POST)
         if form.is_valid():
-            u.first_name = form.cleaned_data['first_name']
-            u.last_name = form.cleaned_data['last_name']
+            tp.name = form.cleaned_data['name']
+            try:
+                first_name, last_name = tp.name.split(' ', 1)
+            except ValueError:
+                first_name = tp.name
+                last_name = 'NN'
+            u.first_name = first_name
+            u.last_name = last_name
             tp.street = form.cleaned_data['street']
             tp.city = form.cleaned_data['city']
             tp.phone = form.cleaned_data['phone']
-            u.email = form.cleaned_data['email']
+            u.email = tp.email = form.cleaned_data['email']
             tp.study = form.cleaned_data['study']
             #tp.studentnumber = form.cleaned_data['studentnumber']
             tp.birthday = form.cleaned_data['birthday']
@@ -64,12 +69,11 @@ def profile_view(request):
             return redirect('profile_view')
     else:
         initial = {
-            'first_name': u.first_name,
-            'last_name': u.last_name,
+            'name': tp.name,
             'street': tp.street,
             'city': tp.city,
             'phone': tp.phone,
-            'email': u.email,
+            'email': tp.email,
             'study': tp.study,
             'studentnumber': tp.studentnumber,
             'birthday': tp.birthday,

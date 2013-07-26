@@ -64,8 +64,14 @@ def new_random_profile(year):
     while TutorProfile.objects.filter(studentnumber__exact=sn).exists():
         sn = random_student_number()
 
+    first_name = random_first_name()
+    last_name = random_last_name()
+    email = random_email(sn)
+
     tp = TutorProfile(
             studentnumber=sn,
+            name=first_name+' '+last_name,
+            email=email,
             street=random_street(),
             city=random_city(),
             phone=random_phone_number(),
@@ -74,9 +80,9 @@ def new_random_profile(year):
 
     u = User(
             username=sn,
-            email=random_email(sn),
-            first_name=random_first_name(),
-            last_name=random_last_name(),
+            email=email,
+            first_name=first_name,
+            last_name=last_name,
             )
     u.save()
     tp.user = u

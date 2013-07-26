@@ -531,7 +531,7 @@ onsubmit="return reg_change_arrived('{% url reg_change_arrived_ajax pk=rus.pk %}
 <td>{{ rus.profile.get_full_name }}</td>
 <td>{{ rus.profile.address }}</td>
 <td>{{ rus.profile.phone }}</td>
-<td>{{ rus.profile.user.email }}</td>
+<td>{{ rus.profile.email }}</td>
 <td><a href="#notes-rus-{{ rus.pk }}" onclick="show_notes('notes-rus-{{ rus.pk }}'); return false">
 {% for note in rus.notes %}<div>{{ note.body }}</div>
 {% endfor %}

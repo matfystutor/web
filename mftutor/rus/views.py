@@ -34,7 +34,7 @@ class RusStartView(TemplateView):
     def get(self, request):
         if self.rus is not None:
             in_phone = self.rus.profile.phone
-            in_email = self.rus.profile.user.email
+            in_email = self.rus.profile.email
             if in_phone == '' or in_email == '':
                 self.form = MyInfoForm(initial={'phone': in_phone, 'email': in_email})
 
@@ -44,9 +44,8 @@ class RusStartView(TemplateView):
         form = self.form = MyInfoForm(request.POST)
         if form.is_valid():
             self.rus.profile.phone = form.cleaned_data['phone']
+            self.rus.profile.email = form.cleaned_data['email']
             self.rus.profile.save()
-            self.rus.profile.user.email = form.cleaned_data['email']
-            self.rus.profile.user.save()
             return self.render_to_response(self.get_context_data(form_saved=True))
         else:
             return self.render_to_response(self.get_context_data(form_errors=True))
