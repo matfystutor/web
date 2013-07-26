@@ -5,7 +5,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
-from ..settings import YEAR
+from ..settings import YEAR, RUSCLASS_BASE
 from .managers import TutorProfileManager, TutorManager, TutorMembers, VisibleTutorGroups
 
 def tutorpicture_upload_to(instance, filename):
@@ -78,20 +78,10 @@ class TutorGroup(models.Model):
 
 class RusClassManager(models.Manager):
     def create_from_official(self, year, official_name):
-        translate_to_handle = {
-                u'MA': u'mat',
-                u'MØ': u'mok',
-                u'FY': u'fys',
-                u'NA': u'nano',
-                u'IT': u'it',
-                u'DA': u'dat'}
-        translate_to_internal = {
-                u'MA': u'Mat',
-                u'MØ': u'Møk',
-                u'FY': u'Fys',
-                u'NA': u'Nano',
-                u'IT': u'It',
-                u'DA': u'Dat'}
+        translate_to_handle = {official: handle
+                for official, handle, internal in RUSCLASS_BASE}
+        translate_to_handle = {official: internal
+                for official, handle, internal in RUSCLASS_BASE}
         handle = translate_to_handle[official_name[0:2]] + official_name[2:]
         internal_name = translate_to_internal[official_name[0:2]] + u' ' + official_name[2:]
         return self.model(year=year, official_name=official_name,

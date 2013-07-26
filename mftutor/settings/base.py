@@ -1,3 +1,4 @@
+# coding: utf-8
 from django.conf import global_settings
 
 # Django settings for mftutor project.
@@ -214,3 +215,20 @@ SITE_URL = 'http://example.com'
 CALENDAR_NAME = 'Calendar name'
 
 CALENDAR_DESCRIPTION = 'Calendar description'
+
+# Tuples (official_name, handle, internal_name).
+# official_name is the two-letter prefix used by the faculty.
+# handle is the lowercase ASCII prefix we use in the mail system.
+# internal_name is the prefix we use in internal communications.
+RUSCLASS_BASE = (
+    (u'MA', u'mat', u'Mat'),
+    (u'MØ', u'mok', u'Møk'),
+    (u'FY', u'fys', u'Fys'),
+    (u'NA', u'nano', u'Nano'),
+    (u'IT', u'it', u'It'),
+    (u'DA', u'dat', u'Dat'),
+)
+
+# Prefix of email addresses going to tutors of a certain rusclass
+# i.e. tutor+dat5 for the dat5 tutors -> use 'tutor+'
+TUTORS_PREFIX = 'tutor+'
