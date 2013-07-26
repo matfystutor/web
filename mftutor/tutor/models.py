@@ -157,6 +157,11 @@ class Tutor(models.Model):
             return False
     is_tutorbur.boolean = True
 
+    def can_manage_rusclass(self, rusclass):
+        return (self.is_tutorbest()
+                or self.is_tutorbur()
+                or self.rusclass == rusclass)
+
     def __unicode__(self):
         return unicode(self.profile)+' ('+unicode(self.year)+')'
 

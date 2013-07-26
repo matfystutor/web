@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}{{ rusclass }}{% endblock %}
+{% block head %}
+<style>
+.rusinfo input {
+    border: 0;
+    margin: 1px;
+    background-color: transparent;
+    border-bottom: 1px solid gray;
+}
+.rusinfo input:hover, .rusinfo input.changed, .rusinfo input:focus {
+    border: 1px solid black;
+    margin: 0 0 1px;
+    background-color: white;
+}
+.rusinfo input.changed {
+    background-color: #ff8;
+}
+</style>
+<script>
+function hook_inputs() {
+    var inputs = document.querySelectorAll('.rusinfo input');
+    function onchange() {
+        if (this.value != this.defaultValue) this.classList.add('changed');
+        else this.classList.remove('changed');
+    }
+    for (var i = 0, l = inputs.length; i < l; ++i) {
+        inputs[i].onchange = onchange;
+    }
+}
+window.addEventListener('load', hook_inputs, false);
+</script>
+{% endblock %}
+
+{% block bodyclass %}wide{% endblock %}
+{% block content %}
+<h1>{{ rusclass }}</h1>
+
+{% if form_errors %}
+<p>Formularen er ikke udfyldt korrekt.</p>
+{% endif %}
+
+{% if form_saved %}
+<p>{{ changes|pluralize:"Din,Dine" }} {{ changes }} {{ changes|pluralize:"ændring,ændringer" }}
+er gemt.</p>
+{% endif %}
+
+{% if form.non_field_errors %}
+{{ form.non_field_errors }}
+{% endif %}
+
+<form method="post">{% csrf_token %}
+<table cellspacing="0" class="rusinfo">
+<thead>
+<tr>
+<th>Årskort</th>
+<th>Navn</th>
+<th>Email</th>
+<th>Telefon</th>
+<th>Skift kodeord</th>
+</tr>
+</thead>
+<tbody>
+{% for rus in rus_list %}
+<tr>
+    <td>{{ rus.profile.studentnumber }}</td>
+    <td>{{ rus.profile.get_full_name }}</td>
+    <td>{{ rus.email_field }} {{ rus.email_field.errors }}</td>
+    <td>{{ rus.phone_field }} {{ rus.phone_field.errors }}</td>
+    <td>{{ rus.password_field }} {{ rus.password_field.errors }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+<input type="submit" value="Gem ændringer" />
+</form>
+
+{% endblock %}

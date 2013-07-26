@@ -17,7 +17,7 @@ from django.contrib.auth.models import User
 from .. import settings
 from ..settings import YEAR
 from ..tutor.models import RusClass, TutorProfile, Rus
-from ..tutor.auth import user_tutor_data
+from ..tutor.auth import user_tutor_data, tutor_required_error, NotTutor
 
 from .models import ImportSession, ImportLine, Note, ChangeLogEntry, ChangeLogEffect, Handout, HandoutRusResponse, HandoutClassResponse
 
@@ -816,3 +816,98 @@ class HandoutSummaryView(TemplateView):
                 for r in context_data['classes'])
 
         return context_data
+
+
+class RusInfoForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        rus_list = kwargs.pop('rus_list')
+        super(RusInfoForm, self).__init__(*args, **kwargs)
+
+        for rus in rus_list:
+            self.fields['rus_%s_password' % rus.pk] = \
+                    forms.CharField(required=False, widget=forms.PasswordInput())
+            self.fields['rus_%s_email' % rus.pk] = \
+                    forms.CharField(required=False)
+            self.fields['rus_%s_phone' % rus.pk] = \
+                    forms.CharField(required=False)
+
+class RusInfoView(FormView):
+    form_class = RusInfoForm
+    template_name = 'reg/rusinfo_form.html'
+
+    def get_form_kwargs(self):
+        kwargs = super(RusInfoView, self).get_form_kwargs()
+        kwargs['rus_list'] = self.rus_list
+        return kwargs
+
+    def get_initial(self):
+        data = {}
+
+        for rus in self.rus_list:
+            data['rus_%s_email' % rus.pk] = rus.profile.user.email
+            data['rus_%s_phone' % rus.pk] = rus.profile.phone
+
+        return data
+
+    def dispatch(self, request, handle):
+        try:
+            d = user_tutor_data(request.user)
+        except NotTutor:
+            return tutor_required_error(request)
+        if not d.tutor:
+            return tutor_required_error(request)
+
+        self.rusclass = get_object_or_404(RusClass, handle__exact=handle, year__exact=YEAR)
+        if not d.tutor.can_manage_rusclass(self.rusclass):
+            return tutorbest_required_error(request)
+
+        self.rus_list = self.get_rus_list()
+
+        return super(RusInfoView, self).dispatch(request, handle=handle)
+
+    def get_rus_list(self):
+        return (Rus.objects.filter(rusclass=self.rusclass)
+                .order_by('profile__studentnumber')
+                .select_related('profile', 'profile__user'))
+
+    def get_context_data(self, **kwargs):
+        context_data = super(RusInfoView, self).get_context_data(**kwargs)
+        form = context_data['form']
+        for rus in self.rus_list:
+            rus.email_field = form['rus_%s_email' % rus.pk]
+            rus.phone_field = form['rus_%s_phone' % rus.pk]
+            rus.password_field = form['rus_%s_password' % rus.pk]
+        context_data['rus_list'] = self.rus_list
+        context_data['rusclass'] = self.rusclass
+        return context_data
+
+    def form_valid(self, form):
+        from django.db import transaction
+
+        changes = 0
+        with transaction.commit_on_success():
+            data = form.cleaned_data
+            for rus in self.rus_list:
+                in_password = data['rus_%s_password' % rus.pk]
+                in_email = data['rus_%s_email' % rus.pk]
+                in_phone = data['rus_%s_phone' % rus.pk]
+
+                if in_password:
+                    rus.profile.user.set_password(in_password)
+                    rus.profile.user.save()
+                    changes += 1
+
+                if in_email != rus.profile.user.email:
+                    rus.profile.user.email = in_email
+                    rus.profile.user.save()
+                    changes += 1
+
+                if in_phone != rus.profile.phone:
+                    rus.profile.phone = in_phone
+                    rus.profile.save()
+                    changes += 1
+
+        return self.render_to_response(self.get_context_data(form=form, form_saved=True, changes=changes))
+
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form, form_errors=True))
