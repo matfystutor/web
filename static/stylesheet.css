@@ -97,7 +97,7 @@ body.fullwidth #main {
 	margin: 0 auto;
 }
 
-#login {
+#login, #logout {
 	float: right;
 	padding-right: 1em;
 }
@@ -643,4 +643,25 @@ td.altTabBg1 {
 .referat {
 	clear: both;
 	margin: 0 0 1em 0;
+}
+
+.link_button {
+    background: none repeat scroll 0% 0% transparent;
+    border: medium none;
+    color: rgb(17, 121, 0); /*rgb(59, 89, 152);*/
+    cursor: pointer;
+    margin: 0px;
+    padding: 0px;
+    vertical-align: top;
+    font-family: inherit;
+    font-size: 100%;
+}
+
+.link_button:hover {
+    text-decoration: underline;
+}
+
+#menu .link_button {
+	color: white;
+	vertical-align: baseline;
 }

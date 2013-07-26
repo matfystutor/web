@@ -3,20 +3,24 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import logout, authenticate, login
 from django.core.urlresolvers import NoReverseMatch, reverse
 from django.contrib.auth.models import User
+from django.views.generic import TemplateView, View
+from django.http import HttpResponseRedirect
 from ...activation.models import ProfileActivation
 from ..models import TutorProfile
-from ..auth import user_tutor_data, NotTutor
+from ..auth import user_tutor_data, NotTutor, user_rus_data
 
-def logout_view(request):
-    logout(request)
-    try:
-        return redirect(request.GET['next'])
-    except NoReverseMatch:
-        pass
-    return redirect('news')
+class LogoutView(View):
+    def post(self, request):
+        logout(request)
+        try:
+            return HttpResponseRedirect(request.POST['next'])
+        except KeyError:
+            return redirect('news')
 
-def login_view(request, err=''):
-    if request.method == 'POST':
+class LoginView(TemplateView):
+    template_name = 'login_form.html'
+
+    def post(self, request):
         loginname = request.POST['username']
         username = None
 
@@ -51,38 +55,50 @@ def login_view(request, err=''):
                 if u:
                     username = u.username
                 elif ProfileActivation.objects.filter(profile=tp).count() > 0:
-                    return redirect('login_error', err='activate')
+                    return self.render_to_response(self.get_context_data(error_code='activate'))
             except TutorProfile.DoesNotExist:
                 pass
 
 
         if username is None:
-            return redirect('login_error', err='failauth')
+            return self.render_to_response(self.get_context_data(error_code='failauth'))
 
         password = request.POST['password']
         user = authenticate(username=username, password=password)
         try:
             tutordata = user_tutor_data(user)
         except NotTutor as e:
-            return redirect('login_error', err=e.value)
+            try:
+                tutordata = user_rus_data(user)
+            except NotTutor as e:
+                return self.render_to_response(self.get_context_data(error_code=e.value))
         login(request, user)
+        if hasattr(tutordata, 'rus') and tutordata.rus:
+            return redirect('rus_start')
         try:
-            return redirect(request.POST['next'])
-        except NoReverseMatch:
-            pass
-        return redirect('news')
-    else:
-        errormessage = ''
-        if 'err' in request.GET:
-            err = request.GET['err']
-            if err == 'failauth':
-                errormessage = 'Forkert brugernavn eller kodeord.'
-            elif err == 'djangoinactive':
-                errormessage = 'Din bruger er inaktiv.'
-            elif err == 'notutorprofile':
-                errormessage = 'Din bruger har ingen tutorprofil.'
-            elif err == 'notutoryear':
-                errormessage = 'Du er ikke tutor i år.'
-            elif err == 'activate':
-                errormessage = 'Velkommen til tutorgruppen. Du bedes <a href="'+reverse('register')+'">aktivere din bruger</a>.'
-        return render(request, 'login_form.html', {'error': errormessage})
+            return HttpResponseRedirect(request.POST['next'])
+        except KeyError:
+            return redirect('news')
+
+    def get_context_data(self, **kwargs):
+        try:
+            error_code = kwargs.pop('error_code')
+        except KeyError:
+            error_code = ''
+
+        context_data = super(LoginView, self).get_context_data(**kwargs)
+
+        errors = {
+            'failauth': 'Forkert brugernavn eller kodeord.',
+            'djangoinactive': 'Din bruger er inaktiv.',
+            'notutorprofile': 'Din bruger har ingen tutorprofil.',
+            'notutoryear': 'Du er ikke tutor i år.',
+            'activate': 'Velkommen til tutorgruppen. Du bedes <a href="'+reverse('register')+'">aktivere din bruger</a>.',
+        }
+
+        context_data['error'] = errors.get(error_code, '')
+
+        return context_data
+
+login_view = LoginView.as_view()
+logout_view = LogoutView.as_view()

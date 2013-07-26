@@ -38,7 +38,7 @@ Kildekoden er frit tilgængelig: https://github.com/matfystutor/web/
         <li><a href="{% url kontakt %}">Kontakt</a></li>
       </ul>
       </li>
-      {% if user.is_authenticated %}
+      {% if tutor %}
       <li class="trigger">
       <a href="{% url tutors %}">Tutorer</a>
       <ul class="subnav">
@@ -72,6 +72,7 @@ Kildekoden er frit tilgængelig: https://github.com/matfystutor/web/
       <li class="trigger">
       <a href="#" style="cursor: default" onclick="return false">Buret</a>
       <ul class="subnav">
+        <li><a href="{% url rusinfo_list %}">Russer</a></li>
         <li><a href="{% url reg_rus_list %}">Registrering</a></li>
         <li><a href="{% url handout_list %}">Tilmeldinger</a></li>
         <li><a href="{% url import_session_choose %}">Importer russer</a></li>
@@ -101,14 +102,16 @@ Kildekoden er frit tilgængelig: https://github.com/matfystutor/web/
       {% endblock %}
     </ul>
   </div>
-  <div id="login">
-    {% if tutor %}
-    {{ profile.user.get_full_name }}&nbsp;&nbsp;
-    <a href="{% url tutor.views.logout_view %}?next={{ request.get_full_path }}">Log ud</a>
+  <div>
+    {% if user.is_authenticated %}
+    <form id="logout" method="post" action="{% url logout_view %}">{% csrf_token %}
+    {{ user.get_full_name }}&nbsp;&nbsp;
+      <input type="submit" class="link_button" value="Log ud" />
+    </form>
     {% else %}
-    <form method="post" action="{% url tutor.views.login_view %}">
+    <form id="login" method="post" action="{% url tutor.views.login_view %}">
       {% csrf_token %}
-      <input type="hidden" name="next" value="{{ request }}" />
+      <input type="hidden" name="next" value="{{ request_path }}" />
       <fieldset>
         <input name="username" type="text" id="user-login" value="Årskortnr" onfocus="if (this.value == 'Årskortnr') {this.value = '';}" onblur="if (this.value == '') {this.value = 'Årskortnr';}" />
         <input name="password" type="text" id="password-login" value="Password" onfocus="if (this.value == 'Password') {this.value = '';} if (this.type == 'text') {this.type = 'password'};" onblur="if (this.value == '') {this.value = 'Password';} if (this.type == 'password' &amp;&amp; this.value == 'Password') {this.type = 'text'};" />

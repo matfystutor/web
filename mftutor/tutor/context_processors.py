@@ -4,7 +4,10 @@ from .models import TutorProfile
 from .auth import user_tutor_data, NotTutor
 
 def login_form(request):
-    return {'login_form': AuthenticationForm()}
+    return {
+            'login_form': AuthenticationForm(),
+            'request_path': request.get_full_path(),
+            }
 
 def tutor_data(request):
     try:

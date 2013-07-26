@@ -185,6 +185,7 @@ LOGGING = {
 AUTH_PROFILE_MODULE = 'tutor.TutorProfile'
 
 TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
+    "mftutor.rus.context_processors.rus_data",
     "mftutor.tutor.context_processors.login_form",
     "mftutor.tutor.context_processors.tutor_data",
     "mftutor.tutor.context_processors.settings",

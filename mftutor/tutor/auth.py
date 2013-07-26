@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.template import RequestContext, loader
 import django.contrib.auth.backends
 from ..settings import YEAR
-from .models import TutorProfile, Tutor
+from .models import TutorProfile, Tutor, Rus
 
 class NotTutor(Exception):
     def __init__(self, value):
@@ -14,7 +14,7 @@ class NotTutor(Exception):
 class TutorData:
     pass
 
-def user_tutor_data(user):
+def user_profile_data(user):
     d = TutorData()
     if user is None or not user.is_authenticated():
         raise NotTutor('failauth')
@@ -24,10 +24,22 @@ def user_tutor_data(user):
         d.profile = user.get_profile()
     except TutorProfile.DoesNotExist:
         raise NotTutor('notutorprofile')
+    return d
+
+def user_tutor_data(user):
+    d = user_profile_data(user)
     try:
         d.tutor = Tutor.objects.get(profile=d.profile, year=YEAR)
     except Tutor.DoesNotExist:
         raise NotTutor('notutoryear')
+    return d
+
+def user_rus_data(user):
+    d = user_profile_data(user)
+    try:
+        d.rus = Rus.objects.get(profile=d.profile, year=YEAR)
+    except Rus.DoesNotExist:
+        raise NotTutor('norusyear')
     return d
 
 def rusclass_required_error(request):
