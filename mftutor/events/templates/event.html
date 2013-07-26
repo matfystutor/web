@@ -29,7 +29,7 @@ til {{ event.end_date|date:"l j. F"|lower }}
 <h2>RSVP</h2>
 <ul>
 {% for participant in event.participants.all %}
-<li>{{ participant.tutor.profile.user.get_full_name }}: {{ participant.status }}</li>
+<li>{{ participant.tutor.profile.get_full_name }}: {{ participant.status }}</li>
 {% endfor %}
 </ul>
 {% endif %}

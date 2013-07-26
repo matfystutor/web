@@ -105,7 +105,7 @@ Kildekoden er frit tilgængelig: https://github.com/matfystutor/web/
   <div>
     {% if user.is_authenticated %}
     <form id="logout" method="post" action="{% url logout_view %}">{% csrf_token %}
-    {{ user.get_full_name }}&nbsp;&nbsp;
+    {{ profile.get_full_name }}&nbsp;&nbsp;
       <input type="submit" class="link_button" value="Log ud" />
     </form>
     {% else %}

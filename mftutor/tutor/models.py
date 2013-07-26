@@ -20,13 +20,11 @@ class TutorProfile(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.OneToOneField(User)
 
-    #name = models.CharField(max_length=60, verbose_name="Fulde navn")
-    # first name and last name exist in User
+    name = models.CharField(max_length=60, verbose_name="Fulde navn")
     street = models.CharField(max_length=80, blank=True, verbose_name="Adresse")
     city = models.CharField(max_length=40, blank=True, verbose_name="Postnr. og by")
     phone = models.CharField(max_length=20, blank=True, verbose_name="Telefonnr.")
-    #email = models.EmailField(verbose_name="E-mailadresse")
-    # Email address exists in django.contrib.auth.models.User
+    email = models.EmailField(verbose_name="E-mailadresse")
 
     birthday = models.DateField(verbose_name="Født", blank=True, null=True)
 
@@ -51,7 +49,7 @@ class TutorProfile(models.Model):
         verbose_name_plural = verbose_name + 'er'
 
     def get_full_name(self):
-        return self.user.get_full_name()
+        return self.name
 
 # "Arbejdsgruppe"
 class TutorGroup(models.Model):

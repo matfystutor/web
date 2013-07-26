@@ -14,11 +14,11 @@
  <div class="detailscontainer">
   <div class="detailsmagic"></div><div class="details">
    <div class="name">
-    {{ tutor.tutor.profile.user.get_full_name }}
+    {{ tutor.tutor.profile.get_full_name }}
    </div> <!-- /name -->
    <ul>
     <li>{{ tutor.title }}</li>
-    <li>{{ tutor.tutor.profile.user.email }}</li>
+    <li>{{ tutor.tutor.profile.email }}</li>
    </ul>
   </div> <!-- /details -->
   <div class="detailsoverflow"></div>

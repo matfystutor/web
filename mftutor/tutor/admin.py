@@ -44,7 +44,7 @@ class LeaderAdmin(admin.ModelAdmin):
     list_display_links = ('tutor',)
 
 def board_full_name(bm):
-    return bm.tutor.profile.user.get_full_name()
+    return bm.tutor.profile.get_full_name()
 board_full_name.short_description = 'Navn'
 
 def tutor_year(bm):
