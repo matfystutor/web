@@ -77,6 +77,12 @@ Kildekoden er frit tilgængelig: https://github.com/matfystutor/web/
         <li><a href="{% url import_session_choose %}">Importer russer</a></li>
       </ul>
       </li>
+      {% elif tutor.has_rusclass %}
+      <li class="trigger">
+      <a href="{% url rusinfo_list %}">Russer</a>
+      <ul class="subnav">
+      </ul>
+      </li>
       {% endif %}
       {% if tutor.is_tutorbest %}
       <li class="trigger">
