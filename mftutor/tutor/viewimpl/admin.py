@@ -6,7 +6,6 @@ from django.forms.formsets import formset_factory, BaseFormSet
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from ...settings import YEAR
-from ...activation.models import ProfileActivation
 from ..models import Tutor, TutorGroup, TutorProfile, RusClass
 
 def classy(cl, size=10):
@@ -42,23 +41,12 @@ class TutorAdminView(ProcessFormView, FormMixin, TemplateResponseMixin):
         studentnumber = profile.studentnumber
         study = profile.study
         groups = tutor.groups.filter(visible=True)
-        status = 'ghost'
         rusclass = tutor.rusclass
 
-        try:
-            if profile.user:
-                prev_data = profile.user
-                status = 'normal'
-            else:
-                prev_data = ProfileActivation.objects.get(profile=profile)
-                status = 'pending'
-            first_name = prev_data.first_name
-            last_name = prev_data.last_name
-            email = prev_data.email
-        except ProfileActivation.DoesNotExist:
-            first_name = ''
-            last_name = ''
-            email = ''
+        prev_data = profile.user
+        first_name = prev_data.first_name
+        last_name = prev_data.last_name
+        email = prev_data.email
 
         return {
             'pk': tutor.pk,
@@ -72,7 +60,7 @@ class TutorAdminView(ProcessFormView, FormMixin, TemplateResponseMixin):
         }
 
     def get_initial(self):
-        tutors = Tutor.objects.filter(year=YEAR).select_related('profile__user', 'profile__activation')
+        tutors = Tutor.objects.filter(year=YEAR).select_related('profile__user')
         result = []
         for tutor in tutors:
             result.append(self.get_initial_for_tutor(tutor))
@@ -138,13 +126,7 @@ class TutorAdminView(ProcessFormView, FormMixin, TemplateResponseMixin):
                 if in_data == prev_data:
                     continue
 
-            try:
-                if profile.user:
-                    data_origin = profile.user
-                else:
-                    data_origin = ProfileActivation.objects.get(profile=profile)
-            except ProfileActivation.DoesNotExist:
-                data_origin = ProfileActivation(profile=profile)
+            data_origin = profile.user
 
             if in_first_name != prev_data['first_name']:
                 data_origin.first_name = in_first_name

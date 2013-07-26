@@ -432,7 +432,7 @@ class RusListView(TemplateView):
         return context_data
 
     def get_rus_list(self):
-        rus_list = Rus.objects.filter(year=YEAR).select_related('rusclass', 'profile', 'profile__user', 'profile__activation').order_by('rusclass', 'profile__studentnumber')
+        rus_list = Rus.objects.filter(year=YEAR).select_related('rusclass', 'profile', 'profile__user').order_by('rusclass', 'profile__studentnumber')
 
         rus_pks = frozenset(rus.pk for rus in rus_list)
         rusclass_pks = frozenset(rus.rusclass.pk for rus in rus_list if rus.rusclass is not None)

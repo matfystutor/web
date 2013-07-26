@@ -8,10 +8,7 @@ class Command(BaseCommand):
             make_option('--members',
                 dest='members',
                 default=40),
-            make_option('--activations',
-                dest='activations',
-                default=0.1),
             )
 
-    def handle(self, members, activations, **kwargs):
-        populate_all(members, activations)
+    def handle(self, members, **kwargs):
+        populate_all(members)

@@ -142,7 +142,6 @@ INSTALLED_APPS = (
     'mftutor.news',
     'mftutor.events',
     'mftutor.aliases',
-    'mftutor.activation',
     'mftutor.tutormail',
     'mftutor.page',
     'mftutor.shirt',
@@ -199,9 +198,6 @@ LOGIN_URL = '/login/'
 INTERNAL_IPS = ('127.0.0.1',)
 
 BODY_CLASS = 'production'
-
-# If True, activation will print the email to be sent rather than sending it.
-ACTIVATION_DEBUG = True
 
 # If True, use HTML Tidy to clean up news post HTML bodies.
 TIDY_NEWS_HTML = False

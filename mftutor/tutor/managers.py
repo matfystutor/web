@@ -6,13 +6,13 @@ class TutorProfileManager(models.Manager):
     use_for_related_fields = True
 
     def get_query_set(self):
-        return super(TutorProfileManager, self).get_query_set().select_related('user', 'activation')
+        return super(TutorProfileManager, self).get_query_set().select_related('user')
 
 class TutorManager(models.Manager):
     use_for_related_fields = True
 
     def get_query_set(self):
-        return super(TutorManager, self).get_query_set().select_related('profile', 'profile__user', 'profile__activation')
+        return super(TutorManager, self).get_query_set().select_related('profile', 'profile__user')
 
 class TutorMembers(TutorManager):
     def get_query_set(self):

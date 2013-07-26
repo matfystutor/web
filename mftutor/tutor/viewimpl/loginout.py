@@ -5,7 +5,6 @@ from django.core.urlresolvers import NoReverseMatch, reverse
 from django.contrib.auth.models import User
 from django.views.generic import TemplateView, View
 from django.http import HttpResponseRedirect
-from ...activation.models import ProfileActivation
 from ..models import TutorProfile
 from ..auth import user_tutor_data, NotTutor, user_rus_data
 
@@ -52,10 +51,7 @@ class LoginView(TemplateView):
             try:
                 tp = TutorProfile.objects.get(studentnumber=loginname)
                 u = tp.user
-                if u:
-                    username = u.username
-                elif ProfileActivation.objects.filter(profile=tp).count() > 0:
-                    return self.render_to_response(self.get_context_data(error_code='activate'))
+                username = u.username
             except TutorProfile.DoesNotExist:
                 pass
 
@@ -93,7 +89,6 @@ class LoginView(TemplateView):
             'djangoinactive': 'Din bruger er inaktiv.',
             'notutorprofile': 'Din bruger har ingen tutorprofil.',
             'notutoryear': 'Du er ikke tutor i år.',
-            'activate': 'Velkommen til tutorgruppen. Du bedes <a href="'+reverse('register')+'">aktivere din bruger</a>.',
         }
 
         context_data['error'] = errors.get(error_code, '')

@@ -3,7 +3,6 @@ import random
 import sys
 from django.contrib.auth.models import User
 from ..tutor.models import TutorProfile, Tutor, TutorGroup
-from ..activation.models import ProfileActivation
 from .constants import FIRST_NAME, LAST_NAME, STREET, CITY, GROUP
 
 def random_student_number(tutoryear):
@@ -60,7 +59,7 @@ def random_email(sn):
 def random_study():
     return random.choice((u'mat', u'fys', u'møk', u'nano', u'dat', u'it'))
 
-def new_random_profile(year, use_activation):
+def new_random_profile(year):
     sn = random_student_number(year)
     while TutorProfile.objects.filter(studentnumber__exact=sn).exists():
         sn = random_student_number()
@@ -73,26 +72,15 @@ def new_random_profile(year, use_activation):
             study=random_study(),
             )
 
-    if use_activation:
-        tp.save()
-        pa = ProfileActivation(
-                profile=tp,
-                email=random_email(sn),
-                first_name=random_first_name(),
-                last_name=random_last_name(),
-                )
-        pa.save()
-        pa.generate_new_key()
-    else:
-        u = User(
-                username=sn,
-                email=random_email(sn),
-                first_name=random_first_name(),
-                last_name=random_last_name(),
-                )
-        u.save()
-        tp.user = u
-        tp.save()
+    u = User(
+            username=sn,
+            email=random_email(sn),
+            first_name=random_first_name(),
+            last_name=random_last_name(),
+            )
+    u.save()
+    tp.user = u
+    tp.save()
 
     return tp
 
@@ -104,8 +92,8 @@ def get_group(handle, name):
         tg.save()
         return tg
 
-def new_random_tutor(year, use_activation):
-    tp = new_random_profile(year-1, use_activation)
+def new_random_tutor(year):
+    tp = new_random_profile(year-1)
     tu = Tutor(
             profile=tp,
             year=year,

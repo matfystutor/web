@@ -62,7 +62,6 @@ def group_leader(handle, studentnumber):
 # tutors.
 def read_emails_loop():
     from mftutor.settings import YEAR
-    from activation.models import ProfileActivation
     from sys import stdin
     while True:
         print 'studentnumber> ',
@@ -77,17 +76,13 @@ def read_emails_loop():
             continue
         print prof
         print 'Groups:', u', '.join(tg.name for tg in TutorGroup.objects.filter(tutor__profile=prof, tutor__year__exact=YEAR).order_by('-visible', 'name'))
-        try:
-            act = ProfileActivation.objects.get(profile=prof)
-        except ProfileActivation.DoesNotExist:
-            print 'No profile activation'
-            continue
-        print act.email
+        u = prof.user
+        print u.email
         print 'email> ',
         email = stdin.readline().strip()
         if not email:
             print 'No change'
             continue
-        act.email = email
-        act.save()
+        u.email = email
+        u.save()
         print 'Saved'

@@ -18,7 +18,7 @@ class TutorProfile(models.Model):
     objects = TutorProfileManager()
 
     id = models.AutoField(primary_key=True)
-    user = models.OneToOneField(User, null=True, blank=True, on_delete=models.SET_NULL)
+    user = models.OneToOneField(User)
 
     #name = models.CharField(max_length=60, verbose_name="Fulde navn")
     # first name and last name exist in User
@@ -51,11 +51,7 @@ class TutorProfile(models.Model):
         verbose_name_plural = verbose_name + 'er'
 
     def get_full_name(self):
-        if self.user:
-            return self.user.get_full_name()
-        if self.activation:
-            return self.activation.get_full_name()
-        return None
+        return self.user.get_full_name()
 
 # "Arbejdsgruppe"
 class TutorGroup(models.Model):
