@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, url
 from django.contrib.auth.decorators import login_required
 from ..tutor.auth import tutorbur_required
-from .views import ChooseSessionView, NewSessionView, EditSessionView, NotesView, RusListView, ChangeClassView, AjaxChangeClassView, ChangeArrivedView, AjaxChangeArrivedView, UndoView, RusListRPC, HandoutListView, HandoutNewView, HandoutResponseView, HandoutResponseDeleteView, HandoutSummaryView, RusInfoView
+from .views import ChooseSessionView, NewSessionView, EditSessionView, NotesView, RusListView, ChangeClassView, AjaxChangeClassView, ChangeArrivedView, AjaxChangeArrivedView, UndoView, RusListRPC, HandoutListView, HandoutNewView, HandoutResponseView, HandoutResponseDeleteView, HandoutSummaryView, RusInfoView, RusInfoListView
 
 urlpatterns = patterns('',
     url(r'^new/$', tutorbur_required(NewSessionView.as_view()),
@@ -36,6 +36,8 @@ urlpatterns = patterns('',
         name='handout_response'),
     url(r'^handout/(?P<handout>\d+)/(?P<rusclass>[a-z0-9]+)/delete/$',
         tutorbur_required(HandoutResponseDeleteView.as_view()), name='handout_response_delete'),
-    url(r'^info/(?P<handle>[a-z0-9]+)/',
+    url(r'^info/$',
+        RusInfoListView.as_view(), name='rusinfo_list'),
+    url(r'^info/(?P<handle>[a-z0-9]+)/$',
         RusInfoView.as_view(), name='rusinfo'),
 )

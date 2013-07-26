@@ -17,7 +17,7 @@ from django.contrib.auth.models import User
 from .. import settings
 from ..settings import YEAR
 from ..tutor.models import RusClass, TutorProfile, Rus
-from ..tutor.auth import user_tutor_data, tutor_required_error, NotTutor
+from ..tutor.auth import user_tutor_data, tutor_required_error, NotTutor, rusclass_required_error
 
 from .models import ImportSession, ImportLine, Note, ChangeLogEntry, ChangeLogEffect, Handout, HandoutRusResponse, HandoutClassResponse
 
@@ -818,6 +818,24 @@ class HandoutSummaryView(TemplateView):
         return context_data
 
 
+class RusInfoListView(ListView):
+    template_name = 'reg/rusinfo_list.html'
+    context_object_name = 'rusclasses'
+
+    def get_queryset(self):
+        return RusClass.objects.filter(year__exact=YEAR).order_by('internal_name')
+
+    def get(self, request):
+        d = user_tutor_data(request.user)
+        tutor = d.tutor
+        if not tutor.is_tutorbur():
+            if tutor.rusclass:
+                return HttpResponseRedirect(reverse('rusinfo', kwargs={'handle': tutor.rusclass.handle}))
+            else:
+                return rusclass_required_error(request)
+        return super(RusInfoListView, self).get(request)
+
+
 class RusInfoForm(forms.Form):
     def __init__(self, *args, **kwargs):
         rus_list = kwargs.pop('rus_list')
@@ -830,6 +848,7 @@ class RusInfoForm(forms.Form):
                     forms.CharField(required=False)
             self.fields['rus_%s_phone' % rus.pk] = \
                     forms.CharField(required=False)
+
 
 class RusInfoView(FormView):
     form_class = RusInfoForm

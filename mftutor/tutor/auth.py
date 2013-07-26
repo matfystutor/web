@@ -30,6 +30,11 @@ def user_tutor_data(user):
         raise NotTutor('notutoryear')
     return d
 
+def rusclass_required_error(request):
+    t = loader.get_template('rusclass_required.html')
+    c = RequestContext(request)
+    return HttpResponse(t.render(c), status=403)
+
 def tutorbest_required_error(request):
     t = loader.get_template('tutorbest_required.html')
     c = RequestContext(request)
