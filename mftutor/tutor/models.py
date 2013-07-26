@@ -124,6 +124,13 @@ class Tutor(models.Model):
         help_text="Årsag til at tutoren stopper")
     rusclass = models.ForeignKey(RusClass, null=True, blank=True)
 
+    def has_rusclass(self, year=None):
+        if year is None:
+            from ..settings import YEAR
+            year = YEAR
+
+        return self.is_tutorbur() or self.rusclass
+
     def is_member(self, year=None):
         if year is None:
             from ..settings import YEAR
