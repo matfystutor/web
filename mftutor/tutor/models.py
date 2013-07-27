@@ -94,6 +94,11 @@ class RusClass(models.Model):
         help_text=u"dat1, mok3, osv. Bruges i holdets emailadresse")
     year = models.IntegerField(verbose_name="Tutorår")
 
+    def get_study(self):
+        for official_name, handle, internal_name in RUSCLASS_BASE:
+            if self.handle.startswith(handle):
+                return internal_name
+
     def __unicode__(self):
         return self.internal_name
 
