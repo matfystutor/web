@@ -5,7 +5,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
-from ..settings import YEAR, RUSCLASS_BASE
+from ..settings import YEAR, RUSCLASS_BASE, DEFAULT_EMAIL_DOMAIN, DEFAULT_ASB_EMAIL_DOMAIN
 from .managers import TutorProfileManager, TutorManager, TutorMembers, VisibleTutorGroups, RusManager
 
 def tutorpicture_upload_to(instance, filename):
@@ -43,6 +43,13 @@ class TutorProfile(models.Model):
             return unicode(self.studentnumber)+u' '+unicode(self.get_full_name())+u' '+unicode(self.user.username)
         else:
             return unicode(self.studentnumber)+u' '+unicode(self.get_full_name())+u' (no user)'
+
+    def set_default_email(self):
+        if self.email == '':
+            if re.match(r'[A-Z][A-Z][0-9][0-9][0-9][0-9][0-9]$', self.studentnumber):
+                self.email = self.studentnumber + '@' + DEFAULT_ASB_EMAIL_DOMAIN
+            else:
+                self.email = self.studentnumber + '@' + DEFAULT_EMAIL_DOMAIN
 
     class Meta:
         verbose_name = 'tutorprofil'

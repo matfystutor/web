@@ -229,3 +229,7 @@ RUSCLASS_BASE = (
 # Prefix of email addresses going to tutors of a certain rusclass
 # i.e. tutor+dat5 for the dat5 tutors -> use 'tutor+'
 TUTORS_PREFIX = 'tutor+'
+
+# Used by TutorProfile to set the default email if none is known.
+DEFAULT_EMAIL_DOMAIN = 'post.au.dk'
+DEFAULT_ASB_EMAIL_DOMAIN = 'stud.asb.dk'

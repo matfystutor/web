@@ -234,9 +234,10 @@ class EditSessionView(UpdateView):
                             tp = profiles[il.studentnumber]
                             # TODO: check if name is correct; otherwise log the change
                         else:
-                            first_name, last_name = il.name.split(None, 1)
+                            first_name, last_name = il.name.split(' ', 1)
                             u = User.objects.create(username=il.studentnumber, first_name=first_name, last_name=last_name)
-                            tp = TutorProfile.objects.create(studentnumber=il.studentnumber, user=u)
+                            tp = TutorProfile.objects.create(name=il.name, studentnumber=il.studentnumber, user=u)
+                            tp.set_default_email()
 
                         rus = Rus.objects.create(profile=tp, year=year, rusclass=rusclass)
 
