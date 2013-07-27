@@ -63,6 +63,11 @@ window.addEventListener('load', hook_checkboxes, false);
 Formularen er ikke udfyldt korrekt.
 </p>
 {% endif %}
+{% if form_saved %}
+<p class="success_message">
+Formularen er gemt.
+</p>
+{% endif %}
 
 <form method="post">{% csrf_token %}
     <p>{{ form.note }}</p>

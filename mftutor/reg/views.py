@@ -817,7 +817,7 @@ class HandoutResponseView(FormView):
                 rus.rus_response.note = data['rus_%s_note' % rus.pk]
                 rus.rus_response.save()
 
-        return HttpResponseRedirect(reverse('handout_response', kwargs=self.kwargs))
+        return self.render_to_response(self.get_context_data(form=form, form_saved=True))
 
     def form_invalid(self, form):
         print form.errors
