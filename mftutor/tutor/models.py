@@ -99,6 +99,12 @@ class RusClass(models.Model):
             if self.handle.startswith(handle):
                 return internal_name
 
+    def get_tutors(self):
+        return Tutor.members.filter(rusclass=self)
+
+    def get_russes(self):
+        return Rus.objects.filter(rusclass=self)
+
     def __unicode__(self):
         return self.internal_name
 

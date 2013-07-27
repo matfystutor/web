@@ -58,10 +58,10 @@ class RusStartView(TemplateView):
         if self.rusclass is not None:
             context_data['rusclass'] = self.rusclass
             context_data['rusclass_tutors'] = sorted(
-                    Tutor.objects.filter(rusclass=self.rusclass),
+                    self.rusclass.get_tutors(),
                     key=lambda o: o.profile.get_full_name())
             context_data['rusclass_russes'] = sorted(
-                    Rus.objects.filter(rusclass=self.rusclass),
+                    self.rusclass.get_russes(),
                     key=lambda o: o.profile.get_full_name())
 
         if self.form is not None:
@@ -108,10 +108,10 @@ class RusClassDetailView(RusClassView):
         return get_object_or_404(RusClass, handle=handle)
 
     def get_rus_list(self):
-        return Rus.objects.filter(rusclass=self.rusclass).order_by('profile__name')
+        return self.rusclass.get_russes().order_by('profile__name')
 
     def get_tutor_list(self):
-        return Tutor.objects.filter(rusclass=self.rusclass).order_by('profile__name')
+        return self.rusclass.get_tutors().order_by('profile__name')
 
     def get_context_data(self, **kwargs):
         is_logged_in = kwargs.pop('is_logged_in')

@@ -662,7 +662,7 @@ class HandoutResponseView(FormView):
             return ()
 
         rus_list = (
-                Rus.objects.filter(rusclass=self.rusclass)
+                self.rusclass.get_russes()
                 .order_by('profile__studentnumber')
                 .select_related('profile', 'profile__user'))
         rus_responses = (
@@ -789,7 +789,7 @@ class HandoutSummaryView(TemplateView):
                 rusclass.has_response = True
                 response_queryset = HandoutRusResponse.objects.filter(
                         handout=handout,
-                        rus__rusclass=rusclass).select_related('rus', 'rus__rusclass', 'rus__profile', 'rus__profile__user')
+                        rus__in=rusclass.get_russes()).select_related('rus', 'rus__rusclass', 'rus__profile', 'rus__profile__user')
                 rusclass.rus_checked_count = (response_queryset
                         .filter(checkmark=True).count())
                 responses = {r.rus.pk: r for r in response_queryset}
@@ -897,7 +897,7 @@ class RusInfoView(FormView):
         return super(RusInfoView, self).dispatch(request, handle=handle)
 
     def get_rus_list(self):
-        return (Rus.objects.filter(rusclass=self.rusclass)
+        return (self.rusclass.get_russes()
                 .order_by('profile__studentnumber')
                 .select_related('profile'))
 
