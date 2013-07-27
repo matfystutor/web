@@ -6,7 +6,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from ..settings import YEAR, RUSCLASS_BASE
-from .managers import TutorProfileManager, TutorManager, TutorMembers, VisibleTutorGroups
+from .managers import TutorProfileManager, TutorManager, TutorMembers, VisibleTutorGroups, RusManager
 
 def tutorpicture_upload_to(instance, filename):
     import re
@@ -211,6 +211,8 @@ class BoardMember(models.Model):
 
 # Freshman semester of a user for a single year
 class Rus(models.Model):
+    objects = RusManager()
+
     id = models.AutoField(primary_key=True)
     profile = models.ForeignKey(TutorProfile)
     year = models.IntegerField(verbose_name="Tutorår")

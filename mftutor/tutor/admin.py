@@ -9,20 +9,16 @@ class TutorAdmin(admin.ModelAdmin):
     list_display = ('year', 'profile', 'is_tutorbest')
     list_display_links = ('profile',)
     list_filter = ('year',)
-    search_fields = ['profile__user__first_name', 'profile__user__last_name']
+    search_fields = ['profile__name']
     filter_horizontal = ('groups',)
 
-def get_full_name(tutor):
-    return tutor.get_full_name()
-get_full_name.short_description = 'Navn'
-
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = (get_full_name, 'studentnumber')
+    list_display = ('name', 'studentnumber')
     inlines = [
             TutorInline,
     ]
     radio_fields = {'gender': admin.HORIZONTAL}
-    search_fields = ['user__first_name', 'user__last_name']
+    search_fields = ['name', 'studentnumber']
 
 def make_visible(modeladmin, request, queryset):
     queryset.update(visible=True)
@@ -55,7 +51,7 @@ tutor_year.admin_order_field = 'tutor__year'
 class BoardAdmin(admin.ModelAdmin):
     list_display = (board_full_name, tutor_year, 'title', 'position')
     list_filter = ('tutor__year',)
-    search_fields = ['tutor__profile__user__first_name', 'tutor__profile__user__last_name', 'title']
+    search_fields = ['tutor__profile__name', 'title']
     list_editable = ('title', 'position',)
 
 class RusClassAdmin(admin.ModelAdmin):
@@ -65,7 +61,7 @@ class RusClassAdmin(admin.ModelAdmin):
 
 class RusAdmin(admin.ModelAdmin):
     list_display = ('profile', 'year', 'rusclass')
-    search_fields = ['profile__user__first_name', 'profile__user__last_name']
+    search_fields = ['profile__name']
 
 admin.site.register(Tutor, TutorAdmin)
 admin.site.register(TutorProfile, ProfileAdmin)
