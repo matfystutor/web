@@ -21,6 +21,9 @@ from ..tutor.auth import user_tutor_data, tutor_required_error, NotTutor, ruscla
 
 from .models import ImportSession, ImportLine, Note, ChangeLogEntry, ChangeLogEffect, Handout, HandoutRusResponse, HandoutClassResponse
 
+class BurStartView(TemplateView):
+    template_name = 'reg/bur_start.html'
+
 class ChooseSessionView(ListView):
     model = ImportSession
 

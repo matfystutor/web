@@ -71,7 +71,7 @@ Kildekoden er frit tilgængelig: https://github.com/matfystutor/web/
       {% endif %}
       {% if tutor.is_tutorbur %}
       <li class="trigger">
-      <a href="#" style="cursor: default" onclick="return false">Buret</a>
+      <a href="{% url bur_start %}">{{ BURET }}</a>
       <ul class="subnav">
         <li><a href="{% url rusinfo_list %}">Russer</a></li>
         <li><a href="{% url reg_rus_list %}">Registrering</a></li>

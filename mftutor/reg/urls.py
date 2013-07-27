@@ -1,9 +1,11 @@
 from django.conf.urls import patterns, url
 from django.contrib.auth.decorators import login_required
 from ..tutor.auth import tutorbur_required
-from .views import ChooseSessionView, NewSessionView, EditSessionView, NotesView, RusListView, ChangeClassView, AjaxChangeClassView, ChangeArrivedView, AjaxChangeArrivedView, UndoView, RusListRPC, HandoutListView, HandoutNewView, HandoutResponseView, HandoutResponseDeleteView, HandoutSummaryView, RusInfoView, RusInfoListView
+from .views import ChooseSessionView, NewSessionView, EditSessionView, NotesView, RusListView, ChangeClassView, AjaxChangeClassView, ChangeArrivedView, AjaxChangeArrivedView, UndoView, RusListRPC, HandoutListView, HandoutNewView, HandoutResponseView, HandoutResponseDeleteView, HandoutSummaryView, RusInfoView, RusInfoListView, BurStartView
 
 urlpatterns = patterns('',
+    url(r'^start/$', tutorbur_required(BurStartView.as_view()),
+        name='bur_start'),
     url(r'^new/$', tutorbur_required(NewSessionView.as_view()),
         name='import_session_new'),
     url(r'^(?P<pk>\d+)/$', tutorbur_required(EditSessionView.as_view()),

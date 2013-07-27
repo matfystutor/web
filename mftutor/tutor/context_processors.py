@@ -1,3 +1,4 @@
+# vim:set fileencoding=utf-8:
 from django.contrib.auth.forms import AuthenticationForm
 from ..settings import BODY_CLASS
 from .models import TutorProfile
@@ -17,4 +18,7 @@ def tutor_data(request):
     return {'tutor': d.tutor, 'profile': d.profile}
 
 def settings(request):
-    return {'BODY_CLASS': BODY_CLASS}
+    return {
+            'BODY_CLASS': BODY_CLASS,
+            'BURET': u'Buret™'
+            }
