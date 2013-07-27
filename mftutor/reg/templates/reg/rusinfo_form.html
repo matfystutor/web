@@ -32,7 +32,7 @@ window.addEventListener('load', hook_inputs, false);
 </script>
 {% endblock %}
 
-{% block bodyclass %}wide{% endblock %}
+{% block bodyclass %}fullwidth{% endblock %}
 {% block content %}
 <h1>{{ rusclass }}</h1>
 
@@ -41,8 +41,11 @@ window.addEventListener('load', hook_inputs, false);
 {% endif %}
 
 {% if form_saved %}
-<p>{{ changes|pluralize:"Din,Dine" }} {{ changes }} {{ changes|pluralize:"ændring,ændringer" }}
-er gemt.</p>
+{% if changes %}
+<p>Dine ændringer er gemt.</p>
+{% else %}
+<p>Ingen ændringer.</p>
+{% endif %}
 {% endif %}
 
 {% if form.non_field_errors %}
@@ -55,6 +58,8 @@ er gemt.</p>
 <tr>
 <th>Årskort</th>
 <th>Navn</th>
+<th>Adresse</th>
+<th>Postnr. og by</th>
 <th>Email</th>
 <th>Telefon</th>
 <th>Skift kodeord</th>
@@ -65,6 +70,8 @@ er gemt.</p>
 <tr>
     <td>{{ rus.profile.studentnumber }}</td>
     <td>{{ rus.profile.get_full_name }}</td>
+    <td>{{ rus.street_field }} {{ rus.street_field.errors }}</td>
+    <td>{{ rus.city_field }} {{ rus.city_field.errors }}</td>
     <td>{{ rus.email_field }} {{ rus.email_field.errors }}</td>
     <td>{{ rus.phone_field }} {{ rus.phone_field.errors }}</td>
     <td>{{ rus.password_field }} {{ rus.password_field.errors }}</td>

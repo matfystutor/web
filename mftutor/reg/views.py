@@ -838,24 +838,34 @@ class RusInfoListView(ListView):
 
 class RusInfoForm(forms.Form):
     def __init__(self, *args, **kwargs):
+        fields = kwargs.pop('fields')
         rus_list = kwargs.pop('rus_list')
         super(RusInfoForm, self).__init__(*args, **kwargs)
 
+        def sized_field(sz, widget_ctor):
+            return widget_ctor(attrs={'size': sz})
+
+        widget_ctors = {'password': forms.PasswordInput}
+        sizes = {'street': 20, 'city': 15, 'email': 25, 'phone': 10, 'password': 10}
+
         for rus in rus_list:
-            self.fields['rus_%s_password' % rus.pk] = \
-                    forms.CharField(required=False, widget=forms.PasswordInput())
-            self.fields['rus_%s_email' % rus.pk] = \
-                    forms.CharField(required=False)
-            self.fields['rus_%s_phone' % rus.pk] = \
-                    forms.CharField(required=False)
+            for field in fields:
+                widget_ctor = widget_ctors.get(field, forms.TextInput)
+                attrs = {}
+                if field in sizes: attrs['size'] = sizes[field]
+                widget = widget_ctor(attrs=attrs)
+                self.fields['rus_%s_%s' % (rus.pk, field)] = forms.CharField(required=False, widget=widget)
 
 
 class RusInfoView(FormView):
     form_class = RusInfoForm
     template_name = 'reg/rusinfo_form.html'
 
+    fields = ('street', 'city', 'email', 'phone', 'password')
+
     def get_form_kwargs(self):
         kwargs = super(RusInfoView, self).get_form_kwargs()
+        kwargs['fields'] = self.fields
         kwargs['rus_list'] = self.rus_list
         return kwargs
 
@@ -863,6 +873,8 @@ class RusInfoView(FormView):
         data = {}
 
         for rus in self.rus_list:
+            data['rus_%s_street' % rus.pk] = rus.profile.street
+            data['rus_%s_city' % rus.pk] = rus.profile.city
             data['rus_%s_email' % rus.pk] = rus.profile.email
             data['rus_%s_phone' % rus.pk] = rus.profile.phone
 
@@ -887,15 +899,14 @@ class RusInfoView(FormView):
     def get_rus_list(self):
         return (Rus.objects.filter(rusclass=self.rusclass)
                 .order_by('profile__studentnumber')
-                .select_related('profile', 'profile__user'))
+                .select_related('profile'))
 
     def get_context_data(self, **kwargs):
         context_data = super(RusInfoView, self).get_context_data(**kwargs)
         form = context_data['form']
         for rus in self.rus_list:
-            rus.email_field = form['rus_%s_email' % rus.pk]
-            rus.phone_field = form['rus_%s_phone' % rus.pk]
-            rus.password_field = form['rus_%s_password' % rus.pk]
+            for field in self.fields:
+                setattr(rus, '%s_field' % field, form['rus_%s_%s' % (rus.pk, field)])
         context_data['rus_list'] = self.rus_list
         context_data['rusclass'] = self.rusclass
         return context_data
@@ -907,21 +918,24 @@ class RusInfoView(FormView):
         with transaction.commit_on_success():
             data = form.cleaned_data
             for rus in self.rus_list:
-                in_password = data['rus_%s_password' % rus.pk]
+                in_street = data['rus_%s_street' % rus.pk]
+                in_city = data['rus_%s_city' % rus.pk]
                 in_email = data['rus_%s_email' % rus.pk]
                 in_phone = data['rus_%s_phone' % rus.pk]
+                in_password = data['rus_%s_password' % rus.pk]
+                in_profile = (in_street, in_city, in_email, in_phone)
+                cur_profile = (rus.profile.street, rus.profile.city,
+                        rus.profile.email, rus.profile.phone)
 
                 if in_password:
                     rus.profile.user.set_password(in_password)
                     rus.profile.user.save()
                     changes += 1
 
-                if in_email != rus.profile.email:
+                if in_profile != cur_profile:
+                    rus.profile.street = in_street
+                    rus.profile.city = in_city
                     rus.profile.email = in_email
-                    rus.profile.save()
-                    changes += 1
-
-                if in_phone != rus.profile.phone:
                     rus.profile.phone = in_phone
                     rus.profile.save()
                     changes += 1
