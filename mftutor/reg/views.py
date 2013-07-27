@@ -662,10 +662,10 @@ class HandoutSummaryView(TemplateView):
                         rus__in=rusclass.get_russes()).select_related('rus', 'rus__rusclass', 'rus__profile', 'rus__profile__user')
                 rusclass.rus_checked_count = (response_queryset
                         .filter(checkmark=True).count())
-                responses = {r.rus.pk: r for r in response_queryset}
+                rus_responses = {r.rus.pk: r for r in response_queryset}
                 for rus in rusclass.russes:
-                    if rus.pk in responses:
-                        rus.response = responses[rus.pk]
+                    if rus.pk in rus_responses:
+                        rus.response = rus_responses[rus.pk]
             else:
                 rusclass.has_response = False
                 rusclass.rus_checked_count = 0
