@@ -12,6 +12,9 @@
 {% block content %}
 <h1>{{ handout }}</h1>
 
+<p><a href="{% url handout_list %}">Tilmeldinger</a>
+&rarr; <strong>{{ handout }}</strong></p>
+
 <p>Besvarelser: {{ class_response_count }}/{{ class_total_count }}</p>
 <p>Valgt i alt: {{ rus_checked_count }}/{{ rus_total_count }}</p>
 
@@ -19,7 +22,7 @@
 <col span="4" />
 {% for rusclass in classes %}
 <tr><td colspan="4">
-<h2>{{ rusclass }}</h2>
+<h2><a href="{% url handout_response handout=handout.pk rusclass=rusclass.handle %}">{{ rusclass }}</a></h2>
 
 {% if rusclass.has_response %}
 <p>Oprettet {{ rusclass.response.created }}. Sidst ændret {{ rusclass.response.updated }}.</p>

@@ -2,6 +2,9 @@
 {% block title %}{{ handout }}{% endblock %}
 {% block head %}
 <style>
+.response_table {
+    width: 100%;
+}
 .response_table td, .response_table th {
     border-bottom: 1px solid black;
     padding: 3px;
@@ -12,16 +15,21 @@
 {% block content %}
 <h1>{{ handout }}</h1>
 
+<p><a href="{% url handout_list %}">Tilmeldinger</a>
+&rarr; <strong>{{ handout }}</strong></p>
+
 <p>Besvarelser: {{ class_response_count }}/{{ class_total_count }}</p>
 
 <table class="response_table" cellspacing="0">
+<col width="0" />
+<col width="*" />
 <tr>
 <th>Hold</th>
 <th>Note</th>
 </tr>
 {% for rusclass in classes %}
 <tr>
-<td>{{ rusclass }}</td>
+<td><a href="{% url handout_response handout=handout.pk rusclass=rusclass.handle %}">{{ rusclass }}</a></td>
 <td>{{ rusclass.response.note }}</td>
 </tr>
 {% endfor %}
