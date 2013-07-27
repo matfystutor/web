@@ -35,12 +35,17 @@ class ChooseSessionView(ListView):
         return ImportSession.objects.filter(year__exact=YEAR)
 
 class NewSessionView(ProcessFormView):
+    """POST target used by ChooseSessionView to create a new ImportSession."""
+
     def post(self, request):
         importsession = ImportSession(year=YEAR, author=request.user.get_profile())
         importsession.save()
         return HttpResponseRedirect(reverse('import_session_edit', kwargs={'pk': importsession.pk}))
 
 class EditSessionForm(forms.ModelForm):
+    class Meta:
+        model = ImportSession
+
     year = forms.CharField(required=False)
     author = forms.CharField(required=False)
     imported = forms.CharField(required=False)
@@ -50,6 +55,10 @@ class EditSessionForm(forms.ModelForm):
     lines = forms.CharField(widget=forms.Textarea)
 
     def clean_regex(self):
+        """Check if regex is valid by compiling it.
+
+        Later on, clean() then checks if the regex matches useful things."""
+
         data = self.cleaned_data['regex']
         try:
             r = re.compile(data)
@@ -59,15 +68,24 @@ class EditSessionForm(forms.ModelForm):
         return data
 
     def clean_year(self):
+        """Read-only model field as far as this form is concerned."""
         return self.instance.year
 
     def clean_author(self):
+        """Read-only model field as far as this form is concerned."""
         return self.instance.author
 
     def clean_imported(self):
+        """Read-only model field as far as this form is concerned."""
         return self.instance.imported
 
     def clean(self):
+        """Check if regex matches the lines and yields the right capture groups.
+
+        It is expected to yield just the named groups specified by `expected`.
+
+        It is not expected to yield any other named groups, or any numbered groups."""
+
         cleaned_data = super(EditSessionForm, self).clean()
 
         regex = cleaned_data.get('regex')
@@ -112,10 +130,16 @@ class EditSessionForm(forms.ModelForm):
 
         return cleaned_data
 
-    class Meta:
-        model = ImportSession
-
 class EditSessionView(UpdateView):
+    """An import session hits the EditSessionView multiple times.
+
+    First, the NewSessionView redirects the user to an empty ImportSession.
+    The user inputs a regular expression and a bunch of lines and submits.
+    Then, this view matches the regex against the lines and saves the result
+    as ImportLines and displays them to the user.
+
+    If the user then wants to create the appropriate Rus and RusClass objects,
+    he clicks the submit button named "create"."""
     form_class = EditSessionForm
     template_name = 'reg/edit_session_form.html'
 
