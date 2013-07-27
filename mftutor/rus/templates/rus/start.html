@@ -1,10 +1,5 @@
 {% extends "rus/base.html" %}
 {% block title %}Start{% endblock %}
-{% block head %}
-<style>
-.person_list { width: 100%; }
-</style>
-{% endblock %}
 
 {% block content %}
 
@@ -19,57 +14,46 @@
 <p>Du mangler at udfylde dine kontaktoplysninger!</p>
 {% endif %}
 {{ my_info_form.non_field_errors }}
-<form method="post">{% csrf_token %}
-    <p><label>Telefonnummer: {{ my_info_form.phone }}</label> {{ my_info_form.phone.errors }}</p>
-    <p><label>Email: {{ my_info_form.email }}</label> {{ my_info_form.email.errors }}</p>
-    <p><input type="submit" value="Gem" /></p>
+<form class="twocol" method="post">{% csrf_token %}
+    <div class="label"><label for="id_phone">Telefonnummer:</label></div>
+    <div class="field">{{ my_info_form.phone }}</label> {{ my_info_form.phone.errors }}</div>
+    <div class="label"><label for="id_email">Email:</label></div>
+    <div class="field">{{ my_info_form.email }}</label> {{ my_info_form.email.errors }}</div>
+    <div class="field"><input type="submit" value="Gem" /></div>
 </form>
 {% endif %}
 
-<h2>Tutorer</h2>
+<table class="person_list" cellspacing="0">
+<col span="3" />
+<tr class="heading"><td colspan="3"><h3>Tutorer</h3></td></tr>
 
-<table class="person_list">
-    <thead>
-        <tr>
-            <th>Navn</th>
-            <th>Mobil</th>
-            <th>Email</th>
-            <th>Årskort</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for tutor in rusclass_tutors %}
-        <tr>
-            <td>{{ tutor.profile.get_full_name }}</td>
-            <td><strong>{{ tutor.profile.phone }}</strong></td>
-            <td>{{ tutor.profile.email }}</td>
-            <td>{{ tutor.profile.studentnumber }}</td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+<tr>
+    <th>Navn</th>
+    <th>Mobil</th>
+    <th>Email</th>
+</tr>
+{% for tutor in rusclass_tutors %}
+    <tr>
+        <td>{{ tutor.profile.get_full_name }}</td>
+        <td class="phone"><a href="tel:{{ tutor.profile.phone }}">{{ tutor.profile.phone }}</a></td>
+        <td><a href="mailto:{{ tutor.profile.email }}">{{ tutor.profile.email }}</a></td>
+    </tr>
+{% endfor %}
 
-<h2>Russer</h2>
+<tr class="heading"><td colspan="3"><h3>Russer</h3></td></tr>
 
-<table class="person_list">
-    <thead>
-        <tr>
-            <th>Navn</th>
-            <th>Mobil</th>
-            <th>Email</th>
-            <th>Årskort</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for rus in rusclass_russes %}
-        <tr>
-            <td>{{ rus.profile.get_full_name }}</td>
-            <td><strong>{{ rus.profile.phone }}</strong></td>
-            <td>{{ rus.profile.email }}</td>
-            <td>{{ rus.profile.studentnumber }}</td>
-        </tr>
-    {% endfor %}
-    </tbody>
+<tr>
+    <th>Navn</th>
+    <th>Mobil</th>
+    <th>Email</th>
+</tr>
+{% for rus in rusclass_russes %}
+    <tr>
+        <td>{{ rus.profile.get_full_name }}</td>
+        <td class="phone"><a href="tel:{{ rus.profile.phone }}">{{ rus.profile.phone }}</a></td>
+        <td><a href="mailto:{{ rus.profile.email }}">{{ rus.profile.email }}</a></td>
+    </tr>
+{% endfor %}
 </table>
 
 <div style="height: 1em"></div>

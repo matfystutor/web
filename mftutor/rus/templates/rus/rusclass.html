@@ -9,22 +9,6 @@
     float: left;
 }
 
-.personlist {
-    width: 100%;
-}
-
-.personlist td, .personlist th {
-    padding: 2px .5em;
-}
-
-.heading td {
-    text-align: center;
-}
-
-.personlist td, .personlist th {
-    border-bottom: 1px solid #999;
-}
-
 </style>
 {% endblock %}
 
@@ -52,7 +36,7 @@ Så snart vi har dem, lægger vi dem op på denne side.
 <br clear="both" />
 <h2>{{ rusclass }}</h2>
 {% if show_details %}
-<table class="personlist" cellspacing="0">
+<table class="person_list" cellspacing="0">
 <tr class="heading"><td colspan="6"><h3>Tutorer</h3></td></tr>
 <tr>
 <th>Årskort</th>
@@ -68,8 +52,8 @@ Så snart vi har dem, lægger vi dem op på denne side.
 <td>{{ tutor.profile.get_full_name }}</td>
 <td>{{ tutor.profile.address }}</td>
 <td>{{ tutor.profile.city }}</td>
-<td>{{ tutor.profile.email }}</td>
-<td class="phone">{{ tutor.profile.phone }}</td>
+<td><a href="mailto:{{ tutor.profile.email }}">{{ tutor.profile.email }}</a></td>
+<td class="phone"><a href="tel:{{ tutor.profile.phone }}" class="tellink">{{ tutor.profile.phone }}</a></td>
 </tr>
 {% endfor %}
 <tr class="heading"><td colspan="6"><h3>Russer</h3></td></tr>
@@ -87,12 +71,13 @@ Så snart vi har dem, lægger vi dem op på denne side.
 <td>{{ rus.profile.get_full_name }}</td>
 <td>{{ rus.profile.address }}</td>
 <td>{{ rus.profile.city }}</td>
-<td>{{ rus.profile.email }}</td>
-<td class="phone">{{ rus.profile.phone }}</td>
+<td><a href="mailto:{{ rus.profile.email }}">{{ rus.profile.email }}</a></td>
+<td class="phone"><a href="tel:{{ rus.profile.phone }}" class="tellink">{{ rus.profile.phone }}</a></td>
 </tr>
 {% endfor %}
 </table>
 {% else %}
+<p>Du skal logge ind for at se detaljer såsom telefonnummer og email.</p>
 <h3>Tutorer</h3>
 <ul>
     {% for tutor in tutor_names %}

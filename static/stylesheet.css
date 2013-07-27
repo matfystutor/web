@@ -665,3 +665,27 @@ td.altTabBg1 {
 	color: white;
 	vertical-align: baseline;
 }
+
+.person_list {
+    width: 100%;
+}
+
+.person_list td, .person_list th {
+    padding: 2px .5em;
+}
+
+.person_list .heading td {
+    text-align: center;
+}
+
+.person_list td, .person_list th {
+    border-bottom: 1px solid #999;
+}
+
+.person_list .phone {
+	font-weight: bold;
+}
+
+a[href^="tel:"] {
+	color: inherit;
+}
