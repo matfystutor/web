@@ -89,11 +89,10 @@ Kildekoden er frit tilgængelig: https://github.com/matfystutor/web/
       <li class="trigger">
       <a href="{% url admin:index %}">Administration</a>
       <ul class="subnav">
+        <li><a href="{% url tutor_admin %}">Tutorer</a></li>
         <li><a href="{% url admin:aliases_alias_changelist %}">Aliaser</a></li>
-        <li><a href="{% url todo %}">Evalueringer</a></li>
         <li><a href="{% url admin:news_newspost_changelist %}">Forsidenyheder</a></li>
         <li><a href="{% url admin:events_event_changelist %}">Kalender</a></li>
-        <li><a href="{% url todo %}">Referater</a></li>
         <li><a href="{% url confirmation_table %}">Tutorbekræftelser</a></li>
         <li><a href="{% url confirmation_card %}">Tutorkort</a></li>
       </ul>
