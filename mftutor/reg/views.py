@@ -21,8 +21,12 @@ from ..tutor.auth import user_tutor_data, tutor_required_error, NotTutor, ruscla
 
 from .models import ImportSession, ImportLine, Note, ChangeLogEntry, ChangeLogEffect, Handout, HandoutRusResponse, HandoutClassResponse
 
+# =============================================================================
+
 class BurStartView(TemplateView):
     template_name = 'reg/bur_start.html'
+
+# =============================================================================
 
 class ChooseSessionView(ListView):
     model = ImportSession
@@ -224,6 +228,72 @@ class EditSessionView(UpdateView):
 
         return self.render_to_response(context_data)
 
+# =============================================================================
+
+# This should probably be fixed some day.
+class CachedQuerySetHack(object):
+    def __init__(self, queryset):
+        self._queryset = queryset
+
+    # Default queryset all() "forgets" the cached result
+    # and produces a deep copy of the object.
+    # This might be a feature to some, but in our case we want the results to be cached.
+    def all(self):
+        return self
+
+    def __iter__(self):
+        return iter(self._queryset)
+
+class RusListView(TemplateView):
+    template_name = 'reg/rus_list.html'
+
+    def get_change_class_form_rusclass(self):
+        ccf = ChangeClassForm()
+        # This field is displayed multiple times on the page. Don't hit the DB every time!
+        ccf.fields['rusclass'].queryset = CachedQuerySetHack(RusClass.objects.filter(year=YEAR))
+        return ccf['rusclass']
+
+    def get_context_data(self, **kwargs):
+        context_data = super(RusListView, self).get_context_data(**kwargs)
+        context_data['rus_list'] = self.get_rus_list()
+        context_data['change_class_form_rusclass'] = self.get_change_class_form_rusclass()
+        context_data['change_list'] = ChangeLogEntry.objects.filter(deleted__isnull=True, hidden__isnull=True).order_by('-time')
+
+        try:
+            change_list_newest = ChangeLogEntry.objects.order_by('-pk')[:1].get().pk
+        except ChangeLogEntry.DoesNotExist:
+            change_list_newest = 0
+        context_data['change_list_newest'] = change_list_newest
+
+        return context_data
+
+    def get_rus_list(self):
+        rus_list = Rus.objects.filter(year=YEAR).select_related('rusclass', 'profile', 'profile__user').order_by('rusclass', 'profile__studentnumber')
+
+        rus_pks = frozenset(rus.pk for rus in rus_list)
+        rusclass_pks = frozenset(rus.rusclass.pk for rus in rus_list if rus.rusclass is not None)
+
+        rus_notes_qs = Note.objects.filter(subject_kind__exact='rus', subject_pk__in=rus_pks,
+                deleted__isnull=True,
+                superseded__isnull=True)
+        rusclass_notes_qs = Note.objects.filter(subject_kind__exact='rusclass', subject_pk__in=rusclass_pks,
+                deleted__isnull=True,
+                superseded__isnull=True)
+        rus_notes = {}
+        rusclass_notes = {}
+        for note in rus_notes_qs:
+            rus_notes.setdefault(note.subject_pk, []).append(note)
+        for note in rusclass_notes_qs:
+            rusclass_notes.setdefault(note.subject_pk, []).append(note)
+
+        for rus in rus_list:
+            rus.notes = rus_notes.get(rus.pk, ())
+            if rus.rusclass is not None:
+                rus.rusclass.notes = rusclass_notes.get(rus.rusclass.pk, ())
+
+        return rus_list
+
+
 class ChangeClassForm(forms.Form):
     rus = forms.ModelChoiceField(queryset=Rus.objects.filter(year__exact=YEAR))
     rusclass = forms.ModelChoiceField(queryset=RusClass.objects.filter(year__exact=YEAR), required=False)
@@ -328,145 +398,12 @@ class AjaxChangeArrivedView(ChangeArrivedView):
         import json
         return HttpResponse(json.dumps(response), content_type='application/json')
 
-class UndoError(Exception):
-    def __init__(self, response):
-        self.response = response
-
-class UndoView(View):
-    def perform_undo(self, request, pk):
-        d = user_tutor_data(request.user)
-        logentry = get_object_or_404(ChangeLogEntry, pk=pk, can_rollback__exact=True, deleted__isnull=True)
-
-        undo_message = u'Fortrød ændring "'+logentry.short_message+u'" - '+d.profile.get_full_name()
-        undo_logentry = ChangeLogEntry(
-                author=d.profile,
-                hidden=datetime.datetime.now(),
-                short_message=undo_message,
-                message=undo_message,
-                can_rollback=False)
-        undo_logentry.save()
-
-        effects = ChangeLogEffect.objects.filter(entry=logentry)
-        for effect in effects:
-            if effect.model == u'rus':
-                field = effect.field
-                rus = Rus.objects.get(pk=effect.pk)
-                if field == u'arrived':
-                    cur_value = rus.arrived
-                    old_value = bool(effect.old_value)
-                    new_value = bool(effect.new_value)
-                elif field == u'rusclass':
-                    cur_value = rus.rusclass.pk
-                    old_value = int(effect.old_value)
-                    new_value = int(effect.new_value)
-                else:
-                    raise UndoError({'error': u'unknown rus field '+field})
-                if cur_value != new_value:
-                    raise UndoError({'error':
-                        (u'bad current value for rus {0} field {1} (was {2}, expected {3})'
-                            .format(rus, field, cur_value, effect.new_value))})
-                if field == u'arrived':
-                    rus.arrived = old_value
-                elif field == u'rusclass':
-                    rus.rusclass = RusClass.objects.get(pk=old_value)
-                rus.save()
-                undo_logeffect = ChangeLogEffect(
-                        entry=undo_logentry,
-                        model=effect.model,
-                        pk=effect.pk,
-                        field=effect.field,
-                        what=u'modified',
-                        old_value=effect.new_value,
-                        new_value=effect.old_value)
-                undo_logeffect.save()
-            else:
-                raise UndoError({'error':
-                    u'Unknown model {0}'.format(effect.model)})
-        logentry.hidden = datetime.datetime.now()
-        logentry.save()
-        return {'success': True}
-
-    def post(self, request, pk):
-        try:
-            from django.db import transaction
-            with transaction.commit_on_success():
-                self.perform_undo(request, pk)
-            return HttpResponseRedirect(reverse('reg_rus_list'))
-        except UndoError as e:
-            response = e.response
-        import json
-        return HttpResponse(json.dumps(response), content_type='application/json')
-
-# This should probably be fixed some day.
-class CachedQuerySetHack(object):
-    def __init__(self, queryset):
-        self._queryset = queryset
-
-    # Default queryset all() "forgets" the cached result
-    # and produces a deep copy of the object.
-    # This might be a feature to some, but in our case we want the results to be cached.
-    def all(self):
-        return self
-
-    def __iter__(self):
-        return iter(self._queryset)
-
-class RusListView(TemplateView):
-    template_name = 'reg/rus_list.html'
-
-    def get_change_class_form_rusclass(self):
-        ccf = ChangeClassForm()
-        # This field is displayed multiple times on the page. Don't hit the DB every time!
-        ccf.fields['rusclass'].queryset = CachedQuerySetHack(RusClass.objects.filter(year=YEAR))
-        return ccf['rusclass']
-
-    def get_context_data(self, **kwargs):
-        context_data = super(RusListView, self).get_context_data(**kwargs)
-        context_data['rus_list'] = self.get_rus_list()
-        context_data['change_class_form_rusclass'] = self.get_change_class_form_rusclass()
-        context_data['change_list'] = ChangeLogEntry.objects.filter(deleted__isnull=True, hidden__isnull=True).order_by('-time')
-
-        try:
-            change_list_newest = ChangeLogEntry.objects.order_by('-pk')[:1].get().pk
-        except ChangeLogEntry.DoesNotExist:
-            change_list_newest = 0
-        context_data['change_list_newest'] = change_list_newest
-
-        return context_data
-
-    def get_rus_list(self):
-        rus_list = Rus.objects.filter(year=YEAR).select_related('rusclass', 'profile', 'profile__user').order_by('rusclass', 'profile__studentnumber')
-
-        rus_pks = frozenset(rus.pk for rus in rus_list)
-        rusclass_pks = frozenset(rus.rusclass.pk for rus in rus_list if rus.rusclass is not None)
-
-        rus_notes_qs = Note.objects.filter(subject_kind__exact='rus', subject_pk__in=rus_pks,
-                deleted__isnull=True,
-                superseded__isnull=True)
-        rusclass_notes_qs = Note.objects.filter(subject_kind__exact='rusclass', subject_pk__in=rusclass_pks,
-                deleted__isnull=True,
-                superseded__isnull=True)
-        rus_notes = {}
-        rusclass_notes = {}
-        for note in rus_notes_qs:
-            rus_notes.setdefault(note.subject_pk, []).append(note)
-        for note in rusclass_notes_qs:
-            rusclass_notes.setdefault(note.subject_pk, []).append(note)
-
-        for rus in rus_list:
-            rus.notes = rus_notes.get(rus.pk, ())
-            if rus.rusclass is not None:
-                rus.rusclass.notes = rusclass_notes.get(rus.rusclass.pk, ())
-
-        return rus_list
-
 class NotesForm(forms.Form):
     subject_kind = forms.ChoiceField(choices=((a,a) for a in ('rus', 'rusclass', 'tutor')))
     subject_pk = forms.IntegerField()
     body = forms.CharField(required=False)
 
     new_note = forms.BooleanField()
-
 
 
 class NotesView(FormView):
@@ -551,6 +488,81 @@ class RusListRPC(View):
         return HttpResponse(json.dumps(data))
 
 
+# =============================================================================
+
+class UndoError(Exception):
+    def __init__(self, response):
+        self.response = response
+
+
+class UndoView(View):
+    def perform_undo(self, request, pk):
+        d = user_tutor_data(request.user)
+        logentry = get_object_or_404(ChangeLogEntry, pk=pk, can_rollback__exact=True, deleted__isnull=True)
+
+        undo_message = u'Fortrød ændring "'+logentry.short_message+u'" - '+d.profile.get_full_name()
+        undo_logentry = ChangeLogEntry(
+                author=d.profile,
+                hidden=datetime.datetime.now(),
+                short_message=undo_message,
+                message=undo_message,
+                can_rollback=False)
+        undo_logentry.save()
+
+        effects = ChangeLogEffect.objects.filter(entry=logentry)
+        for effect in effects:
+            if effect.model == u'rus':
+                field = effect.field
+                rus = Rus.objects.get(pk=effect.pk)
+                if field == u'arrived':
+                    cur_value = rus.arrived
+                    old_value = bool(effect.old_value)
+                    new_value = bool(effect.new_value)
+                elif field == u'rusclass':
+                    cur_value = rus.rusclass.pk
+                    old_value = int(effect.old_value)
+                    new_value = int(effect.new_value)
+                else:
+                    raise UndoError({'error': u'unknown rus field '+field})
+                if cur_value != new_value:
+                    raise UndoError({'error':
+                        (u'bad current value for rus {0} field {1} (was {2}, expected {3})'
+                            .format(rus, field, cur_value, effect.new_value))})
+                if field == u'arrived':
+                    rus.arrived = old_value
+                elif field == u'rusclass':
+                    rus.rusclass = RusClass.objects.get(pk=old_value)
+                rus.save()
+                undo_logeffect = ChangeLogEffect(
+                        entry=undo_logentry,
+                        model=effect.model,
+                        pk=effect.pk,
+                        field=effect.field,
+                        what=u'modified',
+                        old_value=effect.new_value,
+                        new_value=effect.old_value)
+                undo_logeffect.save()
+            else:
+                raise UndoError({'error':
+                    u'Unknown model {0}'.format(effect.model)})
+        logentry.hidden = datetime.datetime.now()
+        logentry.save()
+        return {'success': True}
+
+    def post(self, request, pk):
+        try:
+            from django.db import transaction
+            with transaction.commit_on_success():
+                self.perform_undo(request, pk)
+            return HttpResponseRedirect(reverse('reg_rus_list'))
+        except UndoError as e:
+            response = e.response
+        import json
+        return HttpResponse(json.dumps(response), content_type='application/json')
+
+
+# =============================================================================
+
 class HandoutListView(TemplateView):
     template_name = 'reg/handout_list.html'
 
@@ -579,10 +591,12 @@ class HandoutListView(TemplateView):
 
         return context_data
 
+
 class HandoutForm(forms.Form):
     kind = forms.ChoiceField(choices=Handout.KINDS)
     name = forms.CharField()
     note = forms.CharField(required=False, widget=forms.Textarea)
+
 
 class HandoutNewView(FormView):
     form_class = HandoutForm
@@ -608,6 +622,72 @@ class HandoutNewView(FormView):
     def get_success_url(self):
         return reverse('handout_list')
 
+
+class HandoutSummaryView(TemplateView):
+    def get_template_names(self):
+        kind = self.get_handout().kind
+        if kind == u'subset':
+            return ['reg/handout_summary.html']
+        elif kind == u'note':
+            return ['reg/handout_notes.html']
+        else:
+            raise AssertionError("Unknown handout kind")
+
+    def get_handout(self):
+        if not hasattr(self, '_handout'):
+            self._handout = get_object_or_404(Handout, pk__exact=self.kwargs['handout'])
+        return self._handout
+
+    def get_classes(self):
+        handout = self.get_handout()
+        year = handout.year
+        rusclasses = RusClass.objects.filter(year__exact=year)
+        responses = {response.rusclass.pk: response
+                for response in HandoutClassResponse.objects.filter(handout=handout)}
+
+        all_russes = list(Rus.objects
+                .filter(rusclass__in=rusclasses)
+                .select_related('rusclass', 'profile', 'profile__user')
+                .order_by('profile__studentnumber')
+                )
+
+        for rusclass in rusclasses:
+            rusclass.russes = [rus for rus in all_russes if rus.rusclass.pk == rusclass.pk]
+            rusclass.rus_total_count = len(rusclass.russes)
+            if rusclass.pk in responses:
+                rusclass.response = responses[rusclass.pk]
+                rusclass.has_response = True
+                response_queryset = HandoutRusResponse.objects.filter(
+                        handout=handout,
+                        rus__in=rusclass.get_russes()).select_related('rus', 'rus__rusclass', 'rus__profile', 'rus__profile__user')
+                rusclass.rus_checked_count = (response_queryset
+                        .filter(checkmark=True).count())
+                responses = {r.rus.pk: r for r in response_queryset}
+                for rus in rusclass.russes:
+                    if rus.pk in responses:
+                        rus.response = responses[rus.pk]
+            else:
+                rusclass.has_response = False
+                rusclass.rus_checked_count = 0
+
+        return rusclasses
+
+    def get_context_data(self, **kwargs):
+        context_data = super(HandoutSummaryView, self).get_context_data(**kwargs)
+
+        context_data['handout'] = self.get_handout()
+        context_data['classes'] = self.get_classes()
+        context_data['class_total_count'] = len(context_data['classes'])
+        context_data['class_response_count'] = len(
+                [c for c in context_data['classes'] if c.has_response])
+        context_data['rus_checked_count'] = sum(r.rus_checked_count
+                for r in context_data['classes'])
+        context_data['rus_total_count'] = sum(r.rus_total_count
+                for r in context_data['classes'])
+
+        return context_data
+
+
 class HandoutResponseForm(forms.Form):
     note = forms.CharField(required=False, widget=forms.Textarea)
 
@@ -618,6 +698,7 @@ class HandoutResponseForm(forms.Form):
         for rus in rus_list:
             self.fields['rus_%s_checkmark' % rus.pk] = forms.BooleanField(required=False)
             self.fields['rus_%s_note' % rus.pk] = forms.CharField(required=False)
+
 
 class HandoutResponseView(FormView):
     template_name = 'reg/handout_response.html'
@@ -717,6 +798,7 @@ class HandoutResponseView(FormView):
         print form.errors
         return self.render_to_response(self.get_context_data(form=form, form_error=True))
 
+
 class HandoutResponseDeleteView(TemplateView):
     template_name = 'reg/handout_response_delete.html'
 
@@ -756,70 +838,7 @@ class HandoutResponseDeleteView(TemplateView):
         self.handout_response.delete()
         return HttpResponseRedirect(reverse('handout_list'))
 
-class HandoutSummaryView(TemplateView):
-    def get_template_names(self):
-        kind = self.get_handout().kind
-        if kind == u'subset':
-            return ['reg/handout_summary.html']
-        elif kind == u'note':
-            return ['reg/handout_notes.html']
-        else:
-            raise AssertionError("Unknown handout kind")
-
-    def get_handout(self):
-        if not hasattr(self, '_handout'):
-            self._handout = get_object_or_404(Handout, pk__exact=self.kwargs['handout'])
-        return self._handout
-
-    def get_classes(self):
-        handout = self.get_handout()
-        year = handout.year
-        rusclasses = RusClass.objects.filter(year__exact=year)
-        responses = {response.rusclass.pk: response
-                for response in HandoutClassResponse.objects.filter(handout=handout)}
-
-        all_russes = list(Rus.objects
-                .filter(rusclass__in=rusclasses)
-                .select_related('rusclass', 'profile', 'profile__user')
-                .order_by('profile__studentnumber')
-                )
-
-        for rusclass in rusclasses:
-            rusclass.russes = [rus for rus in all_russes if rus.rusclass.pk == rusclass.pk]
-            rusclass.rus_total_count = len(rusclass.russes)
-            if rusclass.pk in responses:
-                rusclass.response = responses[rusclass.pk]
-                rusclass.has_response = True
-                response_queryset = HandoutRusResponse.objects.filter(
-                        handout=handout,
-                        rus__in=rusclass.get_russes()).select_related('rus', 'rus__rusclass', 'rus__profile', 'rus__profile__user')
-                rusclass.rus_checked_count = (response_queryset
-                        .filter(checkmark=True).count())
-                responses = {r.rus.pk: r for r in response_queryset}
-                for rus in rusclass.russes:
-                    if rus.pk in responses:
-                        rus.response = responses[rus.pk]
-            else:
-                rusclass.has_response = False
-                rusclass.rus_checked_count = 0
-
-        return rusclasses
-
-    def get_context_data(self, **kwargs):
-        context_data = super(HandoutSummaryView, self).get_context_data(**kwargs)
-
-        context_data['handout'] = self.get_handout()
-        context_data['classes'] = self.get_classes()
-        context_data['class_total_count'] = len(context_data['classes'])
-        context_data['class_response_count'] = len(
-                [c for c in context_data['classes'] if c.has_response])
-        context_data['rus_checked_count'] = sum(r.rus_checked_count
-                for r in context_data['classes'])
-        context_data['rus_total_count'] = sum(r.rus_total_count
-                for r in context_data['classes'])
-
-        return context_data
-
+# =============================================================================
 
 class RusInfoListView(ListView):
     template_name = 'reg/rusinfo_list.html'
