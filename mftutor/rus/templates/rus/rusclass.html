@@ -1,5 +1,5 @@
 {% extends "rus/base.html" %}
-{% block title %}Holdlister{% endblock %}
+{% block title %}{% if rusclass %}{{ rusclass }} - {% endif %}Holdlister{% endblock %}
 {% block bodyclass %}{% if rusclass %}wide{% elif rusclass_list %}wide{% endif %}{% endblock %}
 {% block head %}
 <style>
