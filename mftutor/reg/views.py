@@ -242,7 +242,6 @@ class EditSessionView(UpdateView):
                         rus = Rus.objects.create(profile=tp, year=year, rusclass=rusclass)
 
                     importsession.imported = datetime.datetime.now()
-                    print importsession.imported
                     importsession.save()
                     context_data['imported'] = importsession.imported
 
@@ -820,7 +819,6 @@ class HandoutResponseView(FormView):
         return self.render_to_response(self.get_context_data(form=form, form_saved=True))
 
     def form_invalid(self, form):
-        print form.errors
         return self.render_to_response(self.get_context_data(form=form, form_error=True))
 
 

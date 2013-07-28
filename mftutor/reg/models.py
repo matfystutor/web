@@ -48,8 +48,6 @@ class ImportLine(models.Model):
     def clean(self):
         from django.core.exceptions import ValidationError
 
-        print 'ImportLine.clean'
-
         errors = {}
         if self.matched:
             for nonblank in ('rusclass', 'studentnumber', 'name'):
