@@ -6,7 +6,7 @@ class RusManager(models.Manager):
     use_for_related_fields = True
 
     def get_query_set(self):
-        return super(RusManager, self).get_query_set().select_related('profile')
+        return super(RusManager, self).get_query_set().select_related('profile', 'rusclass', 'initial_rusclass')
 
 class TutorProfileManager(models.Manager):
     use_for_related_fields = True

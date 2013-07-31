@@ -1,5 +1,5 @@
 # vim: set fileencoding=utf8 :
-from .models import ImportSession, ImportLine, Handout, HandoutClassResponse, HandoutRusResponse, ChangeLogEntry, ChangeLogEffect
+from .models import ImportSession, ImportLine, Handout, HandoutClassResponse, HandoutRusResponse, ChangeLogEntry
 from django.contrib import admin
 
 class ImportSessionAdmin(admin.ModelAdmin):
@@ -13,12 +13,8 @@ class ImportLineAdmin(admin.ModelAdmin):
     list_display_links = ('line',)
     search_fields = ['line']
 
-class ChangeLogEffectInline(admin.TabularInline):
-    model = ChangeLogEffect
-
 class ChangeLogEntryAdmin(admin.ModelAdmin):
-    list_display = ('short_message', 'author', 'time', 'deleted', 'hidden')
-    inlines = (ChangeLogEffectInline,)
+    list_display = ('author', 'time', 'kind')
 
 admin.site.register(ImportSession, ImportSessionAdmin)
 admin.site.register(ImportLine, ImportLineAdmin)
@@ -26,4 +22,3 @@ admin.site.register(Handout, admin.ModelAdmin)
 admin.site.register(HandoutClassResponse, admin.ModelAdmin)
 admin.site.register(HandoutRusResponse, admin.ModelAdmin)
 admin.site.register(ChangeLogEntry, ChangeLogEntryAdmin)
-admin.site.register(ChangeLogEffect, admin.ModelAdmin)

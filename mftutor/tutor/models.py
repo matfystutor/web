@@ -2,6 +2,7 @@
 # See https://docs.djangoproject.com/en/1.4/topics/auth/
 # for a discussion on user profiles and django.contrib.auth
 
+import re
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -9,7 +10,6 @@ from ..settings import YEAR, RUSCLASS_BASE, DEFAULT_EMAIL_DOMAIN, DEFAULT_ASB_EM
 from .managers import TutorProfileManager, TutorManager, TutorMembers, VisibleTutorGroups, RusManager
 
 def tutorpicture_upload_to(instance, filename):
-    import re
     extension = re.sub(r'^.*\.', '', filename)
     return 'tutorpics/'+instance.studentnumber+'.'+extension
 
@@ -81,7 +81,7 @@ class RusClassManager(models.Manager):
     def create_from_official(self, year, official_name):
         translate_to_handle = {official: handle
                 for official, handle, internal in RUSCLASS_BASE}
-        translate_to_handle = {official: internal
+        translate_to_internal = {official: internal
                 for official, handle, internal in RUSCLASS_BASE}
         handle = translate_to_handle[official_name[0:2]] + official_name[2:]
         internal_name = translate_to_internal[official_name[0:2]] + u' ' + official_name[2:]
@@ -230,10 +230,31 @@ class Rus(models.Model):
     profile = models.ForeignKey(TutorProfile)
     year = models.IntegerField(verbose_name="Tutorår")
     rusclass = models.ForeignKey(RusClass, null=True)
+
     arrived = models.BooleanField(verbose_name="Ankommet")
+    initial_rusclass = models.ForeignKey(RusClass, null=True, related_name='initial_rus_set')
 
     class Meta:
         verbose_name = 'rus'
         verbose_name_plural = verbose_name + 'ser'
 
         ordering = ['rusclass', 'profile']
+
+    def json_of(self):
+        if self.initial_rusclass:
+            initial_handle = self.initial_rusclass.handle
+        else:
+            initial_handle = None
+        return {
+                'year': self.year,
+                'rusclass': self.rusclass.handle,
+                'arrived': self.arrived,
+                'studentnumber': self.profile.studentnumber,
+                'name': self.profile.get_full_name(),
+                'street': self.profile.street,
+                'city': self.profile.city,
+                'phone': self.profile.phone,
+                'email': self.profile.email,
+
+                'initial_rusclass': initial_handle,
+                }

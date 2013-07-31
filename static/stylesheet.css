@@ -582,13 +582,6 @@ td.altTabBg1 {
 	line-height: normal;
 }
 
-.twocol .field ul, .twocol .field li {
-	list-style-type: none;
-	display: inline;
-	margin: 0;
-	padding: 0;
-}
-
 .twocol .label {
 	float: left;
 	width: 150px;

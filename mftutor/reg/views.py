@@ -3,7 +3,7 @@ import re
 import exceptions
 import datetime
 
-from django.utils import dateformat
+from django.db import transaction
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, Http404
 from django.shortcuts import get_object_or_404, render, redirect, render_to_response
 from django.core.urlresolvers import reverse
@@ -19,7 +19,7 @@ from ..settings import YEAR
 from ..tutor.models import RusClass, TutorProfile, Rus
 from ..tutor.auth import user_tutor_data, tutor_required_error, NotTutor, rusclass_required_error
 
-from .models import ImportSession, ImportLine, Note, ChangeLogEntry, ChangeLogEffect, Handout, HandoutRusResponse, HandoutClassResponse
+from .models import ImportSession, ImportLine, Note, ChangeLogEntry, Handout, HandoutRusResponse, HandoutClassResponse
 
 # =============================================================================
 
@@ -176,6 +176,8 @@ class EditSessionView(UpdateView):
         # Line objects
         lines = []
         position = 1
+        studentnumbers = set()
+        studentnumbers_duplicate = set()
         for line in line_strings:
             il = ImportLine(session=form.instance, line=line, position=position, matched=False)
             position = position + 1
@@ -186,13 +188,22 @@ class EditSessionView(UpdateView):
                 il.rusclass = m.group('rusclass')
                 il.name = m.group('name')
                 il.studentnumber = m.group('studentnumber')
+                if il.studentnumber in studentnumbers:
+                    studentnumbers_duplicate.add(il.studentnumber)
+                else:
+                    studentnumbers.add(il.studentnumber)
 
             lines.append(il)
 
         lines_saved = False
 
+        if studentnumbers_duplicate:
+            context_data = super(EditSessionView, self).get_context_data(form=form)
+            context_data['error'] = u'Årskortnummer/-numre er ikke unikke: '+u', '.join(studentnumbers_duplicate)
+            return self.render_to_response(context_data)
+
+
         # Save form and perform bulk delete/insert of lines
-        from django.db import transaction
         with transaction.commit_on_success():
             importsession = form.save()
             ImportLine.objects.filter(session=form.instance).delete()
@@ -239,7 +250,7 @@ class EditSessionView(UpdateView):
                             tp = TutorProfile.objects.create(name=il.name, studentnumber=il.studentnumber, user=u)
                             tp.set_default_email()
 
-                        rus = Rus.objects.create(profile=tp, year=year, rusclass=rusclass)
+                        rus = Rus.objects.create(profile=tp, year=year, rusclass=rusclass, initial_rusclass=rusclass)
 
                     importsession.imported = datetime.datetime.now()
                     importsession.save()
@@ -254,211 +265,139 @@ class EditSessionView(UpdateView):
 
 # =============================================================================
 
-# This should probably be fixed some day.
-class CachedQuerySetHack(object):
-    def __init__(self, queryset):
-        self._queryset = queryset
-
-    # Default queryset all() "forgets" the cached result
-    # and produces a deep copy of the object.
-    # This might be a feature to some, but in our case we want the results to be cached.
-    def all(self):
-        return self
-
-    def __iter__(self):
-        return iter(self._queryset)
-
 class RusListView(TemplateView):
     template_name = 'reg/rus_list.html'
 
-    def get_change_class_form_rusclass(self):
-        ccf = ChangeClassForm()
-        # This field is displayed multiple times on the page. Don't hit the DB every time!
-        ccf.fields['rusclass'].queryset = CachedQuerySetHack(RusClass.objects.filter(year=YEAR))
-        return ccf['rusclass']
+    def get_page_data(self):
+        return {
+                'rus_list': self.get_rus_list_data(),
+                'rusclass_list': self.get_rusclass_list_data(),
+                'note_list': self.get_note_list_data(),
+                'change_list_newest': self.get_change_list_newest(),
+                }
+
+    def get_rusclass_list_data(self):
+        return [{
+            'handle': rusclass.handle,
+            'internal_name': rusclass.internal_name,
+            } for rusclass in self.get_rusclass_list()]
+
+    def get_rus_list_data(self):
+        return [rus.json_of() for rus in self.get_rus_list()]
 
     def get_context_data(self, **kwargs):
         context_data = super(RusListView, self).get_context_data(**kwargs)
-        context_data['rus_list'] = self.get_rus_list()
-        context_data['change_class_form_rusclass'] = self.get_change_class_form_rusclass()
-        context_data['change_list'] = ChangeLogEntry.objects.filter(deleted__isnull=True, hidden__isnull=True).order_by('-time')
-
-        try:
-            change_list_newest = ChangeLogEntry.objects.order_by('-pk')[:1].get().pk
-        except ChangeLogEntry.DoesNotExist:
-            change_list_newest = 0
-        context_data['change_list_newest'] = change_list_newest
-
+        import json
+        context_data['page_data_json'] = json.dumps(self.get_page_data())
         return context_data
 
-    def get_rus_list(self):
-        rus_list = Rus.objects.filter(year=YEAR).select_related('rusclass', 'profile', 'profile__user').order_by('rusclass', 'profile__studentnumber')
+    def get_change_list_newest(self):
+        try:
+            return ChangeLogEntry.objects.order_by('-pk')[:1].get().pk
+        except ChangeLogEntry.DoesNotExist:
+            return 0
 
-        rus_pks = frozenset(rus.pk for rus in rus_list)
-        rusclass_pks = frozenset(rus.rusclass.pk for rus in rus_list if rus.rusclass is not None)
+    def get_note_list_data(self):
+        rus_list = self.get_rus_list()
+        rusclass_list = self.get_rusclass_list()
+
+        rus_dict = {o.pk: o for o in rus_list}
+        rusclass_dict = {o.pk: o for o in rusclass_list}
+
+        rus_pks = frozenset(o.pk for o in rus_list)
+        rusclass_pks = frozenset(o.pk for o in rusclass_list)
 
         rus_notes_qs = Note.objects.filter(subject_kind__exact='rus', subject_pk__in=rus_pks,
-                deleted__isnull=True,
-                superseded__isnull=True)
+                deleted__isnull=True)
         rusclass_notes_qs = Note.objects.filter(subject_kind__exact='rusclass', subject_pk__in=rusclass_pks,
-                deleted__isnull=True,
-                superseded__isnull=True)
-        rus_notes = {}
-        rusclass_notes = {}
-        for note in rus_notes_qs:
-            rus_notes.setdefault(note.subject_pk, []).append(note)
-        for note in rusclass_notes_qs:
-            rusclass_notes.setdefault(note.subject_pk, []).append(note)
+                deleted__isnull=True)
 
-        for rus in rus_list:
-            rus.notes = rus_notes.get(rus.pk, ())
-            if rus.rusclass is not None:
-                rus.rusclass.notes = rusclass_notes.get(rus.rusclass.pk, ())
+        note_list = list(rus_notes_qs) + list(rusclass_notes_qs)
+        note_list_data = []
 
+        for note in note_list:
+            note_list_data.append({'pk': note.pk, 'note': note.json_of()})
+
+        return note_list_data
+
+    def get_rus_list(self):
+        rus_list = Rus.objects.filter(year=YEAR)
         return rus_list
 
+    def get_rusclass_list(self):
+        rusclass_list = RusClass.objects.filter(year=YEAR)
+        return rusclass_list
 
-class ChangeClassForm(forms.Form):
-    rus = forms.ModelChoiceField(queryset=Rus.objects.filter(year__exact=YEAR))
-    rusclass = forms.ModelChoiceField(queryset=RusClass.objects.filter(year__exact=YEAR), required=False)
 
-class ChangeClassView(FormView):
-    form_class = ChangeClassForm
+class RusCreateForm(forms.Form):
+    name = forms.CharField(label='Navn')
+    studentnumber = forms.CharField(label=u'Årskortnummer')
+    email = forms.CharField(required=False, label='Email')
+    rusclass = forms.ModelChoiceField(queryset=RusClass.objects.filter(year=YEAR), label='Hold')
+    arrived = forms.BooleanField(required=False, label='Ankommet')
+    note = forms.CharField(required=False, label='Note')
 
-    def get(self, request):
-        return self.http_method_not_allowed(request)
+    def clean_studentnumber(self):
+        studentnumber = self.cleaned_data['studentnumber']
+        if TutorProfile.objects.filter(studentnumber=studentnumber).exists():
+            raise forms.ValidationError(u"Årskortnummeret findes allerede på hjemmesiden.")
+        return studentnumber
 
-    def form_invalid(self):
-        return HttpResponseBadRequest()
+class RusCreateView(FormView):
+    template_name = 'reg/ruscreateform.html'
+    form_class = RusCreateForm
 
-    def save_change(self, form):
-        d = user_tutor_data(self.request.user)
-        data = form.clean()
-        rus = data['rus']
-        rusclass = data['rusclass']
-        oldrusclass_pk = rus.rusclass.pk if rus.rusclass else ""
-        rusclass_pk = rusclass.pk if rusclass else ""
-        rusclass_name = rusclass.internal_name if rusclass else 'Intet hold'
+    def get_context_data(self, **kwargs):
+        context_data = super(RusCreateView, self).get_context_data(**kwargs)
+        context_data['rusclass_list'] = self.get_rusclass_list()
+        return context_data
 
-        from django.db import transaction
+    def get_rusclass_list(self):
+        rusclass_list = RusClass.objects.filter(year=YEAR)
+        for rusclass in rusclass_list:
+            rusclass.notes = Note.objects.filter(subject_kind='rusclass', subject_pk=rusclass.pk)
+            rusclass.rus_count = Rus.objects.filter(rusclass=rusclass).count()
+        return rusclass_list
+
+    def form_valid(self, form):
+        data = form.cleaned_data
+        try:
+            first_name, last_name = data['name'].split(' ', 1)
+        except ValueError:
+            first_name, last_name = data['name'], ''
         with transaction.commit_on_success():
-            short_message = (rus.profile.studentnumber
-                    +u' skifter hold til '+rusclass_name
-                    +u' - '+d.profile.get_full_name())
-            logentry = ChangeLogEntry(
-                    author=d.profile,
-                    short_message=short_message,
-                    message=short_message,
-                    can_rollback=True)
-            logentry.save()
-            logeffect = ChangeLogEffect(
-                    entry=logentry,
-                    model='rus',
-                    pk=rus.pk,
-                    what='modified',
-                    field='rusclass',
-                    old_value=oldrusclass_pk,
-                    new_value=rusclass_pk)
-            logeffect.save()
-            rus.rusclass = rusclass
-            rus.save()
-            return logentry
+            user = User.objects.create(
+                    username=data['studentnumber'],
+                    first_name=first_name,
+                    last_name=last_name,
+                    email=data['email'])
+            tutorprofile = TutorProfile.objects.create(
+                    studentnumber=data['studentnumber'],
+                    user=user,
+                    name=data['name'],
+                    email=data['email'])
+            rus = Rus.objects.create(
+                    profile=tutorprofile,
+                    year=YEAR,
+                    arrived=data['arrived'],
+                    rusclass=data['rusclass'])
+            if data['note']:
+                note = Note.objects.create(
+                        subject_kind='rus',
+                        subject_pk=rus.pk,
+                        body=data['note'])
+            return HttpResponseRedirect(reverse('reg_rus_list'))
 
-    def form_valid(self, form):
-        self.save_change(form)
-        return HttpResponseRedirect(reverse('reg_rus_list'))
-
-class AjaxChangeClassView(ChangeClassView):
-    def form_valid(self, form):
-        logentry = self.save_change(form)
-        response = {'undo_link': reverse('reg_undo', kwargs={'pk': logentry.pk})}
-        import json
-        return HttpResponse(json.dumps(response), content_type='application/json')
-
-class ChangeArrivedView(View):
-    def save_change(self, request, ruspk):
-        d = user_tutor_data(request.user)
-        author = d.profile
-
-        rus = get_object_or_404(Rus, pk=ruspk, year=YEAR)
-
-        from django.db import transaction
-        with transaction.commit_on_success():
-            old_value = rus.arrived
-            new_value = not rus.arrived
-
-            negation_string = u'ikke ' if not new_value else u''
-            short_message = (rus.profile.studentnumber
-                    +u' '+rus.profile.get_full_name()+u' er '+negation_string+'ankommet '+rus.rusclass.internal_name
-                    +u' - '+author.get_full_name())
-            logentry = ChangeLogEntry(
-                    author=author,
-                    short_message=short_message,
-                    message=short_message,
-                    can_rollback=True)
-            logentry.save()
-            logeffect = ChangeLogEffect(
-                    entry=logentry,
-                    model='rus',
-                    pk=rus.pk,
-                    what='modified',
-                    field='arrived',
-                    old_value="1" if old_value else "",
-                    new_value="1" if new_value else "")
-            logeffect.save()
-            rus.arrived = new_value
-            rus.save()
-            return logentry
-
-    def post(self, request, pk):
-        self.save_change(request=request, ruspk=pk)
-        return HttpResponseRedirect(reverse('reg_rus_list'))
-
-
-class AjaxChangeArrivedView(ChangeArrivedView):
-    def post(self, request, pk):
-        logentry = self.save_change(request=request, ruspk=pk)
-        response = {'undo_link': reverse('reg_undo', kwargs={'pk': logentry.pk})}
-        import json
-        return HttpResponse(json.dumps(response), content_type='application/json')
-
-class NotesForm(forms.Form):
-    subject_kind = forms.ChoiceField(choices=((a,a) for a in ('rus', 'rusclass', 'tutor')))
-    subject_pk = forms.IntegerField()
-    body = forms.CharField(required=False)
-
-    new_note = forms.BooleanField()
-
-
-class NotesView(FormView):
-    form_class = NotesForm
-
-    def get(self, request):
-        return self.http_method_not_allowed(request)
-
-    def form_invalid(self):
-        return HttpResponseBadRequest()
-
-    def form_valid(self, form):
-        d = user_tutor_data(self.request.user)
-        data = form.clean()
-        if 'new_note' in data:
-            Note(subject_kind=data['subject_kind'],
-                    subject_pk=data['subject_pk'],
-                    body=data['body'],
-                    author=d.profile).save()
-        return HttpResponseRedirect(reverse('reg_rus_list'))
-
-class RPCForm(forms.Form):
-    pk = forms.IntegerField()
+class RPCError(Exception):
+    pass
 
 class RusListRPC(View):
     def get_data(self, request):
-        form = RPCForm(request.GET)
-        if not form.is_valid():
-            return {'errors': form.errors}
-        pk = form.cleaned_data['pk']
-        queryset = ChangeLogEntry.objects.filter(pk__gt=pk)
+        try:
+            pk = int(self.get_param('pk'))
+        except ValueError:
+            raise RPCError(u'Invalid pk')
+        queryset = ChangeLogEntry.objects.filter(pk__gt=pk).order_by('pk')
 
         sleep_each = 1
         sleep_max = 5
@@ -479,110 +418,148 @@ class RusListRPC(View):
             payloads = []
 
             for entry in queryset:
-                payloads.append({
-                    'method': 'change_log_entry',
-                    'data': {
-                        'time': dateformat.format(entry.time, "d M y, H:i"),
-                        'short_message': unicode(entry.short_message),
-                        'can_rollback': entry.can_rollback,
-                    }
-                })
-                for effect in entry.changelogeffect_set.all():
-                    payloads.append({
-                        'method': 'change_log_effect',
-                        'data': {
-                            'model': effect.model,
-                            'pk': effect.pk,
-                            'what': effect.what,
-                            'field': effect.field,
-                            'old_value': effect.old_value,
-                            'new_value': effect.new_value,
-                        }
-                    })
+                payloads.append(entry.json_of())
 
-            return {'pk': pk,
-                    'payloads': payloads}
+            return {'pk': pk, 'payloads': payloads}
 
         return {'pk': pk, 'payloads': []}
 
     def get(self, request):
         import json
+        try:
+            data = self.get_data(request)
+        except RPCError as e:
+            data = {'error': unicode(e)}
+        return HttpResponse(json.dumps(data))
 
-        data = self.get_data(request)
+    def get_param(self, param):
+        try:
+            return self.request.POST[param]
+        except KeyError:
+            try:
+                return self.request.GET[param]
+            except KeyError:
+                raise RPCError(u'Missing parameter %s' % param)
+
+    ACTIONS = (
+            'arrived',
+            'rusclass',
+            'add_rus_note',
+            'add_rusclass_note',
+            'delete_note',
+            )
+
+    def log(self, **kwargs):
+        import json
+        kwargs['serialized_data'] = json.dumps(kwargs.pop('serialized_data'))
+        return ChangeLogEntry.objects.create(
+                author=self.author,
+                **kwargs).json_of()
+
+    def action_arrived(self, rus):
+        rus.arrived = not rus.arrived
+        rus.save()
+        return self.log(kind='rus_arrived',
+                related_pk=rus.pk,
+                serialized_data=rus.json_of())
+
+    def action_rusclass(self, rus, rusclass):
+        rus.rusclass = rusclass
+        rus.save()
+        return self.log(kind='rus_rusclass',
+                related_pk=rus.pk,
+                serialized_data=rus.json_of())
+
+    def action_add_rus_note(self, rus, body):
+        note = Note.objects.create(
+                subject_kind='rus',
+                subject_pk=rus.pk,
+                body=body,
+                author=self.author)
+        return self.log(kind='note_add',
+                related_pk=note.pk,
+                serialized_data=note.json_of())
+
+    def action_add_rusclass_note(self, rusclass, body):
+        note = Note.objects.create(
+                subject_kind='rusclass',
+                subject_pk=rusclass.pk,
+                body=body,
+                author=self.author)
+        return self.log(kind='note_add',
+                related_pk=note.pk,
+                serialized_data=note.json_of())
+
+    def action_delete_note(self, note):
+        note.deleted = datetime.datetime.now()
+        note.save()
+        return self.log(kind='note_delete',
+                related_pk=note.pk,
+                serialized_data=note.json_of())
+
+    def handle_post(self, request):
+        d = user_tutor_data(request.user)
+        self.author = d.profile
+
+        action = self.get_param('action')
+        if action not in self.ACTIONS:
+            raise RPCError("Unknown action %u" % action)
+
+        fn = getattr(self, 'action_'+action)
+
+        import inspect
+        args, varargs, keywords, defaults = inspect.getargspec(fn)
+        params = {}
+
+        if 'request' in args:
+            params['request'] = request
+
+        if 'rus' in args:
+            try:
+                params['rus'] = Rus.objects.get(year=YEAR, profile__studentnumber=self.get_param('rus'))
+            except Rus.DoesNotExist:
+                raise RPCError(u'No such rus')
+
+        if 'rusclass' in args:
+            try:
+                params['rusclass'] = RusClass.objects.get(year=YEAR, handle=self.get_param('rusclass'))
+            except Rus.DoesNotExist:
+                raise RPCError(u'No such rusclass')
+
+        if 'note' in args:
+            try:
+                params['note'] = Note.objects.get(pk=self.get_param('note'))
+            except Note.DoesNotExist:
+                raise RPCError(u'No such note')
+
+        if 'body' in args:
+            params['body'] = self.get_param('body')
+
+        with transaction.commit_on_success():
+            return fn(**params)
+
+    def post(self, request):
+        import json
+        try:
+            data = self.handle_post(request)
+        except RPCError as e:
+            data = {'error': unicode(e)}
         return HttpResponse(json.dumps(data))
 
 
-# =============================================================================
+class RusChangesView(TemplateView):
+    template_name = 'reg/rus_changes.html'
 
-class UndoError(Exception):
-    def __init__(self, response):
-        self.response = response
+    def get_context_data(self, **kwargs):
+        context_data = super(RusChangesView, self).get_context_data(**kwargs)
+        context_data['rus_list'] = self.get_rus_list()
+        return context_data
 
-
-class UndoView(View):
-    def perform_undo(self, request, pk):
-        d = user_tutor_data(request.user)
-        logentry = get_object_or_404(ChangeLogEntry, pk=pk, can_rollback__exact=True, deleted__isnull=True)
-
-        undo_message = u'Fortrød ændring "'+logentry.short_message+u'" - '+d.profile.get_full_name()
-        undo_logentry = ChangeLogEntry(
-                author=d.profile,
-                hidden=datetime.datetime.now(),
-                short_message=undo_message,
-                message=undo_message,
-                can_rollback=False)
-        undo_logentry.save()
-
-        effects = ChangeLogEffect.objects.filter(entry=logentry)
-        for effect in effects:
-            if effect.model == u'rus':
-                field = effect.field
-                rus = Rus.objects.get(pk=effect.pk)
-                if field == u'arrived':
-                    cur_value = rus.arrived
-                    old_value = bool(effect.old_value)
-                    new_value = bool(effect.new_value)
-                elif field == u'rusclass':
-                    cur_value = rus.rusclass.pk
-                    old_value = int(effect.old_value)
-                    new_value = int(effect.new_value)
-                else:
-                    raise UndoError({'error': u'unknown rus field '+field})
-                if cur_value != new_value:
-                    raise UndoError({'error':
-                        (u'bad current value for rus {0} field {1} (was {2}, expected {3})'
-                            .format(rus, field, cur_value, effect.new_value))})
-                if field == u'arrived':
-                    rus.arrived = old_value
-                elif field == u'rusclass':
-                    rus.rusclass = RusClass.objects.get(pk=old_value)
-                rus.save()
-                undo_logeffect = ChangeLogEffect(
-                        entry=undo_logentry,
-                        model=effect.model,
-                        pk=effect.pk,
-                        field=effect.field,
-                        what=u'modified',
-                        old_value=effect.new_value,
-                        new_value=effect.old_value)
-                undo_logeffect.save()
-            else:
-                raise UndoError({'error':
-                    u'Unknown model {0}'.format(effect.model)})
-        logentry.hidden = datetime.datetime.now()
-        logentry.save()
-        return {'success': True}
-
-    def post(self, request, pk):
-        try:
-            from django.db import transaction
-            with transaction.commit_on_success():
-                self.perform_undo(request, pk)
-            return HttpResponseRedirect(reverse('reg_rus_list'))
-        except UndoError as e:
-            response = e.response
-        import json
-        return HttpResponse(json.dumps(response), content_type='application/json')
+    def get_rus_list(self):
+        from django.db.models import F
+        rus_list = (list(Rus.objects.exclude(rusclass=F('initial_rusclass')))
+                + list(Rus.objects.filter(initial_rusclass__isnull=True)))
+        return rus_list
 
 
 # =============================================================================
@@ -806,7 +783,6 @@ class HandoutResponseView(FormView):
         return context_data
 
     def form_valid(self, form):
-        from django.db import transaction
         with transaction.commit_on_success():
             data = form.cleaned_data
             self.handout_response.note = data['note']
@@ -957,8 +933,6 @@ class RusInfoView(FormView):
         return context_data
 
     def form_valid(self, form):
-        from django.db import transaction
-
         changes = 0
         with transaction.commit_on_success():
             data = form.cleaned_data
