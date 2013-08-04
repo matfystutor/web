@@ -4,6 +4,7 @@ from django.views.generic import FormView
 from django.forms.formsets import formset_factory, BaseFormSet
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
+from django.contrib.auth.models import User
 from ...settings import YEAR
 from ..models import Tutor, TutorGroup, TutorProfile, RusClass
 
@@ -95,7 +96,8 @@ class TutorAdminView(FormView):
                     profile = TutorProfile.objects.get(studentnumber__exact=in_studentnumber)
                     tutor = Tutor.objects.get(year=YEAR, profile=profile)
                 except TutorProfile.DoesNotExist:
-                    profile = TutorProfile(studentnumber=in_studentnumber)
+                    user = User.objects.create(username=in_studentnumber)
+                    profile = TutorProfile(studentnumber=in_studentnumber, user=user)
                     profile.save()
                     tutor = Tutor(year=YEAR, profile=profile)
                 except Tutor.DoesNotExist:
