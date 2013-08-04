@@ -8,6 +8,7 @@ from .views import RusListView, RusCreateView, RusListRPC, RusChangesView
 from .views import HandoutListView, HandoutNewView, HandoutSummaryView, \
         HandoutResponseView, HandoutResponseDeleteView
 from .views import RusInfoListView, RusInfoView
+from .views import LightboxAdminView
 
 urlpatterns = patterns('',
     url(r'^$', tutorbur_required(BurStartView.as_view()),
@@ -44,4 +45,7 @@ urlpatterns = patterns('',
         RusInfoListView.as_view(), name='rusinfo_list'),
     url(r'^info/(?P<handle>[a-z0-9]+)/$',
         RusInfoView.as_view(), name='rusinfo'),
+
+    url(r'^burtavle/$',
+        LightboxAdminView.as_view(), name='burtavle_admin'),
 )

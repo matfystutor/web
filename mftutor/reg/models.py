@@ -176,8 +176,58 @@ class HandoutRusResponse(models.Model):
         verbose_name_plural = verbose_name + 'r'
         unique_together = (('handout', 'rus'),)
 
-class HandoutDeadline(models.Model):
-    handout = models.ForeignKey(Handout)
-    rusclass = models.ForeignKey(RusClass)
-    soft_deadline = models.DateTimeField()
-    hard_deadline = models.DateTimeField()
+
+class LightboxRusClassStateManager(models.Manager):
+    def get_for_year(self, year):
+        rusclasses = RusClass.objects.filter(year=year)
+        rusclass_handles = frozenset(rusclass.handle for rusclass in rusclasses)
+        rusclass_dict = {rusclass.handle: rusclass for rusclass in rusclasses}
+
+        states = self.model.objects.filter(rusclass__in=rusclasses).select_related('rusclass')
+        state_handles = frozenset(state.rusclass.handle for state in states)
+
+        missing = rusclass_handles.difference(state_handles)
+        new = [self.model(rusclass=rusclass_dict[handle]) for handle in missing]
+
+        return list(states) + list(new)
+
+class LightboxRusClassState(models.Model):
+    objects = LightboxRusClassStateManager()
+
+    COLORS = (
+            ('green', u'Grøn'),
+            ('yellow', u'Gul'),
+            ('red', u'Rød'),
+            )
+
+    rusclass = models.ForeignKey(RusClass, unique=True)
+    color = models.CharField(max_length=10, choices=COLORS, default='green')
+    note = models.TextField(blank=True)
+    author = models.ForeignKey(TutorProfile, null=True, verbose_name="Forfatter")
+    updated = models.DateTimeField(auto_now=True, verbose_name="Sidst ændret")
+
+    class Meta:
+        verbose_name = 'tavlestatus'
+        verbose_name_plural = verbose_name + 'er'
+        ordering = ['rusclass']
+
+class LightboxNoteManager(models.Manager):
+    def get_for_year(self, year):
+        try:
+            return self.model.objects.get(year=year)
+        except self.model.DoesNotExist:
+            return self.model(year=year)
+
+class LightboxNote(models.Model):
+    objects = LightboxNoteManager()
+    COLORS = (
+            (u'Grøn', 'green'),
+            (u'Gul', 'yellow'),
+            (u'Rød', 'red'),
+            )
+
+    year = models.IntegerField(verbose_name="Tutorår", unique=True)
+    note = models.TextField(blank=True)
+    author = models.ForeignKey(TutorProfile, null=True, verbose_name="Forfatter")
+    updated = models.DateTimeField(auto_now=True, verbose_name="Sidst ændret")
+    color = models.CharField(max_length=10, choices=COLORS, default='green')

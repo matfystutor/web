@@ -1,0 +1,55 @@
+{# vim:set filetype=htmldjango sw=4 sts=4 ts=4 et: #}<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="refresh" content="20" />
+<title>Burtavle</title>
+<style>
+body {
+    font-family: Lucida-Grande, Calibri, Arial, Verdana, Sans-Serif;
+    color: white;
+    font-weight: bold;
+    background-color: black;
+}
+.column {
+    float: left;
+    width: 16%;
+}
+.state {
+    border-radius: 5px;
+    margin: 2px;
+    padding: 2px;
+    text-align: center;
+}
+.green {
+    background-color: rgb(30, 210, 0);
+}
+.yellow {
+    background-color: rgb(240, 164, 1);
+}
+.red {
+    background-color: rgb(244, 80, 0);
+}
+</style>
+</head>
+<body>
+<div style="float: left">
+<h1>{{ BURET }}</h1>
+{{ note.note|linebreaks }}
+</div>
+<div style="float: right; text-align: right">
+    <div style="font-size: 12px">www.matfystutor.dk/burtavle</div>
+    <div style="font-size: 12px">{% now "H:i:s" %}</div>
+    <img src="http://cs.au.dk/~tutor/2012/burtavle/{{ note.color }}-chicken-black.jpg">
+</div>
+<div style="clear: both">
+{% for study in state_by_study %}
+<div class="column">
+{% for rusclass in study.rusclasses %}
+<div class="state {{ rusclass.rusclass.handle }} {{ rusclass.color }}">
+{{ rusclass.rusclass }}</div>
+{% endfor %}
+</div>
+{% endfor %}
+</div>
+</body>
+</html>

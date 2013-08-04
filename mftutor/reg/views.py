@@ -2,6 +2,7 @@
 import re
 import exceptions
 import datetime
+import json
 
 from django.db import transaction
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, Http404
@@ -20,6 +21,7 @@ from ..tutor.models import RusClass, TutorProfile, Rus
 from ..tutor.auth import user_tutor_data, tutor_required_error, NotTutor, rusclass_required_error
 
 from .models import ImportSession, ImportLine, Note, ChangeLogEntry, Handout, HandoutRusResponse, HandoutClassResponse
+from .models import LightboxRusClassState, LightboxNote
 
 # =============================================================================
 
@@ -287,7 +289,6 @@ class RusListView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context_data = super(RusListView, self).get_context_data(**kwargs)
-        import json
         context_data['page_data_json'] = json.dumps(self.get_page_data())
         return context_data
 
@@ -425,7 +426,6 @@ class RusListRPC(View):
         return {'pk': pk, 'payloads': []}
 
     def get(self, request):
-        import json
         try:
             data = self.get_data(request)
         except RPCError as e:
@@ -450,7 +450,6 @@ class RusListRPC(View):
             )
 
     def log(self, **kwargs):
-        import json
         kwargs['serialized_data'] = json.dumps(kwargs.pop('serialized_data'))
         return ChangeLogEntry.objects.create(
                 author=self.author,
@@ -539,7 +538,6 @@ class RusListRPC(View):
             return fn(**params)
 
     def post(self, request):
-        import json
         try:
             data = self.handle_post(request)
         except RPCError as e:
@@ -963,3 +961,102 @@ class RusInfoView(FormView):
 
     def form_invalid(self, form):
         return self.render_to_response(self.get_context_data(form=form, form_errors=True))
+
+# =============================================================================
+
+class LightboxView(TemplateView):
+    template_name = 'reg/burtavle.html'
+
+    def get_state_by_study(self):
+        states = LightboxRusClassState.objects.get_for_year(YEAR)
+
+        study_dict = {}
+        for state in states:
+            rusclass = state.rusclass
+            study = rusclass.get_study()
+            l = study_dict.setdefault(study, [])
+            l.append(state)
+
+        study_list = []
+        for study in sorted(study_dict.keys()):
+            l = study_dict[study]
+            o = {'study': study}
+            o['rusclasses'] = sorted(l, key=lambda state: state.rusclass.handle)
+            study_list.append(o)
+
+        return study_list
+
+    def get_context_data(self, **kwargs):
+        context_data = super(LightboxView, self).get_context_data(**kwargs)
+
+        context_data['note'] = LightboxNote.objects.get_for_year(YEAR)
+        context_data['state_by_study'] = self.get_state_by_study()
+
+        return context_data
+
+burtavle = LightboxView.as_view()
+
+
+class LightboxAdminViewResponse(Exception):
+    def __init__(self, o):
+        self.response = o
+
+
+class LightboxAdminForm(forms.Form):
+    COLORS = (
+            ('green', u'Grøn'),
+            ('yellow', u'Gul'),
+            ('red', u'Rød'),
+            )
+
+    rusclass = forms.CharField(required=False)
+    color = forms.ChoiceField(choices=COLORS)
+    note = forms.CharField(required=False, widget=forms.Textarea())
+
+
+class LightboxAdminView(LightboxView):
+    template_name = 'reg/burtavle_admin.html'
+
+    def get_form(self):
+        note = LightboxNote.objects.get_for_year(YEAR)
+        form = LightboxAdminForm({'note': note.note, 'color': note.color})
+        return form
+
+    def get_post_response(self, request):
+        d = user_tutor_data(request.user)
+
+        form = LightboxAdminForm(request.POST)
+        if not form.is_valid():
+            return {'error': form.errors}
+
+        data = form.cleaned_data
+        if data['rusclass']:
+            try:
+                rusclass = RusClass.objects.get(year=YEAR, handle=data['rusclass'])
+            except RusClass.DoesNotExist:
+                return {'error': 'no such rusclass'}
+
+            try:
+                state = LightboxRusClassState.objects.get(rusclass=rusclass)
+            except LightboxRusClassState.DoesNotExist:
+                state = LightboxRusClassState(rusclass=rusclass)
+        else:
+            state = LightboxNote.objects.get_for_year(YEAR)
+
+        state.color = data['color']
+        state.note = data['note']
+        state.author = d.profile
+        state.save()
+        return {'success': True}
+
+    def post(self, request):
+        try:
+            data = self.get_post_response(request)
+        except LightboxAdminViewResponse as e:
+            data = e.response
+        return HttpResponse(json.dumps(data))
+
+    def get_context_data(self, **kwargs):
+        context_data = super(LightboxAdminView, self).get_context_data(**kwargs)
+        context_data['form'] = self.get_form()
+        return context_data
