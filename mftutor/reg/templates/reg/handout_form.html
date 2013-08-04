@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Tilmeldingsliste{% endblock %}
+{% block head %}
+<script>
+function use_preset(select) {
+    var name = select.options[select.selectedIndex].textContent;
+    var kind = select.options[select.selectedIndex].value;
+
+    document.getElementById('id_name').value = name;
+
+    var kindField = document.getElementById('id_kind');
+    for (var i = 0, l = kindField.options.length; i < l; ++i) {
+        if (kindField.options[i].value == kind) {
+            kindField.selectedIndex = i;
+        }
+    }
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<h1>Tilmeldingsliste</h1>
+
+{% if form.non_field_errors %}
+{{ form.non_field_errors }}
+{% endif %}
+
+<form method="post">{% csrf_token %}
+    {% if presets %}
+    <p>Forslag:
+    <select onchange="use_preset(this)">
+        <option value=""></option>
+        {% for preset in presets %}
+        <option value="{{ preset.kind }}">{{ preset.name }}</option>
+        {% endfor %}
+    </select></p>
+    {% endif %}
+    <p>Navn: {{ form.name }} {{ form.name.errors }}</p>
+    <p>Slags: {{ form.kind }} {{ form.kind.errors }}</p>
+    <p>Note: {{ form.note }} {{ form.note.errors }}</p>
+    <input type="submit" value="Gem" />
+</form>
+
+{% endblock %}

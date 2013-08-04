@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block title %}Burtavle{% endblock %}
+{% block head %}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<style>
+.column {
+    float: left;
+    width: 16%;
+}
+.state {
+    border-radius: 5px;
+    margin: 2px;
+    padding: 2px;
+    text-align: center;
+    cursor: pointer;
+    color: white;
+    font-weight: bold;
+    font-family: Lucida-Grande, Calibri, Arial, Verdana, Sans-Serif;
+}
+.green {
+    background-color: rgb(30, 210, 0);
+}
+.yellow {
+    background-color: rgb(240, 164, 1);
+}
+.red {
+    background-color: rgb(244, 80, 0);
+}
+.radiolabel {
+    padding: 3px;
+    display: inline-block:
+}
+</style>
+<script>
+var clicked_data = {el: null, color: '', rusclass: '', note: '', author: ''};
+function display_data(data) {
+    var form = document.getElementById('form');
+    var colors = form['color'];
+    for (var i = 0, l = colors.length; i < l; ++i) {
+        colors[i].checked = data.color == colors[i].value;
+    }
+    form['rusclass'].value = data.rusclass;
+    form['note'].value = data.note;
+    document.getElementById('author').textContent = data.author;
+}
+function set_el_data(data) {
+    if (!data.el) return;
+    data.el.setAttribute('data-color', data.color);
+    data.el.setAttribute('data-rusclass', data.rusclass);
+    data.el.setAttribute('data-note', data.note);
+    data.el.setAttribute('data-author', data.author);
+    data.el.className = 'state '+data.rusclass+' '+data.color;
+}
+function data_for_el(el) {
+    return {
+        el: el,
+        color: el.getAttribute('data-color'),
+        rusclass: el.getAttribute('data-rusclass'),
+        note: el.getAttribute('data-note'),
+        author: el.getAttribute('data-author')
+    };
+}
+function state_mouseover(el) {
+    display_data(data_for_el(el));
+}
+function state_mouseout(el) {
+    display_data(clicked_data);
+}
+function state_click(el) {
+    clicked_data = data_for_el(el);
+    display_data(clicked_data);
+    return clicked_data;
+}
+function form_submit(event, form) {
+    clicked_data.color = '';
+    var colors = form['color'];
+    for (var i = 0, l = colors.length; i < l; ++i) {
+        if (colors[i].checked) clicked_data.color = colors[i].value;
+    }
+    clicked_data.rusclass = form['rusclass'].value;
+    clicked_data.note = form['note'].value;
+    clicked_data.author = document.getElementById('author').getAttribute('data-me');
+    set_el_data(clicked_data);
+    $.post('.', $(form).serialize());
+    event.preventDefault();
+}
+function main_submit(event, form) {
+    $.post('.', $(form).serialize());
+    event.preventDefault();
+}
+
+</script>
+{% endblock %}
+
+{% block content %}
+
+<h1>Burtavle</h1>
+<p><a href=".">Opdater denne side</a></p>
+<p><a href="{% url burtavle %}">Gå til burtavlen</a></p>
+<form method="post" onsubmit="main_submit(event, this)">{% csrf_token %}
+    <p>{{ form.note }}</p>
+    <p>Farve: {{ form.color }}</p>
+    <p><input type="submit" value="Gem" /></p>
+</form>
+
+{% for study in state_by_study %}
+<div class="column">
+{% for rusclass in study.rusclasses %}
+<div class="state {{ rusclass.rusclass.handle }} {{ rusclass.color }}"
+data-rusclass="{{ rusclass.rusclass.handle }}"
+data-color="{{ rusclass.color }}"
+data-note="{{ rusclass.note }}"
+data-author="{{ rusclass.author.get_full_name }}"
+onmouseover="state_mouseover(this)"
+onmouseout="state_mouseout(this)"
+onclick="state_click(this)">
+{{ rusclass.rusclass }}</div>
+{% endfor %}
+</div>
+{% endfor %}
+
+<br clear="both" />
+
+<form id="form" onsubmit="form_submit(event, this)">{% csrf_token %}
+<p>Sidst ændret af: <span id="author" data-me="{{ user.get_full_name }}"></span></p>
+<p>Hold: <input name="rusclass" /></p>
+<p><textarea name="note"></textarea></p>
+<p>Farve:
+<label class="radiolabel green"><input type="radio" name="color" value="green"></label>
+<label class="radiolabel yellow"><input type="radio" name="color" value="yellow"></label>
+<label class="radiolabel red"><input type="radio" name="color" value="red"></label>
+</p>
+<p><input type="submit" value="Gem" /></p>
+</form>
+
+{% endblock %}

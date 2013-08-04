@@ -11,7 +11,7 @@ from .models import *
 from .viewimpl.loginout import logout_view, login_view
 from .viewimpl.profile import profile_view
 from .viewimpl.admin import TutorAdminView
-from .auth import tutor_required, user_tutor_data
+from .auth import tutor_required, user_tutor_data, user_rus_data, NotTutor
 
 def tutor_password_change_view(request):
     if 'back' in request.GET:
@@ -55,7 +55,7 @@ def tutors_view(request, group=None):
         'street': t.profile.street,
         'city': t.profile.city,
         'phone': t.profile.phone,
-        'email': t.profile.user.email if t.profile.user else '',
+        'email': t.profile.email,
         'study': t.profile.study,
         } for t in tutors]
     tutors.sort(key=lambda t: (t['pk'] != leader_pk, t['full_name']))
@@ -81,7 +81,16 @@ class FrontView(TemplateView):
     template_name = 'front.html'
 
     def get(self, request, *args, **kwargs):
-        if request.user.is_authenticated():
+        try:
+            d = user_tutor_data(request.user)
             return HttpResponseRedirect(reverse('news'))
+        except NotTutor:
+            pass
+
+        try:
+            d = user_rus_data(request.user)
+            return HttpResponseRedirect(reverse('rus_start'))
+        except NotTutor:
+            pass
 
         return super(FrontView, self).get(request, *args, **kwargs)

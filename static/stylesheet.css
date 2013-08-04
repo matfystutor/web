@@ -97,7 +97,7 @@ body.fullwidth #main {
 	margin: 0 auto;
 }
 
-#login {
+.loginout {
 	float: right;
 	padding-right: 1em;
 }
@@ -241,6 +241,7 @@ h3 {
 #menu-list {
 	float: left;
 	margin-left: 5px;
+	height: 0;
 }
 
 ul.topnav {
@@ -582,13 +583,6 @@ td.altTabBg1 {
 	line-height: normal;
 }
 
-.twocol .field ul, .twocol .field li {
-	list-style-type: none;
-	display: inline;
-	margin: 0;
-	padding: 0;
-}
-
 .twocol .label {
 	float: left;
 	width: 150px;
@@ -643,4 +637,49 @@ td.altTabBg1 {
 .referat {
 	clear: both;
 	margin: 0 0 1em 0;
+}
+
+.link_button {
+    background: none repeat scroll 0% 0% transparent;
+    border: medium none;
+    color: rgb(17, 121, 0); /*rgb(59, 89, 152);*/
+    cursor: pointer;
+    margin: 0px;
+    padding: 0px;
+    vertical-align: top;
+    font-family: inherit;
+    font-size: 100%;
+}
+
+.link_button:hover {
+    text-decoration: underline;
+}
+
+#menu .link_button {
+	color: white;
+	vertical-align: baseline;
+}
+
+.person_list {
+    width: 100%;
+}
+
+.person_list td, .person_list th {
+    padding: 2px .5em;
+}
+
+.person_list .heading td {
+    text-align: center;
+}
+
+.person_list td, .person_list th {
+    border-bottom: 1px solid #999;
+}
+
+.person_list .phone {
+	font-weight: bold;
+}
+
+a[href^="tel:"] {
+	color: inherit;
 }

@@ -1,24 +1,23 @@
 # encoding: utf-8
 from django import forms
-from django.views.generic.base import TemplateResponseMixin
-from django.views.generic.edit import FormMixin, ProcessFormView
+from django.views.generic import FormView
 from django.forms.formsets import formset_factory, BaseFormSet
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
+from django.contrib.auth.models import User
 from ...settings import YEAR
-from ...activation.models import ProfileActivation
-from ..models import Tutor, TutorGroup, TutorProfile
+from ..models import Tutor, TutorGroup, TutorProfile, RusClass
 
 def classy(cl, size=10):
     return forms.TextInput(attrs={'class':cl, 'size':size})
 
 class TutorForm(forms.Form):
     pk = forms.IntegerField(widget=forms.HiddenInput, required=False, label='')
-    first_name = forms.CharField(label='Fornavn', required=False, widget=classy('first_name'))
-    last_name = forms.CharField(label='Efternavn', required=False, widget=classy('last_name'))
+    name = forms.CharField(label='Navn', required=False, widget=classy('name'))
     studentnumber = forms.CharField(label='Årskort', widget=classy('studentnumber', 7))
     study = forms.CharField(label='Studium', widget=classy('study', 7))
     email = forms.EmailField(label='Email', required=False, widget=classy('email', 25))
+    rusclass = forms.ModelChoiceField(label='Rushold', queryset=RusClass.objects.filter(year__exact=YEAR), required=False)
     groups = forms.ModelMultipleChoiceField(label='Grupper', queryset=TutorGroup.objects.filter(visible=True), required=False)
 
     def clean_pk(self):
@@ -31,45 +30,32 @@ class TutorForm(forms.Form):
 
 TutorFormSet = formset_factory(TutorForm, extra=50)
 
-class TutorAdminView(ProcessFormView, FormMixin, TemplateResponseMixin):
+class TutorAdminView(FormView):
     form_class = TutorFormSet
     template_name = 'tutoradmin.html'
 
     def get_initial_for_tutor(self, tutor):
         profile = tutor.profile
 
+        name = profile.name
         studentnumber = profile.studentnumber
         study = profile.study
+        email = profile.email
+        rusclass = tutor.rusclass
         groups = tutor.groups.filter(visible=True)
-        status = 'ghost'
-
-        try:
-            if profile.user:
-                prev_data = profile.user
-                status = 'normal'
-            else:
-                prev_data = ProfileActivation.objects.get(profile=profile)
-                status = 'pending'
-            first_name = prev_data.first_name
-            last_name = prev_data.last_name
-            email = prev_data.email
-        except ProfileActivation.DoesNotExist:
-            first_name = ''
-            last_name = ''
-            email = ''
 
         return {
             'pk': tutor.pk,
-            'first_name': first_name,
-            'last_name': last_name,
+            'name': name,
             'studentnumber': studentnumber,
             'study': study,
             'email': email,
+            'rusclass': rusclass,
             'groups': groups,
         }
 
     def get_initial(self):
-        tutors = Tutor.objects.filter(year=YEAR).select_related()
+        tutors = Tutor.objects.filter(year=YEAR).select_related('profile')
         result = []
         for tutor in tutors:
             result.append(self.get_initial_for_tutor(tutor))
@@ -88,19 +74,19 @@ class TutorAdminView(ProcessFormView, FormMixin, TemplateResponseMixin):
             if data == {}:
                 continue
 
-            in_first_name = data['first_name']
-            in_last_name = data['last_name']
+            in_name = data['name']
             in_studentnumber = data['studentnumber']
             in_study = data['study']
             in_email = data['email']
+            in_rusclass = data['rusclass']
             in_groups = data['groups']
 
             in_data = {
-                'first_name': in_first_name,
-                'last_name': in_last_name,
+                'name': in_name,
                 'studentnumber': in_studentnumber,
                 'study': in_study,
                 'email': in_email,
+                'rusclass': in_rusclass,
                 'groups': in_groups,
             }
 
@@ -110,17 +96,18 @@ class TutorAdminView(ProcessFormView, FormMixin, TemplateResponseMixin):
                     profile = TutorProfile.objects.get(studentnumber__exact=in_studentnumber)
                     tutor = Tutor.objects.get(year=YEAR, profile=profile)
                 except TutorProfile.DoesNotExist:
-                    profile = TutorProfile(studentnumber=in_studentnumber)
+                    user = User.objects.create(username=in_studentnumber)
+                    profile = TutorProfile(studentnumber=in_studentnumber, user=user)
                     profile.save()
                     tutor = Tutor(year=YEAR, profile=profile)
                 except Tutor.DoesNotExist:
                     tutor = Tutor(year=YEAR, profile=profile)
                 tutor.save()
                 prev_data = self.get_initial_for_tutor(tutor)
-                if not in_first_name: data['first_name'] = in_first_name = prev_data['first_name']
-                if not in_last_name: data['last_name'] = in_last_name = prev_data['last_name']
+                if not in_name: data['name'] = in_name = prev_data['name']
                 if not in_email: data['email'] = in_email = prev_data['email']
                 if not in_study: data['study'] = in_study = prev_data['study']
+                if not in_rusclass: data['rusclass'] = in_rusclass = prev_data['rusclass']
                 if not in_groups: data['groups'] = in_groups = prev_data['groups']
 
             else:
@@ -132,28 +119,25 @@ class TutorAdminView(ProcessFormView, FormMixin, TemplateResponseMixin):
                 if in_data == prev_data:
                     continue
 
-            try:
-                if profile.user:
-                    data_origin = profile.user
+            if in_name != prev_data['name']:
+                profile.name = in_name
+                changes.append(u"%s: Navn ændret fra %s til %s"
+                    % (unicode(tutor), unicode(prev_data['name']), unicode(in_name)))
+                if ' ' in in_name:
+                    first_name, last_name = in_name.split(' ', 1)
+                    profile.user.first_name = first_name
+                    profile.user.last_name = last_name
                 else:
-                    data_origin = ProfileActivation.objects.get(profile=profile)
-            except ProfileActivation.DoesNotExist:
-                data_origin = ProfileActivation(profile=profile)
-
-            if in_first_name != prev_data['first_name']:
-                data_origin.first_name = in_first_name
-                changes.append(u"%s: Fornavn ændret fra %s til %s"
-                    % (unicode(tutor), unicode(prev_data['first_name']), unicode(in_first_name)))
-
-            if in_last_name != prev_data['last_name']:
-                data_origin.last_name = in_last_name
-                changes.append(u"%s: Efternavn ændret fra %s til %s"
-                    % (unicode(tutor), unicode(prev_data['last_name']), unicode(in_last_name)))
+                    profile.user.first_name = name
+                    profile.user.last_name = ''
+                profile.user.save()
 
             if in_email != prev_data['email']:
-                data_origin.email = in_email
+                profile.email = in_email
                 changes.append(u"%s: Email ændret fra %s til %s"
                     % (unicode(tutor), unicode(prev_data['email']), unicode(in_email)))
+                profile.user.email = in_email
+                profile.user.save()
 
             if in_studentnumber != profile.studentnumber:
                 changes.append(u"%s: Årskort ændret fra %s til %s"
@@ -164,6 +148,11 @@ class TutorAdminView(ProcessFormView, FormMixin, TemplateResponseMixin):
                 changes.append(u"%s: Studium ændret fra %s til %s"
                     % (unicode(tutor), unicode(profile.study), unicode(in_study)))
                 profile.study = in_study
+
+            if in_rusclass != tutor.rusclass:
+                changes.append(u"%s: Rushold ændret fra %s til %s"
+                    % (unicode(tutor), unicode(tutor.rusclass), unicode(in_rusclass)))
+                tutor.rusclass = in_rusclass
 
             in_groupset = frozenset(g.handle for g in in_data['groups'])
             prev_groupset = frozenset(g.handle for g in prev_data['groups'])
@@ -180,7 +169,6 @@ class TutorAdminView(ProcessFormView, FormMixin, TemplateResponseMixin):
                 changes.append(u"%s fjern gruppe %s" % (unicode(tutor), handle))
                 tutor.groups.remove(TutorGroup.objects.get(handle=handle))
 
-            data_origin.save()
             profile.save()
             tutor.save()
 

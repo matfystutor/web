@@ -9,6 +9,7 @@ Kildekoden er frit tilgængelig: https://github.com/matfystutor/web/
 <head>
   <meta charset="utf-8" />
   <link rel="stylesheet" href="{{ STATIC_URL }}stylesheet.css" type="text/css" media="screen, projection" />
+  <link rel="stylesheet" href="{{ STATIC_URL }}style_print.css" type="text/css" media="print" />
   <title>{% block fulltitle %}{% block title %}Forside{% endblock %} - Mat/Fys-Tutorgruppen{% endblock %}</title>
   <meta name="description" content="" />
   <meta name="viewport" content="width=750px" />
@@ -38,7 +39,7 @@ Kildekoden er frit tilgængelig: https://github.com/matfystutor/web/
         <li><a href="{% url kontakt %}">Kontakt</a></li>
       </ul>
       </li>
-      {% if user.is_authenticated %}
+      {% if tutor %}
       <li class="trigger">
       <a href="{% url tutors %}">Tutorer</a>
       <ul class="subnav">
@@ -68,15 +69,33 @@ Kildekoden er frit tilgængelig: https://github.com/matfystutor/web/
       <a href="{% url kontakt %}">Kontakt</a>
       </li>
       {% endif %}
+      {% if tutor.is_tutorbur %}
+      <li class="trigger">
+      <a href="{% url bur_start %}">{{ BURET }}</a>
+      <ul class="subnav">
+        <li><a href="{% url rusinfo_list %}">Russer</a></li>
+        <li><a href="{% url reg_rus_list %}">Registrering</a></li>
+        <li><a href="{% url burtavle_admin %}">Burtavle</a></li>
+        <li><a href="{% url reg_changes %}">Ændrede russer</a></li>
+        <li><a href="{% url handout_list %}">Tilmeldinger</a></li>
+        <li><a href="{% url import_session_choose %}">Importer russer</a></li>
+      </ul>
+      </li>
+      {% elif tutor.has_rusclass %}
+      <li class="trigger">
+      <a href="{% url rusinfo_list %}">Russer</a>
+      <ul class="subnav">
+      </ul>
+      </li>
+      {% endif %}
       {% if tutor.is_tutorbest %}
       <li class="trigger">
       <a href="{% url admin:index %}">Administration</a>
       <ul class="subnav">
+        <li><a href="{% url tutor_admin %}">Tutorer</a></li>
         <li><a href="{% url admin:aliases_alias_changelist %}">Aliaser</a></li>
-        <li><a href="{% url todo %}">Evalueringer</a></li>
         <li><a href="{% url admin:news_newspost_changelist %}">Forsidenyheder</a></li>
         <li><a href="{% url admin:events_event_changelist %}">Kalender</a></li>
-        <li><a href="{% url todo %}">Referater</a></li>
         <li><a href="{% url confirmation_table %}">Tutorbekræftelser</a></li>
         <li><a href="{% url confirmation_card %}">Tutorkort</a></li>
       </ul>
@@ -85,19 +104,21 @@ Kildekoden er frit tilgængelig: https://github.com/matfystutor/web/
       {% endblock %}
     </ul>
   </div>
-  <div id="login">
-    {% if tutor %}
-    {{ profile.user.get_full_name }}&nbsp;&nbsp;
-    <a href="{% url tutor.views.logout_view %}?next={{ request.get_full_path }}">Log ud</a>
+  <div class="loginout">
+    {% if user.is_authenticated %}
+    <form id="logout" method="post" action="{% url logout_view %}">{% csrf_token %}
+    <input type="hidden" name="next" value="{{ request_path }}" />
+    {{ profile.get_full_name }}&nbsp;&nbsp;
+      <input type="submit" class="link_button" value="Log ud" />
+    </form>
     {% else %}
-    <form method="post" action="{% url tutor.views.login_view %}">
+    <form id="login" method="post" action="{% url tutor.views.login_view %}">
       {% csrf_token %}
-      <input type="hidden" name="next" value="{{ request }}" />
+      <input type="hidden" name="next" value="{{ request_path }}" />
       <fieldset>
         <input name="username" type="text" id="user-login" value="Årskortnr" onfocus="if (this.value == 'Årskortnr') {this.value = '';}" onblur="if (this.value == '') {this.value = 'Årskortnr';}" />
         <input name="password" type="text" id="password-login" value="Password" onfocus="if (this.value == 'Password') {this.value = '';} if (this.type == 'text') {this.type = 'password'};" onblur="if (this.value == '') {this.value = 'Password';} if (this.type == 'password' &amp;&amp; this.value == 'Password') {this.type = 'text'};" />
         <input name="login" type="submit" class="submit-button" value="LOGIN" />
-        <!--<a href="{% url register %}">Aktivering</a> -->
       </fieldset>
     </form>
     {% endif %}

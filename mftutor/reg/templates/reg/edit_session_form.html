@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Importér russer{% endblock %}
+{% block head %}
+<style>
+    .match {}
+    .nomatch { font-style: italic; background-color: #fdd; }
+
+    #id_regex { width: 30em; }
+    #id_lines { width: 90%; height: 15em; }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>Importér russer</h1>
+
+{% if error %}
+<div class="errorlist">
+    {{ error }}
+</div>
+{% endif %}
+
+<p>
+Hvis en rus-linje f.eks. ser sådan her ud:<br>
+<tt>NA2&nbsp;&nbsp;&nbsp;26001&nbsp;&nbsp;&nbsp;201205442&nbsp;&nbsp;&nbsp;Christian Bonar Zeuthen</tt><br>
+kan du bruge det regulære udtryk:<br>
+<tt>
+(?P&lt;rusclass&gt;FY.|NA.)&nbsp;&nbsp;&nbsp;\d+&nbsp;&nbsp;&nbsp;(?P&lt;studentnumber&gt;\S+)&nbsp;&nbsp;&nbsp;(?P&lt;name&gt;.*)
+</tt>
+</p>
+
+<form method="post">{% csrf_token %}
+{% if imported %}
+<div class="success_message">Russerne er oprettet i systemet {{ imported }}, og du kan ikke længere redigere denne rusliste.</div>
+{% elif lines_saved %}
+<div class="success_message">Listen er gemt i databasen, men russerne er endnu ikke oprettet i systemet.
+Tjek fortolkningen nedenfor for fejl, og hvis det ser godt ud, tryk opret.</div>
+{% endif %}
+{{ form.non_field_errors }}
+<p>
+<label>Overskrift: {{ form.name }} {{ form.name.errors }}</label>
+</p>
+<p>
+<label>Regulært udtryk: {{ form.regex }} {{ form.regex.errors }}</label>
+</p>
+<p>
+{{ form.lines }}
+{{ form.lines.errors }}
+</p>
+<input type="submit" value="Fortolk input" />
+
+{% if lines %}
+<table>
+<tr><th>#</th><th>Hold</th><th>Studienummer</th><th>Navn</th></tr>
+{% for line in lines %}
+{% if line.matched %}
+<tr class="match"><td>{{ line.position }}</td>
+<td>{{ line.rusclass }}</td><td>{{ line.studentnumber }}</td><td>{{ line.name }}</td>
+{% else %}
+<tr class="nomatch"><td>{{ line.position }}</td>
+<td colspan="3">{{ line.line }}</td>
+{% endif %}
+</tr>
+{% endfor %}
+</table>
+<input type="submit" name="create" value="Opret ovenstående russer" />
+{% endif %}
+</form>
+
+{% endblock %}

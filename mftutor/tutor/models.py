@@ -2,14 +2,14 @@
 # See https://docs.djangoproject.com/en/1.4/topics/auth/
 # for a discussion on user profiles and django.contrib.auth
 
+import re
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
-from ..settings import YEAR
-from .managers import TutorProfileManager, TutorManager, TutorMembers, VisibleTutorGroups
+from ..settings import YEAR, RUSCLASS_BASE, DEFAULT_EMAIL_DOMAIN, DEFAULT_ASB_EMAIL_DOMAIN
+from .managers import TutorProfileManager, TutorManager, TutorMembers, VisibleTutorGroups, RusManager
 
 def tutorpicture_upload_to(instance, filename):
-    import re
     extension = re.sub(r'^.*\.', '', filename)
     return 'tutorpics/'+instance.studentnumber+'.'+extension
 
@@ -18,15 +18,13 @@ class TutorProfile(models.Model):
     objects = TutorProfileManager()
 
     id = models.AutoField(primary_key=True)
-    user = models.OneToOneField(User, null=True, blank=True, on_delete=models.SET_NULL)
+    user = models.OneToOneField(User)
 
-    #name = models.CharField(max_length=60, verbose_name="Fulde navn")
-    # first name and last name exist in User
+    name = models.CharField(max_length=60, verbose_name="Fulde navn")
     street = models.CharField(max_length=80, blank=True, verbose_name="Adresse")
     city = models.CharField(max_length=40, blank=True, verbose_name="Postnr. og by")
     phone = models.CharField(max_length=20, blank=True, verbose_name="Telefonnr.")
-    #email = models.EmailField(verbose_name="E-mailadresse")
-    # Email address exists in django.contrib.auth.models.User
+    email = models.EmailField(verbose_name="E-mailadresse")
 
     birthday = models.DateField(verbose_name="Født", blank=True, null=True)
 
@@ -46,16 +44,19 @@ class TutorProfile(models.Model):
         else:
             return unicode(self.studentnumber)+u' '+unicode(self.get_full_name())+u' (no user)'
 
+    def set_default_email(self):
+        if self.email == '':
+            if re.match(r'[A-Z][A-Z][0-9][0-9][0-9][0-9][0-9]$', self.studentnumber):
+                self.email = self.studentnumber + '@' + DEFAULT_ASB_EMAIL_DOMAIN
+            else:
+                self.email = self.studentnumber + '@' + DEFAULT_EMAIL_DOMAIN
+
     class Meta:
         verbose_name = 'tutorprofil'
         verbose_name_plural = verbose_name + 'er'
 
     def get_full_name(self):
-        if self.user:
-            return self.user.get_full_name()
-        if self.activation:
-            return self.activation.get_full_name()
-        return None
+        return self.name
 
 # "Arbejdsgruppe"
 class TutorGroup(models.Model):
@@ -76,12 +77,51 @@ class TutorGroup(models.Model):
         verbose_name = 'arbejdsgruppe'
         verbose_name_plural = verbose_name + 'r'
 
+class RusClassManager(models.Manager):
+    def create_from_official(self, year, official_name):
+        translate_to_handle = {}
+        for official, handle, internal in RUSCLASS_BASE:
+            translate_to_handle[official] = handle
+        translate_to_internal = {}
+        for official, handle, internal in RUSCLASS_BASE:
+            translate_to_internal[official] = internal
+        handle = translate_to_handle[official_name[0:2]] + official_name[2:]
+        internal_name = translate_to_internal[official_name[0:2]] + u' ' + official_name[2:]
+        return self.model(year=year, official_name=official_name,
+                handle=handle, internal_name=internal_name)
+
 # "Rushold"
 class RusClass(models.Model):
+    objects = RusClassManager()
+
     id = models.AutoField(primary_key=True)
-    handle = models.CharField(max_length=20, verbose_name="Navn",
-        help_text="Bruges i holdets emailadresse")
+    official_name = models.CharField(max_length=20, verbose_name="AU-navn",
+            help_text=u"DA1, MØ3, osv.")
+    internal_name = models.CharField(max_length=20, verbose_name="Internt navn",
+            help_text=u"Dat1, Møk3, osv.")
+    handle = models.CharField(max_length=20, verbose_name="Email",
+        help_text=u"dat1, mok3, osv. Bruges i holdets emailadresse")
     year = models.IntegerField(verbose_name="Tutorår")
+
+    def get_study(self):
+        for official_name, handle, internal_name in RUSCLASS_BASE:
+            if self.handle.startswith(handle):
+                return internal_name
+
+    def get_tutors(self):
+        return Tutor.members.filter(rusclass=self)
+
+    def get_russes(self):
+        return Rus.objects.filter(rusclass=self)
+
+    def __unicode__(self):
+        return self.internal_name
+
+    class Meta:
+        verbose_name = 'rushold'
+        verbose_name_plural = verbose_name
+
+        ordering = ['year', 'internal_name']
 
 # Membership of a user for a single year
 class Tutor(models.Model):
@@ -98,10 +138,50 @@ class Tutor(models.Model):
         help_text="Årsag til at tutoren stopper")
     rusclass = models.ForeignKey(RusClass, null=True, blank=True)
 
+    def has_rusclass(self, year=None):
+        if year is None:
+            from ..settings import YEAR
+            year = YEAR
+
+        return self.is_tutorbur() or self.rusclass
+
+    def is_member(self, year=None):
+        if year is None:
+            from ..settings import YEAR
+            year = YEAR
+
+        if self.year != YEAR:
+            return False
+        elif self.early_termination is not None:
+            return False
+        else:
+            return True
+    is_member.boolean = True
+
     def is_tutorbest(self):
-        import auth
-        return bool(auth.is_tutorbest(self))
+        if not self.is_member():
+            return False
+        elif self.groups.filter(handle__exact='best').exists():
+            return True
+        else:
+            return False
     is_tutorbest.boolean = True
+
+    def is_tutorbur(self):
+        if not self.is_member():
+            return False
+        elif self.is_tutorbest():
+            return True
+        elif self.groups.filter(handle__exact='buret').exists():
+            return True
+        else:
+            return False
+    is_tutorbur.boolean = True
+
+    def can_manage_rusclass(self, rusclass):
+        return (self.is_tutorbest()
+                or self.is_tutorbur()
+                or self.rusclass == rusclass)
 
     def __unicode__(self):
         return unicode(self.profile)+' ('+unicode(self.year)+')'
@@ -146,6 +226,37 @@ class BoardMember(models.Model):
 
 # Freshman semester of a user for a single year
 class Rus(models.Model):
+    objects = RusManager()
+
     id = models.AutoField(primary_key=True)
     profile = models.ForeignKey(TutorProfile)
     year = models.IntegerField(verbose_name="Tutorår")
+    rusclass = models.ForeignKey(RusClass, null=True)
+
+    arrived = models.BooleanField(verbose_name="Ankommet")
+    initial_rusclass = models.ForeignKey(RusClass, null=True, related_name='initial_rus_set')
+
+    class Meta:
+        verbose_name = 'rus'
+        verbose_name_plural = verbose_name + 'ser'
+
+        ordering = ['rusclass', 'profile']
+
+    def json_of(self):
+        if self.initial_rusclass:
+            initial_handle = self.initial_rusclass.handle
+        else:
+            initial_handle = None
+        return {
+                'year': self.year,
+                'rusclass': self.rusclass.handle,
+                'arrived': self.arrived,
+                'studentnumber': self.profile.studentnumber,
+                'name': self.profile.get_full_name(),
+                'street': self.profile.street,
+                'city': self.profile.city,
+                'phone': self.profile.phone,
+                'email': self.profile.email,
+
+                'initial_rusclass': initial_handle,
+                }

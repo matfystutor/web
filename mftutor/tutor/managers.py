@@ -2,17 +2,23 @@
 from django.db import models
 from ..settings import YEAR
 
+class RusManager(models.Manager):
+    use_for_related_fields = True
+
+    def get_query_set(self):
+        return super(RusManager, self).get_query_set().select_related('profile', 'rusclass', 'initial_rusclass')
+
 class TutorProfileManager(models.Manager):
     use_for_related_fields = True
 
     def get_query_set(self):
-        return super(TutorProfileManager, self).get_query_set().select_related('user', 'activation')
+        return super(TutorProfileManager, self).get_query_set()
 
 class TutorManager(models.Manager):
     use_for_related_fields = True
 
     def get_query_set(self):
-        return super(TutorManager, self).get_query_set().select_related('profile', 'profile__user', 'profile__activation')
+        return super(TutorManager, self).get_query_set().select_related('profile')
 
 class TutorMembers(TutorManager):
     def get_query_set(self):

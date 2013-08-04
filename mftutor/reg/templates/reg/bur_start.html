@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}{{ BURET }}{% endblock %}
+{% block head %}
+<style>
+dt { font-weight: bold; }
+dd { margin: 0 0 1em; }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>{{ BURET }}</h1>
+
+<p>Her er de ting, du har adgang til, fordi du er i {{ BURET }} (eller i tutorbestyrelsen).</p>
+
+<dl>
+<dt><a href="{% url rusinfo_list %}">Russer</a></dt>
+<dd>Her kan du redigere kontaktoplysninger for de enkelte rushold.</dd>
+
+<dt><a href="{% url reg_rus_list %}">Registrering</a></dt>
+<dd>Her kan du flytte russer rundt på rusholdene, markere russer som ankommet,
+og knytte noter til russer/rushold.</dd>
+
+<dt><a href="{% url burtavle_admin %}">Burtavle</a></dt>
+<dd>Her kan du ændre holdstatus og skrive en besked på burtavlen.</dd>
+
+<dt><a href="{% url reg_changes %}">Ændrede russer</a></dt>
+<dd>Her kan du se, hvilke russer der er oprettet/flyttet i forhold til de oprindelige
+ruslister fra fakultetet.</dd>
+
+<dt><a href="{% url handout_list %}">Tilmeldinger</a></dt>
+<dd>Her kan du gemme og hente tilmeldingslister (spis en rus-adresse, hytteturstilmelding, osv.).</dd>
+
+<dt><a href="{% url import_session_choose %}">Importer russer</a></dt>
+<dd>Inden rusdagene: Før ruslister fra fakultetet ind i bursystemet og rushjemmesiden.
+Bruges med omhu.</dd>
+</dl>
+
+{% endblock %}

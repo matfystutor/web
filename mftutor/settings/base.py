@@ -1,3 +1,4 @@
+# coding: utf-8
 from django.conf import global_settings
 
 # Django settings for mftutor project.
@@ -141,7 +142,6 @@ INSTALLED_APPS = (
     'mftutor.news',
     'mftutor.events',
     'mftutor.aliases',
-    'mftutor.activation',
     'mftutor.tutormail',
     'mftutor.page',
     'mftutor.shirt',
@@ -149,6 +149,7 @@ INSTALLED_APPS = (
     'mftutor.documents',
     'mftutor.sampledata',
     'mftutor.rus',
+    'mftutor.reg',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -183,6 +184,7 @@ LOGGING = {
 AUTH_PROFILE_MODULE = 'tutor.TutorProfile'
 
 TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
+    "mftutor.rus.context_processors.rus_data",
     "mftutor.tutor.context_processors.login_form",
     "mftutor.tutor.context_processors.tutor_data",
     "mftutor.tutor.context_processors.settings",
@@ -197,9 +199,6 @@ INTERNAL_IPS = ('127.0.0.1',)
 
 BODY_CLASS = 'production'
 
-# If True, activation will print the email to be sent rather than sending it.
-ACTIVATION_DEBUG = True
-
 # If True, use HTML Tidy to clean up news post HTML bodies.
 TIDY_NEWS_HTML = False
 
@@ -213,3 +212,24 @@ SITE_URL = 'http://example.com'
 CALENDAR_NAME = 'Calendar name'
 
 CALENDAR_DESCRIPTION = 'Calendar description'
+
+# Tuples (official_name, handle, internal_name).
+# official_name is the two-letter prefix used by the faculty.
+# handle is the lowercase ASCII prefix we use in the mail system.
+# internal_name is the prefix we use in internal communications.
+RUSCLASS_BASE = (
+    (u'MA', u'mat', u'Mat'),
+    (u'MØ', u'mok', u'Møk'),
+    (u'FY', u'fys', u'Fys'),
+    (u'NA', u'nano', u'Nano'),
+    (u'IT', u'it', u'It'),
+    (u'DA', u'dat', u'Dat'),
+)
+
+# Prefix of email addresses going to tutors of a certain rusclass
+# i.e. tutor+dat5 for the dat5 tutors -> use 'tutor+'
+TUTORS_PREFIX = 'tutor+'
+
+# Used by TutorProfile to set the default email if none is known.
+DEFAULT_EMAIL_DOMAIN = 'post.au.dk'
+DEFAULT_ASB_EMAIL_DOMAIN = 'stud.asb.dk'

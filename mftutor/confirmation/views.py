@@ -8,7 +8,7 @@ from django.views.generic import UpdateView, TemplateView, View
 from django.views.generic.edit import FormMixin
 
 from ..settings import YEAR
-from ..tutor.auth import user_tutor_data, NotTutor, tutorbest_required_error, is_tutorbest, tutor_required_error
+from ..tutor.auth import user_tutor_data, NotTutor, tutorbest_required_error, tutor_required_error
 from ..tutor.models import Tutor
 from .models import Confirmation
 from .forms import OwnConfirmationForm, EditNoteForm
@@ -87,7 +87,7 @@ class EditNoteView(View, FormMixin):
             td = user_tutor_data(request.user)
         except NotTutor:
             return tutorbest_required_error(request)
-        if not is_tutorbest(td.tutor):
+        if not td.tutor.is_tutorbest():
             return tutorbest_required_error(request)
 
         return super(EditNoteView, self).dispatch(request, *args, **kwargs)

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Ændrede russer{% endblock %}
+
+{% block content %}
+<h1>Ændrede russer</h1>
+
+{% if rus_list %}
+<ul>
+{% for rus in rus_list %}
+<li>
+{{ rus.profile.studentnumber }} {{ rus.profile.get_full_name }} er
+{% if rus.initial_rusclass %}
+flyttet fra {{ rus.initial_rusclass }} til {{ rus.rusclass }}
+{% else %}
+oprettet på {{ rus.rusclass }}
+{% endif %}
+</li>
+{% endfor %}
+</ul>
+{% else %}
+Ingen ændringer i forhold til de oprindelige ruslister.
+{% endif %}
+
+{% endblock %}

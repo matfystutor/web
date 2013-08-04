@@ -18,7 +18,7 @@ event_title.admin_order_field = 'event'
 
 class RSVPAdmin(admin.ModelAdmin):
     list_display = (event_title, 'tutor', 'status', 'notes')
-    search_fields = ('tutor__profile__user__first_name', 'tutor__profile__user__last_name', 'notes', 'event__title')
+    search_fields = ('tutor__profile__name', 'notes', 'event__title')
 
 admin.site.register(Event, EventAdmin)
 admin.site.register(EventParticipant, RSVPAdmin)

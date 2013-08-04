@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Rusinfo{% endblock %}
+
+{% block content %}
+<h1>Rusinfo</h1>
+
+<ul>
+    {% for rusclass in rusclasses %}
+    <li><a href="{% url rusinfo handle=rusclass.handle %}">{{ rusclass }}</a></li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

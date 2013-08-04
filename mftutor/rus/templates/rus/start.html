@@ -3,6 +3,63 @@
 
 {% block content %}
 
+{% if rus %}
+<h1>{{ rusclass }}</h1>
+
+{% if my_info_form %}
+{% if params.form_saved %}
+<p>Dine kontaktoplysninger er gemt.</p>
+{% elif params.form_errors %}
+{% else %}
+<p>Du mangler at udfylde dine kontaktoplysninger!</p>
+{% endif %}
+{{ my_info_form.non_field_errors }}
+<form class="twocol" method="post">{% csrf_token %}
+    <div class="label"><label for="id_phone">Telefonnummer:</label></div>
+    <div class="field">{{ my_info_form.phone }}</label> {{ my_info_form.phone.errors }}</div>
+    <div class="label"><label for="id_email">Email:</label></div>
+    <div class="field">{{ my_info_form.email }}</label> {{ my_info_form.email.errors }}</div>
+    <div class="field"><input type="submit" value="Gem" /></div>
+</form>
+{% endif %}
+
+<table class="person_list" cellspacing="0">
+<col span="3" />
+<tr class="heading"><td colspan="3"><h3>Tutorer</h3></td></tr>
+
+<tr>
+    <th>Navn</th>
+    <th>Mobil</th>
+    <th>Email</th>
+</tr>
+{% for tutor in rusclass_tutors %}
+    <tr>
+        <td>{{ tutor.profile.get_full_name }}</td>
+        <td class="phone"><a href="tel:{{ tutor.profile.phone }}">{{ tutor.profile.phone }}</a></td>
+        <td><a href="mailto:{{ tutor.profile.email }}">{{ tutor.profile.email }}</a></td>
+    </tr>
+{% endfor %}
+
+<tr class="heading"><td colspan="3"><h3>Russer</h3></td></tr>
+
+<tr>
+    <th>Navn</th>
+    <th>Mobil</th>
+    <th>Email</th>
+</tr>
+{% for rus in rusclass_russes %}
+    <tr>
+        <td>{{ rus.profile.get_full_name }}</td>
+        <td class="phone"><a href="tel:{{ rus.profile.phone }}">{{ rus.profile.phone }}</a></td>
+        <td><a href="mailto:{{ rus.profile.email }}">{{ rus.profile.email }}</a></td>
+    </tr>
+{% endfor %}
+</table>
+
+<div style="height: 1em"></div>
+
+{% endif %}
+
 <h1>Information til kommende russer</h1>
 
 <p>

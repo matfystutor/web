@@ -1,0 +1,955 @@
+{# vim:set sw=4 sts=4 ts=4 et: #}
+{% extends "base.html" %}
+{% block title %}Rusliste{% endblock %}
+{% block head %}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<style>
+
+.notes { display: none; }
+.notes:target { display: table-row; }
+
+#main {
+    width: auto;
+}
+
+#content {
+    margin-right: 160px;
+    position: relative;
+}
+
+#recentchanges {
+    position: absolute;
+    right: -160px;
+    width: 150px;
+    top: 0;
+    margin-top: -2px;
+}
+
+.rc_inner {
+    background-color: white;
+    border: 1px solid white;
+    border-radius: 7px;
+    box-shadow: rgba(0, 0, 0, 0.3) 0 1px 2px;
+    -moz-box-shadow: rgba(0, 0, 0, 0.3) 0 1px 2px;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 1px 2px;
+    padding: 1em;
+    font-size: 80%;
+}
+
+#recentchanges h1 {
+    font-size: 100%;
+    margin-top: 0;
+    margin-bottom: 8px;
+}
+
+#changelist, #changelist li {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: block;
+}
+
+#changelist li {
+    margin: 8px 0;
+}
+
+.oopscontainer {
+    position: fixed;
+    top: 3px;
+    left: 3px;
+    right: 3px;
+    text-align: center;
+}
+.oops {
+    background-color: #ff8;
+    border: 2px solid #fc3;
+    color: #900;
+    font-weight: bold;
+    padding: 5px 15px;
+    display: inline-block;
+}
+
+.noteslist, .noteslist li {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.noteslist li {
+    background-color: #ddf;
+    padding: 3px;
+    margin: 2px;
+    max-width: 480px;
+}
+
+.noteform_body {
+    width: 380px;
+}
+
+.ruslist tr:hover {
+    background-color: #eef;
+}
+
+td form { display: inline; }
+
+</style>
+<script>
+RusDataRaw = ({{ page_data_json|safe }});
+function reverse(name) {
+    if (name == 'reg_rpc') return '{% url reg_rpc %}';
+    else return null;
+}
+</script>
+<script>
+///////////////////////////////////////////////////////////////////////////////
+// Display an "oops", i.e. a yellow warning message saying the user should
+// refresh the page.
+///////////////////////////////////////////////////////////////////////////////
+var oopsBox = null;
+function oops(reason) {
+    if (!oopsBox) {
+        var c = document.body.appendChild(document.createElement('div'));
+        c.className = 'oopscontainer';
+        oopsBox = c.appendChild(document.createElement('div'));
+        oopsBox.className = 'oops';
+    }
+    oopsBox.innerHTML = 'Noget gik galt. Du bør måske <a href=".">opdatere siden</a>. ';
+    if (reason)
+        oopsBox.appendChild(document.createTextNode('('+reason+')'));
+    return reason;
+}
+
+function add_note_delete_form(note, el) {
+    var del_form = document.createElement('form');
+    del_form.style.display = 'inline';
+    make_rpc_form(del_form, 'delete_note', {'note': note.pk});
+    var submit = document.createElement('input');
+    submit.type = 'submit';
+    submit.value = 'slet';
+    submit.className = 'link_button';
+    del_form.appendChild(submit);
+    el.appendChild(del_form);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Rus object containing an interpretation of a rus DOM node.
+///////////////////////////////////////////////////////////////////////////////
+function Rus(rusclass, arrived, studentnumber, name, street, city, phone, email) {
+    this.row = null;
+    this.rusclass = rusclass;
+    this.arrived = arrived;
+    this.studentnumber = studentnumber;
+    this.name = name;
+    this.street = street;
+    this.city = city;
+    this.phone = phone;
+    this.email = email;
+    this.notes = new NoteList();
+}
+
+Rus.objects = {};
+
+Rus.objects.all = [];
+
+Rus.objects.studentnumber_dict = {};
+
+Rus.objects.create = function (rusclass, arrived, studentnumber, name, street, city, phone, email) {
+    var rus = new Rus(rusclass, arrived, studentnumber, name, street, city, phone, email);
+    rus.objects.all.push(rus);
+    return rus;
+};
+
+function ChangeClassColumn() {}
+
+ChangeClassColumn.prototype.render = function (rus, cell) {
+    var change_class_form = document.createElement('form');
+    make_rpc_form(change_class_form, 'rusclass', {'rus': rus.studentnumber});
+
+    var select = document.createElement('select');
+    select.name = 'rusclass';
+    function add_rusclass_cb(rusclass, handle, idx) {
+        var opt = document.createElement('option');
+        opt.value = handle;
+        opt.textContent = rusclass.internal_name;
+        select.appendChild(opt);
+        if (rus.rusclass == rusclass) {
+            select.selectedIndex = idx;
+        }
+    }
+    RusClass.objects.each(add_rusclass_cb);
+    change_class_form.appendChild(select);
+
+    var submit = document.createElement('input');
+    submit.type = 'submit';
+    submit.value = 'Skift';
+    change_class_form.appendChild(submit);
+
+    cell.appendChild(change_class_form);
+};
+
+function ArrivedColumn() {}
+
+ArrivedColumn.prototype.render = function (rus, cell) {
+    var current = rus.arrived ? 'ja' : 'nej';
+    var next = rus.arrived ? 'nej' : 'ja';
+    cell.appendChild(document.createTextNode(current+' '));
+    var change_arrived_form = document.createElement('form');
+    make_rpc_form(change_arrived_form, 'arrived', {'rus': rus.studentnumber});
+
+    var submit = document.createElement('input');
+    submit.type = 'submit';
+    submit.value = next;
+    change_arrived_form.appendChild(submit);
+
+    cell.appendChild(change_arrived_form);
+};
+
+function TextColumn(field_name) {
+    this.field_name = field_name;
+}
+
+TextColumn.prototype.get_value = function (rus) {
+    if (!rus) throw oops('TextColumn.get_value: !rus');
+    switch (this.field_name) {
+    case 'studentnumber': return rus.studentnumber;
+    case 'name': return rus.name;
+    case 'street': return rus.street;
+    case 'city': return rus.city;
+    case 'phone': return rus.phone;
+    case 'email': return rus.email;
+    }
+    throw oops('TextColumn.get_value: Unknown field ['+this.field_name+']');
+}
+
+TextColumn.prototype.render = function (rus, cell) {
+    cell.textContent = this.get_value(rus);
+}
+
+function NotesColumn() {}
+
+NotesColumn.prototype.render = function (rus, cell) {
+    var link = document.createElement('a');
+    link.href = '#notes-rus-'+rus.studentnumber;
+    link.onclick = function (event) {
+        show_notes('notes-rus-'+rus.studentnumber);
+        event.preventDefault();
+        return false;
+    };
+    function add_note_cb(note) {
+        var div = document.createElement('div');
+        div.textContent = note.body;
+        link.appendChild(div);
+
+        var li = document.createElement('li');
+        li.textContent = note.body;
+        rus.notes_ul.appendChild(li);
+
+        add_note_delete_form(note, li);
+    }
+    rus.notes.each(add_note_cb);
+    if (rus.notes.empty()) {
+        link.textContent = '(ingen)';
+    }
+    cell.appendChild(link);
+};
+
+Rus.columns = [
+    new ChangeClassColumn(),
+    new ArrivedColumn(),
+    new TextColumn('studentnumber'),
+    new TextColumn('name'),
+    new TextColumn('street'),
+    new TextColumn('city'),
+    new TextColumn('phone'),
+    new TextColumn('email'),
+    new NotesColumn()
+];
+
+///////////////////////////////////////////////////////////////////////////////
+// Helper for list filtering.
+// Show/hide the rus DOM node based on the search string.
+// Returns true if the string was found.
+///////////////////////////////////////////////////////////////////////////////
+Rus.prototype.change_display_filter = function (str) {
+    if (!this.row) throw oops('Rus.change_display_filter: no row');
+    var strlower = str.toLowerCase();
+    function match(s) {
+        return (''+s).toLowerCase().indexOf(strlower) != -1;
+    }
+    var found = (str == ''
+        || match(this.studentnumber)
+        || match(this.name)
+        || match(this.phone));
+    this.row.style.display = found ? '' : 'none';
+    return found;
+};
+
+function dom_detached(el) {
+    while (el) {
+        if (el == document.body) break;
+        el = el.parentNode;
+    }
+    return el == null;
+}
+
+Rus.prototype.render_to = function (el, before) {
+    if (!dom_detached(this.row)) this.row.parentNode.removeChild(this.row);
+    if (!dom_detached(this.notes_row)) this.notes_row.parentNode.removeChild(this.notes_row);
+    this.row = document.createElement('tr');
+    this.notes_row = document.createElement('tr');
+    this.notes_row.className = 'notes';
+    this.notes_row.id = 'notes-rus-'+this.studentnumber;
+    var notes_cell = document.createElement('td');
+    notes_cell.colSpan = 9;
+    this.notes_ul = document.createElement('ul');
+    this.notes_ul.className = 'noteslist';
+
+    var cells = [];
+    for (var i = 0; i < Rus.columns.length; ++i) {
+        var cell = document.createElement('td');
+        cells.push(cell);
+        this.row.appendChild(cell);
+    }
+
+    for (var i = 0; i < Rus.columns.length; ++i) {
+        Rus.columns[i].render(this, cells[i]);
+    }
+    if (before) el.insertBefore(this.row, before);
+    else el.appendChild(this.row);
+
+    var notes_new_li = document.createElement('li');
+    var notes_new_form = document.createElement('form');
+    make_rpc_form(notes_new_form, 'add_rus_note', {'rus': this.studentnumber});
+    var note_body = document.createElement('input');
+    note_body.name = 'body';
+    note_body.className = 'noteform_body';
+    var note_submit = document.createElement('input');
+    note_submit.type = 'submit';
+    note_submit.className = 'noteform_submit';
+    note_submit.value = 'Tilføj';
+    notes_new_form.appendChild(note_body);
+    notes_new_form.appendChild(note_submit);
+    notes_new_li.appendChild(notes_new_form);
+    this.notes_ul.appendChild(notes_new_li);
+    notes_cell.appendChild(this.notes_ul);
+    this.notes_row.appendChild(notes_cell);
+    if (before) el.insertBefore(this.notes_row, before);
+    else el.appendChild(this.notes_row);
+};
+
+Rus.prototype.rerender = function () {
+    if (!this.row) return;
+    var el = this.row.parentNode;
+    var before = this.notes_row.nextSibling; // or null
+    el.removeChild(this.notes_row);
+    el.removeChild(this.row);
+    this.row = this.notes_row = null;
+    this.render_to(el, before);
+};
+
+Rus.objects.create_from_initial = function (dict) {
+    var studentnumber = dict['studentnumber'];
+    if (Rus.objects.studentnumber_dict[studentnumber])
+        throw oops("Rus.create_from_initial: Duplicate studentnumber ["+studentnumber+"]");
+    var rus = new Rus(RusClass.objects.get_by_handle(dict['rusclass']),
+                   dict['arrived'],
+                   dict['studentnumber'],
+                   dict['name'],
+                   dict['street'],
+                   dict['city'],
+                   dict['phone'],
+                   dict['email']);
+    Rus.objects.all.push(rus);
+    Rus.objects.studentnumber_dict[studentnumber] = rus;
+    return rus;
+};
+
+Rus.objects.get_by_studentnumber = function (studentnumber) {
+    if (!Rus.objects.studentnumber_dict[studentnumber])
+        throw oops("Rus.get_by_studentnumber: No such studentnumber ["+studentnumber+"]");
+    return Rus.objects.studentnumber_dict[studentnumber];
+};
+
+///////////////////////////////////////////////////////////////////////////////
+// RusClass object containing an interpretation of a rusclass DOM node.
+///////////////////////////////////////////////////////////////////////////////
+function RusClass(handle, internal_name) {
+    this.el = null;
+    this.handle = handle;
+    this.internal_name = internal_name;
+    this.russes = [];
+    this.notes = new NoteList();
+}
+
+RusClass.objects = {};
+RusClass.objects.all = {};
+RusClass.objects.keys = [];
+RusClass.objects.each = function (fn) {
+    var all = RusClass.objects.all;
+    var keys = RusClass.objects.keys;
+    for (var i = 0, l = keys.length; i < l; ++i) {
+        fn(all[keys[i]], keys[i], i);
+    }
+};
+
+RusClass.objects.create_from_initial = function (dict) {
+    var handle = dict['handle'];
+    var rc = new RusClass(dict['handle'], dict['internal_name']);
+    if (RusClass.objects.all[handle]) throw oops("RusClass.create_from_initial: handle ["+handle+"] already used");
+    RusClass.objects.all[handle] = rc;
+    RusClass.objects.keys.push(handle);
+};
+
+RusClass.objects.get_by_handle = function (handle) {
+    if (!RusClass.objects.all[handle]) throw oops("RusClass.get_by_handle: No such handle ["+handle+"]");
+    return RusClass.objects.all[handle];
+};
+
+///////////////////////////////////////////////////////////////////////////////
+// Helper for list filtering.
+// Filter the rusclass widget by the given string.
+// Returns true if the string was found.
+///////////////////////////////////////////////////////////////////////////////
+RusClass.prototype.change_display_filter = function (str) {
+    if (!this.el) throw oops('RusClass.change_display_filter: no el');
+    function prefix(s1, s2) {
+        return s1.length <= s2.length && s1 == s2.substring(0, s1.length);
+    }
+    var found = false;
+    if (prefix(str.toLowerCase(), this.internal_name.toLowerCase())) {
+        found = true;
+        for (var i = 0, l = this.russes.length; i < l; ++i) {
+            this.russes[i].change_display_filter('');
+        }
+    } else {
+        for (var i = 0, l = this.russes.length; i < l; ++i) {
+            if (this.russes[i].change_display_filter(str)) {
+                found = true;
+            }
+        }
+        if (str == '') found = true;
+    }
+    this.el.style.display = found ? 'block' : 'none';
+    return found;
+};
+
+RusClass.prototype.remove_rus = function (rus) {
+    var i = 0, l = this.russes.length;
+    while (i < l) {
+        if (this.russes[i].pk == rus.pk) break;
+        ++i;
+    }
+    if (i == l) throw oops('remove_rus: none found');
+    this.russes.splice(i, 1);
+};
+
+RusClass.prototype.add_rus = function (rus) {
+    var i = 0, l = this.russes.length;
+    while (i < l) {
+        if (!(this.russes[i].studentnumber < rus.studentnumber)) break;
+        ++i;
+    }
+    this.russes.splice(i, 0, rus);
+};
+
+function rpc_form_success(data, textStatus, jqXHR) {
+    if (data['error']) throw oops(data['error']);
+    handle_change(data);
+    search_again();
+}
+
+function jq_xhr_fail(jqXHR, textStatus, errorThrown) {
+    throw oops('RPC fejl: '+jqXHR.status+' '+jqXHR.statusText);
+}
+
+// getCookie from https://docs.djangoproject.com/en/1.4/ref/contrib/csrf/
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+var csrftoken = getCookie('csrftoken');
+
+function make_rpc_form(form, action, params) {
+    form.method = 'post';
+    form.action = reverse('reg_rpc');
+    params['action'] = action;
+    params['csrfmiddlewaretoken'] = csrftoken;
+    for (var i in params) {
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = i;
+        input.value = params[i];
+        form.appendChild(input);
+    }
+    form.onsubmit = function (event) {
+        event.preventDefault();
+        try {
+            $.post(form.getAttribute('action'), $(form).serialize(), rpc_form_success, 'json').fail(jq_xhr_fail);
+        } catch (e) {
+            throw oops(e+'');
+        }
+        return false;
+    };
+}
+
+function Note(pk, body) {
+    this.pk = pk;
+    this.body = body;
+    this.el = null;
+}
+
+Note.prototype.render_to = function (el) {
+    this.el = el;
+    el.textContent = this.body+' ';
+    var form = document.createElement('form');
+    make_rpc_form(form, 'delete_note',
+                  {'note': this.pk});
+    var submit = document.createElement('input');
+    submit.type = 'submit';
+    submit.value = 'Slet';
+    form.appendChild(submit);
+}
+
+function NoteList() {
+    this.all = [];
+}
+
+NoteList.prototype.add = function (pk, body) {
+    this.remove_count(pk);
+    var note = new Note(pk, body);
+    this.all.push(note);
+}
+
+NoteList.prototype.remove_count = function (pk) {
+    var note;
+    var i = 0, l = this.all.length;
+    while (i < l) {
+        note = this.all[i];
+        if (note.pk == pk) break;
+        ++i;
+    }
+    if (i == l) return 0;
+    this.all.splice(i, 1);
+    return 1;
+};
+
+NoteList.prototype.remove = function (pk) {
+    if (this.remove_count(pk) == 0)
+        throw oops("NoteList.remove: not found");
+};
+
+NoteList.prototype.each = function (fn) {
+    for (var i = 0, l = this.all.length; i < l; ++i) {
+        fn(this.all[i]);
+    }
+};
+
+NoteList.prototype.empty = function () {
+    return this.all.length == 0;
+};
+
+RusClass.prototype.render_note_form = function (el) {
+    var form = document.createElement('form');
+    make_rpc_form(form, 'add_rusclass_note',
+                  {'rusclass': this.handle});
+
+    var body = document.createElement('input');
+    body.name = 'body';
+    form.appendChild(body);
+
+    var submit = document.createElement('input');
+    submit.type = 'submit';
+    submit.value = 'Tilføj';
+    form.appendChild(submit);
+
+    el.appendChild(form);
+}
+
+RusClass.prototype.render = function () {
+    var div = document.createElement('div');
+    div.classList.add('rusclass');
+    this.el = div;
+    this.rerender();
+    return div;
+};
+
+RusClass.prototype.rerender = function () {
+    if (!this.el) return;
+    var div = this.el;
+    div.innerHTML = '';
+    var h2 = document.createElement('h2');
+    h2.textContent = this.internal_name + ' ('+this.russes.length+')';
+    div.appendChild(h2);
+
+    if (this.handle != '') {
+        var notesheader = document.createElement('div');
+        notesheader.innerHTML = '<strong>Note</strong>';
+        div.appendChild(notesheader);
+
+        var noteslist = document.createElement('ul');
+        function add_note_cb(note) {
+            var li = document.createElement('li');
+            li.textContent = note.body;
+            noteslist.appendChild(li);
+
+            add_note_delete_form(note, li);
+        }
+        this.notes.each(add_note_cb);
+
+        var li = document.createElement('li');
+        this.render_note_form(li);
+        noteslist.appendChild(li);
+
+        div.appendChild(noteslist);
+    }
+
+    var ruslist = document.createElement('table');
+    ruslist.className = 'ruslist';
+    ruslist.innerHTML = (
+        '<col span="9" />\n'+
+        '<thead>\n'+
+        '<tr>\n'+
+        '<th style="min-width: 1em">Skift hold</th>\n'+
+        '<th style="min-width: 1em">Ankommet</th>\n'+
+        '<th style="min-width: 6em">Årskort</th>\n'+
+        '<th style="min-width: 1em">Navn</th>\n'+
+        '<th style="min-width: 10em">Adresse</th>\n'+
+        '<th style="min-width: 10em">By</th>\n'+
+        '<th style="min-width: 5em">Telefon</th>\n'+
+        '<th style="min-width: 7em">Email</th>\n'+
+        '<th style="min-width: 1em">Note</th>\n'+
+        '</tr>\n'+
+        '</thead>\n'+
+        '<tbody>\n'+
+        '</tbody>');
+    var tBody = ruslist.tBodies[0];
+
+    for (var i = 0, l = this.russes.length; i < l; ++i) {
+        this.russes[i].render_to(tBody);
+    }
+    div.appendChild(ruslist);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+// Construct a RusClass instance from a DOM element.
+///////////////////////////////////////////////////////////////////////////////
+var change_list_newest = RusDataRaw['change_list_newest'];
+
+function get_newest_change_pk() {
+    return change_list_newest;
+}
+
+function set_newest_change_pk(pk) {
+    change_list_newest = pk;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// List filtering
+///////////////////////////////////////////////////////////////////////////////
+var search_timer = null;
+function make_display_filter_cb(str) {
+    return function display_filter_cb(rusclass) {
+        if (!rusclass) throw oops('display_filter_cb: no rusclass');
+        rusclass.change_display_filter(str);
+    };
+}
+function search_keyup(str) {
+    if (search_timer) clearTimeout(search_timer);
+    search_timer = setTimeout(function () {
+        search_timer = null;
+        var cb = make_display_filter_cb(str);
+        RusClass.objects.each(cb);
+    }, (str == '' ? 0 : 100));
+}
+
+var shown_notes = null;
+function show_notes(id) {
+    if (!dom_detached(shown_notes)) {
+        shown_notes.style.display = 'none';
+        if (shown_notes.id == id) id = null; // toggle off
+        shown_notes = null;
+    }
+    if (id) {
+        shown_notes = document.getElementById(id);
+        if (shown_notes) {
+            var disp = (shown_notes.tagName.toLowerCase() == 'tr') ? 'table-row' : 'block';
+            shown_notes.style.display = disp;
+        }
+    }
+}
+
+function update_rus(rpc_rus) {
+    var rus = Rus.objects.get_by_studentnumber(rpc_rus['studentnumber']);
+    var rusclass = RusClass.objects.get_by_handle(rpc_rus['rusclass']);
+    rus.arrived = rpc_rus['arrived'];
+    rus.name = rpc_rus['name'];
+    rus.street = rpc_rus['street'];
+    rus.city = rpc_rus['city'];
+    rus.phone = rpc_rus['phone'];
+    rus.email = rpc_rus['email'];
+    if (rusclass != rus.rusclass) {
+        rus.rusclass.remove_rus(rus);
+        rus.rusclass.rerender();
+        rus.rusclass = rusclass;
+        rus.rusclass.add_rus(rus);
+        rus.rusclass.rerender();
+    } else {
+        rus.rerender();
+    }
+}
+
+function get_note_subject(rpc_note) {
+    if (rpc_note['kind'] == 'rus') return Rus.objects.get_by_studentnumber(rpc_note['subject']);
+    else if (rpc_note['kind'] == 'rusclass') return RusClass.objects.get_by_handle(rpc_note['subject']);
+    else throw oops("Unknown note kind ["+rpc_note['kind']+"]");
+}
+
+function note_add(note_pk, rpc_note) {
+    var sub = get_note_subject(rpc_note);
+    sub.notes.add(note_pk, rpc_note['body']);
+    sub.rerender();
+}
+
+function note_delete(note_pk, rpc_note) {
+    var sub = get_note_subject(rpc_note);
+    if (sub.notes.remove_count(note_pk) != 0) {
+        sub.rerender();
+    }
+}
+
+function handle_change(payload) {
+    var serialized_data;
+    try {
+        serialized_data = JSON.parse(payload['serialized_data']);
+    } catch (e) {
+        console.log(payload['serialized_data']);
+        throw oops(e);
+    }
+    var kind = payload['kind'];
+    var pk = payload['related_pk'];
+    if (kind == 'import') return; // ignore
+    else if (kind == 'rus_profile'
+             || kind == 'rus_rusclass'
+             || kind == 'rus_arrived') update_rus(serialized_data);
+    else if (kind == 'rus_password') return; // ignore
+    else if (kind == 'note_add') note_add(pk, serialized_data);
+    else if (kind == 'note_delete') note_delete(pk, serialized_data);
+    else if (kind == 'tutor_profile'
+             || kind == 'tutor_rusclass'
+             || kind == 'tutor_password') return; // ignore
+    else throw oops('Ukendt ændring ['+kind+']');
+}
+
+function search_again() {
+    var v = document.getElementById('search_string').value;
+    if (v != '') {
+        search_keyup(v);
+    }
+}
+
+function get_rpc() {
+    var reg_rpc_url = "{% url reg_rpc %}";
+    function success(data) {
+        if (data.errors) throw oops(data.errors);
+        /* data is something like
+           {'pk': 123,
+            'payloads': [
+            payload_1,
+            payload_2,
+            ...
+            ]
+           }
+           where the payloads are dicts containing keys
+           pk, author, author_name, time_epoch, time_pretty,
+           kind, payload, related_pk, serialized_data
+           */
+        try {
+            set_newest_change_pk(data.pk);
+            for (var i = 0, l = data['payloads'].length; i < l; ++i) {
+                var payload = data['payloads'][i];
+                handle_change(payload);
+            }
+            search_again();
+        } catch (e) {
+            throw oops(e);
+        }
+        get_rpc();
+    }
+    var rpcRequest = ($.getJSON(
+        reg_rpc_url, {'pk': get_newest_change_pk()}, success)
+        .fail(jq_xhr_fail));
+}
+
+window.addEventListener('load', get_rpc, 'false');
+
+function populate_dicts() {
+    var rusclass_list = RusDataRaw['rusclass_list'];
+    for (var i = 0, l = rusclass_list.length; i < l; ++i) {
+        RusClass.objects.create_from_initial(rusclass_list[i]);
+    }
+    RusClass.objects.keys.sort();
+
+    var rus_list = RusDataRaw['rus_list'];
+    for (var i = 0, l = rus_list.length; i < l; ++i) {
+        var rus = Rus.objects.create_from_initial(rus_list[i]);
+        rus.rusclass.add_rus(rus);
+    }
+
+    var note_list = RusDataRaw['note_list'];
+    if (!note_list) throw oops("populate_dicts: no note_list");
+    for (var i = 0, l = note_list.length; i < l; ++i) {
+        var note = note_list[i];
+        note_add(note['pk'], note['note']);
+    }
+}
+
+function make_rusclass_render_cb(dest) {
+    return function (rusclass) {
+        dest.appendChild(rusclass.render());
+    };
+}
+
+function render_rus_data() {
+    var dest = document.getElementById('rusclasses');
+    dest.innerHTML = '';
+    RusClass.objects.each(make_rusclass_render_cb(dest));
+}
+
+function init_rus_data() {
+    populate_dicts();
+    render_rus_data();
+}
+
+window.addEventListener('load', init_rus_data, false);
+
+</script>
+{% endblock %}
+
+{% block content %}
+<h1>Rusliste</h1>
+
+<p>Du kan søge efter navn, årskortnummer, telefonnummer og holdnavn.</p>
+
+<p>Søg: <input id="search_string" onkeyup="search_keyup(this.value)"></p>
+
+<p><a href="{% url reg_new_rus %}">Ny rus</a></p>
+
+<div id="recentchanges">
+<div class="rc_inner">
+    <h1>Seneste ændringer</h1>
+    <em>(nyeste øverst)</em>
+    <ul id="changelist">
+    </ul>
+</div>
+</div>
+
+<div id="rusclasses">
+
+<div style="display: none">
+<table>
+<tbody>
+{% for rus in rus_list %}
+{% ifchanged %}
+</tbody>
+</table>
+</div>
+
+{% if rus.rusclass %}
+<div class="rusclass" data-rusclass="{{ rus.rusclass.pk }}">
+<h2>{{ rus.rusclass }}</h2>
+<ul class="noteslist">
+{% for note in rus.rusclass.notes %}
+<li>{{ note.body }}</li>
+{% endfor %}
+<li>
+<form method="post" action="{% url reg_notes %}">{% csrf_token %}
+<input type="hidden" name="subject_kind" value="rusclass" />
+<input type="hidden" name="subject_pk" value="{{ rus.rusclass.pk }}" />
+<input name="body" class="noteform_body" />
+<input type="submit" name="new_note" value="Tilføj" class="noteform_submit" />
+</form>
+</li>
+</ul>
+{% else %}
+<div class="rusclass" data-rusclass="">
+<h2>Intet hold</h2>
+{% endif %}
+
+<table class="ruslist">
+<col span="8" />
+<thead>
+<tr>
+<th style="min-width: 1em">Skift hold</th>
+<th style="min-width: 1em">Ankommet</th>
+<th style="min-width: 6em">Årskort</th>
+<th style="min-width: 1em">Navn</th>
+<th style="min-width: 10em">Adresse</th>
+<th style="min-width: 5em">Telefon</th>
+<th style="min-width: 7em">Email</th>
+<th style="min-width: 1em">Note</th>
+</tr>
+</thead>
+<tbody>
+{% endifchanged %}
+<tr data-ruspk="{{ rus.pk }}">
+<td>
+    <form method="post" action="{% url reg_change_class %}" onsubmit="return reg_change('{% url reg_change_class_ajax %}')">{% csrf_token %}
+        <input type="hidden" name="rus" value="{{ rus.pk }}" />
+        {{ change_class_form_rusclass }}
+        <input type="submit" value="Skift" class="link_button" />
+    </form>
+</td>
+<td>{{ rus.arrived|yesno:"ja,nej" }}<form
+method="post" action="{% url reg_change_arrived pk=rus.pk %}"
+onsubmit="return reg_change_arrived('{% url reg_change_arrived_ajax pk=rus.pk %}')">{% csrf_token %}
+<input type="hidden" name="rus" value="{{ rus.pk }}" />
+<input type="submit" value="&rarr; {{ rus.arrived|yesno:"nej,ja" }}" class="link_button" />
+</form>
+</td>
+<td>{{ rus.profile.studentnumber }}</td>
+<td>{{ rus.profile.get_full_name }}</td>
+<td>{{ rus.profile.street }} {{ rus.profile.city }}</td>
+<td>{{ rus.profile.phone }}</td>
+<td>{{ rus.profile.email }}</td>
+<td><a href="#notes-rus-{{ rus.pk }}" onclick="show_notes('notes-rus-{{ rus.pk }}'); return false">
+{% for note in rus.notes %}<div>{{ note.body }}</div>
+{% endfor %}
+{% if not rus.notes %}(ingen){% endif %}
+</a></td>
+</tr>
+<tr class="notes" id="notes-rus-{{ rus.pk }}">
+<td colspan="8">
+<ul class="noteslist">
+{% for note in rus.notes %}
+<li>{{ note.body }}</li>
+{% endfor %}
+<li>
+<form method="post" action="{% url reg_notes %}">{% csrf_token %}
+<input type="hidden" name="subject_kind" value="rus" />
+<input type="hidden" name="subject_pk" value="{{ rus.pk }}" />
+<input name="body" class="noteform_body">
+<input type="submit" name="new_note" value="Tilføj" class="noteform_submit">
+</form>
+</li>
+</ul>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+</div>
+<script>render_rus_data();</script>
+
+{% endblock %}

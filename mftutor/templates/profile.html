@@ -1,8 +1,15 @@
 {% extends "base.html" %}
 {% block title %}Mine oplysninger{% endblock %}
 {% block content %}
+{% if saved %}
+<p class="success_message">
+    Ændringer gemt.
+</p>
+{% endif %}
 <form class="twocol" action="{% url profile_view %}" method="post">{% csrf_token %}
 {{ form.non_field_errors }}
+<div class="label"><label>Årskortnummer</label>:</div>
+<div class="field">{{ studentnumber }}</div>
 {% for field in form %}
 <div class="label">{{ field.label_tag }}:</div>
 <div class="field">{{ field }}</div>

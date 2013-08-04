@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}{{ rusclass }} - {{ handout }}{% endblock %}
+{% block head %}
+<script>
+var checkboxes = [];
+var last_click = null;
+function hook_checkboxes() {
+    var es = document.querySelectorAll('.response_table td:first-child input');
+    var l = es.length;
+    for (var i = 0; i < l; ++i) {
+        function update_highlighting(event, i) {
+            var a = -1, b = -1;
+            if (event.shiftKey && last_click != null) {
+                a = Math.min(last_click, i);
+                b = Math.max(last_click, i);
+            }
+            for (var j = 0; j < checkboxes.length; ++j) {
+                checkboxes[j].parentNode.style.backgroundColor =
+                    (a <= j && j <= b) ? '#9f9' : '';
+            }
+        }
+        function make_click_handler(i) {
+            return function (event) {
+                if (event.shiftKey && last_click != null) {
+                    var newState = !!checkboxes[i].checked;
+                    var a = Math.min(last_click, i);
+                    var b = Math.max(last_click, i);
+                    for (var j = a; j <= b; ++j) {
+                        checkboxes[j].checked = newState;
+                    }
+                }
+                last_click = i;
+                update_highlighting(event, i);
+            };
+        }
+        function make_over_handler(i) {
+            return function (event) {
+                update_highlighting(event, i);
+            };
+        }
+        checkboxes.push(es[i]);
+        es[i].addEventListener('click', make_click_handler(i), false);
+        es[i].addEventListener('mouseover', make_over_handler(i), false);
+    }
+}
+window.addEventListener('load', hook_checkboxes, false);
+</script>
+{% endblock %}
+
+{% block content %}
+<h1>{{ rusclass }} - {{ handout }}</h1>
+
+<p><a href="{% url handout_list %}">Tilmeldinger</a>
+&rarr; <a href="{% url handout_summary handout=handout.pk %}">{{ handout }}</a>
+&rarr; <strong>{{ rusclass }}</strong></p>
+
+<p>
+<input type="button" {{ handout_response.pk|yesno:",disabled" }} value="Slet" onclick="location = 'delete/'" />
+</p>
+
+{% if form_error %}
+<p>
+Formularen er ikke udfyldt korrekt.
+</p>
+{% endif %}
+{% if form_saved %}
+<p class="success_message">
+Formularen er gemt.
+</p>
+{% endif %}
+
+<form method="post">{% csrf_token %}
+    <p>{{ form.note }}</p>
+{% if display_rus_list %}
+<p>Tip: Hvis du holder shift inde, kan du markere/afmarkere flere russer samtidigt.</p>
+<table class="response_table">
+<thead>
+<tr><th>&nbsp;</th>
+<th>Årskort</th>
+<th>Navn</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+{% for rus in rus_list %}
+<tr>
+    <td>{{ rus.checkmark_field }} {{ rus.checkmark_field.errors }}</td>
+    <td><label for="id_rus_{{ rus.pk }}_checkmark">
+            {{ rus.profile.studentnumber }}</label></td>
+    <td><label for="id_rus_{{ rus.pk }}_checkmark">
+            {{ rus.profile.get_full_name }}</label></td>
+    <td>{{ rus.note_field }} {{ rus.note_field.errors }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{% endif %}
+<p><input type="submit" value="Gem" /></p>
+</form>
+
+{% endblock %}

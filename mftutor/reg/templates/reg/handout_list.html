@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Tilmeldingslister{% endblock %}
+{% block bodyclass %}fullwidth{% endblock %}
+{% block head %}
+<style>
+.has_response { background-color: #9f9; }
+.no_response { background-color: #fbb; }
+.handout_table td {
+    text-align: center;
+    min-width: 2em;
+}
+.handout_table a {
+    color: black;
+    display: block;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>Tilmeldingslister</h1>
+
+<a href="{% url handout_new %}">Ny tilmeldingsliste</a>
+
+<table class="handout_table">
+<thead>
+<tr>
+<th>&nbsp;</th>
+{% for rusclass in rusclasses %}
+<th>{{ rusclass.official_name }}</th>
+{% endfor %}
+</tr>
+</thead>
+<tbody>
+{% for handout in handouts %}
+<tr>
+    <th><a href="{% url handout_summary handout=handout.pk %}">{{ handout }}</a></th>
+{% for response in handout.row %}
+<td class="{% if response.pk %}has_response{% else %}no_response{% endif %}">
+<a href="{% url handout_response handout=response.handout.pk rusclass=response.rusclass.handle %}">
+{% if response.pk %}
+ret
+{% else %}
+ny
+{% endif %}
+</a>
+</td>
+{% endfor %}
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+{% endblock %}

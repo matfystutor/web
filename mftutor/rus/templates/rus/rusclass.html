@@ -1,0 +1,96 @@
+{% extends "rus/base.html" %}
+{% block title %}{% if rusclass %}{{ rusclass }} - {% endif %}Holdlister{% endblock %}
+{% block bodyclass %}{% if rusclass %}wide{% elif rusclass_list %}wide{% endif %}{% endblock %}
+{% block head %}
+<style>
+.rusclass_list li {
+    list-style-type: none;
+    width: 4em;
+    float: left;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>Holdlister</h1>
+
+{% if rusclass_list %}
+<ul class="rusclass_list">
+    {% for rusclass in rusclass_list %}
+    {% ifchanged %}
+    <li style="clear: left">{{ rusclass.get_study|capfirst }}:</li>
+    {% endifchanged %}
+    <li><a href="{% url rus_holdlister handle=rusclass.handle %}">{{ rusclass }}</a></li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>
+Holdlisterne er os ikke bekendt endnu.
+Vi får dem cirka midt i august.
+Så snart vi har dem, lægger vi dem op på denne side.
+</p>
+{% endif %}
+
+{% if rusclass %}
+<br clear="both" />
+<h2>{{ rusclass }}</h2>
+{% if show_details %}
+<table class="person_list" cellspacing="0">
+<tr class="heading"><td colspan="6"><h3>Tutorer</h3></td></tr>
+<tr>
+<th>Årskort</th>
+<th>Navn</th>
+<th>Adresse</th>
+<th>Postnr. og by</th>
+<th>Email</th>
+<th>Telefon</th>
+</tr>
+{% for tutor in tutor_list %}
+<tr>
+<td>{{ tutor.profile.studentnumber }}</td>
+<td>{{ tutor.profile.get_full_name }}</td>
+<td>{{ tutor.profile.address }}</td>
+<td>{{ tutor.profile.city }}</td>
+<td><a href="mailto:{{ tutor.profile.email }}">{{ tutor.profile.email }}</a></td>
+<td class="phone"><a href="tel:{{ tutor.profile.phone }}" class="tellink">{{ tutor.profile.phone }}</a></td>
+</tr>
+{% endfor %}
+<tr class="heading"><td colspan="6"><h3>Russer</h3></td></tr>
+<tr>
+<th>Årskort</th>
+<th>Navn</th>
+<th>Adresse</th>
+<th>Postnr. og by</th>
+<th>Email</th>
+<th>Telefon</th>
+</tr>
+{% for rus in rus_list %}
+<tr>
+<td>{{ rus.profile.studentnumber }}</td>
+<td>{{ rus.profile.get_full_name }}</td>
+<td>{{ rus.profile.address }}</td>
+<td>{{ rus.profile.city }}</td>
+<td><a href="mailto:{{ rus.profile.email }}">{{ rus.profile.email }}</a></td>
+<td class="phone"><a href="tel:{{ rus.profile.phone }}" class="tellink">{{ rus.profile.phone }}</a></td>
+</tr>
+{% endfor %}
+</table>
+{% else %}
+<p>Du skal logge ind for at se detaljer såsom telefonnummer og email.</p>
+<h3>Tutorer</h3>
+<ul>
+    {% for tutor in tutor_names %}
+    <li>{{ tutor }}</li>
+    {% endfor %}
+</ul>
+<h3>Russer</h3>
+<ul>
+    {% for rus in rus_names %}
+    <li>{{ rus }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endif %}
+
+{% endblock %}

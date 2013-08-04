@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Ny rus{% endblock %}
+{% block head %}
+<style>
+.notelist {
+	line-height: 100%;
+	margin: 0;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>Ny rus</h1>
+
+<form method="post" class="twocol">{% csrf_token %}
+    <div class="label">{{ form.name.label_tag }}:</div>
+    <div class="field">{{ form.name }}</div>
+    <div class="label">{{ form.studentnumber.label_tag }}:</div>
+    <div class="field">{{ form.studentnumber }}</div>
+    <div class="label">{{ form.email.label_tag }}:</div>
+    <div class="field">{{ form.email }}</div>
+    <div class="label">{{ form.arrived.label_tag }}:</div>
+    <div class="field">{{ form.arrived }}</div>
+    <div class="label">{{ form.note.label_tag }}:</div>
+    <div class="field">{{ form.note }}</div>
+    <div class="label">{{ form.rusclass.label }}:</div>
+    <div class="field">
+    {% for rusclass in rusclass_list %}
+    <div>
+    <label><input type="radio" name="rusclass" value="{{ rusclass.pk }}">
+        {{ rusclass }} ({{ rusclass.rus_count }})</label>
+    {% if rusclass.notes %}
+    <ul class="notelist">
+        {% for note in rusclass.notes %}
+        <li>{{ note.body }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    </div>
+    {% endfor %}
+    </div>
+    <div class="field"><input type="submit" value="Opret" /></div>
+</form>
+{% endblock %}
