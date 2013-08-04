@@ -17,8 +17,11 @@ class ShirtOptionView(FormView):
     template_name = 'shirt/shirtoptions_form.html'
 
     def get_initial(self):
+        choices = []
+        for so in ShirtOption.objects.all():
+            choices.append(so.choice)
         return {'choices':
-                u'\n'.join(so.choice for so in ShirtOption.objects.all())}
+                u'\n'.join(choices)}
 
     def get_success_url(self):
         return reverse('shirt_options')

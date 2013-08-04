@@ -79,10 +79,12 @@ class TutorGroup(models.Model):
 
 class RusClassManager(models.Manager):
     def create_from_official(self, year, official_name):
-        translate_to_handle = {official: handle
-                for official, handle, internal in RUSCLASS_BASE}
-        translate_to_internal = {official: internal
-                for official, handle, internal in RUSCLASS_BASE}
+        translate_to_handle = {}
+        for official, handle, internal in RUSCLASS_BASE:
+            translate_to_handle[official] = handle
+        translate_to_internal = {}
+        for official, handle, internal in RUSCLASS_BASE:
+            translate_to_internal[official] = internal
         handle = translate_to_handle[official_name[0:2]] + official_name[2:]
         internal_name = translate_to_internal[official_name[0:2]] + u' ' + official_name[2:]
         return self.model(year=year, official_name=official_name,

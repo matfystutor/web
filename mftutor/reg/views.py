@@ -302,8 +302,12 @@ class RusListView(TemplateView):
         rus_list = self.get_rus_list()
         rusclass_list = self.get_rusclass_list()
 
-        rus_dict = {o.pk: o for o in rus_list}
-        rusclass_dict = {o.pk: o for o in rusclass_list}
+        rus_dict = {}
+        for o in rus_list:
+            rus_dict[o.pk] = o
+        rusclass_dict = {}
+        for o in rusclass_list:
+            rusclass_dict[o.pk] = o
 
         rus_pks = frozenset(o.pk for o in rus_list)
         rusclass_pks = frozenset(o.pk for o in rusclass_list)
@@ -641,8 +645,9 @@ class HandoutSummaryView(TemplateView):
         handout = self.get_handout()
         year = handout.year
         rusclasses = RusClass.objects.filter(year__exact=year)
-        responses = {response.rusclass.pk: response
-                for response in HandoutClassResponse.objects.filter(handout=handout)}
+        responses = {}
+        for response in HandoutClassResponse.objects.filter(handout=handout):
+            responses[response.rusclass.pk] = response
 
         all_russes = list(Rus.objects
                 .filter(rusclass__in=rusclasses)
@@ -661,7 +666,9 @@ class HandoutSummaryView(TemplateView):
                         rus__in=rusclass.get_russes()).select_related('rus', 'rus__rusclass', 'rus__profile', 'rus__profile__user')
                 rusclass.rus_checked_count = (response_queryset
                         .filter(checkmark=True).count())
-                rus_responses = {r.rus.pk: r for r in response_queryset}
+                rus_responses = {}
+                for r in response_queryset:
+                    rus_responses[r.rus.pk] = r
                 for rus in rusclass.russes:
                     if rus.pk in rus_responses:
                         rus.response = rus_responses[rus.pk]

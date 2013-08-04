@@ -181,7 +181,9 @@ class LightboxRusClassStateManager(models.Manager):
     def get_for_year(self, year):
         rusclasses = RusClass.objects.filter(year=year)
         rusclass_handles = frozenset(rusclass.handle for rusclass in rusclasses)
-        rusclass_dict = {rusclass.handle: rusclass for rusclass in rusclasses}
+        rusclass_dict = {}
+        for rusclass in rusclasses:
+            rusclass_dict[rusclass.handle] = rusclass
 
         states = self.model.objects.filter(rusclass__in=rusclasses).select_related('rusclass')
         state_handles = frozenset(state.rusclass.handle for state in states)
