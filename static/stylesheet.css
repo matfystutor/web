@@ -97,7 +97,7 @@ body.fullwidth #main {
 	margin: 0 auto;
 }
 
-#login, #logout {
+.loginout {
 	float: right;
 	padding-right: 1em;
 }
@@ -241,6 +241,7 @@ h3 {
 #menu-list {
 	float: left;
 	margin-left: 5px;
+	height: 0;
 }
 
 ul.topnav {

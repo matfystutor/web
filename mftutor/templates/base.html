@@ -104,7 +104,7 @@ Kildekoden er frit tilgængelig: https://github.com/matfystutor/web/
       {% endblock %}
     </ul>
   </div>
-  <div>
+  <div class="loginout">
     {% if user.is_authenticated %}
     <form id="logout" method="post" action="{% url logout_view %}">{% csrf_token %}
     <input type="hidden" name="next" value="{{ request_path }}" />
