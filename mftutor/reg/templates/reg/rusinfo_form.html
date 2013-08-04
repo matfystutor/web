@@ -16,6 +16,9 @@
 .rusinfo input.changed {
     background-color: #ff8;
 }
+.rusinfo td {
+    text-align: center;
+}
 </style>
 <script>
 function hook_inputs() {
@@ -35,6 +38,9 @@ window.addEventListener('load', hook_inputs, false);
 {% block bodyclass %}fullwidth{% endblock %}
 {% block content %}
 <h1>{{ rusclass }}</h1>
+
+<p>For at nulstille kodeord, skal du indtaste en emailadresse.
+Så vil et nyt kodeord blive sendt til den givne adresse.</p>
 
 {% if form_errors %}
 <p>Formularen er ikke udfyldt korrekt.</p>
@@ -62,7 +68,7 @@ window.addEventListener('load', hook_inputs, false);
 <th>Postnr. og by</th>
 <th>Email</th>
 <th>Telefon</th>
-<th>Skift kodeord</th>
+<th>Nulstil kodeord</th>
 </tr>
 </thead>
 <tbody>
@@ -74,7 +80,7 @@ window.addEventListener('load', hook_inputs, false);
     <td>{{ rus.city_field }} {{ rus.city_field.errors }}</td>
     <td>{{ rus.email_field }} {{ rus.email_field.errors }}</td>
     <td>{{ rus.phone_field }} {{ rus.phone_field.errors }}</td>
-    <td>{{ rus.password_field }} {{ rus.password_field.errors }}</td>
+    <td>{{ rus.reset_password_field }} {{ rus.reset_password_field.errors }}</td>
 </tr>
 {% endfor %}
 </tbody>

@@ -3,6 +3,7 @@ import re
 import exceptions
 import datetime
 import json
+import subprocess
 
 from django.db import transaction
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, Http404
@@ -22,6 +23,7 @@ from ..tutor.auth import user_tutor_data, tutor_required_error, NotTutor, ruscla
 
 from .models import ImportSession, ImportLine, Note, ChangeLogEntry, Handout, HandoutRusResponse, HandoutClassResponse
 from .models import LightboxRusClassState, LightboxNote
+from .email import make_password_reset_message, send_messages
 
 # =============================================================================
 
@@ -867,27 +869,42 @@ class RusInfoForm(forms.Form):
         fields = kwargs.pop('fields')
         rus_list = kwargs.pop('rus_list')
         super(RusInfoForm, self).__init__(*args, **kwargs)
+        self.rus_list = rus_list
 
-        def sized_field(sz, widget_ctor):
-            return widget_ctor(attrs={'size': sz})
-
-        widget_ctors = {'password': forms.PasswordInput}
-        sizes = {'street': 20, 'city': 15, 'email': 25, 'phone': 10, 'password': 10}
+        field_ctors = {'reset_password': forms.BooleanField}
+        widget_ctors = {'reset_password': forms.CheckboxInput}
+        sizes = {'street': 20, 'city': 15, 'email': 25, 'phone': 10}
 
         for rus in rus_list:
             for field in fields:
+                field_ctor = field_ctors.get(field, forms.CharField)
                 widget_ctor = widget_ctors.get(field, forms.TextInput)
                 attrs = {}
                 if field in sizes: attrs['size'] = sizes[field]
                 widget = widget_ctor(attrs=attrs)
-                self.fields['rus_%s_%s' % (rus.pk, field)] = forms.CharField(required=False, widget=widget)
+                self.fields['rus_%s_%s' % (rus.pk, field)] = field_ctor(required=False, widget=widget)
+
+    def clean(self):
+        cleaned_data = super(RusInfoForm, self).clean()
+        for rus in self.rus_list:
+            password_field = 'rus_%s_reset_password' % rus.pk
+            email_field = 'rus_%s_email' % rus.pk
+            if (cleaned_data[password_field]
+                    and not cleaned_data[email_field]):
+                msg = u'Du skal indtaste en emailadresse for at nulstille kodeordet.'
+                self._errors[email_field] = self.error_class([msg])
+                del cleaned_data[email_field]
+                del cleaned_data[password_field]
+
+        return cleaned_data
+
 
 
 class RusInfoView(FormView):
     form_class = RusInfoForm
     template_name = 'reg/rusinfo_form.html'
 
-    fields = ('street', 'city', 'email', 'phone', 'password')
+    fields = ('street', 'city', 'email', 'phone', 'reset_password')
 
     def get_form_kwargs(self):
         kwargs = super(RusInfoView, self).get_form_kwargs()
@@ -938,7 +955,9 @@ class RusInfoView(FormView):
         return context_data
 
     def form_valid(self, form):
+        tutor = user_tutor_data(self.request.user)
         changes = 0
+        messages = []
         with transaction.commit_on_success():
             data = form.cleaned_data
             for rus in self.rus_list:
@@ -946,15 +965,10 @@ class RusInfoView(FormView):
                 in_city = data['rus_%s_city' % rus.pk]
                 in_email = data['rus_%s_email' % rus.pk]
                 in_phone = data['rus_%s_phone' % rus.pk]
-                in_password = data['rus_%s_password' % rus.pk]
+                in_password = data['rus_%s_reset_password' % rus.pk]
                 in_profile = (in_street, in_city, in_email, in_phone)
                 cur_profile = (rus.profile.street, rus.profile.city,
                         rus.profile.email, rus.profile.phone)
-
-                if in_password:
-                    rus.profile.user.set_password(in_password)
-                    rus.profile.user.save()
-                    changes += 1
 
                 if in_profile != cur_profile:
                     rus.profile.street = in_street
@@ -964,6 +978,31 @@ class RusInfoView(FormView):
                     rus.profile.save()
                     changes += 1
 
+                if in_password:
+                    pwlength = 8
+                    try:
+                        p = subprocess.Popen(['/usr/bin/pwgen',
+                            '--capitalize', '--numerals', str(pwlength), '1'],
+                            stdin=subprocess.PIPE,
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE)
+                        pw, err = p.communicate()
+                        pw = pw.strip()
+                    except:
+                        letters = string.ascii_letters + string.digits
+                        pw = 'r'+''.join(random.choice(letters) for i in xrange(pwlength))
+                    rus.profile.user.set_password(pw)
+
+                    msg = make_password_reset_message(
+                            rus.profile,
+                            tutor.profile,
+                            pw)
+                    messages.append(msg)
+
+                    rus.profile.user.save()
+                    changes += 1
+
+        send_messages(messages)
         return self.render_to_response(self.get_context_data(form=form, form_saved=True, changes=changes))
 
     def form_invalid(self, form):
