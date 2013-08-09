@@ -29,7 +29,7 @@ def user_profile_data(user):
 def user_tutor_data(user):
     d = user_profile_data(user)
     try:
-        d.tutor = Tutor.objects.get(profile=d.profile, year=YEAR)
+        d.tutor = Tutor.members.get(profile=d.profile)
     except Tutor.DoesNotExist:
         raise NotTutor('notutoryear')
     return d
