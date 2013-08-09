@@ -47,5 +47,5 @@ urlpatterns = patterns('',
         RusInfoView.as_view(), name='rusinfo'),
 
     url(r'^burtavle/$',
-        LightboxAdminView.as_view(), name='burtavle_admin'),
+        tutorbur_required(LightboxAdminView.as_view()), name='burtavle_admin'),
 )
