@@ -685,9 +685,13 @@ function show_notes(id) {
     }
 }
 
-function update_rus(rpc_rus) {
+function update_rus(rpc_rus, version) {
     var rus = Rus.objects.get_by_studentnumber(rpc_rus['studentnumber']);
     var rusclass = RusClass.objects.get_by_handle(rpc_rus['rusclass']);
+    if (!rus) throw oops("update_rus: No such rus ["+rpc_rus['studentnumber']+"]");
+    if (!rusclass) throw oops("update_rus: No such rusclass ["+rpc_rus['rusclass']+"]");
+    if (rus.version && rus.version >= version) return;
+    rus.version = version;
     rus.arrived = rpc_rus['arrived'];
     rus.name = rpc_rus['name'];
     rus.street = rpc_rus['street'];
@@ -734,10 +738,11 @@ function handle_change(payload) {
     }
     var kind = payload['kind'];
     var pk = payload['related_pk'];
+    var version = payload['pk'];
     if (kind == 'import') return; // ignore
     else if (kind == 'rus_profile'
              || kind == 'rus_rusclass'
-             || kind == 'rus_arrived') update_rus(serialized_data);
+             || kind == 'rus_arrived') update_rus(serialized_data, version);
     else if (kind == 'rus_password') return; // ignore
     else if (kind == 'note_add') note_add(pk, serialized_data);
     else if (kind == 'note_delete') note_delete(pk, serialized_data);
