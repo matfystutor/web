@@ -419,7 +419,7 @@ RusClass.prototype.change_display_filter = function (str) {
 RusClass.prototype.remove_rus = function (rus) {
     var i = 0, l = this.russes.length;
     while (i < l) {
-        if (this.russes[i].pk == rus.pk) break;
+        if (this.russes[i].studentnumber == rus.studentnumber) break;
         ++i;
     }
     if (i == l) throw oops('remove_rus: none found');
