@@ -13,26 +13,29 @@ dd { margin: 0 0 1em; }
 <p>Her er de ting, du har adgang til, fordi du er i {{ BURET }} (eller i tutorbestyrelsen).</p>
 
 <dl>
-<dt><a href="{% url rusinfo_list %}">Russer</a></dt>
-<dd>Her kan du redigere kontaktoplysninger for de enkelte rushold.</dd>
 
-<dt><a href="{% url reg_rus_list %}">Registrering</a></dt>
-<dd>Her kan du flytte russer rundt på rusholdene, markere russer som ankommet,
-og knytte noter til russer/rushold.</dd>
+<dt><a href="{% url rusinfo_list %}">Russer</a></dt>
+<dd>Her kan du ændre russers postadresse, telefonnummer, email og kodeord på rushjemmesiden.
+Holdtutorer har adgang til at ændre disse ting for deres eget hold.</dd>
 
 <dt><a href="{% url burtavle_admin %}">Burtavle</a></dt>
-<dd>Her kan du ændre holdstatus og skrive en besked på burtavlen.</dd>
-
-<dt><a href="{% url reg_changes %}">Ændrede russer</a></dt>
-<dd>Her kan du se, hvilke russer der er oprettet/flyttet i forhold til de oprindelige
-ruslister fra fakultetet.</dd>
+<dd>Her kan du ændre holdstatus (rød/gul/grøn), skrive en besked på burtavlen og ændre farven på fuglen.</dd>
 
 <dt><a href="{% url handout_list %}">Tilmeldinger</a></dt>
-<dd>Her kan du gemme og hente tilmeldingslister (spis en rus-adresse, hytteturstilmelding, osv.).</dd>
+<dd>Her kan du gemme og hente tilmeldingslister, som holdtutorerne afleverer i rusdagene
+(spis en rus-adresse, hytteturstilmelding, osv.).</dd>
+
+<dt><a href="{% url reg_rus_list %}">Registrering</a></dt>
+<dd>Her kan du markere russer som ankommet og flytte dem til et andet hold,
+og læse/skrive interne bemærkninger til enkelte russer og rushold.</dd>
+
+<dt><a href="{% url reg_changes %}">Ændrede russer</a></dt>
+<dd>Til fakultetet: En liste af russer der er flyttet til et andet rushold, eller som vi har oprettet manuelt i systemet.</dd>
 
 <dt><a href="{% url import_session_choose %}">Importer russer</a></dt>
-<dd>Inden rusdagene: Før ruslister fra fakultetet ind i bursystemet og rushjemmesiden.
-Bruges med omhu.</dd>
+<dd>Til webfar inden rusdagene: Indfør ruslister fra fakultetet i bursystemet og på rushjemmesiden.
+Bruges med omtanke og en rolig hånd!</dd>
+
 </dl>
 
 {% endblock %}

@@ -838,11 +838,16 @@ function init_rus_data() {
 {% block content %}
 <h1>Rusliste</h1>
 
-<p>Du kan søge efter navn, årskortnummer, telefonnummer og holdnavn.</p>
+<p>Her kan du markere russer som ankommet og flytte dem til et andet hold,
+og læse/skrive interne bemærkninger til enkelte russer og rushold.</p>
 
-<p>Søg: <input id="search_string" onkeyup="search_keyup(this.value)"></p>
+<p>Det er muligt at bruge registreringssystemet fra flere steder samtidigt,
+og alle ændringer bliver synkroniseret med det samme.</p>
 
-<p><a href="{% url reg_new_rus %}">Ny rus</a></p>
+<p>Søg i navn, årskortnummer, telefonnummer, notat og holdnavn:
+<input id="search_string" onkeyup="search_keyup(this.value)"></p>
+
+<p><a href="{% url reg_new_rus %}">Opret en ny rus</a></p>
 
 <div id="rusclasses">
 

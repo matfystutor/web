@@ -21,8 +21,11 @@ tr:nth-child(2n) .no_response { background-color: #d99; }
 {% block content %}
 <h1>Tilmeldingslister</h1>
 
-<a href="{% url handout_new %}">Ny tilmeldingsliste</a>
+<p>Her kan du gemme og hente tilmeldingslister, som holdtutorerne afleverer i rusdagene.</p>
 
+<p><a href="{% url handout_new %}">Ny tilmeldingsliste</a></p>
+
+{% if handouts %}
 <table class="handout_table">
 <thead>
 <tr>
@@ -51,5 +54,11 @@ ny
 {% endfor %}
 </tbody>
 </table>
+{% else %}
+<p>Ingen tilmeldingslister oprettet.</p>
+{% endif %}
+
+<p>Webfar kan oprette standardlisterne med kommandoen:
+<tt>manage.py make_handouts</tt></p>
 
 {% endblock %}

@@ -39,8 +39,14 @@ window.addEventListener('load', hook_inputs, false);
 {% block content %}
 <h1>{{ rusclass }}</h1>
 
-<p>For at nulstille kodeord, skal du indtaste en emailadresse.
-Så vil et nyt kodeord blive sendt til den givne adresse.</p>
+<p>For at lave et nyt kodeord til en rus, skal du indtaste russens emailadresse,
+vælge "Nulstil kodeord", og så vil der blive sendt et nyt kodeord til den valgte email.</p>
+
+<p>De kontaktoplysninger, du indtaster her, vil blive synlige for alle tutorer
+og russer der logger ind på rushjemmesiden.</p>
+
+<p>Hvis navn eller årskortnummer er forkert,
+skal du kontakte den webansvarlige i tutorbestyrelsen.</p>
 
 {% if form_errors %}
 <p>Formularen er ikke udfyldt korrekt.</p>
