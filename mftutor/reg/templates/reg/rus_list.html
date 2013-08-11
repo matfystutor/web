@@ -257,7 +257,8 @@ Rus.prototype.change_display_filter = function (str) {
     var found = (str == ''
         || match(this.studentnumber)
         || match(this.name)
-        || match(this.phone));
+        || match(this.phone)
+        || this.notes.any(match));
     this.row.style.display = found ? '' : 'none';
     return found;
 };
@@ -499,6 +500,10 @@ Note.prototype.render_to = function (el) {
     form.appendChild(submit);
 }
 
+Note.prototype.toString = function () {
+    return this.body;
+};
+
 function NoteList() {
     this.all = [];
 }
@@ -535,6 +540,14 @@ NoteList.prototype.each = function (fn) {
 
 NoteList.prototype.empty = function () {
     return this.all.length == 0;
+};
+
+NoteList.prototype.any = function (fn) {
+    var res = null;
+    for (var i = 0, l = this.all.length; i < l && !res; ++i) {
+        res = fn(this.all[i]);
+    }
+    return res;
 };
 
 RusClass.prototype.render_note_form = function (el) {
