@@ -105,7 +105,7 @@ class RusClassDetailView(RusClassView):
         return self.render_to_response(self.get_context_data(is_logged_in=is_logged_in))
 
     def get_rusclass(self, handle):
-        return get_object_or_404(RusClass, handle=handle)
+        return get_object_or_404(RusClass, year=YEAR, handle=handle)
 
     def get_rus_list(self):
         return self.rusclass.get_russes().order_by('profile__name')
