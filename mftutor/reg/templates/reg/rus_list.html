@@ -832,8 +832,6 @@ function init_rus_data() {
     render_rus_data();
 }
 
-window.addEventListener('load', init_rus_data, false);
-
 </script>
 {% endblock %}
 
@@ -942,6 +940,6 @@ onsubmit="return reg_change_arrived('{% url reg_change_arrived_ajax pk=rus.pk %}
 </table>
 
 </div>
-<script>render_rus_data();</script>
+<script>init_rus_data();</script>
 
 {% endblock %}
