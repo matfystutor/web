@@ -680,6 +680,7 @@ function show_notes(id) {
         if (shown_notes) {
             var disp = (shown_notes.tagName.toLowerCase() == 'tr') ? 'table-row' : 'block';
             shown_notes.style.display = disp;
+            shown_notes.querySelector('input[name=body]').focus();
         }
     }
 }
