@@ -563,8 +563,8 @@ class RusChangesView(TemplateView):
 
     def get_rus_list(self):
         from django.db.models import F
-        rus_list = (list(Rus.objects.exclude(rusclass=F('initial_rusclass')))
-                + list(Rus.objects.filter(initial_rusclass__isnull=True)))
+        rus_list = (list(Rus.objects.filter(year=YEAR).exclude(rusclass=F('initial_rusclass')))
+                + list(Rus.objects.filter(year=YEAR, initial_rusclass__isnull=True)))
         return rus_list
 
 
