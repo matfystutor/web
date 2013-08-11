@@ -360,6 +360,10 @@ function RusClass(handle, internal_name) {
     this.notes = new NoteList();
 }
 
+RusClass.prototype.toString = function () {
+    return this.handle;
+};
+
 RusClass.objects = {};
 RusClass.objects.all = {};
 RusClass.objects.keys = [];
