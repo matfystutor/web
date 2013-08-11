@@ -13,16 +13,7 @@
 }
 
 #content {
-    margin-right: 160px;
     position: relative;
-}
-
-#recentchanges {
-    position: absolute;
-    right: -160px;
-    width: 150px;
-    top: 0;
-    margin-top: -2px;
 }
 
 .rc_inner {
@@ -34,23 +25,6 @@
     -webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 1px 2px;
     padding: 1em;
     font-size: 80%;
-}
-
-#recentchanges h1 {
-    font-size: 100%;
-    margin-top: 0;
-    margin-bottom: 8px;
-}
-
-#changelist, #changelist li {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    display: block;
-}
-
-#changelist li {
-    margin: 8px 0;
 }
 
 .oopscontainer {
@@ -844,15 +818,6 @@ window.addEventListener('load', init_rus_data, false);
 <p>Søg: <input id="search_string" onkeyup="search_keyup(this.value)"></p>
 
 <p><a href="{% url reg_new_rus %}">Ny rus</a></p>
-
-<div id="recentchanges">
-<div class="rc_inner">
-    <h1>Seneste ændringer</h1>
-    <em>(nyeste øverst)</em>
-    <ul id="changelist">
-    </ul>
-</div>
-</div>
 
 <div id="rusclasses">
 
