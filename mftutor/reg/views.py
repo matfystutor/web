@@ -367,6 +367,7 @@ class RusCreateView(FormView):
         return rusclass_list
 
     def form_valid(self, form):
+        d = user_tutor_data(self.request.user)
         data = form.cleaned_data
         try:
             first_name, last_name = data['name'].split(' ', 1)
@@ -392,7 +393,8 @@ class RusCreateView(FormView):
                 note = Note.objects.create(
                         subject_kind='rus',
                         subject_pk=rus.pk,
-                        body=data['note'])
+                        body=data['note'],
+                        author=d.profile)
             return HttpResponseRedirect(reverse('reg_rus_list'))
 
 class RPCError(Exception):
