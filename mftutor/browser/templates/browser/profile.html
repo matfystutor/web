@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load browser %}
+{% block title %}{{ subject.name }}{% endblock %}
+
+{% block content %}
+<h1>{{ subject.name }}</h1>
+
+{% for year in years %}
+{% ifchanged %}
+<h2>{{ year.year }}</h2>
+{% endifchanged %}
+{% if year.tutor %}
+{% if year.tutor.rusclass %}
+<p>Tutor for {{ year.tutor.rusclass|rusclass_link }}.</p>
+<p>Russer:
+{% for rus in year.tutor.rusclass.rus_set.all %}
+{{ rus.profile|profile_link }},
+{% endfor %}
+{% else %}
+<p>Ej holdtutor.</p>
+{% endif %}
+<p>Grupper:
+{% for group in year.tutor.groups.all %}
+{{ group|group_link:year.year }},
+{% endfor %}
+</p>
+{% endif %}
+{% if year.rus %}
+<p>Rus på {{ year.rus.rusclass|rusclass_link }}.</p>
+<p>Tutorer:
+{% for tutor in year.rus.rusclass.tutor_set.all %}
+{{ tutor.profile|profile_link }},
+{% endfor %}
+</p>
+{% endif %}
+{% endfor %}
+
+{% endblock %}

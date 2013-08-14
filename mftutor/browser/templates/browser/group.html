@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load browser %}
+{% block title %}{{ group.name }}{% endblock %}
+
+{% block content %}
+<h1>{{ group.name }} ({{ year }})</h1>
+
+<p>Medlemmer:</p>
+<ul>
+{% for tutor in members %}
+<li>{{ tutor.profile|profile_link }}</li>
+{% endfor %}
+</ul>
+
+{% endblock %}

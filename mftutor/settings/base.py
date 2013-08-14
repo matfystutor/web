@@ -145,6 +145,7 @@ INSTALLED_APPS = (
     'mftutor.news',
     'mftutor.events',
     'mftutor.aliases',
+    'mftutor.browser',
     'mftutor.tutormail',
     'mftutor.page',
     'mftutor.shirt',

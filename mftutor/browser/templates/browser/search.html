@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load browser %}
+{% block title %}Søgning{% endblock %}
+
+{% block content %}
+<h1>Søgning</h1>
+
+<p>
+<form>{{ form.query }} <label>{{ form.tutors_only }} Kun tutorer</label>
+    <input type="submit" value="Søg" /></form>
+</p>
+
+{% if query %}
+<p>{{ results.count }} resultater.</p>
+<ul>
+{% for profile in results %}
+<li>{{ profile|profile_link }}</li>
+{% endfor %}
+</ul>
+{% endif %}
+
+
+{% endblock %}

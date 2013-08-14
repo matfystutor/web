@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load browser %}
+{% block title %}{{ rusclass.internal_name }} ({{ rusclass.year }}){% endblock %}
+
+{% block content %}
+<h1>{{ rusclass.internal_name }} ({{ rusclass.year }})</h1>
+
+<p>Tutorer:
+{% for tutor in rusclass.tutor_set.all %}
+{{ tutor.profile|profile_link }},
+{% endfor %}
+</p>
+
+<p>Russer:
+{% for rus in rusclass.rus_set.all %}
+{{ rus.profile|profile_link }},
+{% endfor %}
+
+{% endblock %}
