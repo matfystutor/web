@@ -10,6 +10,12 @@ body {
     font-weight: bold;
     background-color: black;
 }
+h1 {
+    font-family: "Comic Sans", "Comic Sans MS";
+}
+#note p {
+    margin: 0;
+}
 .column {
     float: left;
     width: 16%;
@@ -30,16 +36,40 @@ body {
     background-color: rgb(244, 80, 0);
 }
 </style>
+<script>
+function set_height() {
+    var note = document.getElementById('note');
+    var noteHeight = note.clientHeight;
+    var noteTop = note.offsetTop;
+    if (note.offsetParent == note.parentNode.offsetParent) {
+        noteTop -= note.parentNode.offsetTop;
+    }
+    var availableHeight = 220 - noteTop - 16;
+    var scale = availableHeight/noteHeight;
+    console.log({note: note, parentHeight: note.parentNode.clientHeight,
+        noteHeight: noteHeight, noteTop: noteTop,
+        availableHeight: availableHeight, scale: scale});
+    note.style.fontSize = parseFloat(note.style.fontSize) * scale + 'px';
+}
+</script>
 </head>
-<body>
-<div style="float: left">
-<h1>{{ BURET }}</h1>
+<body onload="set_height()">
+<div style="float: right; text-align: right; height: 0">
+    <div style="font-size: 12px; float: right; width: 200px">www.matfystutor.dk/burtavle</div>
+    <div style="font-size: 60px; float: right; height: 0">
+        <div>
+        {% now "H:i" %}
+        </div>
+    </div>
+    <div style="clear: right; float: right">
+    <img src="http://cs.au.dk/~tutor/2012/burtavle/{{ note.color }}-chicken-black.jpg" />
+    </div>
+</div>
+<div style="min-height: 220px">
+<h1 style="margin-top:0">{{ BURET }}</h1>
+<div id="note" style="font-size: 16px">
 {{ note.note|linebreaks }}
 </div>
-<div style="float: right; text-align: right">
-    <div style="font-size: 12px">www.matfystutor.dk/burtavle</div>
-    <div style="font-size: 12px">{% now "H:i:s" %}</div>
-    <img src="http://cs.au.dk/~tutor/2012/burtavle/{{ note.color }}-chicken-black.jpg">
 </div>
 <div style="clear: both">
 {% for study in state_by_study %}
