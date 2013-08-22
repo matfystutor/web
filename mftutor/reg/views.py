@@ -1047,6 +1047,10 @@ class LightboxView(TemplateView):
 
 burtavle = LightboxView.as_view()
 
+class BurtavleFramesetView(TemplateView):
+    template_name = 'reg/burtavle_frameset.html'
+
+burtavle_frameset = BurtavleFramesetView.as_view()
 
 class LightboxAdminViewResponse(Exception):
     def __init__(self, o):

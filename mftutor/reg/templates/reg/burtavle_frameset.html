@@ -1,0 +1,14 @@
+<html>
+<head>
+<title>Burtavle</title>
+<script type="text/javascript">
+function refresh() {
+	window.frames[0].location.reload();
+}
+setInterval(refresh, 20000);
+</script>
+</head>
+<frameset>
+<frame src="{% url burtavle %}"></frame>
+</frameset>
+</html>
