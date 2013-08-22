@@ -1,6 +1,6 @@
 {% extends "rus/base.html" %}
 {% block title %}{% if rusclass %}{{ rusclass }} - {% endif %}Holdlister{% endblock %}
-{% block bodyclass %}{% if rusclass %}wide{% elif rusclass_list %}wide{% endif %}{% endblock %}
+{% block bodyclass %}{% if rusclass_list %}{% if show_details %}fullwidth{% endif %}{% endif %}{% endblock %}
 {% block head %}
 <style>
 .rusclass_list li {
