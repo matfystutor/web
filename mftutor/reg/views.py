@@ -247,7 +247,9 @@ class EditSessionView(UpdateView):
 
                         if il.studentnumber in profiles:
                             tp = profiles[il.studentnumber]
-                            # TODO: check if name is correct; otherwise log the change
+                            existing_rus = Rus.objects.filter(profile=tp, year=year)
+                            if existing_rus.exists():
+                                raise RusError(u"Studienummer %s findes allerede i ruslisterne" % il.studentnumber)
                         else:
                             first_name, last_name = il.name.split(' ', 1)
                             u = User.objects.create(username=il.studentnumber, first_name=first_name, last_name=last_name)
