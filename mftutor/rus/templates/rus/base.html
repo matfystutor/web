@@ -27,7 +27,9 @@
 <li class="trigger">
 <a href="{% url rus_holdlister %}">Holdlister</a>
 <ul class="subnav">
+{% if rus %}
   <li><a href="{% url rus_profil %}">Mine oplysninger</a></li>
+{% endif %}
 </ul>
 </li>
 {% endblock %}

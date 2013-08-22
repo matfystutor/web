@@ -2,7 +2,7 @@
 from django.contrib.auth.forms import AuthenticationForm
 from ..settings import BODY_CLASS
 from .models import TutorProfile
-from .auth import user_tutor_data, NotTutor
+from .auth import user_tutor_data, user_rus_data, NotTutor
 
 def login_form(request):
     return {
@@ -13,9 +13,18 @@ def login_form(request):
 def tutor_data(request):
     try:
         d = user_tutor_data(request.user)
+        return {'tutor': d.tutor, 'profile': d.profile}
     except NotTutor:
-        return {}
-    return {'tutor': d.tutor, 'profile': d.profile}
+        pass
+
+    try:
+        d = user_rus_data(request.user)
+        return {'rus': d.rus, 'profile': d.profile}
+    except NotTutor:
+        pass
+
+    return {}
+
 
 def settings(request):
     return {
