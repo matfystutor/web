@@ -78,8 +78,7 @@ class RusClassView(TemplateView):
         from django.db.models import Count
         return (RusClass.objects
                 .filter(year=YEAR)
-                .annotate(num_russes=Count('rus'))
-                .exclude(num_russes=0))
+                .annotate(num_russes=Count('rus'), num_tutors=Count('tutor')))
 
     def get_context_data(self, **kwargs):
         context_data = super(RusClassView, self).get_context_data(**kwargs)
