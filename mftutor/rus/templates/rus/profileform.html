@@ -9,6 +9,10 @@
 skal du kontakte <a href="mailto:webfar@matfystutor.dk">
 webfar@matfystutor.dk</a>.</p>
 
+{% if error %}
+<p class="error_message">{{ error }}</p>
+{% endif %}
+
 {% if saved %}
 <p class="success_message">Ændringerne er gemt!</p>
 {% endif %}

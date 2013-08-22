@@ -158,6 +158,14 @@ class ProfileView(FormView):
     form_class = ProfileForm
     template_name = 'rus/profileform.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        self.request = request
+        try:
+            d = user_rus_data(self.request.user)
+        except NotTutor:
+            return self.render_to_response(self.get_context_data(error=u'Du er ikke rus!', form=ProfileForm()))
+        return super(ProfileView, self).dispatch(request, *args, **kwargs)
+
     def get_initial(self):
         d = user_rus_data(self.request.user)
         profile = d.rus.profile
