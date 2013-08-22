@@ -1,3 +1,4 @@
+# vim:fileencoding=utf-8:
 from django import forms
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
@@ -105,6 +106,8 @@ class RusClassDetailView(RusClassView):
         return self.render_to_response(self.get_context_data(is_logged_in=is_logged_in))
 
     def get_rusclass(self, handle):
+        if handle == u'tk1':
+            return RusClass(year=YEAR, handle=handle, internal_name=u'Teknokemi 1', official_name=u'TÅ1')
         return get_object_or_404(RusClass, year=YEAR, handle=handle)
 
     def get_rus_list(self):
@@ -117,7 +120,19 @@ class RusClassDetailView(RusClassView):
         is_logged_in = kwargs.pop('is_logged_in')
         context_data = super(RusClassDetailView, self).get_context_data(**kwargs)
         context_data['rusclass'] = self.rusclass
-        if is_logged_in:
+        if self.rusclass.handle == u'tk1':
+            j = 'Jeppe'
+            hj = 'Henrijeppe'
+            context_data['rus_names'] = (j, j, hj, j, hj, j, j, hj, hj, j, hj,
+                    hj, hj, 'JepPer', j, hj, j, j, j, j, j, hj, j, j, hj)
+            context_data['tutor_names'] = (
+                    u'Jakob Schultz-Nielsen',
+                    u'Kenneth S. Bøgh',
+                    u'Mads Baggesen',
+                    u'Morten N. Pløger',
+                    )
+            context_data['show_details'] = False
+        elif is_logged_in:
             context_data['rus_list'] = self.get_rus_list()
             context_data['tutor_list'] = self.get_tutor_list()
             context_data['show_details'] = True
