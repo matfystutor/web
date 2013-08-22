@@ -19,7 +19,7 @@ from django.contrib.auth.models import User
 from .. import settings
 from ..settings import YEAR
 from ..tutor.models import RusClass, TutorProfile, Rus
-from ..tutor.auth import user_tutor_data, tutor_required_error, NotTutor, rusclass_required_error
+from ..tutor.auth import user_tutor_data, tutor_required_error, NotTutor, rusclass_required_error, tutorbest_required_error
 
 from .models import ImportSession, ImportLine, Note, ChangeLogEntry, Handout, HandoutRusResponse, HandoutClassResponse
 from .models import LightboxRusClassState, LightboxNote
