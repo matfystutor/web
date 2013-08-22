@@ -85,6 +85,9 @@ class ImportLine(models.Model):
         if errors:
             raise ValidationError(errors)
 
+    class Meta:
+        ordering = ['position']
+
 class Note(models.Model):
     subject_kind = models.CharField(max_length=10, choices=[(a,a) for a in ('rus', 'rusclass', 'tutor')])
     subject_pk = models.IntegerField()
