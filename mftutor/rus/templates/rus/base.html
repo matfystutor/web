@@ -1,4 +1,9 @@
 {% extends "base.html" %}
+{% block header %}
+<div id="rusheader" style="position: relative"><a href="/"><img src="{{ STATIC_URL }}tutor2013-header.jpg" /></a>
+<img src="{{ STATIC_URL }}dmlogo-ilove-hvid.png" style="position: absolute; left: 2px; bottom: -3px; width: 110px; height: 83px;" />
+</div>
+{% endblock %}
 {% block menu %}
 <li class="trigger">
 <a href="{% url rus_start %}">Start</a>
