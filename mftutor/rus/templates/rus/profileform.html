@@ -1,0 +1,36 @@
+{% extends "rus/base.html" %}
+{% block title %}Profil{% endblock %}
+
+{% block content %}
+
+<h1>Profil</h1>
+
+<p>Hvis du vil rette dit navn eller årskortnummer,
+skal du kontakte <a href="mailto:webfar@matfystutor.dk">
+webfar@matfystutor.dk</a>.</p>
+
+{% if saved %}
+<p class="success_message">Ændringerne er gemt!</p>
+{% endif %}
+
+<form method="post" class="twocol">{% csrf_token %}
+{{ form.non_field_errors }}
+<div class="label"><label>Navn</label>:</div>
+<div class="field">{{ profile.name }}</div>
+<div class="label"><label>Årskortnummer</label>:</div>
+<div class="field">{{ profile.studentnumber }}</div>
+<div class="label">{{ form.street.label_tag }}:</div>
+<div class="field">{{ form.street }}</div>
+{{ form.street.errors }}
+<div class="label">{{ form.city.label_tag }}:</div>
+<div class="field">{{ form.city }}</div>
+{{ form.city.errors }}
+<div class="label">{{ form.email.label_tag }}:</div>
+<div class="field">{{ form.email }}</div>
+{{ form.email.errors }}
+<div class="label">{{ form.phone.label_tag }}:</div>
+<div class="field">{{ form.phone }}</div>
+{{ form.phone.errors }}
+<div class="field"><input type="submit" value="Gem oplysninger" /></div>
+</form>
+{% endblock %}

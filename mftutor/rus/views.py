@@ -1,7 +1,8 @@
 # vim:fileencoding=utf-8:
 from django import forms
+from django.db import transaction
 from django.shortcuts import get_object_or_404
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, FormView
 from django.views.generic.base import TemplateResponseMixin
 from ..news.views import BaseNewsView
 from ..settings import YEAR
@@ -144,3 +145,40 @@ class RusClassDetailView(RusClassView):
 
 class RusClassDetailsPrintView(RusClassDetailView):
     template_name = 'rus/rusclass.tex'
+
+
+class ProfileForm(forms.Form):
+    street = forms.CharField(label='Adresse', required=False)
+    city = forms.CharField(label='Postnr. og by', required=False)
+    email = forms.EmailField(label='Email', required=False)
+    phone = forms.CharField(label='Telefon', required=False)
+
+
+class ProfileView(FormView):
+    form_class = ProfileForm
+    template_name = 'rus/profileform.html'
+
+    def get_initial(self):
+        d = user_rus_data(self.request.user)
+        profile = d.rus.profile
+
+        return {
+            'street': profile.street,
+            'city': profile.city,
+            'email': profile.email,
+            'phone': profile.phone,
+        }
+
+    def form_valid(self, form):
+        d = user_rus_data(self.request.user)
+        profile = d.rus.profile
+        data = form.cleaned_data
+        with transaction.commit_on_success():
+            profile.street = data['street']
+            profile.city = data['city']
+            profile.email = data['email']
+            profile.phone = data['phone']
+            profile.user.email = profile.email
+            profile.save()
+            profile.user.save()
+        return self.render_to_response(self.get_context_data(form=form, saved=True))
