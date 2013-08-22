@@ -126,3 +126,7 @@ class RusClassDetailView(RusClassView):
             context_data['tutor_names'] = [tutor.profile.name for tutor in self.get_tutor_list()]
             context_data['show_details'] = False
         return context_data
+
+
+class RusClassDetailsPrintView(RusClassDetailView):
+    template_name = 'rus/rusclass.tex'
