@@ -21,7 +21,7 @@
 <p>Besvarelser: {{ class_response_count }}/{{ class_total_count }}</p>
 
 <table class="response_table" cellspacing="0">
-<col width="0" />
+<col width="80" />
 <col width="*" />
 <tr>
 <th>Hold</th>
@@ -29,7 +29,7 @@
 </tr>
 {% for rusclass in classes %}
 <tr>
-<td><a href="{% url handout_response handout=handout.pk rusclass=rusclass.handle %}">{{ rusclass }}</a></td>
+<td style="text-align: center"><a href="{% url handout_response handout=handout.pk rusclass=rusclass.handle %}">{{ rusclass }}</a></td>
 <td>{{ rusclass.response.note }}</td>
 </tr>
 {% endfor %}
