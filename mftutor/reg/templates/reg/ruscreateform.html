@@ -44,7 +44,7 @@ og indtaste russen på ny.)
     {% for rusclass in rusclass_list %}
     <div>
     <label><input type="radio" name="rusclass" value="{{ rusclass.pk }}">
-        {{ rusclass }} ({{ rusclass.rus_count }})</label>
+	    {{ rusclass }} ({{ rusclass.arrived_rus_count }}/{{ rusclass.rus_count }})</label>
     {% if rusclass.notes %}
     <ul class="notelist">
         {% for note in rusclass.notes %}

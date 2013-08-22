@@ -363,6 +363,7 @@ class RusCreateView(FormView):
         rusclass_list = RusClass.objects.filter(year=YEAR)
         for rusclass in rusclass_list:
             rusclass.notes = Note.objects.filter(subject_kind='rusclass', subject_pk=rusclass.pk)
+            rusclass.arrived_rus_count = Rus.objects.filter(rusclass=rusclass, arrived=True).count()
             rusclass.rus_count = Rus.objects.filter(rusclass=rusclass).count()
         return rusclass_list
 
