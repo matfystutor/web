@@ -760,7 +760,7 @@ class HandoutResponseView(FormView):
 
         rus_list = (
                 self.rusclass.get_russes()
-                .order_by('profile__studentnumber')
+                .order_by('profile__name')
                 .select_related('profile', 'profile__user'))
         rus_responses = (
                 HandoutRusResponse.objects.filter(handout=self.handout, rus__in=rus_list)
