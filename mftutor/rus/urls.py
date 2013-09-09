@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, url
 from django.views.generic import TemplateView
-from .views import RusNewsView, RusStartView, RusClassView, RusClassDetailView, RusClassDetailsPrintView, ProfileView
+from django.contrib.auth.decorators import login_required
+from .views import RusNewsView, RusStartView, RusClassView, RusClassDetailView, RusClassDetailsPrintView, ProfileView, RusPasswordChangeView
 
 static_pages = [url('^'+x+'/', TemplateView.as_view(template_name='rus/'+x+'.html'), name='rus_'+x) for x in (
         'kontakt',
@@ -17,4 +18,5 @@ urlpatterns = patterns('',
     url(r'^holdlister/$', RusClassView.as_view(), name='rus_holdlister'),
     url(r'^holdlister/(?P<handle>[a-z0-9]+)/$', RusClassDetailView.as_view(), name='rus_holdlister'),
     url(r'^holdlister/(?P<handle>[a-z0-9]+)\.tex$', RusClassDetailsPrintView.as_view(), name='rus_holdlister_print'),
+    url(r'^kodeord/$', login_required(RusPasswordChangeView.as_view()), name='rus_password_change'),
     *static_pages)

@@ -11,6 +11,9 @@
   <li><a href="{% url rus_kontakt %}">Kontakt</a></li>
   <li><a href="{% url rus_nyheder %}">Nyheder</a></li>
   <li><a href="{% url rus_rse %}">Dansk som andetsprog</a></li>
+  {% if rus %}
+  <li><a href="{% url rus_password_change %}">Skift kodeord</a></li>
+  {% endif %}
 </ul>
 </li>
 <li class="trigger">

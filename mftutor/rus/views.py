@@ -4,6 +4,7 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView, FormView
 from django.views.generic.base import TemplateResponseMixin
+from django.contrib.auth.forms import PasswordChangeForm
 from ..news.views import BaseNewsView
 from ..settings import YEAR
 from ..tutor.auth import user_tutor_data, user_rus_data, NotTutor
@@ -190,3 +191,24 @@ class ProfileView(FormView):
             profile.save()
             profile.user.save()
         return self.render_to_response(self.get_context_data(form=form, saved=True))
+
+
+class RusPasswordChangeView(FormView):
+    form_class = PasswordChangeForm
+    template_name = 'rus/password_change_form.html'
+
+    def form_invalid(self, form):
+        return super(RusPasswordChangeView, self).form_invalid(form)
+
+    def form_valid(self, form):
+        form.save()
+        return self.render_to_response(self.get_context_data(success=True))
+
+    def get_context_data(self, **kwargs):
+        context_data = super(RusPasswordChangeView, self).get_context_data(**kwargs)
+        return context_data
+
+    def get_form_kwargs(self):
+        kwargs = super(RusPasswordChangeView, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
