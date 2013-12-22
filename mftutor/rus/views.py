@@ -6,7 +6,7 @@ from django.views.generic import TemplateView, FormView
 from django.views.generic.base import TemplateResponseMixin
 from django.contrib.auth.forms import PasswordChangeForm
 from ..news.views import BaseNewsView
-from ..settings import YEAR
+from ..settings import YEAR, RUSMAIL_YEAR
 from ..tutor.auth import user_tutor_data, user_rus_data, NotTutor
 from ..tutor.models import Tutor, Rus, RusClass
 
@@ -79,7 +79,7 @@ class RusClassView(TemplateView):
     def get_rusclass_list(self):
         from django.db.models import Count
         return (RusClass.objects
-                .filter(year=YEAR)
+                .filter(year=RUSMAIL_YEAR)
                 .annotate(num_russes=Count('rus'), num_tutors=Count('tutor')))
 
     def get_context_data(self, **kwargs):
@@ -108,8 +108,8 @@ class RusClassDetailView(RusClassView):
 
     def get_rusclass(self, handle):
         if handle == u'tk1':
-            return RusClass(year=YEAR, handle=handle, internal_name=u'Teknokemi 1', official_name=u'TÅ1')
-        return get_object_or_404(RusClass, year=YEAR, handle=handle)
+            return RusClass(year=RUSMAIL_YEAR, handle=handle, internal_name=u'Teknokemi 1', official_name=u'TÅ1')
+        return get_object_or_404(RusClass, year=RUSMAIL_YEAR, handle=handle)
 
     def get_rus_list(self):
         return self.rusclass.get_russes().order_by('profile__name')
