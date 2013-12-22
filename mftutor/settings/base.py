@@ -237,4 +237,4 @@ DEFAULT_ASB_EMAIL_DOMAIN = 'stud.asb.dk'
 PERSONAL_EMAIL_SENDER = 'Mat/Fys-Tutorgruppen <webfar@matfystutor.dk>'
 
 # Email aliases that change with the GF in November
-GF_GROUPS = ('best', 'koor', 'sponsor')
+GF_GROUPS = ('best', 'koor', 'sponsor', 'webfar', 'oekonomi', 'gris')
