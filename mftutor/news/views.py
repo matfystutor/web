@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 from django.views.generic.base import TemplateResponseMixin
 from django.views.generic import CreateView, UpdateView, DeleteView, TemplateView, View
 from django.utils.decorators import method_decorator
@@ -66,7 +66,7 @@ class NewsCreateView(CreateView):
         initial = super(NewsCreateView, self).get_initial()
         initial = initial.copy()
         initial['author'] = self.request.user
-        initial['posted'] = datetime.now()
+        initial['posted'] = datetime.datetime.now()
         initial['group_handle'] = u'alle'
         return initial
 
