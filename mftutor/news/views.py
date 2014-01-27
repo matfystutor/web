@@ -36,6 +36,8 @@ class BaseNewsView(View):
                     posted__month=month)
         elif year:
             news_list = news_list.filter(posted__year=year)
+        else:
+            news_list = news_list.filter(posted__gte=datetime.date(YEAR, 1, 1))
 
         params = {
                 'news_list': news_list,
