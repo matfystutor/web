@@ -6,19 +6,12 @@ føle dig stolt. Buret™ er en særligt sej gruppe.
 {% if groups %}
 Udover buret er du også kommet i {{ groups }}
 {% endif %}
-Der er blevet oprettet en konto til dig inde på tutorhjemmesiden
-matfystutor.dk. For at aktivere denne konto, skal du gå ind på dette link:
-{{ activation }}
+Der er blevet oprettet en konto til dig inde på tutorhjemmesiden matfystutor.dk.
+{% if password %}Dit kodeord er {{ password }} -- men dette kan du ændre på hjemmesiden.{% else %}Dit kodeord er det samme, som du tidligere har brugt til tutor-/rushjemmesiden.{% endif %}</span><br></div>
 
 På siden skal du under "Personligt" --> "Profil" udfylde de manglende
 oplysningerne om dig selv. Derudover skal du også under "Personligt" -->
-"Upload Billede" uploade et vellignende billede, som ikke må kunne fornøje mig.
+"Upload Billede" uploade et vellignende billede.
 
-Frugtige hilsner,
-Lauge Burløs
-
-PS: Buret™ har mistet sit bur, så hvis man falder over sådan ét til
-rimelige penge, vil Økomor godt betale for det.
-PPS: du ligner en frugt.
-PPPS: hvis man finder et bur, må det gerne være et guldbur, som vi kan
-fylde med bulgur.
+Hilsen {{ burfar.name }}
+Buransvarlig i Mat/Fys-Tutorgruppen

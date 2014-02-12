@@ -1,6 +1,6 @@
 Kære {{ navn }},
 
-Årets tutorer for 2013 er nu udtaget, men vi må beklageligvis meddele,
+Årets tutorer for {{ year }} er nu udtaget, men vi må beklageligvis meddele,
 at du ikke er blandt dem.
 
 Vi har i Mat/Fys-Tutorgruppen i år brug for ca. 140 hårdtarbejdende
