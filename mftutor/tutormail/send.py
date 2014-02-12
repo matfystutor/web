@@ -1,13 +1,23 @@
 # vim: set fileencoding=utf-8:
 from .models import Email
+from ..tutor.models import TutorProfile, Tutor, TutorGroupLeader
+from ..settings import YEAR
+
+# -----------------------------------------------------------------------------
+# Sending Email objects from the database
 
 def get_queryset():
+    """Get the emails that are yet to be sent."""
     return Email.objects.filter(sent__exact=None, retain=False, archive=False).order_by('-kind')
 
 def get_one():
+    """Get the next email to send."""
     return get_queryset().all()[0]
 
 def make_email_message(mailobj):
+    """Takes a models.Email object and turns it into a Django EmailMessage
+    object for sending."""
+
     from django.core.mail import EmailMessage, EmailMultiAlternatives
     import re
 
@@ -30,6 +40,9 @@ def make_email_message(mailobj):
 
     return msg
 
+# -----------------------------------------------------------------------------
+# Send Django EmailMessage objects.
+
 email_backend_type = 'django.core.mail.backends.smtp.EmailBackend'
 
 def send_messages(messages, backend_type):
@@ -46,6 +59,12 @@ def send_one():
     o.sent = datetime.now()
     o.save()
 
+def send_all(emails):
+    from datetime import datetime
+    send_messages([make_email_message(o) for o in emails], email_backend_type)
+    emails.update(sent=datetime.now())
+    print(u'\n'.join(emails.all()))
+
 def delayed_send_all():
     import time
     from datetime import datetime
@@ -57,9 +76,20 @@ def delayed_send_all():
         email.save()
         time.sleep(20)
 
-def make_mails():
-    from tutor.models import Tutor, TutorGroupLeader
-    from mftutor.settings import YEAR
+# -----------------------------------------------------------------------------
+# Create Email objects in the database based on Tutor objects.
+
+def data_of_studentnumbers(studentnumbers):
+    return [{'navn': profile.name, 'email': profile.email}
+            for profile in TutorProfile.objects.filter(
+                studentnumber__in=studentnumbers).all()]
+
+def make_mails(not_tutor, joker_numbers, no_mail, passwords):
+    """
+    not_tutor: list of {navn, email}-dicts (made from data_of_studentnumbers)
+    joker_numbers: student numbers of the joker group
+    no_mail: student numbers of people not to send mail to
+    """
 
     # template params:
     # navn
@@ -78,25 +108,21 @@ def make_mails():
     # buret
     # ansvarlig
     # afvist
-    # joker - 20117268 (Diana) og 20117043 (Katrin Debes)
-    joker_numbers = ('20117268', '20117043')
 
-    # no mail to Camilla 20103508 or Eske 20103494
-    no_mail = ['20103508', '20103494']
+    hide_groups = ('alle', 'best', 'gris', 'webfar', 'koor', 'gruppeansvarlige', 'buret')
 
-    hide_groups = ('alle', 'best', 'buret', 'sponsor')
-
-    all_tutors = Tutor.objects.filter(year=YEAR).exclude(profile__studentnumber__in=no_mail)
+    all_tutors = Tutor.objects.filter(groups__handle='alle', year=YEAR).exclude(profile__studentnumber__in=no_mail)
     buret = all_tutors.filter(groups__handle='buret').all()
     tutors = all_tutors.exclude(groups__handle='buret').exclude(profile__studentnumber__in=joker_numbers).all()
     group_leaders = list(TutorGroupLeader.objects.filter(year=YEAR).exclude(group__handle__in=hide_groups).all())
     jokers = all_tutors.filter(profile__studentnumber__in=joker_numbers).all()
 
-    from activation.models import ProfileActivation
-    not_tutor = ([{'navn': act.profile.get_full_name(), 'email': act.email} for act in ProfileActivation.objects.filter(profile__studentnumber__in=
-    (20070001, 20080002,)).all()]
-    + [{'navn': u'foo bar', 'email': u'foobar@example.org'},
-       {'navn': u'Gordon Freeman', 'email': u'barbaz@example.com'}])
+    webfar = Tutor.objects.filter(year=YEAR, groups__handle='webfar').get().profile
+    burfar = TutorGroupLeader.objects.filter(group__handle='buret', year=YEAR).get().tutor.profile
+
+    webfar_sender = '"%s" <webfar@matfystutor.dk>' % webfar.name
+    burfar_sender = '"%s" <best@matfystutor.dk>' % burfar.name
+    best_sender = '"Mat/Fys-Tutorgruppen" <best@matfystutor.dk>'
 
     from django.template import Template, Context
     from django.template.loader import get_template
@@ -111,32 +137,25 @@ def make_mails():
     tpl_afvist = get_template('emails/afvist.txt')
     tpl_afvist_subject = Template('Fra tutorgruppen')
 
-    def act_link(tutor):
-        try:
-            act = ProfileActivation.objects.get(profile__tutor=tutor)
-        except ProfileActivation.DoesNotExist:
-            return '(din bruger er allerede aktiveret)'
-        return 'http://www.matfystutor.dk' + act.get_activation_path()
-
     def email(tutor):
-        if tutor.profile.user:
-            return tutor.profile.user.email
-        act = ProfileActivation.objects.get(profile__tutor=tutor)
-        return act.email
+        return tutor.profile.email
 
     def group_queryset(tutor):
         return tutor.groups.filter(visible=True).exclude(handle__in=hide_groups)
 
+    print("Buret: %s\nHoldtutor: %s\nJoker: %s\nAnsvarlig: %s\nAfvist: %s" % (len(buret), len(tutors), len(jokers), len(group_leaders), len(not_tutor)))
     for t in buret:
         groups = u', '.join([g.name for g in group_queryset(t).all()])
         profile = t.profile
         c = Context({
-            'navn': profile.get_full_name(),
-            'activation': act_link(t),
+            'webfar': webfar,
+            'year': YEAR,
+            'navn': profile.name,
             'groups': groups,
+            'password': passwords.get(profile.studentnumber),
         })
         e = Email(
-            sender='Lauge Hoyer <best@matfystutor.dk>',
+            sender=burfar_sender,
             recipient=email(t),
             subject=tpl_buret_subject.render(c),
             body=tpl_buret.render(c),
@@ -149,19 +168,21 @@ def make_mails():
         profile = t.profile
         groups = list(group_queryset(t).all())
         if len(groups) != 2:
-            print profile.get_full_name()+u' does not have two groups, but '+unicode(len(groups))
-            print t
-            print groups
+            print(u"Failed to create email for %s: tutor does not have two groups, but %s\n%s\n%s"
+                    % (profile.name, unicode(len(groups)), t, groups))
+            continue
         group1 = groups[0].name
         group2 = groups[1].name
         c = Context({
-            'navn': profile.get_full_name(),
-            'activation': act_link(t),
+            'webfar': webfar,
+            'year': YEAR,
+            'navn': profile.name,
             'group1': group1,
             'group2': group2,
+            'password': passwords.get(profile.studentnumber),
         })
         e = Email(
-            sender='Mathias Rav <webfar@matfystutor.dk>',
+            sender=webfar_sender,
             recipient=email(t),
             subject=tpl_holdtutor_subject.render(c),
             body=tpl_holdtutor.render(c),
@@ -172,19 +193,23 @@ def make_mails():
 
     for t in jokers:
         groups = list(group_queryset(t).all())
-        if len(groups) != 2:
-            print profile.get_full_name()+u' does not have two groups, but '+unicode(len(groups))
+        if len(groups) != 3:
+            print profile.name+u' does not have three groups, but '+unicode(len(groups))
         group1 = groups[0].name
         group2 = groups[1].name
+        group3 = groups[2].name
         profile = t.profile
         c = Context({
-            'navn': profile.get_full_name(),
-            'activation': act_link(t),
+            'webfar': webfar,
+            'year': YEAR,
+            'navn': profile.name,
             'group1': group1,
             'group2': group2,
+            'group3': group3,
+            'password': passwords.get(profile.studentnumber),
         })
         e = Email(
-            sender='Mathias Rav <webfar@matfystutor.dk>',
+            sender=webfar_sender,
             recipient=email(t),
             subject=tpl_joker_subject.render(c),
             body=tpl_joker.render(c),
@@ -197,11 +222,13 @@ def make_mails():
         t = gl.tutor
         profile = t.profile
         c = Context({
-            'navn': profile.get_full_name(),
+            'webfar': webfar,
+            'year': YEAR,
+            'navn': profile.name,
             'group': gl.group.name,
         })
         e = Email(
-            sender='Mathias Rav <webfar@matfystutor.dk>',
+            sender=webfar_sender,
             recipient=email(t),
             subject=tpl_ansvarlig_subject.render(c),
             body=tpl_ansvarlig.render(c),
@@ -211,9 +238,9 @@ def make_mails():
         e.save()
 
     for t in not_tutor:
-        c = Context(t)
+        c = Context(dict(year=YEAR, **t))
         e = Email(
-            sender='"Mat/Fys-Tutorgruppen" <best@matfystutor.dk>',
+            sender=best_sender,
             recipient=t['email'],
             subject=tpl_afvist_subject.render(c),
             body=tpl_afvist.render(c),
