@@ -8,14 +8,24 @@ In Vim, you may wish to add the following to your .vimrc:
     autocmd FileType python set shiftwidth=4 softtabstop=4 expandtab
     filetype indent plugin on
 
+Clone the repository:
+
+    git clone git@github.com:matfystutor/web.git tutorweb
+
 You should run the Django project in a virtualenv. For a local non-root virtualenv installation:
 
-    mkdir web-venv; cd web-venv
-    wget https://raw.github.com/pypa/virtualenv/master/virtualenv.py
-    python2 virtualenv.py .
+    mkdir web-venv; cd web-venv/
+    virtualenv .
     source bin/activate
-    cd ../tutorweb
+    cd ../tutorweb/
     pip install -r requirements.txt
 
 You need to create a mftutor/settings/local.py based on local.py.example in the
 mftutor/settings folder.
+
+    cp mftutor/settings/local.py.example mftutor/settings/local.py
+
+You can now create the tables and run the server.
+
+    python manage.py syncdb
+    python manage.py runserver
