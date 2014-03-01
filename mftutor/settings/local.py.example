@@ -32,11 +32,11 @@ DATABASES['default'] = {
 SECRET_KEY = '...'
 
 # Change after general assembly when new board has been elected in November
-YEAR = 2013
+YEAR = 2014
 
-# Change after 1. stormøde when new groups have been formed in February
+# Change after 1. stormoede when new groups have been formed in February
 # Emails sent to tutor groups (other than 'best') use this year to look up
-TUTORMAIL_YEAR = 2013
+TUTORMAIL_YEAR = 2014
 
 # Change in summer when new rusclasses are formed
 # Emails sent to rusclasses (and rusclass tutors) use this year to look up
