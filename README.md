@@ -10,7 +10,7 @@ In Vim, you may wish to add the following to your .vimrc:
 
 Clone the repository:
 
-    git clone git@github.com:matfystutor/web.git tutorweb
+    git clone https://github.com/matfystutor/web.git tutorweb
 
 You should run the Django project in a virtualenv. For a local non-root virtualenv installation:
 
