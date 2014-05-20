@@ -11,8 +11,8 @@ class OwnConfirmationForm(forms.ModelForm):
             label='I hvor mange år har du været holdtutor før i år?')
     priorities = forms.CharField(widget=full_width_text_field, required=True,
             label='Prioriteret liste af studieretninger, du ønsker at være holdtutor for')
-    firstaid = forms.CharField(widget=forms.RadioSelect(choices=(('ja', 'Ja'), ('nej', 'Nej'))), required=True,
-            label='Har du haft førstehjælpskursus inden for de sidste to år?')
+    firstaid = forms.CharField(widget=forms.Textarea, required=True,
+            label='Har du førstehjælpsbevis, hvis ja hvilket og hvor gammelt er det')
     resits = forms.CharField(widget=forms.Textarea, required=False,
             label='Har du reeksamener i rusugen? Hvis ja, hvilke og hvornår?')
     rusfriends = forms.CharField(widget=forms.Textarea, required=False,
