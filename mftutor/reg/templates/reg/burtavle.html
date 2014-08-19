@@ -16,6 +16,13 @@ h1 {
 #note p {
     margin: 0;
 }
+#picture > img{
+    height: 200px;
+}
+#clock{
+    position: absolute;
+    right: 200px;
+}
 .column {
     float: left;
     width: 16%;
@@ -57,12 +64,12 @@ function set_height() {
 <div style="float: right; text-align: right; height: 0">
     <div style="font-size: 12px; float: right; width: 200px">www.matfystutor.dk/burtavle</div>
     <div style="font-size: 60px; float: right; height: 0">
-        <div>
+        <div id='clock'>
         {% now "H:i" %}
         </div>
     </div>
-    <div style="clear: right; float: right">
-    <img src="http://cs.au.dk/~tutor/2012/burtavle/{{ note.color }}-chicken-black.jpg" />
+    <div style="clear: right; float: right; z-index:-1" id='picture'>
+        <img src="{{STATIC_URL}}bur/{{ note.color }}.png" />
     </div>
 </div>
 <div style="min-height: 220px">
