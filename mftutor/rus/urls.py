@@ -9,7 +9,6 @@ static_pages = [url('^'+x+'/', TemplateView.as_view(template_name='rus/'+x+'.htm
         'program',
         'kalender',
         'rusbrev',
-        'rusbog',
         'rse',
         )]
 urlpatterns = patterns('',
