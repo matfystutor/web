@@ -1015,33 +1015,39 @@ class RusInfoView(FormView):
 
 # =============================================================================
 
+def get_lightbox_state_by_study(year):
+    states = LightboxRusClassState.objects.get_for_year(year)
+
+    study_dict = {}
+    for state in states:
+        rusclass = state.rusclass
+        study = rusclass.get_study()
+        l = study_dict.setdefault(study, [])
+        l.append(state)
+
+    study_list = []
+    for study in sorted(study_dict.keys()):
+        l = study_dict[study]
+        o = {'study': study}
+        o['rusclasses'] = sorted(l, key=lambda state: state.rusclass.handle)
+        study_list.append(o)
+
+    return study_list
+
+def get_lightbox_state(year):
+    note = LightboxNote.objects.get_for_year(year)
+    by_study = get_lightbox_state_by_study(year)
+    return {'note': note, 'by_study': by_study}
+
 class LightboxView(TemplateView):
     template_name = 'reg/burtavle.html'
-
-    def get_state_by_study(self):
-        states = LightboxRusClassState.objects.get_for_year(YEAR)
-
-        study_dict = {}
-        for state in states:
-            rusclass = state.rusclass
-            study = rusclass.get_study()
-            l = study_dict.setdefault(study, [])
-            l.append(state)
-
-        study_list = []
-        for study in sorted(study_dict.keys()):
-            l = study_dict[study]
-            o = {'study': study}
-            o['rusclasses'] = sorted(l, key=lambda state: state.rusclass.handle)
-            study_list.append(o)
-
-        return study_list
 
     def get_context_data(self, **kwargs):
         context_data = super(LightboxView, self).get_context_data(**kwargs)
 
-        context_data['note'] = LightboxNote.objects.get_for_year(YEAR)
-        context_data['state_by_study'] = self.get_state_by_study()
+        d = get_lightbox_state(YEAR)
+        context_data['note'] = d['note']
+        context_data['state_by_study'] = d['by_study']
 
         return context_data
 
