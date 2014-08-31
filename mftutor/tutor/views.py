@@ -34,7 +34,7 @@ class UploadPictureView(UpdateView):
     template_name = 'uploadpicture.html'
     form_class = UploadPictureForm
     def get_object(self):
-        return self.request.user.get_profile()
+        return self.request.user.tutorprofile
     def get_success_url(self):
         return reverse('upload_picture_view')
 

@@ -21,7 +21,7 @@ def user_profile_data(user):
     if not user.is_active:
         raise NotTutor('djangoinactive')
     try:
-        d.profile = user.get_profile()
+        d.profile = user.tutorprofile
     except TutorProfile.DoesNotExist:
         raise NotTutor('notutorprofile')
     return d

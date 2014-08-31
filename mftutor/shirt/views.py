@@ -72,9 +72,9 @@ class ShirtPreferenceView(UpdateView):
 
     def get_object(self):
         try:
-            return ShirtPreference.objects.get(profile=self.request.user.get_profile())
+            return ShirtPreference.objects.get(profile=self.request.user.tutorprofile)
         except ShirtPreference.DoesNotExist:
-            sp = ShirtPreference(profile=self.request.user.get_profile())
+            sp = ShirtPreference(profile=self.request.user.tutorprofile)
             sp.save()
             return sp
 

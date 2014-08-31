@@ -41,7 +41,7 @@ class NewSessionView(ProcessFormView):
     """POST target used by ChooseSessionView to create a new ImportSession."""
 
     def post(self, request):
-        importsession = ImportSession(year=YEAR, author=request.user.get_profile())
+        importsession = ImportSession(year=YEAR, author=request.user.tutorprofile)
         importsession.save()
         return HttpResponseRedirect(reverse('import_session_edit', kwargs={'pk': importsession.pk}))
 
