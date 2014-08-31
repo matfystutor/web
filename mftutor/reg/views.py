@@ -48,6 +48,7 @@ class NewSessionView(ProcessFormView):
 class EditSessionForm(forms.ModelForm):
     class Meta:
         model = ImportSession
+        fields = ('year', 'name', 'regex', 'author')
 
     year = forms.CharField(required=False)
     author = forms.CharField(required=False)
