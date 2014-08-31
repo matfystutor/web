@@ -20,5 +20,8 @@ class ShirtOption(models.Model):
     class Meta:
         ordering = ('position',)
 
+    def __str__(self):
+        return self.choice
+
     def __unicode__(self):
         return self.choice

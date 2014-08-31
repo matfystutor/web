@@ -17,5 +17,12 @@ class Email(models.Model):
     class Meta:
         ordering = ['kind', 'recipient', 'pk']
 
+    def __str__(self):
+        return 'Email to "%s" kind "%s" subject "%s"' % (
+            self.recipient,
+            self.kind,
+            self.subject,
+        )
+
     def __unicode__(self):
         return u"Email to \"" + self.recipient + u"\" kind \"" + self.kind + u"\" subject \"" + self.subject + u"\""

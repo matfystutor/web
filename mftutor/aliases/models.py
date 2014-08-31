@@ -6,6 +6,9 @@ class Alias(models.Model):
     source = models.CharField(max_length=50)
     destination = models.CharField(max_length=50)
 
+    def __str__(self):
+        return "%s -> %s" % (self.source, self.destination)
+
     def __unicode__(self):
         return unicode(self.source)+' -> '+unicode(self.destination)
 

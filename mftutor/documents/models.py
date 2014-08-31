@@ -27,6 +27,10 @@ class Document(models.Model):
             verbose_name="Dokument")
     class Meta:
         ordering = ("-year","title")
+
+    def __str__(self):
+        return '[Document %s: %s]' % (self.type, self.title)
+
     def __unicode__(self):
         return '[Document '+self.type+': '+self.title+']'
 

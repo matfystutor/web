@@ -14,6 +14,9 @@ class NewsPost(models.Model):
     body = models.TextField(verbose_name='Indhold')
     group_handle = models.CharField(max_length=20)
 
+    def __str__(self):
+        return self.title
+
     def __unicode__(self):
         return self.title
 

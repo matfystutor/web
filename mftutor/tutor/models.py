@@ -38,6 +38,13 @@ class TutorProfile(models.Model):
             blank=True,
             )
 
+    def __str__(self):
+        return '%s %s %s' % (
+            self.studentnumber,
+            self.get_full_name(),
+            self.user.username if self.user else '(no user)',
+        )
+
     def __unicode__(self):
         if self.user:
             return unicode(self.studentnumber)+u' '+unicode(self.get_full_name())+u' '+unicode(self.user.username)
@@ -68,6 +75,9 @@ class TutorGroup(models.Model):
     name = models.CharField(max_length=40, verbose_name="Langt navn",
         help_text="Vises på hjemmesiden")
     visible = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.handle
 
     def __unicode__(self):
         return self.handle
@@ -113,6 +123,9 @@ class RusClass(models.Model):
 
     def get_russes(self):
         return Rus.objects.filter(rusclass=self)
+
+    def __str__(self):
+        return self.internal_name
 
     def __unicode__(self):
         return self.internal_name
@@ -183,6 +196,9 @@ class Tutor(models.Model):
                 or self.is_tutorbur()
                 or self.rusclass == rusclass)
 
+    def __str__(self):
+        return '%s (%s)' % (self.profile, self.year)
+
     def __unicode__(self):
         return unicode(self.profile)+' ('+unicode(self.year)+')'
 
@@ -214,6 +230,9 @@ class BoardMember(models.Model):
     tutor = models.ForeignKey(Tutor)
     position = models.IntegerField(verbose_name="Rækkefølge")
     title = models.CharField(max_length=50, verbose_name="Titel")
+
+    def __str__(self):
+        return "%s %s" % (self.title, self.tutor)
 
     def __unicode__(self):
         return unicode(self.title)+u' '+unicode(self.tutor)

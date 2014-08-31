@@ -26,5 +26,8 @@ class Confirmation(models.Model):
     class Meta:
         ordering = ('tutor',)
 
+    def __str__(self):
+        return '[TutorConfirmation %s]' % self.tutor
+
     def __unicode__(self):
         return u'[TutorConfirmation '+unicode(self.tutor)+u']'

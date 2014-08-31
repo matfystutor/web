@@ -143,6 +143,9 @@ class Handout(models.Model):
     created = models.DateTimeField(auto_now_add=True, verbose_name="Oprettet")
     updated = models.DateTimeField(auto_now=True, verbose_name="Sidst ændret")
 
+    def __str__(self):
+        return self.name
+
     def __unicode__(self):
         return self.name
 

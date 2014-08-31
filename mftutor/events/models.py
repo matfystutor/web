@@ -30,6 +30,9 @@ class Event(models.Model):
     def is_rsvp_possible(self):
         return not self.rsvp < datetime.now(self.rsvp.tzinfo)
 
+    def __str__(self):
+        return '[Event %s on %s]' % (self.title, self.start_date)
+
     def __unicode__(self):
         return '[Event '+self.title+' on '+str(self.start_date)+']'
 
@@ -47,6 +50,9 @@ class EventParticipant(models.Model):
         ('maybe', 'Har ikke taget stilling',),
         ))
     notes = models.TextField(blank=True)
+
+    def __unicode__(self):
+        return '[RSVP %s %s %s]' % (self.event_id, self.tutor_id, self.status)
 
     def __unicode__(self):
         return '[RSVP '+str(self.event_id)+' '+str(self.tutor_id)+' '+self.status+']'
