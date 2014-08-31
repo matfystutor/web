@@ -67,7 +67,7 @@ class TutorGroup(models.Model):
         help_text="Bruges i gruppens emailadresse")
     name = models.CharField(max_length=40, verbose_name="Langt navn",
         help_text="Vises på hjemmesiden")
-    visible = models.BooleanField()
+    visible = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.handle
@@ -233,7 +233,7 @@ class Rus(models.Model):
     year = models.IntegerField(verbose_name="Tutorår")
     rusclass = models.ForeignKey(RusClass, null=True)
 
-    arrived = models.BooleanField(verbose_name="Ankommet")
+    arrived = models.BooleanField(verbose_name="Ankommet", default=False)
     initial_rusclass = models.ForeignKey(RusClass, null=True, related_name='initial_rus_set')
 
     class Meta:
