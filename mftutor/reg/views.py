@@ -1,6 +1,5 @@
 # vim: set fileencoding=utf8:
 import re
-import exceptions
 import datetime
 import json
 import subprocess
@@ -217,7 +216,7 @@ class EditSessionView(UpdateView):
         context_data = self.get_context_data(form=form)
 
         if lines_saved and 'create' in self.request.POST:
-            class RusError(exceptions.Exception):
+            class RusError(Exception):
                 pass
 
             try:
