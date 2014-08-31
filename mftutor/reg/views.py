@@ -65,7 +65,7 @@ class EditSessionForm(forms.ModelForm):
         data = self.cleaned_data['regex']
         try:
             r = re.compile(data)
-        except re.error, v:
+        except re.error as v:
             raise forms.ValidationError(u"Fejl i regulært udtryk: "+unicode(v))
 
         return data
@@ -261,7 +261,7 @@ class EditSessionView(UpdateView):
                     importsession.save()
                     context_data['imported'] = importsession.imported
 
-            except RusError, e:
+            except RusError as e:
                 context_data['create_error'] = unicode(e)
 
         context_data['lines_saved'] = lines_saved
