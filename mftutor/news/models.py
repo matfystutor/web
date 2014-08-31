@@ -10,7 +10,7 @@ class NewsPost(models.Model):
     )
     author = models.ForeignKey(User, verbose_name='Forfatter')
     title = models.CharField(max_length=200, verbose_name='Titel')
-    posted = models.DateTimeField(verbose_name='Dato', default=lambda: datetime.date.today())
+    posted = models.DateTimeField(verbose_name='Dato')
     body = models.TextField(verbose_name='Indhold')
     group_handle = models.CharField(max_length=20)
 
