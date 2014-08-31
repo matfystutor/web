@@ -6,7 +6,7 @@ from django.contrib.sites.models import get_current_site
 from ..tutor.models import TutorGroup, TutorProfile, Tutor
 from ..settings import YEAR
 from ..tutor.auth import user_tutor_data
-from .models import Alias, resolve_alias_reversed
+from .models import Alias, resolve_aliases_reversed
 
 class AliasesView(TemplateView):
     template_name = 'aliases.html'
@@ -17,7 +17,7 @@ class AliasesView(TemplateView):
     def get(self, request):
         current_site = get_current_site(request)
         queryset = self.get_queryset(request).distinct()
-        aliases_list = resolve_alias_reversed([g.handle for g in queryset])
+        aliases_list = resolve_aliases_reversed([g.handle for g in queryset])
 
         groups = [{'name': g.name,
             'handle': g.handle,

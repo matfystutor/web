@@ -60,3 +60,18 @@ def resolve_alias_reversed(destination):
         aliases[a.destination].add(a.source)
 
     return transitive_closure(destination, aliases)
+
+def resolve_aliases_reversed(destinations):
+    """Given a list of destinations, return the dictionary
+    {k: resolve_alias_reversed(k) for d in destinations}."""
+
+    aliases = {}
+    for a in Alias.objects.all():
+        if a.destination not in aliases:
+            aliases[a.destination] = set()
+        aliases[a.destination].add(a.source)
+
+    return {
+        d: transitive_closure(d, aliases)
+        for d in destinations
+    }
