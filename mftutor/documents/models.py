@@ -4,8 +4,8 @@ from django.db import models
 from .. import settings
 
 class ReferaterManager(models.Manager):
-    def get_query_set(self):
-        return super(ReferaterManager, self).get_query_set().filter(type__exact='referater').order_by('-year', '-published')
+    def get_queryset(self):
+        return super(ReferaterManager, self).get_queryset().filter(type__exact='referater').order_by('-year', '-published')
 
 class Document(models.Model):
     objects = models.Manager()
