@@ -16,12 +16,6 @@ class Alias(models.Model):
         unique_together = (('source', 'destination'),)
 
 def transitive_closure(u, edges, visited=None):
-    if not isinstance(u, basestring):
-        res = {}
-        for uu in u:
-            res[uu] = transitive_closure(uu, edges)
-        return res
-
     if visited:
         visited = frozenset([u]).union(visited)
     else:
