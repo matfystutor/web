@@ -105,7 +105,7 @@ window.addEventListener('load', reset_clicked_data, false);
 
 <h1>Burtavle</h1>
 <p><a href=".">Opdater denne side</a></p>
-<p><a href="{% url burtavle %}">Gå til burtavlen</a></p>
+<p><a href="{% url 'burtavle' %}">Gå til burtavlen</a></p>
 <form method="post" onsubmit="main_submit(event, this)" class="twocol">{% csrf_token %}
     <div class="label">Besked:</div>
     <div class="field">{{ form.note }}</div>

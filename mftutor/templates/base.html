@@ -30,78 +30,78 @@ Kildekoden er frit tilgængelig: https://github.com/matfystutor/web/
     <ul class="topnav">
       {% block menu %}
       <li class="trigger">
-      <a href="{% url news %}">Info</a>
+      <a href="{% url 'news' %}">Info</a>
       <ul class="subnav">
-        <li><a href="{% url intro %}">Introduktion</a></li>
-        <li><a href="{% url news %}">Nyheder</a></li>
-        <li><a href="{% url board %}">Bestyrelsen</a></li>
-        <li><a href="{% url vedtaegter %}">Vedtægter</a></li>
-        <li><a href="{% url events %}">Kalender</a></li>
-        <li><a href="{% url gruppekatalog %}">Gruppekatalog</a></li>
-        <li><a href="{% url rus2tur %}">Rus2Tur</a></li>
-        <li><a href="{% url sponsor %}">Sponsor</a></li>
-        <li><a href="{% url kontakt %}">Kontakt</a></li>
+        <li><a href="{% url 'intro' %}">Introduktion</a></li>
+        <li><a href="{% url 'news' %}">Nyheder</a></li>
+        <li><a href="{% url 'board' %}">Bestyrelsen</a></li>
+        <li><a href="{% url 'vedtaegter' %}">Vedtægter</a></li>
+        <li><a href="{% url 'events' %}">Kalender</a></li>
+        <li><a href="{% url 'gruppekatalog' %}">Gruppekatalog</a></li>
+        <li><a href="{% url 'rus2tur' %}">Rus2Tur</a></li>
+        <li><a href="{% url 'sponsor' %}">Sponsor</a></li>
+        <li><a href="{% url 'kontakt' %}">Kontakt</a></li>
       </ul>
       </li>
       {% if tutor %}
       <li class="trigger">
-      <a href="{% url tutors %}">Tutorer</a>
+      <a href="{% url 'tutors' %}">Tutorer</a>
       <ul class="subnav">
-        <li><a href="{% url gallery %}">Billeder</a></li>
-        <li><a href="{% url tutors %}">Adresser</a></li>
-        <li><a href="{% url aliases %}">Mailalias</a></li>
-        <li><a href="{% url list_guides %}">Guides</a></li>
-        <li><a href="{% url list_udgivelser %}">Udgivelser</a></li>
-        <li><a href="{% url list_referater %}">Referater</a></li>      
-        <li><a href="{% url feeds %}">Feeds</a></li>      
+        <li><a href="{% url 'gallery' %}">Billeder</a></li>
+        <li><a href="{% url 'tutors' %}">Adresser</a></li>
+        <li><a href="{% url 'aliases' %}">Mailalias</a></li>
+        <li><a href="{% url 'list_guides' %}">Guides</a></li>
+        <li><a href="{% url 'list_udgivelser' %}">Udgivelser</a></li>
+        <li><a href="{% url 'list_referater' %}">Referater</a></li>
+        <li><a href="{% url 'feeds' %}">Feeds</a></li>
       </ul>
       </li>
       <li class="trigger">
       <a href="#" style="cursor: default" onclick="return false">Personligt</a>
       <ul class="subnav">
-        <li><a href="{% url profile_view %}">Profil</a></li>
-        <li><a href="{% url groups_view %}">Mine Grupper</a></li>
-        <li><a href="{% url password_change %}">Ændre kodeord</a></li>
-        <li><a href="{% url events %}">Tilmeldinger</a></li>
-        <li><a href="{% url upload_picture_view %}">Upload Billede</a></li>
-        <li><a href="{% url shirt_preference %}">T-shirt-størrelse</a></li>
-        <li><a href="{% url own_confirmation %}">Tutorbekræftelse</a></li>
+        <li><a href="{% url 'profile_view' %}">Profil</a></li>
+        <li><a href="{% url 'groups_view' %}">Mine Grupper</a></li>
+        <li><a href="{% url 'password_change' %}">Ændre kodeord</a></li>
+        <li><a href="{% url 'events' %}">Tilmeldinger</a></li>
+        <li><a href="{% url 'upload_picture_view' %}">Upload Billede</a></li>
+        <li><a href="{% url 'shirt_preference' %}">T-shirt-størrelse</a></li>
+        <li><a href="{% url 'own_confirmation' %}">Tutorbekræftelse</a></li>
       </ul>
       </li>
       {% else %}
       <li class="trigger">
-      <a href="{% url kontakt %}">Kontakt</a>
+      <a href="{% url 'kontakt' %}">Kontakt</a>
       </li>
       {% endif %}
       {% if tutor.is_tutorbur %}
       <li class="trigger">
-      <a href="{% url bur_start %}">{{ BURET }}</a>
+      <a href="{% url 'bur_start' %}">{{ BURET }}</a>
       <ul class="subnav">
-        <li><a href="{% url rusinfo_list %}">Russer</a></li>
-        <li><a href="{% url burtavle_admin %}">Burtavle</a></li>
-        <li><a href="{% url handout_list %}">Tilmeldinger</a></li>
-        <li><a href="{% url reg_rus_list %}">Registrering</a></li>
-        <li><a href="{% url reg_changes %}">Ændrede russer</a></li>
-        <li><a href="{% url import_session_choose %}">Importer russer</a></li>
+        <li><a href="{% url 'rusinfo_list' %}">Russer</a></li>
+        <li><a href="{% url 'burtavle_admin' %}">Burtavle</a></li>
+        <li><a href="{% url 'handout_list' %}">Tilmeldinger</a></li>
+        <li><a href="{% url 'reg_rus_list' %}">Registrering</a></li>
+        <li><a href="{% url 'reg_changes' %}">Ændrede russer</a></li>
+        <li><a href="{% url 'import_session_choose' %}">Importer russer</a></li>
       </ul>
       </li>
       {% elif tutor.has_rusclass %}
       <li class="trigger">
-      <a href="{% url rusinfo_list %}">Russer</a>
+      <a href="{% url 'rusinfo_list' %}">Russer</a>
       <ul class="subnav">
       </ul>
       </li>
       {% endif %}
       {% if tutor.is_tutorbest %}
       <li class="trigger">
-      <a href="{% url admin:index %}">Administration</a>
+      <a href="{% url 'admin:index' %}">Administration</a>
       <ul class="subnav">
-        <li><a href="{% url tutor_admin %}">Tutorer</a></li>
-        <li><a href="{% url admin:aliases_alias_changelist %}">Aliaser</a></li>
-        <li><a href="{% url admin:news_newspost_changelist %}">Forsidenyheder</a></li>
-        <li><a href="{% url admin:events_event_changelist %}">Kalender</a></li>
-        <li><a href="{% url confirmation_table %}">Tutorbekræftelser</a></li>
-        <li><a href="{% url confirmation_card %}">Tutorkort</a></li>
+        <li><a href="{% url 'tutor_admin' %}">Tutorer</a></li>
+        <li><a href="{% url 'admin:aliases_alias_changelist' %}">Aliaser</a></li>
+        <li><a href="{% url 'admin:news_newspost_changelist' %}">Forsidenyheder</a></li>
+        <li><a href="{% url 'admin:events_event_changelist' %}">Kalender</a></li>
+        <li><a href="{% url 'confirmation_table' %}">Tutorbekræftelser</a></li>
+        <li><a href="{% url 'confirmation_card' %}">Tutorkort</a></li>
       </ul>
       </li>
       {% endif %}
@@ -110,13 +110,13 @@ Kildekoden er frit tilgængelig: https://github.com/matfystutor/web/
   </div>
   <div class="loginout">
     {% if user.is_authenticated %}
-    <form id="logout" method="post" action="{% url logout_view %}">{% csrf_token %}
+    <form id="logout" method="post" action="{% url 'logout_view' %}">{% csrf_token %}
     <input type="hidden" name="next" value="{{ request_path }}" />
     {{ profile.get_full_name }}&nbsp;&nbsp;
       <input type="submit" class="link_button" value="Log ud" />
     </form>
     {% else %}
-    <form id="login" method="post" action="{% url tutor.views.login_view %}">
+    <form id="login" method="post" action="{% url 'tutor.views.login_view' %}">
       {% csrf_token %}
       <input type="hidden" name="next" value="{{ request_path }}" />
       <fieldset>

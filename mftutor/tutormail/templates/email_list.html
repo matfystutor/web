@@ -26,7 +26,7 @@
 {% endifchanged %}
 <tr>
 <td>{{ email.sender }}</td>
-<td><a href="{% url email pk=email.pk %}">{{ email.recipient }}</a></td>
+<td><a href="{% url 'email' pk=email.pk %}">{{ email.recipient }}</a></td>
 <td>{{ email.subject }}</td>
 <td>{{ email.kind }}</td>
 <td title="{{ email.sent }}">{% if email.sent %}Ja{% else %}Nej{% endif %}</td>

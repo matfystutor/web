@@ -4,13 +4,13 @@
 {% block content %}
 <h1>Importér russer</h1>
 
-<form action="{% url import_session_new %}" method="post">{% csrf_token %}
+<form action="{% url 'import_session_new' %}" method="post">{% csrf_token %}
     <input type="submit" value="Ny session" />
 </form>
 
 <ul>
 {% for importsession in importsession_list %}
-<li><a href="{% url import_session_edit pk=importsession.pk %}">{{ importsession.name }} {{ importsession.created }}</a></li>
+<li><a href="{% url 'import_session_edit' pk=importsession.pk %}">{{ importsession.name }} {{ importsession.created }}</a></li>
 {% endfor %}
 </ul>
 

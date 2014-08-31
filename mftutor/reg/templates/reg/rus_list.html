@@ -79,7 +79,7 @@ td form { display: inline; }
 <script>
 RusDataRaw = ({{ page_data_json|safe }});
 function reverse(name) {
-    if (name == 'reg_rpc') return '{% url reg_rpc %}';
+    if (name == 'reg_rpc') return '{% url 'reg_rpc' %}';
     else return null;
 }
 </script>
@@ -765,7 +765,7 @@ function search_again() {
 }
 
 function get_rpc() {
-    var reg_rpc_url = "{% url reg_rpc %}";
+    var reg_rpc_url = "{% url 'reg_rpc' %}";
     function success(data) {
         if (data.errors) throw oops(data.errors);
         /* data is something like
@@ -852,7 +852,7 @@ og alle ændringer bliver synkroniseret med det samme.</p>
 <p>Søg i navn, årskortnummer, telefonnummer, notat og holdnavn:
 <input id="search_string" onkeyup="search_keyup(this.value)"></p>
 
-<p><a href="{% url reg_new_rus %}">Opret en ny rus</a></p>
+<p><a href="{% url 'reg_new_rus' %}">Opret en ny rus</a></p>
 
 <div id="rusclasses">
 
@@ -873,7 +873,7 @@ og alle ændringer bliver synkroniseret med det samme.</p>
 <li>{{ note.body }}</li>
 {% endfor %}
 <li>
-<form method="post" action="{% url reg_notes %}">{% csrf_token %}
+<form method="post" action="{% url 'reg_notes' %}">{% csrf_token %}
 <input type="hidden" name="subject_kind" value="rusclass" />
 <input type="hidden" name="subject_pk" value="{{ rus.rusclass.pk }}" />
 <input name="body" class="noteform_body" />
@@ -904,15 +904,15 @@ og alle ændringer bliver synkroniseret med det samme.</p>
 {% endifchanged %}
 <tr data-ruspk="{{ rus.pk }}">
 <td>
-    <form method="post" action="{% url reg_change_class %}" onsubmit="return reg_change('{% url reg_change_class_ajax %}')">{% csrf_token %}
+    <form method="post" action="{% url 'reg_change_class' %}" onsubmit="return reg_change('{% url 'reg_change_class_ajax' %}')">{% csrf_token %}
         <input type="hidden" name="rus" value="{{ rus.pk }}" />
         {{ change_class_form_rusclass }}
         <input type="submit" value="Skift" class="link_button" />
     </form>
 </td>
 <td>{{ rus.arrived|yesno:"ja,nej" }}<form
-method="post" action="{% url reg_change_arrived pk=rus.pk %}"
-onsubmit="return reg_change_arrived('{% url reg_change_arrived_ajax pk=rus.pk %}')">{% csrf_token %}
+method="post" action="{% url 'reg_change_arrived' pk=rus.pk %}"
+onsubmit="return reg_change_arrived('{% url 'reg_change_arrived_ajax' pk=rus.pk %}')">{% csrf_token %}
 <input type="hidden" name="rus" value="{{ rus.pk }}" />
 <input type="submit" value="&rarr; {{ rus.arrived|yesno:"nej,ja" }}" class="link_button" />
 </form>
@@ -935,7 +935,7 @@ onsubmit="return reg_change_arrived('{% url reg_change_arrived_ajax pk=rus.pk %}
 <li>{{ note.body }}</li>
 {% endfor %}
 <li>
-<form method="post" action="{% url reg_notes %}">{% csrf_token %}
+<form method="post" action="{% url 'reg_notes' %}">{% csrf_token %}
 <input type="hidden" name="subject_kind" value="rus" />
 <input type="hidden" name="subject_pk" value="{{ rus.pk }}" />
 <input name="body" class="noteform_body">

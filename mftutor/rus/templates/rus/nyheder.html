@@ -9,7 +9,7 @@
 {{ news.author.get_full_name }}
 <i class="dato" title="{{ news.posted|date:"j. F Y H:i:s" }}"><a href="{{ news.get_absolute_url }}">{{ news.posted|date:"j. F Y" }}</a></i>
 {% if tutor.is_tutorbest %}
-<a href="{% url news_edit news.pk %}">Ret</a>
+<a href="{% url 'news_edit' news.pk %}">Ret</a>
 {% endif %}
 </div>
 <div class="newsBody">

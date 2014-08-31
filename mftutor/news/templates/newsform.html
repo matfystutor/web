@@ -12,7 +12,7 @@ Ret nyhed
 {% endblock %}
 {% block content %}
 {% if not create %}
-<form method="post" action="{% url news_delete pk=form.instance.pk %}">{% csrf_token %}
+<form method="post" action="{% url 'news_delete' pk=form.instance.pk %}">{% csrf_token %}
 <input type="submit" value="Slet" />
 </form>
 {% endif %}

@@ -3,11 +3,11 @@
 {% block content %}
 <h1>{{ kind|capfirst}}</h1>
 {% if tutor.is_tutorbest%}
-<a href="{% url upload_document %}">Tilføj nyt dokument</a>
+<a href="{% url 'upload_document' %}">Tilføj nyt dokument</a>
 {% endif %}
 {% for document in document_list %}
-{% ifchanged %}<a href="{% url list_guides year=document.year %}"><h2 style="margin-bottom: 0">{{ document.year}}</h2></a>{% endifchanged %}
-<div class="document"><a href="{{MEDIA_URL}}{{document.doc_file}}">{{ document.title }}</a> {% if tutor.is_tutorbest %}| <a href="{% url edit_document document.pk %}">Ret</a>{% endif %}</div>
+{% ifchanged %}<a href="{% url 'list_guides' year=document.year %}"><h2 style="margin-bottom: 0">{{ document.year}}</h2></a>{% endifchanged %}
+<div class="document"><a href="{{MEDIA_URL}}{{document.doc_file}}">{{ document.title }}</a> {% if tutor.is_tutorbest %}| <a href="{% url 'edit_document' document.pk %}">Ret</a>{% endif %}</div>
 <br />
 {% endfor %}
 {% endblock %}

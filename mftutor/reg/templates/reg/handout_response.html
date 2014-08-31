@@ -50,8 +50,8 @@ window.addEventListener('load', hook_checkboxes, false);
 {% block content %}
 <h1>{{ rusclass }} - {{ handout }}</h1>
 
-<p><a href="{% url handout_list %}">Tilmeldinger</a>
-&rarr; <a href="{% url handout_summary handout=handout.pk %}">{{ handout }}</a>
+<p><a href="{% url 'handout_list' %}">Tilmeldinger</a>
+&rarr; <a href="{% url 'handout_summary' handout=handout.pk %}">{{ handout }}</a>
 &rarr; <strong>{{ rusclass }}</strong></p>
 
 <p>

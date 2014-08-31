@@ -21,7 +21,7 @@
     {% ifchanged %}
     <li style="clear: left">{{ rusclass.get_study|capfirst }}:</li>
     {% endifchanged %}
-    <li><a href="{% url rus_holdlister handle=rusclass.handle %}">{{ rusclass }}</a></li>
+    <li><a href="{% url 'rus_holdlister' handle=rusclass.handle %}">{{ rusclass }}</a></li>
     {% endfor %}
 </ul>
 {% else %}
