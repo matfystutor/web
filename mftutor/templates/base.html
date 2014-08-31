@@ -116,7 +116,7 @@ Kildekoden er frit tilgængelig: https://github.com/matfystutor/web/
       <input type="submit" class="link_button" value="Log ud" />
     </form>
     {% else %}
-    <form id="login" method="post" action="{% url 'tutor.views.login_view' %}">
+    <form id="login" method="post" action="{% url 'tutor_login' %}">
       {% csrf_token %}
       <input type="hidden" name="next" value="{{ request_path }}" />
       <fieldset>
