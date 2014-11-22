@@ -37,7 +37,8 @@ class BaseNewsView(View):
         elif year:
             news_list = news_list.filter(posted__year=year)
         else:
-            news_list = news_list.filter(posted__gte=datetime.date(YEAR, 1, 1))
+            # TODO We should probably have a year-field in the news posts
+            news_list = news_list.filter(posted__gte=datetime.date(YEAR - 1, 11, 1))
 
         params = {
                 'news_list': news_list,
