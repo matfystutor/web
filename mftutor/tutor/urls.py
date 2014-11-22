@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from ..settings import YEAR
 from ..aliases.views import AliasesView, MyGroupsView
 from .models import Tutor, TutorGroup, BoardMember
-from .views import logout_view, login_view, profile_view, tutor_password_change_view, UploadPictureView, tutors_view, TutorAdminView, switch_user, FrontView
+from .views import logout_view, login_view, profile_view, tutor_password_change_view, UploadPictureView, tutors_view, TutorAdminView, switch_user, FrontView, BoardAdminView
 from .auth import tutorbest_required
 
 urlpatterns = patterns('',
@@ -26,5 +26,6 @@ urlpatterns = patterns('',
     url(r'^groups/me/$', login_required(MyGroupsView.as_view()), name='groups_view'),
     url(r'^profile/picture/$', login_required(UploadPictureView.as_view()), name='upload_picture_view'),
     url(r'^tutoradmin/$', tutorbest_required(TutorAdminView.as_view()), name='tutor_admin'),
+    url(r'^boardadmin/(?P<year>\d+)/$', tutorbest_required(BoardAdminView.as_view()), name='board_admin'),
     url(r'^su/(?P<new_user>[^/]*)/$', switch_user),
 )

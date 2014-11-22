@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Bestyrelses-administration{% endblock %}
+{# block bodyclass %}wide{% endblock #}
+{% block head %}
+<script>
+tutors = ({{ tutors|safe }});
+
+function make_fields() {
+    var form = document.getElementById('boardadmin');
+    for (var i = 0;; ++i) {
+        var field = form['tutor' + i];
+        if (!field) {
+            break;
+        }
+        var v = field.value;
+        var sel = document.createElement('select');
+
+        var blankOpt = document.createElement('option');
+        blankOpt.textContent = '---';
+        blankOpt.value = '';
+        sel.appendChild(blankOpt);
+        sel.selectedIndex = 0;
+
+        for (var j = 0, l = tutors.length; j < l; ++j) {
+            var opt = document.createElement('option');
+            opt.textContent = tutors[j]['name'];
+            opt.value = tutors[j]['pk'];
+            sel.appendChild(opt);
+            if (opt.value == v) sel.selectedIndex = j + 1;
+        }
+        field.parentNode.insertBefore(sel, field);
+        field.parentNode.removeChild(field);
+        sel.name = ('tutor' + i);
+    }
+}
+window.addEventListener('load', make_fields, false);
+</script>
+<style type="text/css">
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>Bestyrelses-administration</h1>
+
+<p>
+Her kan du ændre i bestyrelsen for tutorår {{ year }}.
+</p>
+
+<form id="boardadmin" method="post" action="" class="boardadmin">{% csrf_token %}
+{{ form.management_form }}
+{% if changes %}
+Følgende ændringer er gemt.
+<ul>
+{% for change in changes %}
+<li>{{ change }}</li>
+{% endfor %}
+</ul>
+{% endif %}
+{{ form.non_field_errors }}
+<table>
+    {% for row in form %}
+    {% ifchanged %}
+    <tr>
+        {% for field in row %}
+        <th>{{ field.label }}</th>
+        {% endfor %}
+    </tr>
+    {% endifchanged %}
+    <tr>
+        {% for field in row %}
+        <td>{% if field.errors %}
+            <span class="silk_exclamation"
+                title="{% for error in field.errors %}
+                    {{ error|escape }}{% endfor %}"></span>
+            {% endif %}
+            <span class="{{ field.name }}">{{ field }}</span></td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+<input type="submit" value="Gem ændringer" />
+</form>
+
+{% endblock %}
