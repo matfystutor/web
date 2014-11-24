@@ -296,7 +296,7 @@ generalforsamlingen.
 ### Stk. 1
 
 Forslag til vedtægtsændringer skal være bestyrelsen i
-hænde senest 6 uger før generalforsamlingen hvor de ønskes
+hænde senest 2 uger før generalforsamlingen hvor de ønskes
 behandlet.
 
 ### Stk. 2
