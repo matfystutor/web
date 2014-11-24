@@ -332,20 +332,29 @@ med umiddelbar ikrafttræden
 og erstatter alle tidligere vedtægter.
 
 
-# Regler for ekskludering af tutorer
+# Yderligere regler
+
+### Følgende er de yderligere regler der er udstukket af den siddende bestyrelse (jf. §3 stk. 3 i ovenstående vedtægter).
 
 For at være tutor i Mat/Fys-Tutorgruppen, skal man overholde de regler, der står i foreningens vedtægter, §4.
 
 Desuden skal man overholde de retningslinjer, der er udarbejdet i samarbejde med fakultetet.
 
-For at deltage aktivt i gruppearbejdet, skal man deltage i de møder, som gruppen holder. Afbud med årsag meldes til den gruppeansvarlige. Den gruppeansvarlige står for at give besked til bestyrelsen, hvis et medlem udebliver fra gruppemøderne. Dette vil resultere i en skriftlig advarsel. Hvis situationen forbliver uforandret herefter, kan bestyrelsen vælge af ekskludere pågældende tutor.
+For at deltage aktivt i gruppearbejdet, skal man deltage i de møder, som gruppen holder. Afbud med årsag meldes til den gruppeansvarlige. Den gruppeansvarlige står for at give besked til bestyrelsen, hvis et medlem udebliver fra gruppemøderne. Dette vil resultere i en skriftlig advarsel.
 
-Der er mødepligt til stormøderne samt arbejdslørdagene i foråret. Ved enkelt udeblivelse får man en skriftlig advarsel. To udeblivelser medfører ekskludering.
+Der er mødepligt til stormøderne samt arbejdslørdagene i foråret. Ved en enkelt udeblivelse får man en skriftlig advarsel.
 
 Som holdtutor skal man derudover også deltage i rusdagene og så vidt muligt alle holdets timer i perioden efter russtart.
 
-Ved ekskludering vil man ikke have adgang til de resterende arrangermenter, der vil blive afholdt i Mat/Fys-Tutorgruppen.
+To advarsler medfører en ekskludering. Bestyrelsen kan i særlige tilfælde vælge at dispensere herfra.
+
+Ved ekskludering vil man ikke have adgang til de resterende arrangermenter, der vil blive afholdt i Mat/Fys-Tutorgruppen i det pågældende tutorår.
 
 Det er selvfølgelig altid muligt at melde sig ud af tutorgruppen hvis man ikke kan/ønsker at deltage i tutorarbejdet mere. Dette gøres ved at kontakte bestyrelsen.
+
+Yderligere regler:
+
+- Som holdtutor må man ikke være sammen med en af sine egne russer før *efter* rusturen.
+- På rusturen er det *ikke* tilladt at være nøgen i hyttens køkken.
 
 {% endblock %}
