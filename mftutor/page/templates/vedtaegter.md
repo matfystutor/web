@@ -270,6 +270,10 @@ Foreningen tegnes af
 - Formanden
 - Den økonomi-ansvarlige
 
+### Stk. 2
+
+De i Stk. 1 nævnte må hver individuelt disponere over foreningens midler.
+
 ## §10 Regnskab og revision
 
 ### Stk. 1
