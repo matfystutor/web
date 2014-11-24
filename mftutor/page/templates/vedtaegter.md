@@ -142,12 +142,12 @@ Bestyrelsen består af følgende poster
 
 ### Stk. 2
 
-Koordineringsgruppen står for foreningens daglige drift samt
+Koordineringsgruppens hovedopgave er
+at koordinere foreningens arbejdsgrupper samt
 indkaldelse til møder med bestyrelsen
-(jf. Stk. 6, §5) eller alle foreningens
+(jf. Stk 6, §5) eller alle foreningens
 medlemmer. Den har ligeledes ansvaret for indkaldelse til og
-afholdelse af generalforsamlingen. Koordineringsgruppens hovedopgave
-er at koordinere foreningens grupper.
+afholdelse af generalforsamlingen.
 
 ### Stk. 3
 
