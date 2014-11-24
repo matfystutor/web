@@ -187,10 +187,10 @@ mailsystemer.
 Der afholdes ordinær generalforsamling hvert år i perioden
 september til november. Generalforsamlingen indkaldes af bestyrelsen
 senest 4 uger før afholdelse. Indkaldelse skal ske ved email til
-alle medlemmer samt ved opslag på tutorforeningens
+medlemmer samt et opslag på tutorforeningens
 hjemmeside. Indkaldelsen skal indeholde dagsordenen for
-generalforsamlingen samt eventuelle forslag til
-vedtægtsændringer. Indkaldelsen skal desuden indeholde information om
+generalforsamlingen.
+Indkaldelsen skal desuden indeholde information om
 hvordan man tilkendegiver at man opstiller til bestyrelsen.
 
 ### Stk. 2
