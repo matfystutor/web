@@ -269,7 +269,6 @@ Foreningen tegnes af
 
 - Formanden
 - Den økonomi-ansvarlige
-- Et tredje medlem af bestyrelsen
 
 ## §10 Regnskab og revision
 
