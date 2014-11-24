@@ -65,6 +65,15 @@ et medlem af foreningen, hvis dette ikke overholder de
 i Stk. 3 angivne regler, eller hvis
 bestyrelsesflertallet vurderer det nødvendigt.
 
+### Stk. 5
+
+Medlemskab af foreningen ophører senest efter næstkommende ordinære generalforsamling.
+
+### Stk. 6
+
+Kun medlemmer af foreningen er stemmeberettiget til generalforsamlinger.
+
+
 ## §4 Regler for medlemmer
 
 ### Stk. 1
