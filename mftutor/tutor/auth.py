@@ -1,8 +1,12 @@
+import functools
+
 from django.http import HttpResponse
 from django.template import RequestContext, loader
 import django.contrib.auth.backends
-from ..settings import YEAR
-from .models import TutorProfile, Tutor, Rus
+
+from mftutor.settings import YEAR
+from mftutor.tutor.models import TutorProfile, Tutor, Rus
+
 
 class NotTutor(Exception):
     def __init__(self, value):
@@ -11,8 +15,10 @@ class NotTutor(Exception):
     def __str__(self):
         return repr(self.value)
 
+
 class TutorData:
     pass
+
 
 def user_profile_data(user):
     d = TutorData()
@@ -26,6 +32,7 @@ def user_profile_data(user):
         raise NotTutor('notutorprofile')
     return d
 
+
 def user_tutor_data(user):
     d = user_profile_data(user)
     try:
@@ -33,6 +40,7 @@ def user_tutor_data(user):
     except Tutor.DoesNotExist:
         raise NotTutor('notutoryear')
     return d
+
 
 def user_rus_data(user):
     d = user_profile_data(user)
@@ -42,23 +50,28 @@ def user_rus_data(user):
         raise NotTutor('norusyear')
     return d
 
+
 def rusclass_required_error(request):
     t = loader.get_template('rusclass_required.html')
     c = RequestContext(request)
     return HttpResponse(t.render(c), status=403)
+
 
 def tutorbest_required_error(request):
     t = loader.get_template('tutorbest_required.html')
     c = RequestContext(request)
     return HttpResponse(t.render(c), status=403)
 
+
 def tutor_required_error(request):
     t = loader.get_template('tutor_required.html')
     c = RequestContext(request)
     return HttpResponse(t.render(c), status=403)
 
+
 # Decorator
 def tutorbest_required(fn):
+    @functools.wraps(fn)
     def wrapper(request, *args, **kwargs):
         if request.user.is_superuser:
             return fn(request, *args, **kwargs)
@@ -69,11 +82,13 @@ def tutorbest_required(fn):
         if not d.tutor.is_tutorbest():
             return tutorbest_required_error(request)
         return fn(request, *args, **kwargs)
-    wrapper.__name__ = fn.__name__
+
     return wrapper
+
 
 # Decorator
 def tutor_required(fn):
+    @functools.wraps(fn)
     def wrapper(request, *args, **kwargs):
         if request.user.is_superuser:
             return fn(request, *args, **kwargs)
@@ -90,11 +105,13 @@ def tutor_required(fn):
         if varkw is not None or 'profile' in namedargs:
             kwargs['profile'] = d.profile
         return fn(request, *args, **kwargs)
-    wrapper.__name__ = fn.__name__
+
     return wrapper
+
 
 # Decorator
 def tutorbur_required(fn):
+    @functools.wraps(fn)
     def wrapper(request, *args, **kwargs):
         if request.user.is_superuser:
             return fn(request, *args, **kwargs)
@@ -105,8 +122,9 @@ def tutorbur_required(fn):
         if not d.tutor.is_tutorbur():
             return tutorbest_required_error(request)
         return fn(request, *args, **kwargs)
-    wrapper.__name__ = fn.__name__
+
     return wrapper
+
 
 class SwitchUserBackend(django.contrib.auth.backends.ModelBackend):
     def authenticate(self, username, current_user):
