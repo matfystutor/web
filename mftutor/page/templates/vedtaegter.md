@@ -202,10 +202,10 @@ Dagsordenen skal som minimum indeholde punkterne
 3. Beretning fra den afgående bestyrelse
 4. Fremlæggelse af det reviderede regnskab til godkendelse
 5. Behandling af indkomne forslag
-7. Valg til bestyrelsen jf. Stk. 4
-8. Valg af 2 suppleanter til bestyrelsen
-9. Valg af 2 revisorer samt 1 revisorsuppleant
-10. Eventuelt
+6. Valg til bestyrelsen jf. Stk. 4
+7. Valg af 2 suppleanter til bestyrelsen
+8. Valg af 2 revisorer samt 1 revisorsuppleant
+9. Eventuelt
 
 ### Stk. 3
 
