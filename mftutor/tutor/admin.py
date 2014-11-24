@@ -1,6 +1,10 @@
 # vim: set fileencoding=utf8 :
-from .models import *
+
 from django.contrib import admin
+
+from mftutor.tutor.models import (
+    Tutor, TutorProfile, TutorGroup, TutorGroupLeader,
+    BoardMember, RusClass, Rus)
 
 
 class TutorInline(admin.TabularInline):
