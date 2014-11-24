@@ -109,7 +109,7 @@ class RusClass(models.Model):
                 return internal_name
 
     def get_tutors(self):
-        return Tutor.members.filter(rusclass=self)
+        return Tutor.objects.filter(rusclass=self)
 
     def get_russes(self):
         return Rus.objects.filter(rusclass=self)
