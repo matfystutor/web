@@ -65,6 +65,15 @@ et medlem af foreningen, hvis dette ikke overholder de
 i Stk. 3 angivne regler, eller hvis
 bestyrelsesflertallet vurderer det nødvendigt.
 
+### Stk. 5
+
+Medlemskab af foreningen ophører senest efter næstkommende ordinære generalforsamling.
+
+### Stk. 6
+
+Kun medlemmer af foreningen er stemmeberettiget til generalforsamlinger.
+
+
 ## §4 Regler for medlemmer
 
 ### Stk. 1
@@ -133,12 +142,12 @@ Bestyrelsen består af følgende poster
 
 ### Stk. 2
 
-Koordineringsgruppen står for foreningens daglige drift samt
+Koordineringsgruppens hovedopgave er
+at koordinere foreningens arbejdsgrupper samt
 indkaldelse til møder med bestyrelsen
-(jf. Stk. 6, §5) eller alle foreningens
+(jf. Stk 6, §5) eller alle foreningens
 medlemmer. Den har ligeledes ansvaret for indkaldelse til og
-afholdelse af generalforsamlingen. Koordineringsgruppens hovedopgave
-er at koordinere foreningens grupper.
+afholdelse af generalforsamlingen.
 
 ### Stk. 3
 
@@ -178,10 +187,10 @@ mailsystemer.
 Der afholdes ordinær generalforsamling hvert år i perioden
 september til november. Generalforsamlingen indkaldes af bestyrelsen
 senest 4 uger før afholdelse. Indkaldelse skal ske ved email til
-alle medlemmer samt ved opslag på tutorforeningens
+medlemmer samt et opslag på tutorforeningens
 hjemmeside. Indkaldelsen skal indeholde dagsordenen for
-generalforsamlingen samt eventuelle forslag til
-vedtægtsændringer. Indkaldelsen skal desuden indeholde information om
+generalforsamlingen.
+Indkaldelsen skal desuden indeholde information om
 hvordan man tilkendegiver at man opstiller til bestyrelsen.
 
 ### Stk. 2
@@ -193,11 +202,10 @@ Dagsordenen skal som minimum indeholde punkterne
 3. Beretning fra den afgående bestyrelse
 4. Fremlæggelse af det reviderede regnskab til godkendelse
 5. Behandling af indkomne forslag
-6. Evaluering af foreningens arbejde
-7. Valg til bestyrelsen jf. Stk. 4
-8. Valg af 2 suppleanter til bestyrelsen
-9. Valg af 2 revisorer samt 1 revisorsuppleant
-10. Eventuelt
+6. Valg til bestyrelsen jf. Stk. 4
+7. Valg af 2 suppleanter til bestyrelsen
+8. Valg af 2 revisorer samt 1 revisorsuppleant
+9. Eventuelt
 
 ### Stk. 3
 
@@ -261,7 +269,10 @@ Foreningen tegnes af
 
 - Formanden
 - Den økonomi-ansvarlige
-- Et tredje medlem af bestyrelsen
+
+### Stk. 2
+
+De i Stk. 1 nævnte må hver individuelt disponere over foreningens midler.
 
 ## §10 Regnskab og revision
 
@@ -285,7 +296,7 @@ generalforsamlingen.
 ### Stk. 1
 
 Forslag til vedtægtsændringer skal være bestyrelsen i
-hænde senest 6 uger før generalforsamlingen hvor de ønskes
+hænde senest 2 uger før generalforsamlingen hvor de ønskes
 behandlet.
 
 ### Stk. 2
@@ -315,25 +326,35 @@ studenterstøttende fond.
 
 ### Stk. 1
 
-Disse vedtægter er vedtaget på foreningens ekstraordinære
-generalforsamling tirsdag den 5. april 2011 med ikrafttræden den
-1. juli 2011 og erstatter alle tidligere vedtægter.
+Disse vedtægter er vedtaget på foreningens
+ordinære generalforsamling tirsdag den 11. november 2014
+med umiddelbar ikrafttræden
+og erstatter alle tidligere vedtægter.
 
 
-# Regler for ekskludering af tutorer
+# Yderligere regler
+
+### Følgende er de yderligere regler der er udstukket af den siddende bestyrelse (jf. §3 stk. 3 i ovenstående vedtægter).
 
 For at være tutor i Mat/Fys-Tutorgruppen, skal man overholde de regler, der står i foreningens vedtægter, §4.
 
 Desuden skal man overholde de retningslinjer, der er udarbejdet i samarbejde med fakultetet.
 
-For at deltage aktivt i gruppearbejdet, skal man deltage i de møder, som gruppen holder. Afbud med årsag meldes til den gruppeansvarlige. Den gruppeansvarlige står for at give besked til bestyrelsen, hvis et medlem udebliver fra gruppemøderne. Dette vil resultere i en skriftlig advarsel. Hvis situationen forbliver uforandret herefter, kan bestyrelsen vælge af ekskludere pågældende tutor.
+For at deltage aktivt i gruppearbejdet, skal man deltage i de møder, som gruppen holder. Afbud med årsag meldes til den gruppeansvarlige. Den gruppeansvarlige står for at give besked til bestyrelsen, hvis et medlem udebliver fra gruppemøderne. Dette vil resultere i en skriftlig advarsel.
 
-Der er mødepligt til stormøderne samt arbejdslørdagene i foråret. Ved enkelt udeblivelse får man en skriftlig advarsel. To udeblivelser medfører ekskludering.
+Der er mødepligt til stormøderne samt arbejdslørdagene i foråret. Ved en enkelt udeblivelse får man en skriftlig advarsel.
 
 Som holdtutor skal man derudover også deltage i rusdagene og så vidt muligt alle holdets timer i perioden efter russtart.
 
-Ved ekskludering vil man ikke have adgang til de resterende arrangermenter, der vil blive afholdt i Mat/Fys-Tutorgruppen.
+To advarsler medfører en ekskludering. Bestyrelsen kan i særlige tilfælde vælge at dispensere herfra.
+
+Ved ekskludering vil man ikke have adgang til de resterende arrangermenter, der vil blive afholdt i Mat/Fys-Tutorgruppen i det pågældende tutorår.
 
 Det er selvfølgelig altid muligt at melde sig ud af tutorgruppen hvis man ikke kan/ønsker at deltage i tutorarbejdet mere. Dette gøres ved at kontakte bestyrelsen.
+
+Yderligere regler:
+
+- Som holdtutor må man ikke være sammen med en af sine egne russer før *efter* rusturen.
+- På rusturen er det *ikke* tilladt at være nøgen i hyttens køkken.
 
 {% endblock %}
