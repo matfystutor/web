@@ -326,9 +326,10 @@ studenterstøttende fond.
 
 ### Stk. 1
 
-Disse vedtægter er vedtaget på foreningens ekstraordinære
-generalforsamling tirsdag den 5. april 2011 med ikrafttræden den
-1. juli 2011 og erstatter alle tidligere vedtægter.
+Disse vedtægter er vedtaget på foreningens
+ordinære generalforsamling tirsdag den 11. november 2014
+med umiddelbar ikrafttræden
+og erstatter alle tidligere vedtægter.
 
 
 # Regler for ekskludering af tutorer
