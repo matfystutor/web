@@ -1,19 +1,45 @@
+import os
+import os.path
+import re
 import sys
 import json
+import time
+import tarfile
 import datetime
 
 from optparse import make_option
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
+import django.core.files
 
 from mftutor.tutor.models import (
     TutorProfile, Tutor, Rus, RusClass,
     TutorGroup, TutorGroupLeader,
 )
 
+from mftutor.documents.models import Document
+from mftutor.aliases.models import Alias
+
 
 def from_timestamp(total_seconds):
     return datetime.datetime.fromtimestamp(total_seconds)
+
+
+class ProgressIndicator(object):
+    def __init__(self, steps):
+        self.steps = 0
+        self.total = steps
+        self.t0 = time.time()
+
+    def step(self, line):
+        self.steps += 1
+        sys.stdout.write((u'\r\033[K[%4d/%4d] %s' %
+                          (self.steps, self.total, line)).encode('utf8'))
+        sys.stdout.flush()
+
+    def done(self):
+        elapsed = time.time() - self.t0
+        print(u'\r\033[K[%4d/%4d] In %s' % (self.total, self.total, elapsed))
 
 
 class Command(BaseCommand):
@@ -104,9 +130,56 @@ class Command(BaseCommand):
             rus.save()
 
     def handle(self, *args, **kwargs):
-        with open(kwargs.pop('filename')) as fp:
-            data = json.load(fp)
+        fp = tarfile.open(kwargs.pop('filename'), 'r')
+        ti = fp.next()
+        dirname = re.sub(r'/.*', '', ti.name)
+        f = fp.extractfile('%s/tutorprofiles.json' % dirname)
+        try:
+            tutorprofiles = json.load(f)
+        finally:
+            f.close()
+        self.load_tutorprofiles(tutorprofiles)
 
+        f = fp.extractfile('%s/documents.json' % dirname)
+        try:
+            documents = json.load(f)
+        finally:
+            f.close()
+        self.load_documents(documents)
+
+        f = fp.extractfile('%s/aliases.json' % dirname)
+        try:
+            aliases = json.load(f)
+        finally:
+            f.close()
+        self.load_aliases(aliases)
+
+        members = fp.getmembers()
+        pi = ProgressIndicator(len(members))
+        skipped = loaded = 0
+        for ti in members:
+            pi.step(ti.name)
+            if not ti.name.startswith('%s/' % dirname):
+                continue
+            name = ti.name[(len(dirname) + 1):]
+
+            try:
+                head, tail = name.split('/', 1)
+            except ValueError:
+                continue
+
+            if head == 'pictures':
+                self.load_picture(fp.extractfile(ti), tail)
+                loaded += 1
+            elif head == 'documents':
+                self.load_document(fp.extractfile(ti), tail)
+                loaded += 1
+            else:
+                skipped += 1
+        pi.done()
+        print("Skipped %d, loaded %d" % (skipped, loaded))
+
+    def load_tutorprofiles(self, data):
         studentnumbers = [tp['studentnumber'] for tp in data]
         usernames = [tp['username'] for tp in data]
 
@@ -126,7 +199,7 @@ class Command(BaseCommand):
         self.users = dict(
             (user.username, user)
             for chunk in range(chunks)
-            for tp in User.objects.filter(
+            for user in User.objects.filter(
                 username__in=usernames[
                     (chunk * chunksize):((chunk + 1) * chunksize)])
         )
@@ -171,14 +244,11 @@ class Command(BaseCommand):
                 year=year, handle__in=handles)
         )
 
+        skipped = loaded = 0
         count = len(data)
-
-        loaded = skipped = 0
+        pi = ProgressIndicator(count)
         for i, tpdata in enumerate(data):
-            sys.stdout.write((u'\r\033[K[%4d+%4d/%4d] %s' %
-                              (loaded, skipped, count, tpdata['name'])
-                              ).encode('utf8'))
-            sys.stdout.flush()
+            pi.step(tpdata['name'])
 
             if tpdata['studentnumber'] in self.tutorprofiles:
                 skipped += 1
@@ -186,5 +256,53 @@ class Command(BaseCommand):
                 self.tutorprofiles[tpdata['studentnumber']] = (
                     self.load_tutorprofile(tpdata))
                 loaded += 1
+        pi.done()
+        print("Skipped %d, loaded %d" % (skipped, loaded))
 
-        print('')
+    def load_documents(self, documents):
+        skipped = loaded = 0
+        pi = ProgressIndicator(len(documents))
+        for document in documents:
+            pi.step(document['title'])
+            doc = self.load_basic(
+                Document, document, 'title year type'.split())
+            doc.published = datetime.date.fromtimestamp(
+                document['published'])
+            doc.time_of_upload = datetime.datetime.fromtimestamp(
+                document['time_of_upload'])
+            doc.doc_file = doc.doc_upload_to(document['doc_file'])
+            if Document.objects.filter(doc_file=doc.doc_file).exists():
+                skipped += 1
+            else:
+                loaded += 1
+                doc.save()
+        pi.done()
+        print("Skipped %d, loaded %d" % (skipped, loaded))
+
+    def load_aliases(self, aliases):
+        existing = set(
+            (a.source, a.destination)
+            for a in Alias.objects.all()
+        )
+        aliases = set(
+            (a['source'], a['destination'])
+            for a in aliases
+        )
+        new = aliases - existing
+        pi = ProgressIndicator(len(new))
+        for a in new:
+            pi.step('%s -> %s' % a)
+            Alias(source=a[0], destination=a[1]).save()
+        pi.done()
+        print("Loaded %d out of %d" % (len(new), len(aliases)))
+
+    def load_picture(self, fp, filename):
+        studentnumber, extension = os.path.splitext(filename)
+        tp = TutorProfile.objects.get(studentnumber=studentnumber)
+        tp.picture.save(filename, django.core.files.File(fp))
+
+    def load_document(self, fp, path):
+        year, type_, filename = path.split('/')
+        doc = Document.objects.get(
+            doc_file=Document(year=year, type=type_).doc_upload_to(filename))
+        doc.doc_file.save(filename, django.core.files.File(fp))

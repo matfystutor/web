@@ -1,5 +1,10 @@
+import os
+import os.path
 import sys
 import json
+import time
+import shutil
+import tarfile
 import datetime
 
 from optparse import make_option
@@ -9,15 +14,38 @@ from mftutor.tutor.models import (
     TutorProfile, Tutor, Rus, RusClass,
     TutorGroup, TutorGroupLeader,
 )
+from mftutor.documents.models import Document
+from mftutor.aliases.models import Alias
 
 
 def get_timestamp(dt):
-    tz = dt.tzinfo
-    epoch = dt - datetime.datetime(1970, 1, 1, tzinfo=tz)
+    if isinstance(dt, datetime.datetime):
+        tz = dt.tzinfo
+        epoch = dt - datetime.datetime(1970, 1, 1, tzinfo=tz)
+    else:
+        epoch = dt - datetime.date(1970, 1, 1)
+
     total_seconds = (epoch.seconds +
                      epoch.microseconds / 1e6 +
                      epoch.days * (3600 * 24))
     return total_seconds
+
+
+class ProgressIndicator(object):
+    def __init__(self, steps):
+        self.steps = 0
+        self.total = steps
+        self.t0 = time.time()
+
+    def step(self, line):
+        self.steps += 1
+        sys.stdout.write((u'\r\033[K[%4d/%4d] %s' %
+                          (self.steps, self.total, line)).encode('utf8'))
+        sys.stdout.flush()
+
+    def done(self):
+        elapsed = time.time() - self.t0
+        print(u'\r\033[K[%4d/%4d] In %s' % (self.total, self.total, elapsed))
 
 
 class Command(BaseCommand):
@@ -86,21 +114,100 @@ class Command(BaseCommand):
 
         return o
 
+    def dump_tutorprofiles(self, fp):
+        qs = TutorProfile.objects.all().prefetch_related(
+            'tutor_set__groups', 'rus_set__rusclass',
+            'tutor_set__tutorgroupleader_set', 'user')
+        pi = ProgressIndicator(qs.count())
+        fp.write('[\n')
+        comma = ''
+        for i, tp in enumerate(qs):
+            pi.step(tp.name)
+            fp.write(comma)
+            comma = ',\n'
+
+            json.dump(self.dump_tutorprofile(tp), fp, indent=0)
+        fp.write(']\n')
+        pi.done()
+
+    def add_pictures(self, dirname, fp):
+        qs = TutorProfile.objects.exclude(picture='')
+        pi = ProgressIndicator(qs.count())
+        for tp in qs:
+            pi.step(tp.picture.name)
+            tp.picture.open()
+            ti = fp.gettarinfo(fileobj=tp.picture.file)
+            root, ext = os.path.splitext(tp.picture.file.name)
+            ti.name = os.path.join(
+                dirname, 'pictures', '%s%s' % (tp.studentnumber, ext))
+            fp.addfile(ti, fileobj=tp.picture.file)
+            tp.picture.close()
+        pi.done()
+
+    def dump_documents(self, fp):
+        qs = Document.objects.all()
+        pi = ProgressIndicator(qs.count())
+        documents = []
+        for doc in Document.objects.all():
+            pi.step(doc.title)
+            o = self.dump_basic(
+                doc, 'title year type'.split())
+            o['published'] = get_timestamp(doc.published)
+            o['time_of_upload'] = get_timestamp(doc.time_of_upload)
+            head, tail = os.path.split(doc.doc_file.name)
+            o['doc_file'] = tail
+            documents.append(o)
+        json.dump(documents, fp, indent=0)
+        pi.done()
+
+    def add_documents(self, dirname, fp):
+        qs = Document.objects.all()
+        pi = ProgressIndicator(qs.count())
+        for doc in Document.objects.all():
+            pi.step(doc.doc_file.name)
+            head, tail = os.path.split(doc.doc_file.name)
+            doc.doc_file.open()
+            ti = fp.gettarinfo(fileobj=doc.doc_file.file)
+            ti.name = os.path.join(
+                dirname, 'documents', str(doc.year), doc.type, tail)
+            fp.addfile(ti, fileobj=doc.doc_file.file)
+            doc.doc_file.close()
+        pi.done()
+
+    def dump_aliases(self, fp):
+        aliases = [
+            self.dump_basic(alias, 'source destination'.split())
+            for alias in Aliases.objects.all()
+        ]
+        json.dump(aliases, fp, indent=0)
+
     def handle(self, filename, **kwargs):
-        qs = TutorProfile.objects.all().select_related(
-            'tutor__groups', 'rus__rusclass')
-        count = qs.count()
+        dirname = datetime.datetime.now().strftime('mftutor%Y%m%d%H%M%S')
 
-        with open(filename, 'w') as fp:
-            fp.write('[\n')
-            comma = ''
-            for i, tp in enumerate(qs):
-                sys.stdout.write((u'\r\033[K[%4d/%4d] %s' %
-                                  (i + 1, count, tp.name)).encode('utf8'))
-                sys.stdout.flush()
-                fp.write(comma)
-                comma = ',\n'
+        os.mkdir(dirname)
 
-                json.dump(self.dump_tutorprofile(tp), fp, indent=0)
-            fp.write(']\n')
-            print('')
+        with open(os.path.join(dirname, 'tutorprofiles.json'), 'w') as fp:
+            self.dump_tutorprofiles(fp)
+
+        with open(os.path.join(dirname, 'documents.json'), 'w') as fp:
+            self.dump_documents(fp)
+
+        with open(os.path.join(dirname, 'aliases.json'), 'w') as fp:
+            self.dump_aliases(fp)
+
+        if filename.endswith('gz'):
+            mode = 'w:gz'
+        elif filename.endswith('bz2'):
+            mode = 'w:bz2'
+        else:
+            mode = 'w:'
+
+        fp = tarfile.open(filename, mode)
+        try:
+            fp.add(os.path.join(dirname, 'tutorprofiles.json'))
+            fp.add(os.path.join(dirname, 'documents.json'))
+            self.add_pictures(dirname, fp)
+            self.add_documents(dirname, fp)
+        finally:
+            fp.close()
+        shutil.rmtree(dirname)
