@@ -14,14 +14,17 @@ from mftutor.tutor.models import (
 def get_timestamp(dt):
     tz = dt.tzinfo
     epoch = dt - datetime.datetime(1970, 1, 1, tzinfo=tz)
-    total_seconds = epoch.seconds + epoch.microseconds / 1e6 + epoch.days * (3600 * 24)
+    total_seconds = (epoch.seconds +
+                     epoch.microseconds / 1e6 +
+                     epoch.days * (3600 * 24))
     return total_seconds
 
 
 class Command(BaseCommand):
     can_import_settings = True
     option_list = BaseCommand.option_list + (
-        make_option('--filename',
+        make_option(
+            '--filename',
             dest='filename',
             default='mftutorexport.json'),
     )
@@ -53,7 +56,7 @@ class Command(BaseCommand):
 
         for tu in tp.tutor_set.all():
             early_termination = None
-            if tu.early_termination != None:
+            if tu.early_termination:
                 early_termination = {
                     'date': get_timestamp(tu.early_termination),
                     'reason': tu.early_termination_reason,

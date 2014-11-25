@@ -19,7 +19,8 @@ def from_timestamp(total_seconds):
 class Command(BaseCommand):
     can_import_settings = True
     option_list = BaseCommand.option_list + (
-        make_option('--filename',
+        make_option(
+            '--filename',
             dest='filename',
             default='mftutorexport.json'),
     )
@@ -36,8 +37,9 @@ class Command(BaseCommand):
         try:
             return self.rusclasses[key]
         except KeyError:
-            rc = self.load_basic(RusClass, rcdata,
-                            'handle official_name internal_name year'.split())
+            rc = self.load_basic(
+                RusClass, rcdata,
+                'handle official_name internal_name year'.split())
             rc.save()
             self.rusclasses[key] = rc
             return rc
@@ -47,8 +49,9 @@ class Command(BaseCommand):
         try:
             return self.groups[key]
         except KeyError:
-            tg = self.load_basic(TutorGroup, groupdata,
-                            'visible handle name'.split())
+            tg = self.load_basic(
+                TutorGroup, groupdata,
+                'visible handle name'.split())
             tg.save()
             self.groups[key] = tg
             return tg
@@ -96,7 +99,8 @@ class Command(BaseCommand):
             rus = self.load_basic(Rus, rusdata, 'arrived year'.split())
             rus.profile = tp
             rus.rusclass = self.load_rusclass(rusdata['rusclass'])
-            rus.initial_rusclass = self.load_rusclass(rusdata['initial_rusclass'])
+            rus.initial_rusclass = self.load_rusclass(
+                rusdata['initial_rusclass'])
             rus.save()
 
     def handle(self, *args, **kwargs):
@@ -107,20 +111,24 @@ class Command(BaseCommand):
         usernames = [tp['username'] for tp in data]
 
         chunksize = 500
+        chunks = int((len(studentnumbers) + chunksize - 1) / chunksize)
         # Maps studentnumber to TutorProfile
         self.tutorprofiles = dict(
             (tp.studentnumber, tp)
-            for chunk in range(int((len(studentnumbers) + chunksize - 1) / chunksize))
+            for chunk in range(chunks)
             for tp in TutorProfile.objects.filter(
-                studentnumber__in=studentnumbers[chunk * chunksize : (chunk + 1) * chunksize])
+                studentnumber__in=studentnumbers[
+                    (chunk * chunksize):((chunk + 1) * chunksize)])
         )
 
         # Maps username to User
+        chunks = int((len(usernames) + chunksize - 1) / chunksize)
         self.users = dict(
             (user.username, user)
-            for chunk in range(int((len(usernames) + chunksize - 1) / chunksize))
+            for chunk in range(chunks)
             for tp in User.objects.filter(
-                username__in=usernames[chunk * chunksize : (chunk + 1) * chunksize])
+                username__in=usernames[
+                    (chunk * chunksize):((chunk + 1) * chunksize)])
         )
 
         group_keys = sorted(set(
@@ -141,22 +149,26 @@ class Command(BaseCommand):
             for tudata in tp['tutor']:
                 rusclass = tudata['rusclass']
                 if rusclass:
-                    rusclass_keys.append((rusclass['year'], rusclass['handle']))
+                    rusclass_keys.append(
+                        (rusclass['year'], rusclass['handle']))
             for rusdata in tp['rus']:
                 rusclass = rusdata['rusclass']
                 if rusclass:
-                    rusclass_keys.append((rusclass['year'], rusclass['handle']))
+                    rusclass_keys.append(
+                        (rusclass['year'], rusclass['handle']))
 
         rusclass_years = sorted(set(year for year, handle in rusclass_keys))
         rusclass_byyear = [
-            (year, [handle for year_, handle in rusclass_keys if year == year_])
+            (year,
+             [handle for year_, handle in rusclass_keys if year == year_])
             for year in rusclass_years
         ]
         # Maps (year, handle) to RusClass
         self.rusclasses = dict(
             ((year, rusclass.handle), rusclass)
             for year, handles in rusclass_byyear
-            for rusclass in RusClass.objects.filter(year=year, handle__in=handles)
+            for rusclass in RusClass.objects.filter(
+                year=year, handle__in=handles)
         )
 
         count = len(data)
@@ -165,7 +177,7 @@ class Command(BaseCommand):
         for i, tpdata in enumerate(data):
             sys.stdout.write((u'\r\033[K[%4d+%4d/%4d] %s' %
                               (loaded, skipped, count, tpdata['name'])
-                             ).encode('utf8'))
+                              ).encode('utf8'))
             sys.stdout.flush()
 
             if tpdata['studentnumber'] in self.tutorprofiles:
@@ -174,6 +186,5 @@ class Command(BaseCommand):
                 self.tutorprofiles[tpdata['studentnumber']] = (
                     self.load_tutorprofile(tpdata))
                 loaded += 1
-
 
         print('')
