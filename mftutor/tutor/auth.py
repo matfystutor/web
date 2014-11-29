@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.template import RequestContext, loader
 import django.contrib.auth.backends
-from ..settings import YEAR
+from ..settings import YEAR, TUTORMAIL_YEAR
 from .models import TutorProfile, Tutor, Rus
 
 class NotTutor(Exception):
@@ -21,17 +21,21 @@ def user_profile_data(user):
     if not user.is_active:
         raise NotTutor('djangoinactive')
     try:
-        d.profile = user.get_profile()
+        d.profile = user.tutorprofile
     except TutorProfile.DoesNotExist:
         raise NotTutor('notutorprofile')
     return d
 
 def user_tutor_data(user):
     d = user_profile_data(user)
+    d.tutor = None
     try:
-        d.tutor = Tutor.members.get(profile=d.profile)
+        d.tutor = Tutor.objects.get(year=YEAR, profile=d.profile)
     except Tutor.DoesNotExist:
-        raise NotTutor('notutoryear')
+        try:
+            d.tutor = Tutor.objects.get(year=TUTORMAIL_YEAR, profile=d.profile)
+        except Tutor.DoesNotExist:
+            raise NotTutor('notutoryear')
     return d
 
 def user_rus_data(user):
@@ -66,7 +70,7 @@ def tutorbest_required(fn):
             d = user_tutor_data(request.user)
         except NotTutor as e:
             return tutorbest_required_error(request)
-        if not d.tutor.is_tutorbest():
+        if not d.tutor.is_tutorbest(year=d.tutor.year):
             return tutorbest_required_error(request)
         return fn(request, *args, **kwargs)
     wrapper.__name__ = fn.__name__
@@ -80,8 +84,6 @@ def tutor_required(fn):
         try:
             d = user_tutor_data(request.user)
         except NotTutor as e:
-            return tutor_required_error(request)
-        if not d.tutor.is_member():
             return tutor_required_error(request)
         import inspect
         namedargs, varargs, varkw, defaults = inspect.getargspec(fn)

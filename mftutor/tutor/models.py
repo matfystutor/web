@@ -146,11 +146,11 @@ class Tutor(models.Model):
         return self.is_tutorbur() or self.rusclass
 
     def is_member(self, year=None):
+        from ..settings import YEAR
         if year is None:
-            from ..settings import YEAR
             year = YEAR
 
-        if self.year != YEAR:
+        if self.year != year:
             return False
         elif self.early_termination is not None:
             return False
@@ -158,8 +158,8 @@ class Tutor(models.Model):
             return True
     is_member.boolean = True
 
-    def is_tutorbest(self):
-        if not self.is_member():
+    def is_tutorbest(self, year=None):
+        if not self.is_member(year=year):
             return False
         elif self.groups.filter(handle__exact='best').exists():
             return True
