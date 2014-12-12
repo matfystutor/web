@@ -177,7 +177,7 @@ class Command(BaseCommand):
     def dump_aliases(self, fp):
         aliases = [
             self.dump_basic(alias, 'source destination'.split())
-            for alias in Aliases.objects.all()
+            for alias in Alias.objects.all()
         ]
         json.dump(aliases, fp, indent=0)
 
