@@ -100,12 +100,12 @@ class EmailFormView(FormView):
             bcc=recipients,
         )
 
-        # email_backend = django.core.mail.get_connection(
-        #     backend=backend_type)
-
         email_backend = django.core.mail.get_connection(
-            backend='django.core.mail.backends.filebased.EmailBackend',
-            file_path='./mails')
+            backend=email_backend_type)
+
+        # email_backend = django.core.mail.get_connection(
+        #     backend='django.core.mail.backends.filebased.EmailBackend',
+        #     file_path='./mails')
 
         email_backend.send_messages([msg])
 
