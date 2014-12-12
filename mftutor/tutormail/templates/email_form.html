@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{# vim: set sw=2: #}
+{% block head %}
+<style type="text/css">
+  #id_text { width: 100%; }
+</style>
+{% endblock %}
+{# vim: set sw=2: #}
+{% block title %}Email{% endblock %}
+
+{% block content %}
+<h1>Send email til alle tutorer</h1>
+
+<form method="post">{% csrf_token %}
+  <p>Fra: {{ from }}</p>
+  <p>Emne: {{ form.subject }}</p>
+  <p>Indhold:</p>
+  <p>{{ form.text }}</p>
+  <p>Linjeombrydning: {{ form.wrapping }}</p>
+  <p>
+    <input name="wrap" type="submit" value="Ombryd linjer" />
+    <input name="send" type="submit" value="Send mail!" />
+    <input name="only_me" type="submit" value="Send kun til mig" />
+  </p>
+</form>
+
+<p>Sender til:</p>
+<ul>
+  {% for email in recipients %}
+  <li>{{ email }}</li>
+  {% endfor %}
+</ul>
+
+{% endblock %}
