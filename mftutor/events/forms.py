@@ -1,5 +1,7 @@
 from django import forms
+from django.forms import Form, CharField, Textarea, ValidationError
 from .models import EventParticipant
+import mftutor.events.bulk
 
 class RSVPForm(forms.ModelForm):
     class Meta:
@@ -25,3 +27,13 @@ class RSVPFormAjax(forms.Form):
         ('no', 'Kommer ikke',),
         ('maybe', 'Har ikke taget stilling',),
         ))
+
+
+class BulkImportForm(Form):
+    events = CharField(widget=Textarea)
+
+    def clean_events(self):
+        try:
+            return mftutor.events.bulk.parse(self.cleaned_data['events'])
+        except ValueError, e:
+            raise ValidationError(u'Ugyldig data: %s' % e)

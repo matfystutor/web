@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Importér begivenheder{% endblock %}
+{% block content %}
+<h1>Importér begivenheder</h1>
+<form method="post">{% csrf_token %}
+<p>{{ form.events }} {{ form.events.errors }}</p>
+<p><input type="submit" value="Importér" /></p>
+</form>
+{% endblock %}

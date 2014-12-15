@@ -1,4 +1,4 @@
-from django.views.generic import DetailView, ListView, FormView
+from django.views.generic import DetailView, ListView, FormView, View
 from django.shortcuts import render_to_response, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
@@ -6,7 +6,8 @@ from django.http import HttpResponse
 from ..tutor.auth import user_tutor_data, NotTutor
 from .. import settings
 from .models import Event, EventParticipant
-from .forms import RSVPForm, RSVPFormAjax
+from .forms import RSVPForm, RSVPFormAjax, BulkImportForm
+import mftutor.events.bulk
 
 def event_detail_view(request, eventid):
     event = get_object_or_404(Event.objects.filter(pk=eventid))
@@ -83,3 +84,27 @@ class RSVPFormView(FormView):
         ep.save()
 
         return HttpResponse(status=204)
+
+
+class BulkExportView(View):
+    def get(self, request, year):
+        events = (
+            Event.objects.filter(start_date__year=year).order_by('start_date'))
+
+        return HttpResponse(
+            content=mftutor.events.bulk.dumps(events),
+            mimetype='text/plain; charset=utf8',
+        )
+
+
+class BulkImportView(FormView):
+    form_class = BulkImportForm
+    template_name = "events_import.html"
+
+    def get_success_url(self):
+        return reverse('events_import')
+
+    def form_valid(self, form):
+        for event in form.cleaned_data['events']:
+            event.save()
+        return super(BulkImportView, self).form_valid(form)
