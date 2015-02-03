@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django import forms
 from django.contrib.auth.views import password_change
-from django.views.generic import ListView, UpdateView, TemplateView
+from django.views.generic import ListView, UpdateView, TemplateView, FormView
 from ..settings import YEAR
 from .models import *
 from .viewimpl.loginout import logout_view, login_view
@@ -97,8 +97,8 @@ class FrontView(TemplateView):
 
 
 class GroupLeaderForm(forms.Form):
-    def __init__(self, year, groups):
-        super(GroupLeaderForm, self).__init__()
+    def __init__(self, year, groups, *args, **kwargs):
+        super(GroupLeaderForm, self).__init__(*args, **kwargs)
         self.tutor_year = year
 
         for i, group in enumerate(groups):
@@ -106,6 +106,7 @@ class GroupLeaderForm(forms.Form):
                 (tu.pk, tu.profile.name)
                 for tu in Tutor.objects.filter(year=year, groups=group)
             ]
+            choices[0:0] = [('', '')]
 
             try:
                 current_leader = TutorGroupLeader.objects.get(
@@ -123,6 +124,12 @@ class GroupLeaderView(FormView):
     form_class = GroupLeaderForm
     template_name = 'groupleaderadmin.html'
 
+    def get_form_kwargs(self):
+        kwargs = super(GroupLeaderView, self).get_form_kwargs()
+        kwargs['year'] = YEAR
+        kwargs['groups'] = TutorGroup.objects.filter(visible=True)
+        return kwargs
+
     def form_valid(self, form):
         for field in form:
             if not field.name.startswith('group_'):
@@ -131,17 +138,25 @@ class GroupLeaderView(FormView):
             handle = field.name[6:]
 
             try:
-                current_leader = TutorGroupLeader.objects.get(
-                    year=year, group=group)
+                current_leader_object = TutorGroupLeader.objects.get(
+                    year=YEAR, group__handle=handle)
             except TutorGroupLeader.DoesNotExist:
-                current_leader = TutorGroupLeader(
-                    year=year, group=group)
+                current_leader_object = TutorGroupLeader(
+                    year=YEAR, group=TutorGroup.objects.get(handle=handle))
+
+            try:
+                current_leader = current_leader_object.tutor
+            except Tutor.DoesNotExist:
+                current_leader = None
 
             if field.data:
                 new_leader = Tutor.objects.get(pk=field.data)
             else:
                 new_leader = None
 
-            if current_leader.tutor != new_leader:
-                current_leader.tutor = new_leader
-                current_leader.save()
+            if current_leader != new_leader:
+                current_leader_object.tutor = new_leader
+                current_leader_object.save()
+
+        return self.render_to_response(
+            self.get_context_data(form=form, success=True))
