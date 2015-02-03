@@ -94,3 +94,54 @@ class FrontView(TemplateView):
             pass
 
         return super(FrontView, self).get(request, *args, **kwargs)
+
+
+class GroupLeaderForm(forms.Form):
+    def __init__(self, year, groups):
+        super(GroupLeaderForm, self).__init__()
+        self.tutor_year = year
+
+        for i, group in enumerate(groups):
+            choices = [
+                (tu.pk, tu.profile.name)
+                for tu in Tutor.objects.filter(year=year, groups=group)
+            ]
+
+            try:
+                current_leader = TutorGroupLeader.objects.get(
+                    year=year, group=group).tutor.pk
+            except TutorGroupLeader.DoesNotExist:
+                current_leader = ''
+
+            self.fields['group_%s' % group.handle] = forms.ChoiceField(
+                required=False,
+                choices=choices,
+                initial=current_leader)
+
+
+class GroupLeaderView(FormView):
+    form_class = GroupLeaderForm
+    template_name = 'groupleaderadmin.html'
+
+    def form_valid(self, form):
+        for field in form:
+            if not field.name.startswith('group_'):
+                continue
+
+            handle = field.name[6:]
+
+            try:
+                current_leader = TutorGroupLeader.objects.get(
+                    year=year, group=group)
+            except TutorGroupLeader.DoesNotExist:
+                current_leader = TutorGroupLeader(
+                    year=year, group=group)
+
+            if field.data:
+                new_leader = Tutor.objects.get(pk=field.data)
+            else:
+                new_leader = None
+
+            if current_leader.tutor != new_leader:
+                current_leader.tutor = new_leader
+                current_leader.save()
