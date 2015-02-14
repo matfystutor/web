@@ -84,6 +84,29 @@ def data_of_studentnumbers(studentnumbers):
             for profile in TutorProfile.objects.filter(
                 studentnumber__in=studentnumbers).all()]
 
+
+def read_rejects(filename='rejects.tsv'):
+    with open(filename) as fp:
+        keys = None
+        rows = []
+        for i, line in enumerate(fp):
+            row = tuple(v.strip() for v in line.split('\t'))
+            line = i + 1
+            if keys is None:
+                keys = tuple(k.lower() for k in row)
+            else:
+                if len(row) > len(keys):
+                    raise ValueError(
+                        '%s:%d has %d cells, but we only have %d columns' %
+                        (filename, line, len(row), len(keys)))
+                rows.append(dict(zip(keys[:len(row)], row)))
+
+    if any(k not in keys for k in 'name email'.split()):
+        print('%s needs columns name and email')
+
+    return [(row['name'], row['email']) for row in rows]
+
+
 def make_mails(not_tutor, joker_numbers, no_mail, passwords):
     """
     not_tutor: list of {navn, email}-dicts (made from data_of_studentnumbers)
@@ -249,3 +272,6 @@ def make_mails(not_tutor, joker_numbers, no_mail, passwords):
         )
         e.save()
 
+
+def __main__():
+    rejects = read_rejects()
