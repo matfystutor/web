@@ -1,11 +1,17 @@
 # encoding: utf-8
+import subprocess
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect, render_to_response
 from django.core.urlresolvers import reverse
+from django.core.exceptions import ValidationError
 from django.template import RequestContext
+from django.template import Template, Context
+from django.template.loader import get_template
+from django.core.mail import EmailMessage
+from django.core.mail import get_connection
 from django import forms
 from django.contrib.auth.views import password_change
-from django.views.generic import ListView, UpdateView, TemplateView, FormView
+from django.views.generic import ListView, UpdateView, TemplateView, FormView, View
 from ..settings import YEAR
 from .models import *
 from .viewimpl.loginout import logout_view, login_view
@@ -160,3 +166,76 @@ class GroupLeaderView(FormView):
 
         return self.render_to_response(
             self.get_context_data(form=form, success=True))
+
+
+class ResetPasswordForm(forms.Form):
+    studentnumbers = forms.CharField(widget=forms.Textarea)
+    # confirm = forms.BooleanField(required=False)
+
+    def clean_studentnumbers(self):
+        studentnumbers = self.cleaned_data['studentnumbers']
+        tps = list(TutorProfile.objects.filter(studentnumber__in=studentnumbers.split()))
+        tp = dict((tp.studentnumber, tp) for tp in tps)
+        for sn in studentnumbers.split():
+            if sn not in tp:
+                raise ValidationError(u'Ukendt årskortnummer %r' % (sn,))
+        return tps
+
+
+def generate_passwords(pw_length, num_pw):
+    p = subprocess.Popen(
+        ('pwgen',
+         '--capitalize',
+         '--numerals',
+         str(pw_length),
+         str(num_pw)),
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        universal_newlines=True)
+    p.stdin.close()
+    passwords = p.stdout.read().split()
+    p.stdout.close()
+    p.wait()
+    return passwords
+
+
+class ResetPasswordView(FormView):
+    template_name = 'reset_password.html'
+    form_class = ResetPasswordForm
+
+    def form_valid(self, form):
+        data = form.cleaned_data
+        if 'confirm' in self.request.POST:
+            subject = 'Nyt kodeord til tutorhjemmesiden'
+            sender = '"Mathias Rav" <webfar@matfystutor.dk>'
+            body = get_template('emails/new_password.txt')
+
+            tps = data['studentnumbers']
+            passwords = generate_passwords(8, len(tps))
+            messages = []
+            for tp, password in zip(tps, passwords):
+                messages.append(EmailMessage(
+                    subject=subject,
+                    from_email=sender,
+                    body=body.render(Context(dict(
+                        navn=tp.name,
+                        username=tp.studentnumber,
+                        password=password,
+                        webfar='Mathias Rav'
+                    ))),
+                    to=['"%s" <%s>' % (tp.name, tp.email)],
+                ))
+                tp.user.set_password(password)
+                tp.user.save()
+
+            email_backend_type = 'django.core.mail.backends.smtp.EmailBackend'
+
+            email_backend = get_connection(backend=email_backend_type)
+            res = email_backend.send_messages(messages)
+
+            return self.render_to_response(
+                self.get_context_data(form=form, success=True))
+
+        else:
+            return self.render_to_response(
+                self.get_context_data(form=form, confirm=True, tutors=data['studentnumbers']))
