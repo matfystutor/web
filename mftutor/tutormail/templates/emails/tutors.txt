@@ -5,27 +5,27 @@ Tillykke TILLYKKE tillykke :-D
 Du er blevet tutor for tutoråret {{ year }}. Da vi ikke kender antallet af kommende russer endnu,
 kan vi dog ikke garantere, at du bliver holdtutor.
 
-Vi har oprettet en konto til dig inde på tutorhjemmesiden: matfystutor.dk.
+Vi har oprettet en konto til dig inde på tutorhjemmesiden: www.matfystutor.dk,
+hvor du logger ind med dit årskortnummer: {{ studentnumber }}.
 {% if password %}Dit kodeord er {{ password }} -- men dette kan du ændre på hjemmesiden.{% else %}Dit kodeord er det samme, som du tidligere har brugt til tutor-/rushjemmesiden.{% endif %}
 
 Vi har fordelt folk i grupper og har forsøgt at opfylde alles ønsker så vidt
-muligt. Du er kommet i {{ group1 }} og {{ group2 }}. Den gruppeansvarlige for
-hver gruppe indkalder snarest til et gruppemøde. Hvis du er blevet valgt
-til gruppeansvarlig, får du en separat mail om dette. 
+muligt. Du er kommet i {{ groups }}. Den gruppeansvarlige for
+hver gruppe indkalder snarest til et gruppemøde. 
 
 
-Du skal også gå ind under &quot;Personligt&quot; --&gt; &quot;Profil&quot; og
+Du skal også gå ind under "Personligt" --> "Profil" og
 udfylde oplysningerne om dig selv. Desuden skal du
 uploade et vellignende og sobert billede af dig selv under
-&quot;Personligt&quot; --&gt; &quot;Upload Billede&quot;.
+"Personligt" --> "Upload Billede".
 
 Hvis du har spørgsmål eller kommentarer, er du velkommen til at kontakte
 os på best@matfystutor.dk.
 Hvis der er problemer med din tutorkonto kan du også skrive direkte
 til den webansvarlige på webfar@matfystutor.dk.
 
-Vi glæder os til at ses til RKFL&sup2; d. 28. februar 2015.
+Vi glæder os til at ses til RusKursusForberende Lang Lørdag d. 28. februar 2015.
 Tidspunkt og sted melder vi ud, så snart det ligger fast. 
 
 På vegne af tutorbestyrelsen,
-{{ webfar.name }}
+{{ webfar }}

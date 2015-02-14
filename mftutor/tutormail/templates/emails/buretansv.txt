@@ -1,22 +1,18 @@
-Kære {{ navn }}
-	
-Tillykke TILLYKKE tillykke :-D
+Kære {{ navn }},
 
-Du er blevet tutor for tutoråret {{ year }}. Da vi ikke kender antallet af kommende russer endnu,
-kan vi dog ikke garantere, at du bliver holdtutor.
-
+Du er blevet udtaget til at assistere den fabelagtige
+Mat/Fys-Tutorgruppe med at drive dette års udgave af Buret™.
+Du kan føle dig stolt. Buret™ er en særligt sej gruppe.
+{% if groups %}
+Udover buret er du også kommet i {{ groups }}
+{% endif %}
 Vi har oprettet en konto til dig inde på tutorhjemmesiden: www.matfystutor.dk,
 hvor du logger ind med dit årskortnummer: {{ studentnumber }}.
 {% if password %}Dit kodeord er {{ password }} -- men dette kan du ændre på hjemmesiden.{% else %}Dit kodeord er det samme, som du tidligere har brugt til tutor-/rushjemmesiden.{% endif %}
 
-Du skal også gå ind under "Personligt" --> "Profil" og
-udfylde oplysningerne om dig selv. Desuden skal du
-uploade et vellignende og sobert billede af dig selv under
-"Personligt" --> "Upload Billede".
-
-Vi har fordelt folk i grupper og har forsøgt at opfylde alles ønsker så vidt
-muligt. Du er kommet i {{ groups }}. Den gruppeansvarlige for
-hver gruppe indkalder snarest til et gruppemøde. 
+På siden skal du under "Personligt" --> "Profil" udfylde de manglende
+oplysningerne om dig selv. Derudover skal du også under "Personligt" -->
+"Upload Billede" uploade et vellignende billede.
 
 Vi har desuden vurderet, at du er ansvarlig og pålidelig, og derfor har vi
 gjort dig til gruppeansvarlig for {{ group }} :)
@@ -44,9 +40,6 @@ så er en fra din gruppe også i LaTeX-gruppen.
 
 Hvis der er en grund til, at du ikke ønsker at være gruppeansvarlig,
 skal bestyrelsen godkende et eventuelt bytte.
-
-Vi glæder os til at ses til RusKursusForberende Lang Lørdag d. 28. februar 2015.
-Tidspunkt og sted melder vi ud, så snart det ligger fast. 
 
 På vegne af tutorbestyrelsen,
 {{ webfar }}

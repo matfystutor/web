@@ -1,17 +1,18 @@
 Kære {{ navn }},
 
 Du er blevet udtaget til at assistere den fabelagtige
-Mat/Fys-Tutorgruppe med at drive dette års udgave af Buret™. Du kan
-føle dig stolt. Buret™ er en særligt sej gruppe.
+Mat/Fys-Tutorgruppe med at drive dette års udgave af Buret™.
+Du kan føle dig stolt. Buret™ er en særligt sej gruppe.
 {% if groups %}
 Udover buret er du også kommet i {{ groups }}
 {% endif %}
-Der er blevet oprettet en konto til dig inde på tutorhjemmesiden matfystutor.dk.
-{% if password %}Dit kodeord er {{ password }} -- men dette kan du ændre på hjemmesiden.{% else %}Dit kodeord er det samme, som du tidligere har brugt til tutor-/rushjemmesiden.{% endif %}</span><br></div>
+Vi har oprettet en konto til dig inde på tutorhjemmesiden: www.matfystutor.dk,
+hvor du logger ind med dit årskortnummer: {{ studentnumber }}.
+{% if password %}Dit kodeord er {{ password }} -- men dette kan du ændre på hjemmesiden.{% else %}Dit kodeord er det samme, som du tidligere har brugt til tutor-/rushjemmesiden.{% endif %}
 
 På siden skal du under "Personligt" --> "Profil" udfylde de manglende
 oplysningerne om dig selv. Derudover skal du også under "Personligt" -->
 "Upload Billede" uploade et vellignende billede.
 
-Hilsen {{ burfar.name }}
-Buransvarlig i Mat/Fys-Tutorgruppen
+På vegne af tutorbestyrelsen,
+{{ webfar }}
