@@ -4,9 +4,7 @@ function navneleg() {
   navneleg_activated = true;
 
   var aliases = {
-	 "Anders Grøn Stensgaard" :				["grøn"],
-	 "Hans-Martin Hannibal Lauridsen":		["hannibal"],
-	 "Malene Machon Pedersen":					["machon"],
+    "Anders Grøn Stensgaard" :            ["grøn"],
     "Andreas Bendix Nuppenau":            ["funu"],
     "Asbjørn Stensgaard Nielsen":         ["funi"],
     "Britt Fredsgaard":                   ["bkass", "bka$$", "fredslund", "fulu"],
@@ -18,6 +16,7 @@ function navneleg() {
     "Frederik Brinck Truelsen":           ["ålen"],
     "Frederik Jerløv":                    ["furi"],
     "Hans Christian Tankred":             ["hc"],
+    "Hans-Martin Hannibal Lauridsen":     ["hannibal"],
     "Henrik Knakkegaard Christensen":     ["knakke", "kendrik", "kenrik"],
     "Henrik Lund Mortensen":              ["fuan"],
     "Jacob Albæk Schnedler":              ["fuco"],
@@ -37,6 +36,7 @@ function navneleg() {
     "Mads Fabricius":                     ["gcerm", "trefuan"],
     "Mai Olsen":                          ['3. mai'],
     "Maiken Haahr Hansen":                ["gvc", "fuma", "mølle"],
+    "Malene Machon Pedersen":             ["machon"],
     "Marianne Ostenfeldt Mortensen":      ["fumo"],
     "Marie Ulsø":                         ["øko", "økomor", "kromutter", "ulsø"],
     "Martin Sand":                        ["furt"],
