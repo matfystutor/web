@@ -7,6 +7,7 @@ from django.views.generic import View
 
 #from ..settings import YEAR
 from mftutor.tutor.models import Rus
+from mftutor.events.models import EventParticipant
 
 
 class DumpView(View):
@@ -35,10 +36,13 @@ class DumpView(View):
             display_fields = params.pop('display_fields').split(',')
         except KeyError as e:
             return self.usage('Missing param display_fields')
-        if any(f not in available_fields.keys() for f in display_fields):
+        available_display_fields = set(available_fields.keys())
+        available_display_fields.add('n')
+        if any(f not in available_display_fields for f in display_fields):
             return self.usage('Invalid display_fields')
 
         order_by = params.pop('order_by', None)
+        download = params.pop('download', None)
 
         filter_kwargs = {}
         for k, v in params.items():
@@ -59,12 +63,18 @@ class DumpView(View):
             objects = objects.order_by(*args)
 
         rows = [
-            [self.access_field(o, available_fields[k])
+            [i+1 if k == 'n' else self.access_field(o, available_fields[k])
              for k in display_fields]
-            for o in objects
+            for i, o in enumerate(objects)
         ]
         s = ''.join('%s\n' % '\t'.join(map(unicode, r)) for r in rows)
-        return HttpResponse(s, 'text/plain; charset=utf-8')
+        response = HttpResponse(s)
+        if download is not None:
+            response['Content-Disposition'] = 'attachment; filename="dump.csv"'
+            response['Content-Type'] = 'text/csv; charset=utf-8'
+        else:
+            response['Content-Type'] = 'text/plain; charset=utf-8'
+        return response
 
 
 class RusDumpView(DumpView):
@@ -76,4 +86,14 @@ class RusDumpView(DumpView):
         'phone': 'profile__phone',
         'email': 'profile__email',
         'studentnumber': 'profile__studentnumber',
+    }
+
+
+class EventsDumpView(DumpView):
+    model = EventParticipant
+    available_fields = {
+        'event': 'event__pk',
+        'name': 'tutor__profile__name',
+        'status': 'status',
+        'notes': 'notes',
     }
