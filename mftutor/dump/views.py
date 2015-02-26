@@ -6,7 +6,7 @@ from django.template import RequestContext
 from django.views.generic import View
 
 #from ..settings import YEAR
-from mftutor.tutor.models import Rus
+from mftutor.tutor.models import Tutor, Rus
 from mftutor.events.models import EventParticipant
 
 
@@ -26,6 +26,7 @@ class DumpView(View):
             '\n\n' +
             'Use display_fields=f1,f2 to set tab-separated output columns.\n' +
             'Use order_by=f1,f2 to set the output order.\n',
+            'Use format=tex&tex_name=bla to output lines like \\bla{f1}{f2}.\n',
             'text/plain; charset=utf8')
 
     def get(self, request):
@@ -43,6 +44,12 @@ class DumpView(View):
 
         order_by = params.pop('order_by', None)
         download = params.pop('download', None)
+        tex_name = params.pop('tex_name', self.tex_name)
+        fmt = params.pop('format', 'tsv')
+        try:
+            formatter = getattr(self, 'format_%s' % (fmt,))
+        except AttributeError:
+            return self.usage('Unknown format %s' % (fmt,))
 
         filter_kwargs = {}
         for k, v in params.items():
@@ -67,7 +74,7 @@ class DumpView(View):
              for k in display_fields]
             for i, o in enumerate(objects)
         ]
-        s = ''.join('%s\n' % '\t'.join(map(unicode, r)) for r in rows)
+        s = formatter(rows, tex_name=tex_name)
         response = HttpResponse(s)
         if download is not None:
             response['Content-Disposition'] = 'attachment; filename="dump.csv"'
@@ -75,6 +82,28 @@ class DumpView(View):
         else:
             response['Content-Type'] = 'text/plain; charset=utf-8'
         return response
+
+    def format_tsv(self, rows, **kwargs):
+        return ''.join('%s\n' % '\t'.join(map(unicode, r)) for r in rows)
+
+    def format_tex(self, rows, tex_name, **kwargs):
+        return ''.join(
+            '\\%s%s' % (tex_name,
+                        ''.join('{%s}' % x for x in r))
+            for r in rows)
+
+
+class TutorDumpView(DumpView):
+    model = Tutor
+    available_fields = {
+        'year': 'year',
+        'rusclass': 'rusclass',
+        'name': 'profile__name',
+        'phone': 'profile__phone',
+        'email': 'profile__email',
+        'studentnumber': 'profile__studentnumber',
+    }
+    tex_name = 'tutor'
 
 
 class RusDumpView(DumpView):
@@ -87,6 +116,7 @@ class RusDumpView(DumpView):
         'email': 'profile__email',
         'studentnumber': 'profile__studentnumber',
     }
+    tex_name = 'rus'
 
 
 class EventsDumpView(DumpView):
@@ -97,3 +127,4 @@ class EventsDumpView(DumpView):
         'status': 'status',
         'notes': 'notes',
     }
+    tex_name = 'tutor'
