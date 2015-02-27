@@ -20,10 +20,10 @@ class ProfileView(FormView):
     form_class = ProfileForm
     template_name = 'profile.html'
 
-    def dispatch(self, request):
+    def dispatch(self, request, *args, **kwargs):
         d = user_tutor_data(request.user)
         self.tutorprofile = d.profile
-        return super(ProfileView, self).dispatch(request)
+        return super(ProfileView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context_data = super(ProfileView, self).get_context_data(**kwargs)
