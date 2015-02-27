@@ -25,7 +25,7 @@ class DumpView(View):
             ', '.join(self.available_fields.keys()) +
             '\n\n' +
             'Use display_fields=f1,f2 to set tab-separated output columns.\n' +
-            'Use order_by=f1,f2 to set the output order.\n',
+            'Use order_by=f1,f2 to set the output order.\n' +
             'Use format=tex&tex_name=bla to output lines like \\bla{f1}{f2}.\n',
             'text/plain; charset=utf8')
 
