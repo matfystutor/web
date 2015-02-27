@@ -98,6 +98,7 @@ class TutorDumpView(DumpView):
     available_fields = {
         'year': 'year',
         'rusclass': 'rusclass',
+        'study': 'profile__study',
         'name': 'profile__name',
         'phone': 'profile__phone',
         'email': 'profile__email',
