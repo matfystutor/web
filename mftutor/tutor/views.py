@@ -64,6 +64,18 @@ def tutors_view(request, group=None):
         'email': t.profile.email,
         'study': t.profile.study,
         } for t in tutors]
+    if lookup_group == 'tutorsmiley' and YEAR in [2015]:
+        tutors.append({
+            'pk': ':)',
+            'studentnumber': '88888888',
+            'picture': '/upload/tutorpics/smiley.png',
+            'full_name': 'Smiley',
+            'street': '',
+            'city': '',
+            'phone': '88888888',
+            'email': u'SMILEY@SMILEY.☺',
+            'study': 'Smil',
+        })
     tutors.sort(key=lambda t: (t['pk'] != leader_pk, t['full_name']))
 
     groups = TutorGroup.visible_groups.all()
