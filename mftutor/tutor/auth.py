@@ -79,12 +79,13 @@ def tutorbest_required(fn):
 # Decorator
 def tutor_required(fn):
     def wrapper(request, *args, **kwargs):
-        if request.user.is_superuser:
-            return fn(request, *args, **kwargs)
         try:
             d = user_tutor_data(request.user)
         except NotTutor as e:
-            return tutor_required_error(request)
+            if request.user.is_superuser:
+                return fn(request, *args, **kwargs)
+            else:
+                return tutor_required_error(request)
         import inspect
         namedargs, varargs, varkw, defaults = inspect.getargspec(fn)
         if varkw is not None or 'tutor' in namedargs:
