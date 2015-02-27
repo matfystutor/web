@@ -88,7 +88,7 @@ class DumpView(View):
 
     def format_tex(self, rows, tex_name, **kwargs):
         return ''.join(
-            '\\%s%s' % (tex_name,
+            '\\%s%s\n' % (tex_name,
                         ''.join('{%s}' % x for x in r))
             for r in rows)
 
