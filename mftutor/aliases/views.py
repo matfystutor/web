@@ -14,7 +14,7 @@ class AliasesView(TemplateView):
     def get_queryset(self, request):
         return TutorGroup.visible_groups.all()
 
-    def get(self, request):
+    def get(self, request, **kwargs):
         current_site = get_current_site(request)
         queryset = self.get_queryset(request).distinct()
         aliases_list = resolve_alias_reversed([g.handle for g in queryset])
