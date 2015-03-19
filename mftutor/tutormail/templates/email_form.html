@@ -12,7 +12,8 @@
 <h1>Send email til alle tutorer</h1>
 
 <form method="post">{% csrf_token %}
-  <p>Fra: {{ from }}</p>
+  <p>Afsenders navn: {{ form.sender_name }}</p>
+  <p>Svar til: {{ form.sender_email }}@matfystutor.dk</p>
   <p>Emne: {{ form.subject }}</p>
   <p>Indhold:</p>
   <p>{{ form.text }}</p>

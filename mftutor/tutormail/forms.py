@@ -13,6 +13,9 @@ class EmailForm(Form):
 
     only_me = BooleanField(required=False)
 
+    sender_name = CharField()
+    sender_email = CharField()
+
     subject = CharField()
 
     text = CharField(widget=Textarea)

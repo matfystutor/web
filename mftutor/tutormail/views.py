@@ -24,18 +24,24 @@ class EmailFormView(FormView):
     template_name = 'email_form.html'
     form_class = EmailForm
 
+    def get_initial(self):
+        initial_data = super(EmailFormView, self).get_initial()
+        name, email = self.get_sender()
+        initial_data['sender_name'] = name
+        initial_data['sender_email'] = email
+        return initial_data
+
     def get_success_url(self):
         return django.core.urlresolvers.reverse('email_form')
 
     def get_context_data(self, **kwargs):
         data = super(EmailFormView, self).get_context_data(**kwargs)
         data['recipients'] = self.get_recipients()
-        data['from'] = self.get_sender()
         return data
 
     def get_sender(self):
         profile = self.request.user.tutorprofile
-        return u'"%s" <best@matfystutor.dk>' % profile.name
+        return (profile.name, 'best')
 
     def perform_wrapping(self, text, wrapping):
         text = text.replace(u'\r', u'')
@@ -86,6 +92,8 @@ class EmailFormView(FormView):
         data = form.cleaned_data
         subject = data['subject']
         text = self.perform_wrapping(data['text'], data['wrapping'])
+        from_email = '"%s" <%s@matfystutor.dk>' % (
+            data['sender_name'], data['sender_email'])
 
         recipients = self.get_recipients()
 
@@ -96,7 +104,7 @@ class EmailFormView(FormView):
         msg = EmailMessage(
             subject=subject,
             body=text,
-            from_email=self.get_sender(),
+            from_email=from_email,
             bcc=recipients,
         )
 
