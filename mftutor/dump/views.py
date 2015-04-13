@@ -30,7 +30,6 @@ class DumpView(View):
             'text/plain; charset=utf8')
 
     def get(self, request):
-        model = self.model
         available_fields = self.available_fields
         params = dict(request.GET.items())
         try:
@@ -51,23 +50,8 @@ class DumpView(View):
         except AttributeError:
             return self.usage('Unknown format %s' % (fmt,))
 
-        filter_kwargs = {}
-        for k, v in params.items():
-            try:
-                filter_kwargs[available_fields[k]] = v
-            except KeyError:
-                return self.usage('Unknown key %s' % (k,))
-
-        objects = model.objects.filter(**filter_kwargs)
-        if order_by:
-            try:
-                args = [
-                    available_fields[k]
-                    for k in order_by.split(',')
-                ]
-            except KeyError:
-                return self.usage('Unknown key in order_by')
-            objects = objects.order_by(*args)
+        objects = self.get_objects(params)
+        objects = self.handle_order_by(objects, order_by)
 
         rows = [
             [i+1 if k == 'n' else self.access_field(o, available_fields[k])
@@ -82,6 +66,33 @@ class DumpView(View):
         else:
             response['Content-Type'] = 'text/plain; charset=utf-8'
         return response
+
+    def get_objects(self, params):
+        filter_kwargs = self.get_filter_kwargs(params)
+
+        objects = self.model.objects.filter(**filter_kwargs)
+        return objects
+
+    def get_filter_kwargs(self, params):
+        filter_kwargs = {}
+        for k, v in params.items():
+            try:
+                filter_kwargs[self.available_fields[k]] = v
+            except KeyError:
+                return self.usage('Unknown key %s' % (k,))
+        return filter_kwargs
+
+    def handle_order_by(self, objects, order_by):
+        if order_by:
+            try:
+                args = [
+                    self.available_fields[k]
+                    for k in order_by.split(',')
+                ]
+            except KeyError:
+                return self.usage('Unknown key in order_by')
+            objects = objects.order_by(*args)
+        return objects
 
     def format_tsv(self, rows, **kwargs):
         return ''.join('%s\n' % '\t'.join(map(unicode, r)) for r in rows)
@@ -105,6 +116,13 @@ class TutorDumpView(DumpView):
         'studentnumber': 'profile__studentnumber',
     }
     tex_name = 'tutor'
+
+    def get_filter_kwargs(self, params):
+        gr = params.pop('group', None)
+        filter_kwargs = super(TutorDumpView, self).get_filter_kwargs(params)
+        if gr is not None:
+            filter_kwargs['groups__name'] = gr
+        return filter_kwargs
 
 
 class RusDumpView(DumpView):
