@@ -44,11 +44,9 @@ class Event(models.Model):
 class EventParticipant(models.Model):
     event = models.ForeignKey(Event, related_name="participants")
     tutor = models.ForeignKey(Tutor, related_name="events")
-    status = models.CharField(verbose_name='Tilbagemelding', max_length=10, choices=(
-        ('yes', 'Kommer',),
-        ('no', 'Kommer ikke',),
-        ('maybe', 'Har ikke taget stilling',),
-        ))
+    status = models.CharField(
+        verbose_name='Tilbagemelding', max_length=10,
+        choices=(('yes', 'Kommer'), ('no', 'Kommer ikke')))
     notes = models.TextField(blank=True)
 
     def __unicode__(self):

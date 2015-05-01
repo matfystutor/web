@@ -25,8 +25,7 @@ class RSVPFormAjax(forms.Form):
     status = forms.ChoiceField(choices=(
         ('yes', 'Kommer',),
         ('no', 'Kommer ikke',),
-        ('maybe', 'Har ikke taget stilling',),
-        ))
+    ))
 
 
 class BulkImportForm(Form):
