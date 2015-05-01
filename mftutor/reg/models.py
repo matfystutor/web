@@ -210,7 +210,7 @@ class LightboxRusClassState(models.Model):
             ('red', u'Rød'),
             )
 
-    rusclass = models.ForeignKey(RusClass, unique=True)
+    rusclass = models.OneToOneField(RusClass)
     color = models.CharField(max_length=10, choices=COLORS, default='green')
     note = models.TextField(blank=True)
     author = models.ForeignKey(TutorProfile, null=True, verbose_name="Forfatter")
