@@ -207,6 +207,7 @@ class Tutor(models.Model):
         ordering = ['-year']
         verbose_name = 'tutor'
         verbose_name_plural = verbose_name + 'er'
+        unique_together = (('profile', 'year'),)
 
 class TutorGroupLeader(models.Model):
     group = models.ForeignKey(TutorGroup)
