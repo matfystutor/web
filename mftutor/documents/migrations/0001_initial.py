@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                 ('published', models.DateField(verbose_name='Dato')),
                 ('time_of_upload', models.DateTimeField(auto_now_add=True)),
                 ('type', models.CharField(max_length=30, choices=[('guides', 'Guide'), ('referater', 'Referat'), ('udgivelser', 'Udgivelse')], verbose_name='Type')),
-                ('doc_file', models.FileField(verbose_name='Dokument', upload_to=mftutor.documents.models.Document.doc_upload_to)),
+                ('doc_file', models.FileField(verbose_name='Dokument', upload_to=mftutor.documents.models.Document_upload_to)),
             ],
             options={
                 'ordering': ('-year', 'title'),

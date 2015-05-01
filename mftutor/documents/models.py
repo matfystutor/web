@@ -9,6 +9,10 @@ class ReferaterManager(models.Manager):
             type__exact='referater').order_by('-year', '-published')
 
 
+def Document_upload_to(doc, filename):
+    return u'docs/%s/%s/%s' % (doc.year, doc.type, filename)
+
+
 class Document(models.Model):
     objects = models.Manager()
     referater = ReferaterManager()
@@ -31,11 +35,8 @@ class Document(models.Model):
     type = models.CharField(
         max_length=30, choices=type_choices, verbose_name="Type")
 
-    def doc_upload_to(self, filename):
-        return u'docs/%s/%s/%s' % (self.year, self.type, filename)
-
     doc_file = models.FileField(
-        upload_to=doc_upload_to, verbose_name="Dokument")
+        upload_to=Document_upload_to, verbose_name="Dokument")
 
     class Meta:
         ordering = ("-year","title")
