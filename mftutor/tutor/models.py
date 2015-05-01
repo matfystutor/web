@@ -1,6 +1,7 @@
 # coding: utf-8
 # See https://docs.djangoproject.com/en/1.4/topics/auth/
 # for a discussion on user profiles and django.contrib.auth
+from __future__ import unicode_literals
 
 import re
 from django.db import models

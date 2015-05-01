@@ -1,4 +1,6 @@
 # vim:fileencoding=utf-8:
+from __future__ import unicode_literals
+
 import time
 from django.utils import dateformat
 from django.db import models

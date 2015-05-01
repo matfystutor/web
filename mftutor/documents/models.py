@@ -1,4 +1,6 @@
 # coding: utf-8
+from __future__ import unicode_literals
+
 from datetime import datetime
 from django.db import models
 from .. import settings
