@@ -208,7 +208,7 @@ class EditSessionView(UpdateView):
 
 
         # Save form and perform bulk delete/insert of lines
-        with transaction.commit_on_success():
+        with transaction.atomic():
             importsession = form.save()
             ImportLine.objects.filter(session=form.instance).delete()
             ImportLine.objects.bulk_create(lines)
@@ -221,7 +221,7 @@ class EditSessionView(UpdateView):
                 pass
 
             try:
-                with transaction.commit_on_success():
+                with transaction.atomic():
 
                     profiles = {}
                     for tp in TutorProfile.objects.filter(studentnumber__in=(il.studentnumber for il in lines)):
@@ -376,7 +376,7 @@ class RusCreateView(FormView):
             first_name, last_name = data['name'].split(' ', 1)
         except ValueError:
             first_name, last_name = data['name'], ''
-        with transaction.commit_on_success():
+        with transaction.atomic():
             user = User.objects.create(
                     username=data['studentnumber'],
                     first_name=first_name,
@@ -545,7 +545,7 @@ class RusListRPC(View):
         if 'body' in args:
             params['body'] = self.get_param('body')
 
-        with transaction.commit_on_success():
+        with transaction.atomic():
             return fn(**params)
 
     def post(self, request):
@@ -795,7 +795,7 @@ class HandoutResponseView(FormView):
         return context_data
 
     def form_valid(self, form):
-        with transaction.commit_on_success():
+        with transaction.atomic():
             data = form.cleaned_data
             self.handout_response.note = data['note']
             self.handout_response.save()
@@ -963,7 +963,7 @@ class RusInfoView(FormView):
         tutor = user_tutor_data(self.request.user)
         changes = 0
         messages = []
-        with transaction.commit_on_success():
+        with transaction.atomic():
             data = form.cleaned_data
             for rus in self.rus_list:
                 in_street = data['rus_%s_street' % rus.pk]

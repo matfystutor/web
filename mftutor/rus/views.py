@@ -182,7 +182,7 @@ class ProfileView(FormView):
         d = user_rus_data(self.request.user)
         profile = d.rus.profile
         data = form.cleaned_data
-        with transaction.commit_on_success():
+        with transaction.atomic():
             profile.street = data['street']
             profile.city = data['city']
             profile.email = data['email']
