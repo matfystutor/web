@@ -25,13 +25,29 @@ til {{ event.end_date|date:"l j. F"|lower }}
 {% endif %}
 {% endif %}
 
-{% if event.rsvp or event.participants.all %}
-<h2>RSVP</h2>
-<ul>
-{% for participant in event.participants.all %}
-<li>{{ participant.tutor.profile.get_full_name }}: {{ participant.status }}</li>
+{% if accept %}
+<h2>Kommer</h2>
+<ol>
+{% for tu in accept %}
+<li>{{ tu.profile.name }}</li>
 {% endfor %}
-</ul>
+</ol>
+{% endif %}
+{% if decline %}
+<h2>Kommer ikke</h2>
+<ol>
+{% for tu in decline %}
+<li>{{ tu.profile.name }}</li>
+{% endfor %}
+</ol>
+{% endif %}
+{% if no_answer %}
+<h2>Intet svar</h2>
+<ol>
+{% for tu in no_answer %}
+<li>{{ tu.profile.name }}</li>
+{% endfor %}
+</ol>
 {% endif %}
 {% endif %}
 
