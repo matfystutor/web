@@ -28,7 +28,7 @@ class Event(models.Model):
 
     @property
     def is_rsvp_possible(self):
-        return not self.rsvp < datetime.now(self.rsvp.tzinfo)
+        return self.rsvp is not None and not self.rsvp < datetime.now(self.rsvp.tzinfo)
 
     def __str__(self):
         return '[Event %s on %s]' % (self.title, self.start_date)
