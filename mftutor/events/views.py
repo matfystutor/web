@@ -12,23 +12,7 @@ import mftutor.events.bulk
 
 def event_detail_view(request, eventid):
     event = get_object_or_404(Event.objects.filter(pk=eventid))
-    rsvps = {p.tutor.pk: p for p in event.participants.all()}
-    if event.rsvp != None:
-        for tu in Tutor.members.all():
-            rsvps.setdefault(tu.pk, EventParticipant(tutor=tu))
-    accept = []
-    decline = []
-    no_answer = []
-    for rsvp in rsvps.values():
-        if rsvp.status == 'yes':
-            accept.append(rsvp.tutor)
-        elif rsvp.status == 'no':
-            decline.append(rsvp.tutor)
-        else:
-            no_answer.append(rsvp.tutor)
-    accept.sort(key=lambda tu: tu.profile.name)
-    decline.sort(key=lambda tu: tu.profile.name)
-    no_answer.sort(key=lambda tu: tu.profile.name)
+
     try:
         tutordata = user_tutor_data(request.user)
         tutor = tutordata.tutor
@@ -46,6 +30,25 @@ def event_detail_view(request, eventid):
             form = RSVPForm(instance=instance, expect_event=event, expect_tutor=tutor)
     except NotTutor:
         form = None
+
+    rsvps = {p.tutor.pk: p for p in event.participants.all()}
+    if event.rsvp != None:
+        for tu in Tutor.members.all():
+            rsvps.setdefault(tu.pk, EventParticipant(tutor=tu))
+    accept = []
+    decline = []
+    no_answer = []
+    for rsvp in rsvps.values():
+        if rsvp.status == 'yes':
+            accept.append(rsvp.tutor)
+        elif rsvp.status == 'no':
+            decline.append(rsvp.tutor)
+        else:
+            no_answer.append(rsvp.tutor)
+    accept.sort(key=lambda tu: tu.profile.name)
+    decline.sort(key=lambda tu: tu.profile.name)
+    no_answer.sort(key=lambda tu: tu.profile.name)
+
     return render_to_response(
         'event.html',
         {
