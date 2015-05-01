@@ -1,4 +1,5 @@
 import datetime
+from django.http import HttpResponseRedirect
 from django.views.generic.base import TemplateResponseMixin
 from django.views.generic import CreateView, UpdateView, DeleteView, TemplateView, View
 from django.utils.decorators import method_decorator
@@ -11,6 +12,7 @@ from ..tutor.auth import tutorbest_required
 from ..settings import YEAR
 from .forms import AuthorModelChoiceField, NewsPostForm
 from .models import NewsPost
+
 
 class BaseNewsView(View):
     def get_group_handle(self):
@@ -37,8 +39,7 @@ class BaseNewsView(View):
         elif year:
             news_list = news_list.filter(posted__year=year)
         else:
-            # TODO We should probably have a year-field in the news posts
-            news_list = news_list.filter(posted__gte=datetime.date(YEAR - 1, 11, 1))
+            news_list = news_list.filter(year=YEAR)
 
         params = {
                 'news_list': news_list,
@@ -48,11 +49,13 @@ class BaseNewsView(View):
                 }
         return self.render_to_response(self.get_context_data(**params))
 
+
 class NewsView(BaseNewsView, TemplateResponseMixin):
     template_name = 'news.html'
 
     def get_group_handle(self):
         return u'alle'
+
 
 class NewsCreateView(CreateView):
     model = NewsPost
@@ -76,9 +79,16 @@ class NewsCreateView(CreateView):
     def get_success_url(self):
         return reverse("news")
 
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.year = YEAR
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
+
     @method_decorator(tutorbest_required)
     def dispatch(self, *args, **kwargs):
         return super(NewsCreateView, self).dispatch(*args, **kwargs)
+
 
 class NewsUpdateView(UpdateView):
     model = NewsPost

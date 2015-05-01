@@ -3,9 +3,11 @@ from django.contrib.auth.models import User
 from ..settings import YEAR, TIDY_NEWS_HTML
 from .models import NewsPost
 
+
 class AuthorModelChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.get_full_name()
+
 
 class NewsPostForm(forms.ModelForm):
     class Meta:

@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-import datetime
 from django.core.urlresolvers import reverse
+
 
 class NewsPost(models.Model):
     GROUP_HANDLES = (
@@ -13,6 +13,7 @@ class NewsPost(models.Model):
     posted = models.DateTimeField(verbose_name='Dato')
     body = models.TextField(verbose_name='Indhold')
     group_handle = models.CharField(max_length=20)
+    year = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title
