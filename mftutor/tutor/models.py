@@ -25,7 +25,7 @@ class TutorProfile(models.Model):
     street = models.CharField(max_length=80, blank=True, verbose_name="Adresse")
     city = models.CharField(max_length=40, blank=True, verbose_name="Postnr. og by")
     phone = models.CharField(max_length=20, blank=True, verbose_name="Telefonnr.")
-    email = models.EmailField(verbose_name="E-mailadresse")
+    email = models.EmailField(max_length=75, verbose_name="E-mailadresse")
 
     birthday = models.DateField(verbose_name="Født", blank=True, null=True)
 
