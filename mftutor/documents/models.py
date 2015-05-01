@@ -3,10 +3,9 @@ from datetime import datetime
 from django.db import models
 from .. import settings
 
-
 class ReferaterManager(models.Manager):
-    def get_query_set(self):
-        return super(ReferaterManager, self).get_query_set().filter(
+    def get_queryset(self):
+        return super(ReferaterManager, self).get_queryset().filter(
             type__exact='referater').order_by('-year', '-published')
 
 
@@ -19,7 +18,7 @@ class Document(models.Model):
     year = models.IntegerField(
         verbose_name="Tutorår", default=settings.YEAR)
     published = models.DateField(
-        default=lambda: datetime.now(), verbose_name='Dato')
+        verbose_name='Dato')
     time_of_upload = models.DateTimeField(
         editable=False, auto_now_add=True)
 
@@ -40,6 +39,9 @@ class Document(models.Model):
 
     class Meta:
         ordering = ("-year","title")
+
+    def __str__(self):
+        return '[Document %s: %s]' % (self.type, self.title)
 
     def __unicode__(self):
         return u'[Document %s: %s]' % (self.type, self.title)

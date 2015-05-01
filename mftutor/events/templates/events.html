@@ -16,7 +16,7 @@ function selectchange(element) {
 <h1>Begivenheder</h1>
 {% if user.is_authenticated %}
 <p>Tilføj feedet til din Google-kalender eller lignende:
-<a href="{% url events_ical %}">{{ SITE_URL }}{% url events_ical %}</a>
+<a href="{% url 'events_ical' %}">{{ SITE_URL }}{% url 'events_ical' %}</a>
 </p>
 {% endif %}
 {% for event in event_list %}
@@ -27,7 +27,7 @@ function selectchange(element) {
     <span class="month">{{ event.start_date|date:"M"|upper }}</span>
     <span class="day">{{ event.start_date|date:"j" }}</span>
 </div>
-<div class="eventtitle"><a href="{% url event event.pk %}">{{ event.title }}</a></div>
+<div class="eventtitle"><a href="{% url 'event' event.pk %}">{{ event.title }}</a></div>
 <div class="eventtime">{{ event.start_date|date:"l j. F"|lower|capfirst }}
 {% if event.start_date != event.end_date %}
 til {{ event.end_date|date:"l j. F"|lower }}
@@ -70,7 +70,7 @@ til {{ event.end_date|date:"l j. F"|lower }}
     <span class="month">{{ event.start_date|date:"M"|upper }}</span>
     <span class="day">{{ event.start_date|date:"j" }}</span>
 </div>
-<div class="eventtitle"><a href="{% url event event.pk %}">{{ event.title }}</a></div>
+<div class="eventtitle"><a href="{% url 'event' event.pk %}">{{ event.title }}</a></div>
 <div class="eventtime">{{ event.start_date|date:"l j. F"|lower|capfirst }}
 {% if event.start_date != event.end_date %}
 til {{ event.end_date|date:"l j. F"|lower }}

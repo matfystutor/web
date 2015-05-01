@@ -5,24 +5,24 @@ from ..settings import YEAR
 class RusManager(models.Manager):
     use_for_related_fields = True
 
-    def get_query_set(self):
-        return super(RusManager, self).get_query_set().select_related('profile', 'rusclass', 'initial_rusclass')
+    def get_queryset(self):
+        return super(RusManager, self).get_queryset().select_related('profile', 'rusclass', 'initial_rusclass')
 
 class TutorProfileManager(models.Manager):
     use_for_related_fields = True
 
-    def get_query_set(self):
-        return super(TutorProfileManager, self).get_query_set()
+    def get_queryset(self):
+        return super(TutorProfileManager, self).get_queryset()
 
 class TutorManager(models.Manager):
     use_for_related_fields = True
 
-    def get_query_set(self):
-        return super(TutorManager, self).get_query_set().select_related('profile')
+    def get_queryset(self):
+        return super(TutorManager, self).get_queryset().select_related('profile')
 
 class TutorMembers(TutorManager):
-    def get_query_set(self):
-        qs = super(TutorMembers, self).get_query_set()
+    def get_queryset(self):
+        qs = super(TutorMembers, self).get_queryset()
         return qs.filter(year=YEAR, early_termination__isnull=True)
 
     def group(self, group):
@@ -33,6 +33,6 @@ class TutorMembers(TutorManager):
             return self.filter(groups__handle__exact=group)
 
 class VisibleTutorGroups(models.Manager):
-    def get_query_set(self):
-        qs = super(VisibleTutorGroups, self).get_query_set()
+    def get_queryset(self):
+        qs = super(VisibleTutorGroups, self).get_queryset()
         return qs.filter(visible=True, tutor__year__in=[YEAR]).distinct()

@@ -9,9 +9,9 @@
 <p>
 Vælg gruppe:
 <select onchange="location = this.value">
-<option value="{% url tutors %}">----</option>
+<option value="{% url 'tutors' %}">----</option>
 {% for g in groups %}
-<option value="{% url tutorgroup g.handle %}"{% if group == g.handle %} selected="selected"{% endif %}>{{ g.name }}</option>
+<option value="{% url 'tutorgroup' g.handle %}"{% if group == g.handle %} selected="selected"{% endif %}>{{ g.name }}</option>
 {% endfor %}
 </select>
 </p>

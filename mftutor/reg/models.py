@@ -66,7 +66,7 @@ class ImportLine(models.Model):
     line = models.CharField(max_length=500)
     position = models.IntegerField()
 
-    matched = models.BooleanField()
+    matched = models.BooleanField(default=False)
     rusclass = models.CharField(max_length=500, blank=True)
     studentnumber = models.CharField(max_length=500, blank=True)
     name = models.CharField(max_length=500, blank=True)
@@ -143,6 +143,9 @@ class Handout(models.Model):
     created = models.DateTimeField(auto_now_add=True, verbose_name="Oprettet")
     updated = models.DateTimeField(auto_now=True, verbose_name="Sidst ændret")
 
+    def __str__(self):
+        return self.name
+
     def __unicode__(self):
         return self.name
 
@@ -168,7 +171,7 @@ class HandoutClassResponse(models.Model):
 class HandoutRusResponse(models.Model):
     handout = models.ForeignKey(Handout)
     rus = models.ForeignKey(Rus)
-    checkmark = models.BooleanField()
+    checkmark = models.BooleanField(default=False)
     note = models.TextField(blank=True)
 
     created = models.DateTimeField(auto_now_add=True, verbose_name="Oprettet")

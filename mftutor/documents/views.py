@@ -12,6 +12,7 @@ from ..tutor.auth import tutorbest_required
 class UploadDocumentForm(forms.ModelForm):
     class Meta:
         model = Document
+        fields = ('title', 'year', 'published', 'type', 'doc_file')
 
     published = forms.DateField(widget=SelectDateWidget(years=range(1970,YEAR+1)),
             label='Dato',

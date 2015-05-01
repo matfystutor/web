@@ -11,7 +11,7 @@ Holdtutorer har adgang til at ændre disse ting for deres eget hold.</p>
 
 <ul>
     {% for rusclass in rusclasses %}
-    <li><a href="{% url rusinfo handle=rusclass.handle %}">{{ rusclass }}</a></li>
+    <li><a href="{% url 'rusinfo' handle=rusclass.handle %}">{{ rusclass }}</a></li>
     {% endfor %}
 </ul>
 

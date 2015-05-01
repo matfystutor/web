@@ -23,7 +23,7 @@ tr:nth-child(2n) .no_response { background-color: #d99; }
 
 <p>Her kan du gemme og hente tilmeldingslister, som holdtutorerne afleverer i rusdagene.</p>
 
-<p><a href="{% url handout_new %}">Ny tilmeldingsliste</a></p>
+<p><a href="{% url 'handout_new' %}">Ny tilmeldingsliste</a></p>
 
 {% if handouts %}
 <table class="handout_table">
@@ -38,10 +38,10 @@ tr:nth-child(2n) .no_response { background-color: #d99; }
 <tbody>
 {% for handout in handouts %}
 <tr>
-    <th><a href="{% url handout_summary handout=handout.pk %}">{{ handout }}</a></th>
+    <th><a href="{% url 'handout_summary' handout=handout.pk %}">{{ handout }}</a></th>
 {% for response in handout.row %}
 <td class="{% if response.pk %}has_response{% else %}no_response{% endif %}">
-<a href="{% url handout_response handout=response.handout.pk rusclass=response.rusclass.handle %}">
+<a href="{% url 'handout_response' handout=response.handout.pk rusclass=response.rusclass.handle %}">
 {% if response.pk %}
 ret
 {% else %}

@@ -1,6 +1,5 @@
 # vim: set fileencoding=utf8:
 import re
-import exceptions
 import datetime
 import json
 import subprocess
@@ -42,13 +41,14 @@ class NewSessionView(ProcessFormView):
     """POST target used by ChooseSessionView to create a new ImportSession."""
 
     def post(self, request):
-        importsession = ImportSession(year=YEAR, author=request.user.get_profile())
+        importsession = ImportSession(year=YEAR, author=request.user.tutorprofile)
         importsession.save()
         return HttpResponseRedirect(reverse('import_session_edit', kwargs={'pk': importsession.pk}))
 
 class EditSessionForm(forms.ModelForm):
     class Meta:
         model = ImportSession
+        fields = ('year', 'name', 'regex', 'author')
 
     year = forms.CharField(required=False)
     author = forms.CharField(required=False)
@@ -66,7 +66,7 @@ class EditSessionForm(forms.ModelForm):
         data = self.cleaned_data['regex']
         try:
             r = re.compile(data)
-        except re.error, v:
+        except re.error as v:
             raise forms.ValidationError(u"Fejl i regulært udtryk: "+unicode(v))
 
         return data
@@ -217,7 +217,7 @@ class EditSessionView(UpdateView):
         context_data = self.get_context_data(form=form)
 
         if lines_saved and 'create' in self.request.POST:
-            class RusError(exceptions.Exception):
+            class RusError(Exception):
                 pass
 
             try:
@@ -262,7 +262,7 @@ class EditSessionView(UpdateView):
                     importsession.save()
                     context_data['imported'] = importsession.imported
 
-            except RusError, e:
+            except RusError as e:
                 context_data['create_error'] = unicode(e)
 
         context_data['lines_saved'] = lines_saved

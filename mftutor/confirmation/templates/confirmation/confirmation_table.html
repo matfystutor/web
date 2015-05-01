@@ -48,7 +48,7 @@
     <td>{{ confirmation.firstaid }}</td>
     <td>{{ confirmation.rusfriends|linebreaksbr }}</td>
     <td>{{ confirmation.comment|linebreaksbr }}</td>
-    <td><form method="post" style="display: none" action="{% url confirmation_edit_note %}">{% csrf_token %}
+    <td><form method="post" style="display: none" action="{% url 'confirmation_edit_note' %}">{% csrf_token %}
             <input type="hidden" name="tutor" value="{{ confirmation.tutor.pk }}">
             <input name="internal_notes" value="{{ confirmation.internal_notes }}">
             <input type="submit" value="Gem">

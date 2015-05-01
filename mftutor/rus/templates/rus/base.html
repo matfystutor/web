@@ -7,34 +7,34 @@ style="position: absolute; right: 14px; top: 11px; width: 100px; height: 46px;" 
 {% endblock %}
 {% block menu %}
 <li class="trigger">
-<a href="{% url rus_start %}">Start</a>
+<a href="{% url 'rus_start' %}">Start</a>
 <ul class="subnav">
-  <li><a href="{% url rus_kontakt %}">Kontakt</a></li>
-  <li><a href="{% url rus_nyheder %}">Nyheder</a></li>
-  <li><a href="{% url rus_rse %}">Dansk som andetsprog</a></li>
+  <li><a href="{% url 'rus_kontakt' %}">Kontakt</a></li>
+  <li><a href="{% url 'rus_nyheder' %}">Nyheder</a></li>
+  <li><a href="{% url 'rus_rse' %}">Dansk som andetsprog</a></li>
   {% if rus %}
-  <li><a href="{% url rus_password_change %}">Skift kodeord</a></li>
+  <li><a href="{% url 'rus_password_change' %}">Skift kodeord</a></li>
   {% endif %}
 </ul>
 </li>
 <li class="trigger">
-<a href="{% url rus_program %}">Program</a>
+<a href="{% url 'rus_program' %}">Program</a>
 <ul class="subnav">
-  <li><a href="{% url rus_kalender %}">Kalender</a></li>
+  <li><a href="{% url 'rus_kalender' %}">Kalender</a></li>
 </ul>
 </li>
 <li class="trigger">
-<a href="{% url rus_rusbrev %}">Rusbrev</a>
+<a href="{% url 'rus_rusbrev' %}">Rusbrev</a>
 </li>
 <li class="trigger">
-<a href="{% url rus_holdlister %}">Holdlister</a>
+<a href="{% url 'rus_holdlister' %}">Holdlister</a>
 <ul class="subnav">
 {% if rus %}
-  <li><a href="{% url rus_profil %}">Mine oplysninger</a></li>
+  <li><a href="{% url 'rus_profil' %}">Mine oplysninger</a></li>
 {% endif %}
 </ul>
 </li>
 <li class="trigger">
-<a href="{% url rus_gallery %}">Billeder</a>
+<a href="{% url 'rus_gallery' %}">Billeder</a>
 </li>
 {% endblock %}

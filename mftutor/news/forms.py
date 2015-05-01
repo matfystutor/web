@@ -10,6 +10,7 @@ class AuthorModelChoiceField(forms.ModelChoiceField):
 class NewsPostForm(forms.ModelForm):
     class Meta:
         model = NewsPost
+        fields = ('author', 'title', 'posted', 'body', 'group_handle')
 
     author = AuthorModelChoiceField(
         label = 'Forfatter',

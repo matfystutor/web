@@ -6,6 +6,9 @@ class Alias(models.Model):
     source = models.CharField(max_length=50)
     destination = models.CharField(max_length=50)
 
+    def __str__(self):
+        return "%s -> %s" % (self.source, self.destination)
+
     def __unicode__(self):
         return unicode(self.source)+' -> '+unicode(self.destination)
 
@@ -16,12 +19,6 @@ class Alias(models.Model):
         unique_together = (('source', 'destination'),)
 
 def transitive_closure(u, edges, visited=None):
-    if not isinstance(u, basestring):
-        res = {}
-        for uu in u:
-            res[uu] = transitive_closure(uu, edges)
-        return res
-
     if visited:
         visited = frozenset([u]).union(visited)
     else:
@@ -60,3 +57,18 @@ def resolve_alias_reversed(destination):
         aliases[a.destination].add(a.source)
 
     return transitive_closure(destination, aliases)
+
+def resolve_aliases_reversed(destinations):
+    """Given a list of destinations, return the dictionary
+    {k: resolve_alias_reversed(k) for d in destinations}."""
+
+    aliases = {}
+    for a in Alias.objects.all():
+        if a.destination not in aliases:
+            aliases[a.destination] = set()
+        aliases[a.destination].add(a.source)
+
+    return {
+        d: transitive_closure(d, aliases)
+        for d in destinations
+    }
