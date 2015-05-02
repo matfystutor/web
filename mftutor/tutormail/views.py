@@ -104,8 +104,9 @@ class EmailFormView(FormView):
         msg = EmailMessage(
             subject=subject,
             body=text,
-            from_email=from_email,
+            from_email='webfar@matfystutor.dk',
             bcc=recipients,
+            headers={'From': from_email},
         )
 
         email_backend = django.core.mail.get_connection(
