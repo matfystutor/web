@@ -43,7 +43,8 @@ Gruppeansvarlig:
    <ul>
     <li title="Adresse" class="street">{{ tutor.street }}</li>
     <li title="By" class="city">{{ tutor.city }}</li>
-    <li title="Telefon" class="phone">{{ tutor.phone }}</li>
+    <li title="Telefon" class="phone">
+    <a href="tel:{{ tutor.phone }}">{{ tutor.phone }}</a></li>
     <li title="Email" class="email"><a href="mailto:{{ tutor.email }}">{{ tutor.email }}</a></li>
     <li title="Studium" class="study">{{ tutor.study }}</li>
     <li title="Årskort" class="studentnumber">{{ tutor.studentnumber }}</li>
