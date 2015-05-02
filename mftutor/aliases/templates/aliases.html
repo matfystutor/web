@@ -14,7 +14,7 @@
 <h2>{{ g.name }}</h2>
 <ul class="emails">
     {% for e in g.aliases %}
-    <li>{{ e }}</li>
+    <li><a href="{{ e }}">{{ e }}</a></li>
     {% endfor %}
 </ul>
 <ul class="tutors">
