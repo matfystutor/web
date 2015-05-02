@@ -48,24 +48,23 @@ body.test #background {
 }
 
 #main {
-	width: 700px;
+	min-width: 700px;
+	max-width: 1400px;
 	margin: 0 auto;
-	padding: 10px 0;
-}
-
-body.tutors #main {
-	width: auto;
-	max-width: 850px;
+	padding: 10px 4%;
 }
 
 body.wide #main {
-	width: 950px;
+	padding-left: 0;
+	padding-right: 0;
 	overflow-x: scroll;
 	resize: horizontal;
 }
 
 body.fullwidth #main {
-	width: auto;
+	max-width: none;
+	padding-left: 0;
+	padding-right: 0;
 }
 
 .spacer {
