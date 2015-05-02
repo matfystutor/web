@@ -19,12 +19,23 @@ class AliasesView(TemplateView):
         queryset = self.get_queryset(request).distinct()
         aliases_list = resolve_aliases_reversed([g.handle for g in queryset])
 
-        groups = [{'name': g.name,
-            'handle': g.handle,
-            'tutors': sorted(t.profile.get_full_name() for t in Tutor.members.filter(groups=g)),
-            'aliases': [a + '@' + current_site.domain for a in aliases_list[g.handle]],
-            } for g in queryset]
-        params = {'groups': groups}
+        groups = []
+        for g in queryset:
+            tutors = sorted(t.profile.name
+                            for t in Tutor.members.filter(groups=g))
+            aliases = [a + '@' + current_site.domain
+                       for a in aliases_list[g.handle]]
+            group = {
+                'name': g.name,
+                'handle': g.handle,
+                'tutors': tutors,
+                'aliases': aliases
+            }
+            groups.append(group)
+
+        params = {
+            'groups': groups,
+        }
         return self.render_to_response(params)
 
 class MyGroupsView(AliasesView):
