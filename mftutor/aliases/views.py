@@ -21,6 +21,9 @@ class AliasesView(TemplateView):
 
         groups = []
         for g in queryset:
+            if g.handle == 'alle':
+                continue
+
             tutors = sorted(t.profile.name
                             for t in Tutor.members.filter(groups=g))
             aliases = [a + '@' + current_site.domain
