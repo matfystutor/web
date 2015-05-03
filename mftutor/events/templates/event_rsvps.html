@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{{ event.title }}: Tilmeldinger{% endblock %}
+
+{% block content %}
+<div class="eventdate">
+    <span class="month">{{ event.start_date|date:"M"|upper }}</span>
+    <span class="day">{{ event.start_date|date:"j" }}</span>
+</div>
+<h1>{{ event.title }}</h1>
+
+<table>
+    <col span="3" />
+    <thead>
+        <tr>
+            <th>Navn</th>
+            <th>Status</th>
+            <th>Noter</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for rsvp in rsvps %}
+        <tr>
+            <td><a href="{% url 'event_rsvp' event=event tutor=rsvp.tutor %}">
+                {{ rsvp.tutor.profile.name }}
+            </a></td>
+            <td>{{ rsvp.status }}</td>
+            <td>{{ rsvp.notes }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

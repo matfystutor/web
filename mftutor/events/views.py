@@ -7,7 +7,7 @@ from ..tutor.auth import user_tutor_data, NotTutor
 from .. import settings
 from mftutor.tutor.models import Tutor
 from .models import Event, EventParticipant
-from .forms import RSVPForm, RSVPFormAjax, BulkImportForm
+from .forms import RSVPForm, RSVPFormAjax, BulkImportForm, EventParticipantForm
 import mftutor.events.bulk
 
 def event_detail_view(request, eventid):
@@ -139,3 +139,64 @@ class BulkImportView(FormView):
         for event in form.cleaned_data['events']:
             event.save()
         return super(BulkImportView, self).form_valid(form)
+
+
+class EventParticipantListView(DetailView):
+    template_name = "event_rsvps.html"
+    model = Event
+
+    def get_context_data(self, **kwargs):
+        context_data = (super(EventParticipantListView, self)
+                        .get_context_data(**kwargs))
+        event = context_data['event']
+        rsvps = {p.tutor.pk: p for p in event.participants.all()}
+        names = {}
+        for tutor in Tutor.members.all():
+            names[tutor.pk] = tutor.profile.name
+            rsvps.setdefault(tutor.pk,
+                             EventParticipant(event=event, tutor=tutor))
+        rsvps = sorted(rsvps.values(), key=lambda o: names[o.tutor.pk])
+        context_data['tutors'] = rsvps
+        return context_data
+
+
+class EventParticipantEditView(FormView):
+    template_name = "event_rsvp.html"
+    form_class = EventParticipantForm
+
+    def get_context_data(self, **kwargs):
+        context_data = (super(EventParticipantEditView, self)
+                        .get_context_data(**kwargs))
+        event = get_object_or_404(
+            Event.objects.filter(pk=self.request.kwargs['event']))
+        tutor = get_object_or_404(
+            Tutor.objects.filter(pk=self.request.kwargs['tutor']))
+        rsvp, created = EventParticipant.objects.get_or_create(
+            event=event, tutor=tutor)
+        context_data['event'] = event
+        context_data['tutor'] = tutor
+        context_data['rsvp'] = rsvp
+        return context_data
+
+    def get_initial(self):
+        context_data = self.get_context_data()
+        return {
+            'status': context_data['rsvp'].status or 'none',
+            'notes': context_data['rsvp'].notes or '',
+        }
+
+    def get_success_url(self):
+        context_data = self.get_context_data()
+        return reverse('event_rsvps', event=context_data['event'])
+
+    def form_valid(self, form):
+        context_data = self.get_context_data()
+        rsvp = context_data['rsvp']
+        data = form.cleaned_data
+        if data['status'] == 'none':
+            rsvp.delete()
+        else:
+            rsvp.status = data['status']
+            rsvp.notes = data['notes']
+            rsvp.save()
+        return super(EventParticipantEditView, self).form_valid(form)

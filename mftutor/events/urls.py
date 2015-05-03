@@ -6,7 +6,8 @@ from mftutor.tutor.auth import tutorbest_required
 from ..settings import YEAR
 from .models import Event
 from .views import event_detail_view, CalendarFeedView, EventListView, \
-    RSVPFormView, BulkExportView, BulkImportView
+    RSVPFormView, BulkExportView, BulkImportView, EventParticipantListView, \
+    EventParticipantEditView
 
 urlpatterns = patterns('',
     url(r'^$',
@@ -18,6 +19,12 @@ urlpatterns = patterns('',
     url(r'^ical/$',
         CalendarFeedView.as_view(),
         name="events_ical"),
+    url(r'^(?P<pk>\d+)/rsvplist/$',
+        tutorbest_required(EventParticipantListView.as_view()),
+        name="event_rsvps"),
+    url(r'^(?P<event>\d+)/rsvplist/(?P<tutor>\d+)/$',
+        tutorbest_required(EventParticipantEditView.as_view()),
+        name="event_rsvp"),
     url(r'^rsvp/(\d+)/$',
         RSVPFormView.as_view(),
         name="rsvpform"),

@@ -36,3 +36,12 @@ class BulkImportForm(Form):
             return mftutor.events.bulk.parse(self.cleaned_data['events'])
         except ValueError, e:
             raise ValidationError(u'Ugyldig data: %s' % e)
+
+
+class EventParticipantForm(forms.Form):
+    status = forms.ChoiceField(choices=(
+        ('yes', 'Kommer'),
+        ('no', 'Kommer ikke'),
+        ('none', 'Intet svar (slet notat)'),
+    ))
+    notes = forms.CharField(widget=forms.Textarea, required=False)
