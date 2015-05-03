@@ -168,9 +168,9 @@ class EventParticipantEditView(FormView):
         context_data = (super(EventParticipantEditView, self)
                         .get_context_data(**kwargs))
         event = get_object_or_404(
-            Event.objects.filter(pk=self.request.kwargs['event']))
+            Event.objects.filter(pk=self.kwargs['event']))
         tutor = get_object_or_404(
-            Tutor.objects.filter(pk=self.request.kwargs['tutor']))
+            Tutor.objects.filter(pk=self.kwargs['tutor']))
         rsvp, created = EventParticipant.objects.get_or_create(
             event=event, tutor=tutor)
         context_data['event'] = event
@@ -187,7 +187,7 @@ class EventParticipantEditView(FormView):
 
     def get_success_url(self):
         context_data = self.get_context_data()
-        return reverse('event_rsvps', event=context_data['event'])
+        return reverse('event_rsvps', kwargs={'pk': context_data['event'].pk})
 
     def form_valid(self, form):
         context_data = self.get_context_data()

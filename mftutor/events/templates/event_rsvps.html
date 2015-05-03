@@ -18,9 +18,9 @@
         </tr>
     </thead>
     <tbody>
-        {% for rsvp in rsvps %}
+        {% for rsvp in tutors %}
         <tr>
-            <td><a href="{% url 'event_rsvp' event=event tutor=rsvp.tutor %}">
+            <td><a href="{% url 'event_rsvp' event=event.pk tutor=rsvp.tutor.pk %}">
                 {{ rsvp.tutor.profile.name }}
             </a></td>
             <td>{{ rsvp.status }}</td>
