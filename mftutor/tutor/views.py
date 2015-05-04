@@ -14,6 +14,8 @@ from django.contrib.auth.views import password_change
 from django.views.generic import UpdateView, TemplateView, FormView
 from ..settings import YEAR
 from .models import TutorProfile, TutorGroup, TutorGroupLeader, Tutor
+
+# Reexport the following views:
 from .viewimpl.loginout import logout_view, login_view
 from .viewimpl.profile import profile_view
 from .viewimpl.admin import TutorAdminView, BoardAdminView
