@@ -50,7 +50,8 @@ class LoginView(TemplateView):
         u = self.get_user(login_name)
 
         if u is None:
-            return self.render_to_response(self.get_context_data(error_code='failauth'))
+            context_data = self.get_context_data(error_code='failauth')
+            return self.render_to_response(context_data)
 
         username = u.username
 
@@ -62,7 +63,8 @@ class LoginView(TemplateView):
             try:
                 tutordata = user_rus_data(user)
             except NotTutor as e:
-                return self.render_to_response(self.get_context_data(error_code=e.value))
+                context_data = self.get_context_data(error_code=e.value)
+                return self.render_to_response(context_data)
         login(request, user)
         if hasattr(tutordata, 'rus') and tutordata.rus:
             return redirect('rus_start')
