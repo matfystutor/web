@@ -60,10 +60,11 @@ class TutorProfile(models.Model):
 
     def set_default_email(self):
         if self.email == '':
-            if re.match(r'[A-Z][A-Z][0-9][0-9][0-9][0-9][0-9]$', self.studentnumber):
-                self.email = self.studentnumber + '@' + settings.DEFAULT_ASB_EMAIL_DOMAIN
+            if re.match(r'[A-Z]{2}[0-9]{5}$', self.studentnumber):
+                domain = settings.DEFAULT_ASB_EMAIL_DOMAIN
             else:
-                self.email = self.studentnumber + '@' + settings.DEFAULT_EMAIL_DOMAIN
+                domain = settings.DEFAULT_EMAIL_DOMAIN
+            self.email = '%s@%s' % (self.studentnumber, domain)
 
     class Meta:
         verbose_name = 'tutorprofil'
