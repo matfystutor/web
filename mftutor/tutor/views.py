@@ -13,13 +13,13 @@ from django import forms
 from django.contrib.auth.views import password_change
 from django.views.generic import UpdateView, TemplateView, FormView
 from mftutor import settings
-from .models import TutorProfile, TutorGroup, TutorGroupLeader, Tutor
+from mftutor.tutor.models import TutorProfile, TutorGroup, TutorGroupLeader, Tutor
 
 # Reexport the following views:
-from .viewimpl.loginout import logout_view, login_view
-from .viewimpl.profile import profile_view
-from .viewimpl.admin import TutorAdminView, BoardAdminView
-from .auth import user_tutor_data, user_rus_data, NotTutor
+from mftutor.tutor.viewimpl.loginout import logout_view, login_view
+from mftutor.tutor.viewimpl.profile import profile_view
+from mftutor.tutor.viewimpl.admin import TutorAdminView, BoardAdminView
+from mftutor.tutor.auth import user_tutor_data, user_rus_data, NotTutor
 
 def tutor_password_change_view(request):
     if 'back' in request.GET:
