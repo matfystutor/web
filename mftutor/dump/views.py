@@ -42,6 +42,9 @@ class DumpView(View):
             return self.usage('Invalid display_fields')
 
         order_by = params.pop('order_by', None)
+        if order_by is not None:
+            if any(f not in available_fields for f in order_by.split(',')):
+                return self.usage('Unknown key in order_by')
         download = params.pop('download', None)
         tex_name = params.pop('tex_name', self.tex_name)
         fmt = params.pop('format', 'tsv')
@@ -49,6 +52,9 @@ class DumpView(View):
             formatter = getattr(self, 'format_%s' % (fmt,))
         except AttributeError:
             return self.usage('Unknown format %s' % (fmt,))
+
+        if any(k not in available_fields for k in params):
+            return self.usage('Unknown filter key')
 
         objects = self.get_objects(params)
         objects = self.handle_order_by(objects, order_by)
@@ -84,13 +90,10 @@ class DumpView(View):
 
     def handle_order_by(self, objects, order_by):
         if order_by:
-            try:
-                args = [
-                    self.available_fields[k]
-                    for k in order_by.split(',')
-                ]
-            except KeyError:
-                return self.usage('Unknown key in order_by')
+            args = [
+                self.available_fields[k]
+                for k in order_by.split(',')
+            ]
             objects = objects.order_by(*args)
         return objects
 
