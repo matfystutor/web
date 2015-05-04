@@ -221,14 +221,6 @@ class TutorGroupLeader(models.Model):
         unique_together = (('group', 'year'),)
 
 
-def tutor_group_leader(group, year):
-    try:
-        leader_object = TutorGroupLeader.objects.get(group=group, year=year)
-        return leader_object.tutor
-    except TutorGroupLeader.DoesNotExist:
-        return None
-
-
 class BoardMember(models.Model):
     id = models.AutoField(primary_key=True)
     tutor = models.ForeignKey(Tutor)

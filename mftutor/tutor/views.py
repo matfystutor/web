@@ -49,7 +49,10 @@ def tutors_view(request, group=None):
 
     tutorgroup = get_object_or_404(TutorGroup, handle=lookup_group)
 
-    leader = tutor_group_leader(lookup_group, YEAR)
+    try:
+        leader = TutorGroupLeader.objects.get(group=lookup_group, year=YEAR).tutor
+    except TutorGroupLeader.DoesNotExist:
+        leader = None
     leader_pk = leader.pk if leader else -1
 
     tutors = list(Tutor.members.group(lookup_group))
