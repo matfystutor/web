@@ -6,8 +6,7 @@ from __future__ import unicode_literals
 import re
 from django.db import models
 from django.contrib.auth.models import User
-from mftutor.settings import RUSCLASS_BASE, DEFAULT_EMAIL_DOMAIN, \
-    DEFAULT_ASB_EMAIL_DOMAIN
+from mftutor import settings
 from mftutor.tutor.managers import TutorProfileManager, TutorManager, \
     TutorMembers, VisibleTutorGroups, RusManager
 
@@ -57,9 +56,9 @@ class TutorProfile(models.Model):
     def set_default_email(self):
         if self.email == '':
             if re.match(r'[A-Z][A-Z][0-9][0-9][0-9][0-9][0-9]$', self.studentnumber):
-                self.email = self.studentnumber + '@' + DEFAULT_ASB_EMAIL_DOMAIN
+                self.email = self.studentnumber + '@' + settings.DEFAULT_ASB_EMAIL_DOMAIN
             else:
-                self.email = self.studentnumber + '@' + DEFAULT_EMAIL_DOMAIN
+                self.email = self.studentnumber + '@' + settings.DEFAULT_EMAIL_DOMAIN
 
     class Meta:
         verbose_name = 'tutorprofil'
@@ -93,10 +92,10 @@ class TutorGroup(models.Model):
 class RusClassManager(models.Manager):
     def create_from_official(self, year, official_name):
         translate_to_handle = {}
-        for official, handle, internal in RUSCLASS_BASE:
+        for official, handle, internal in settings.RUSCLASS_BASE:
             translate_to_handle[official] = handle
         translate_to_internal = {}
-        for official, handle, internal in RUSCLASS_BASE:
+        for official, handle, internal in settings.RUSCLASS_BASE:
             translate_to_internal[official] = internal
         handle = translate_to_handle[official_name[0:2]] + official_name[2:]
         internal_name = translate_to_internal[official_name[0:2]] + u' ' + official_name[2:]
@@ -117,7 +116,7 @@ class RusClass(models.Model):
     year = models.IntegerField(verbose_name="Tutorår")
 
     def get_study(self):
-        for official_name, handle, internal_name in RUSCLASS_BASE:
+        for official_name, handle, internal_name in settings.RUSCLASS_BASE:
             if self.handle.startswith(handle):
                 return internal_name
 
@@ -156,15 +155,13 @@ class Tutor(models.Model):
 
     def has_rusclass(self, year=None):
         if year is None:
-            from ..settings import YEAR
-            year = YEAR
+            year = settings.YEAR
 
         return self.is_tutorbur() or self.rusclass
 
     def is_member(self, year=None):
-        from ..settings import YEAR
         if year is None:
-            year = YEAR
+            year = settings.YEAR
 
         if self.year != year:
             return False
