@@ -14,7 +14,6 @@ class ProfileForm(forms.Form):
     phone = forms.CharField(label='Telefon')
     email = forms.EmailField(label='Email')
     study = forms.CharField(label='Studium')
-    birthday = forms.DateField(label='Fødselsdag', widget=SelectDateWidget(years=range(1970,YEAR)))
 
 class ProfileView(FormView):
     form_class = ProfileForm
@@ -39,7 +38,6 @@ class ProfileView(FormView):
                 'phone': tp.phone,
                 'email': tp.email,
                 'study': tp.study,
-                'birthday': tp.birthday,
                 }
 
     def form_valid(self, form):
@@ -58,7 +56,6 @@ class ProfileView(FormView):
         tp.phone = form.cleaned_data['phone']
         u.email = tp.email = form.cleaned_data['email']
         tp.study = form.cleaned_data['study']
-        tp.birthday = form.cleaned_data['birthday']
         u.save()
         tp.save()
         return self.render_to_response(self.get_context_data(form=form, saved=True))
