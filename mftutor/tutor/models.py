@@ -40,9 +40,9 @@ class TutorProfile(models.Model):
         max_length=20, verbose_name="Årskortnummer", unique=True)
 
     picture = models.ImageField(
-            upload_to=tutorpicture_upload_to,
-            blank=True,
-            )
+        upload_to=tutorpicture_upload_to,
+        blank=True,
+    )
 
     def __str__(self):
         return '%s %s %s' % (
