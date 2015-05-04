@@ -1,12 +1,16 @@
 # encoding: utf-8
-from django.shortcuts import render, redirect
+
+from __future__ import unicode_literals
+
+from django.shortcuts import redirect
 from django.contrib.auth import logout, authenticate, login
-from django.core.urlresolvers import NoReverseMatch, reverse
 from django.contrib.auth.models import User
 from django.views.generic import TemplateView, View
 from django.http import HttpResponseRedirect
-from ..models import TutorProfile
-from ..auth import user_tutor_data, NotTutor, user_rus_data
+
+from mftutor.tutor.models import TutorProfile
+from mftutor.tutor.auth import user_tutor_data, NotTutor, user_rus_data
+
 
 class LogoutView(View):
     def post(self, request):
@@ -15,6 +19,7 @@ class LogoutView(View):
             return HttpResponseRedirect(request.POST['next'])
         except KeyError:
             return redirect('news')
+
 
 class LoginView(TemplateView):
     template_name = 'login_form.html'
@@ -84,6 +89,7 @@ class LoginView(TemplateView):
         context_data['error'] = errors.get(error_code, '')
 
         return context_data
+
 
 login_view = LoginView.as_view()
 logout_view = LogoutView.as_view()
