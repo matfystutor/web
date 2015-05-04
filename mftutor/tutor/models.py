@@ -73,6 +73,7 @@ class TutorProfile(models.Model):
     def get_full_name(self):
         return self.name
 
+
 # "Arbejdsgruppe"
 class TutorGroup(models.Model):
     objects = models.Manager()
@@ -95,6 +96,7 @@ class TutorGroup(models.Model):
         verbose_name = 'arbejdsgruppe'
         verbose_name_plural = verbose_name + 'r'
 
+
 class RusClassManager(models.Manager):
     def create_from_official(self, year, official_name):
         translate_to_handle = {}
@@ -107,6 +109,7 @@ class RusClassManager(models.Manager):
         internal_name = translate_to_internal[official_name[0:2]] + u' ' + official_name[2:]
         return self.model(year=year, official_name=official_name,
                 handle=handle, internal_name=internal_name)
+
 
 # "Rushold"
 class RusClass(models.Model):
@@ -143,6 +146,7 @@ class RusClass(models.Model):
         verbose_name_plural = verbose_name
 
         ordering = ['year', 'internal_name']
+
 
 # Membership of a user for a single year
 class Tutor(models.Model):
@@ -214,6 +218,7 @@ class Tutor(models.Model):
         verbose_name_plural = verbose_name + 'er'
         unique_together = (('profile', 'year'),)
 
+
 class TutorGroupLeader(models.Model):
     group = models.ForeignKey(TutorGroup)
     year = models.IntegerField()
@@ -225,12 +230,14 @@ class TutorGroupLeader(models.Model):
         verbose_name_plural = verbose_name + 'e'
         unique_together = (('group', 'year'),)
 
+
 def tutor_group_leader(group, year):
     try:
         leader_object = TutorGroupLeader.objects.get(group=group, year=year)
         return leader_object.tutor
     except TutorGroupLeader.DoesNotExist:
         return None
+
 
 class BoardMember(models.Model):
     id = models.AutoField(primary_key=True)
