@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+from __future__ import unicode_literals
+
 import subprocess
 
 from django.http import HttpResponseRedirect
