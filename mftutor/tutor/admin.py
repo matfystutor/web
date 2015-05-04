@@ -22,7 +22,6 @@ class TutorAdmin(admin.ModelAdmin):
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('name', 'studentnumber')
     inlines = [TutorInline]
-    radio_fields = {'gender': admin.HORIZONTAL}
     search_fields = ['name', 'studentnumber']
 
 
