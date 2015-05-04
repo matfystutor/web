@@ -120,11 +120,14 @@ class RusClass(models.Model):
     objects = RusClassManager()
 
     id = models.AutoField(primary_key=True)
-    official_name = models.CharField(max_length=20, verbose_name="AU-navn",
-            help_text=u"DA1, MØ3, osv.")
-    internal_name = models.CharField(max_length=20, verbose_name="Internt navn",
-            help_text=u"Dat1, Møk3, osv.")
-    handle = models.CharField(max_length=20, verbose_name="Email",
+    official_name = models.CharField(
+        max_length=20, verbose_name="AU-navn",
+        help_text=u"DA1, MØ3, osv.")
+    internal_name = models.CharField(
+        max_length=20, verbose_name="Internt navn",
+        help_text=u"Dat1, Møk3, osv.")
+    handle = models.CharField(
+        max_length=20, verbose_name="Email",
         help_text=u"dat1, mok3, osv. Bruges i holdets emailadresse")
     year = models.IntegerField(verbose_name="Tutorår")
 
@@ -160,10 +163,13 @@ class Tutor(models.Model):
     id = models.AutoField(primary_key=True)
     profile = models.ForeignKey(TutorProfile)
     year = models.IntegerField(verbose_name="Tutorår")
-    groups = models.ManyToManyField(TutorGroup, verbose_name="Arbejdsgrupper", blank=True)
-    early_termination = models.DateTimeField(null=True, blank=True, verbose_name="Ekskluderet",
+    groups = models.ManyToManyField(
+        TutorGroup, verbose_name="Arbejdsgrupper", blank=True)
+    early_termination = models.DateTimeField(
+        null=True, blank=True, verbose_name="Ekskluderet",
         help_text="Tidspunkt i året hvor tutoren stopper i foreningen")
-    early_termination_reason = models.TextField(null=True, blank=True, verbose_name="Eksklusionsårsag",
+    early_termination_reason = models.TextField(
+        null=True, blank=True, verbose_name="Eksklusionsårsag",
         help_text="Årsag til at tutoren stopper")
     rusclass = models.ForeignKey(RusClass, null=True, blank=True)
 
@@ -206,9 +212,9 @@ class Tutor(models.Model):
     is_tutorbur.boolean = True
 
     def can_manage_rusclass(self, rusclass):
-        return (self.is_tutorbest()
-                or self.is_tutorbur()
-                or self.rusclass == rusclass)
+        return (self.is_tutorbest() or
+                self.is_tutorbur() or
+                self.rusclass == rusclass)
 
     def __str__(self):
         return '%s (%s)' % (self.profile, self.year)
@@ -271,7 +277,8 @@ class Rus(models.Model):
     rusclass = models.ForeignKey(RusClass, null=True)
 
     arrived = models.BooleanField(verbose_name="Ankommet", default=False)
-    initial_rusclass = models.ForeignKey(RusClass, null=True, related_name='initial_rus_set')
+    initial_rusclass = models.ForeignKey(
+        RusClass, null=True, related_name='initial_rus_set')
 
     class Meta:
         verbose_name = 'rus'
