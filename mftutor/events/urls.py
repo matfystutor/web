@@ -1,6 +1,5 @@
 from django.conf.urls import patterns, url
 from django.views.generic import DetailView, ListView
-from django.contrib.auth.decorators import login_required
 from ..tutor.models import Tutor, TutorGroup, BoardMember
 from mftutor.tutor.auth import tutorbest_required
 from ..settings import YEAR

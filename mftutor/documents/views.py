@@ -4,10 +4,9 @@ from django.forms.extras import SelectDateWidget
 from django.views.generic import UpdateView, TemplateView, CreateView, DeleteView
 from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
-from django.contrib.auth.decorators import login_required
 from ..settings import YEAR
 from .models import Document
-from ..tutor.auth import tutorbest_required
+from ..tutor.auth import tutorbest_required, tutor_required
 
 class UploadDocumentForm(forms.ModelForm):
     class Meta:
@@ -78,7 +77,7 @@ class DocumentListView(TemplateView):
         }        
         return self.render_to_response(params)
 
-    @method_decorator(login_required)
+    @method_decorator(tutor_required)
     def dispatch(self, *args, **kwargs):
         return super(DocumentListView, self).dispatch(*args, **kwargs)
 

@@ -1,5 +1,4 @@
 from django.conf.urls import patterns, url
-from django.contrib.auth.decorators import login_required
 from ..tutor.auth import tutorbur_required
 
 from .views import BurStartView
