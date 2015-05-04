@@ -79,9 +79,11 @@ class TutorGroup(models.Model):
     objects = models.Manager()
     visible_groups = VisibleTutorGroups()
 
-    handle = models.CharField(max_length=20, primary_key=True, verbose_name="Kort navn",
+    handle = models.CharField(
+        max_length=20, primary_key=True, verbose_name="Kort navn",
         help_text="Bruges i gruppens emailadresse")
-    name = models.CharField(max_length=40, verbose_name="Langt navn",
+    name = models.CharField(
+        max_length=40, verbose_name="Langt navn",
         help_text="Vises på hjemmesiden")
     visible = models.BooleanField(default=False)
 
@@ -99,16 +101,17 @@ class TutorGroup(models.Model):
 
 class RusClassManager(models.Manager):
     def create_from_official(self, year, official_name):
-        translate_to_handle = {}
-        for official, handle, internal in settings.RUSCLASS_BASE:
-            translate_to_handle[official] = handle
-        translate_to_internal = {}
-        for official, handle, internal in settings.RUSCLASS_BASE:
-            translate_to_internal[official] = internal
-        handle = translate_to_handle[official_name[0:2]] + official_name[2:]
-        internal_name = translate_to_internal[official_name[0:2]] + u' ' + official_name[2:]
+        official_study = official_name[:2]
+        number = official_name[2:]
+        handle, internal_name = next(
+            (handle, internal)
+            for official, handle, internal in settings.RUSCLASS_BASE
+            if official == official_study
+        )
+        handle = '%s%s' % (handle, number)
+        internal_name = '%s %s' % (internal_name, number)
         return self.model(year=year, official_name=official_name,
-                handle=handle, internal_name=internal_name)
+                          handle=handle, internal_name=internal_name)
 
 
 # "Rushold"
