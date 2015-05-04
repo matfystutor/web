@@ -47,16 +47,20 @@ class LoginView(TemplateView):
 
     def post(self, request):
         login_name = request.POST['username']
-        u = self.get_user(login_name)
+        user = self.get_user(login_name)
 
-        if u is None:
-            context_data = self.get_context_data(error_code='failauth')
+        if user is None:
+            context_data = self.get_context_data(error_code='nouser')
             return self.render_to_response(context_data)
 
-        username = u.username
-
+        username = user.username
         password = request.POST['password']
         user = authenticate(username=username, password=password)
+
+        if user is None:
+            context_data = self.get_context_data(error_code='badpass')
+            return self.render_to_response(context_data)
+
         try:
             tutordata = user_tutor_data(user)
         except NotTutor as e:
@@ -82,7 +86,8 @@ class LoginView(TemplateView):
         context_data = super(LoginView, self).get_context_data(**kwargs)
 
         errors = {
-            'failauth': 'Forkert brugernavn eller kodeord.',
+            'nouser': 'Forkert brugernavn.',
+            'badpass': 'Forkert kodeord.',
             'djangoinactive': 'Din bruger er inaktiv.',
             'notutorprofile': 'Din bruger har ingen tutorprofil.',
             'notutoryear': 'Du er ikke tutor i år.',
