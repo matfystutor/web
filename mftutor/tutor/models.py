@@ -4,6 +4,8 @@
 from __future__ import unicode_literals
 
 import re
+
+from django.utils.encoding import python_2_unicode_compatible
 from django.db import models
 from django.contrib.auth.models import User
 from mftutor import settings
@@ -13,6 +15,7 @@ from mftutor.tutor import tutorpicture_upload_to
 
 
 # User data for the project that does not vary from year to year
+@python_2_unicode_compatible
 class TutorProfile(models.Model):
     objects = TutorProfileManager()
 
@@ -47,13 +50,6 @@ class TutorProfile(models.Model):
             self.user.username if self.user else '(no user)',
         )
 
-    def __unicode__(self):
-        return '%s %s %s' % (
-            self.studentnumber,
-            self.get_full_name(),
-            self.user.username if self.user else '(no user)',
-        )
-
     def set_default_email(self):
         if self.email == '':
             if re.match(r'[A-Z]{2}[0-9]{5}$', self.studentnumber):
@@ -71,6 +67,7 @@ class TutorProfile(models.Model):
 
 
 # "Arbejdsgruppe"
+@python_2_unicode_compatible
 class TutorGroup(models.Model):
     objects = models.Manager()
     visible_groups = VisibleTutorGroups()
@@ -86,9 +83,6 @@ class TutorGroup(models.Model):
     def __str__(self):
         return self.handle
 
-    def __unicode__(self):
-        return self.handle
-
     class Meta:
         ordering = ['name', 'handle']
         verbose_name = 'arbejdsgruppe'
@@ -96,6 +90,7 @@ class TutorGroup(models.Model):
 
 
 # "Rushold"
+@python_2_unicode_compatible
 class RusClass(models.Model):
     objects = RusClassManager()
 
@@ -125,9 +120,6 @@ class RusClass(models.Model):
     def __str__(self):
         return self.internal_name
 
-    def __unicode__(self):
-        return self.internal_name
-
     class Meta:
         verbose_name = 'rushold'
         verbose_name_plural = verbose_name
@@ -136,6 +128,7 @@ class RusClass(models.Model):
 
 
 # Membership of a user for a single year
+@python_2_unicode_compatible
 class Tutor(models.Model):
     objects = TutorManager()
     members = TutorMembers()
@@ -199,9 +192,6 @@ class Tutor(models.Model):
     def __str__(self):
         return '%s (%s)' % (self.profile, self.year)
 
-    def __unicode__(self):
-        return '%s (%s)' % (self.profile, self.year)
-
     class Meta:
         ordering = ['-year']
         verbose_name = 'tutor'
@@ -221,6 +211,7 @@ class TutorGroupLeader(models.Model):
         unique_together = (('group', 'year'),)
 
 
+@python_2_unicode_compatible
 class BoardMember(models.Model):
     id = models.AutoField(primary_key=True)
     tutor = models.ForeignKey(Tutor)
@@ -228,9 +219,6 @@ class BoardMember(models.Model):
     title = models.CharField(max_length=50, verbose_name="Titel")
 
     def __str__(self):
-        return "%s %s" % (self.title, self.tutor)
-
-    def __unicode__(self):
         return "%s %s" % (self.title, self.tutor)
 
     class Meta:
