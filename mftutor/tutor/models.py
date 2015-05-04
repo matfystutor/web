@@ -34,16 +34,10 @@ class TutorProfile(models.Model):
     email = models.EmailField(
         max_length=75, verbose_name="E-mailadresse")
 
-    birthday = models.DateField(
-        verbose_name="Født", blank=True, null=True)
-
     study = models.CharField(
         max_length=60, blank=True, verbose_name="Studieretning")
     studentnumber = models.CharField(
         max_length=20, verbose_name="Årskortnummer", unique=True)
-
-    gender = models.CharField(
-        max_length=1, choices=(('m', 'Mand'), ('f', 'Kvinde')), default='m')
 
     picture = models.ImageField(
             upload_to=tutorpicture_upload_to,
