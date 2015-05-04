@@ -19,7 +19,7 @@ from .models import TutorProfile, TutorGroup, TutorGroupLeader, Tutor
 from .viewimpl.loginout import logout_view, login_view
 from .viewimpl.profile import profile_view
 from .viewimpl.admin import TutorAdminView, BoardAdminView
-from .auth import tutor_required, user_tutor_data, user_rus_data, NotTutor
+from .auth import user_tutor_data, user_rus_data, NotTutor
 
 def tutor_password_change_view(request):
     if 'back' in request.GET:
