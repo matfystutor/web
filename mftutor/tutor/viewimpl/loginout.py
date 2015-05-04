@@ -19,46 +19,35 @@ class LogoutView(View):
 class LoginView(TemplateView):
     template_name = 'login_form.html'
 
+    def get_user(self, login_name):
+        try:
+            return User.objects.get(pk=login_name)
+        except User.DoesNotExist:
+            pass
+
+        try:
+            return User.objects.get(username=login_name)
+        except User.DoesNotExist:
+            pass
+
+        try:
+            return TutorProfile.objects.get(email=login_name).user
+        except TutorProfile.DoesNotExist:
+            pass
+
+        try:
+            return TutorProfile.objects.get(studentnumber=login_name).user
+        except TutorProfile.DoesNotExist:
+            pass
+
     def post(self, request):
-        loginname = request.POST['username']
-        username = None
+        login_name = request.POST['username']
+        u = self.get_user(login_name)
 
-        if username is None:
-            try:
-                i = int(loginname)
-                u = User.objects.get(id=i)
-                username = u.username
-            except ValueError:
-                pass
-            except User.DoesNotExist:
-                pass
-
-        if username is None:
-            try:
-                u = User.objects.get(username=loginname)
-                username = u.username
-            except User.DoesNotExist:
-                pass
-
-        if username is None:
-            try:
-                tp = TutorProfile.objects.get(email=loginname)
-                u = tp.user
-                username = u.username
-            except TutorProfile.DoesNotExist:
-                pass
-
-        if username is None:
-            try:
-                tp = TutorProfile.objects.get(studentnumber=loginname)
-                u = tp.user
-                username = u.username
-            except TutorProfile.DoesNotExist:
-                pass
-
-
-        if username is None:
+        if u is None:
             return self.render_to_response(self.get_context_data(error_code='failauth'))
+
+        username = u.username
 
         password = request.POST['password']
         user = authenticate(username=username, password=password)
