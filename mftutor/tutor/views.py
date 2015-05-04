@@ -1,17 +1,17 @@
 # encoding: utf-8
 import subprocess
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render, redirect, render_to_response
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render_to_response
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
 from django.template import RequestContext
-from django.template import Template, Context
+from django.template import Context
 from django.template.loader import get_template
 from django.core.mail import EmailMessage
 from django.core.mail import get_connection
 from django import forms
 from django.contrib.auth.views import password_change
-from django.views.generic import ListView, UpdateView, TemplateView, FormView, View
+from django.views.generic import UpdateView, TemplateView, FormView
 from ..settings import YEAR
 from .models import *
 from .viewimpl.loginout import logout_view, login_view
