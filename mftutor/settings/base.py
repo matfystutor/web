@@ -111,6 +111,7 @@ MIDDLEWARE_CLASSES = (
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'mftutor.tutor.middleware.TutorMiddleware',
 )
 
 ROOT_URLCONF = 'mftutor.urls'
