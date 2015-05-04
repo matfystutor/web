@@ -6,9 +6,11 @@ from __future__ import unicode_literals
 import re
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
-from ..settings import YEAR, RUSCLASS_BASE, DEFAULT_EMAIL_DOMAIN, DEFAULT_ASB_EMAIL_DOMAIN
-from .managers import TutorProfileManager, TutorManager, TutorMembers, VisibleTutorGroups, RusManager
+from mftutor.settings import RUSCLASS_BASE, DEFAULT_EMAIL_DOMAIN, \
+    DEFAULT_ASB_EMAIL_DOMAIN
+from mftutor.tutor.managers import TutorProfileManager, TutorManager, \
+    TutorMembers, VisibleTutorGroups, RusManager
+
 
 def tutorpicture_upload_to(instance, filename):
     extension = re.sub(r'^.*\.', '', filename)
