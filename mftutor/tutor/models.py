@@ -48,10 +48,11 @@ class TutorProfile(models.Model):
         )
 
     def __unicode__(self):
-        if self.user:
-            return unicode(self.studentnumber)+u' '+unicode(self.get_full_name())+u' '+unicode(self.user.username)
-        else:
-            return unicode(self.studentnumber)+u' '+unicode(self.get_full_name())+u' (no user)'
+        return '%s %s %s' % (
+            self.studentnumber,
+            self.get_full_name(),
+            self.user.username if self.user else '(no user)',
+        )
 
     def set_default_email(self):
         if self.email == '':
@@ -200,7 +201,7 @@ class Tutor(models.Model):
         return '%s (%s)' % (self.profile, self.year)
 
     def __unicode__(self):
-        return unicode(self.profile)+' ('+unicode(self.year)+')'
+        return '%s (%s)' % (self.profile, self.year)
 
     class Meta:
         ordering = ['-year']
@@ -236,7 +237,7 @@ class BoardMember(models.Model):
         return "%s %s" % (self.title, self.tutor)
 
     def __unicode__(self):
-        return unicode(self.title)+u' '+unicode(self.tutor)
+        return "%s %s" % (self.title, self.tutor)
 
     class Meta:
         ordering = ['tutor__year', 'position']
