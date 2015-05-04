@@ -12,7 +12,7 @@ from django.core.mail import get_connection
 from django import forms
 from django.contrib.auth.views import password_change
 from django.views.generic import UpdateView, TemplateView, FormView
-from ..settings import YEAR
+from mftutor import settings
 from .models import TutorProfile, TutorGroup, TutorGroupLeader, Tutor
 
 # Reexport the following views:
@@ -52,7 +52,7 @@ def tutors_view(request, group=None):
     tutorgroup = get_object_or_404(TutorGroup, handle=lookup_group)
 
     try:
-        leader = TutorGroupLeader.objects.get(group=lookup_group, year=YEAR).tutor
+        leader = TutorGroupLeader.objects.get(group=lookup_group, year=settings.YEAR).tutor
     except TutorGroupLeader.DoesNotExist:
         leader = None
     leader_pk = leader.pk if leader else -1
@@ -69,7 +69,7 @@ def tutors_view(request, group=None):
         'email': t.profile.email,
         'study': t.profile.study,
         } for t in tutors]
-    if lookup_group == 'tutorsmiley' and YEAR in [2015]:
+    if lookup_group == 'tutorsmiley' and settings.YEAR in [2015]:
         tutors.append({
             'pk': ':)',
             'studentnumber': '88888888',
@@ -151,7 +151,7 @@ class GroupLeaderView(FormView):
 
     def get_form_kwargs(self):
         kwargs = super(GroupLeaderView, self).get_form_kwargs()
-        kwargs['year'] = YEAR
+        kwargs['year'] = settings.YEAR
         kwargs['groups'] = TutorGroup.objects.filter(visible=True)
         return kwargs
 
@@ -164,10 +164,10 @@ class GroupLeaderView(FormView):
 
             try:
                 current_leader_object = TutorGroupLeader.objects.get(
-                    year=YEAR, group__handle=handle)
+                    year=settings.YEAR, group__handle=handle)
             except TutorGroupLeader.DoesNotExist:
                 current_leader_object = TutorGroupLeader(
-                    year=YEAR, group=TutorGroup.objects.get(handle=handle))
+                    year=settings.YEAR, group=TutorGroup.objects.get(handle=handle))
 
             try:
                 current_leader = current_leader_object.tutor
