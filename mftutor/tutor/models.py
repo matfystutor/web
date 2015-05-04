@@ -9,11 +9,7 @@ from django.contrib.auth.models import User
 from mftutor import settings
 from mftutor.tutor.managers import TutorProfileManager, TutorManager, \
     TutorMembers, VisibleTutorGroups, RusManager
-
-
-def tutorpicture_upload_to(instance, filename):
-    extension = re.sub(r'^.*\.', '', filename)
-    return 'tutorpics/%s.%s' % (instance.studentnumber, extension)
+from mftutor.tutor import tutorpicture_upload_to
 
 
 # User data for the project that does not vary from year to year
