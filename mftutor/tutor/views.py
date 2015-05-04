@@ -1,5 +1,7 @@
 # encoding: utf-8
+
 import subprocess
+
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
 from django.core.urlresolvers import reverse
@@ -12,8 +14,10 @@ from django.core.mail import get_connection
 from django import forms
 from django.contrib.auth.views import password_change
 from django.views.generic import UpdateView, TemplateView, FormView
+
 from mftutor import settings
-from mftutor.tutor.models import TutorProfile, TutorGroup, TutorGroupLeader, Tutor
+from mftutor.tutor.models import TutorProfile, TutorGroup, TutorGroupLeader, \
+    Tutor
 
 # Reexport the following views:
 from mftutor.tutor.viewimpl.loginout import logout_view, login_view
@@ -21,12 +25,15 @@ from mftutor.tutor.viewimpl.profile import profile_view
 from mftutor.tutor.viewimpl.admin import TutorAdminView, BoardAdminView
 from mftutor.tutor.auth import user_tutor_data, user_rus_data, NotTutor
 
+
 def tutor_password_change_view(request):
     if 'back' in request.GET:
         back = request.GET['back']
     else:
         back = reverse('news')
-    return password_change(request, 'registration/password_change_form.html', back)
+    return password_change(
+        request, 'registration/password_change_form.html', back)
+
 
 class UploadPictureForm(forms.ModelForm):
     picture = forms.FileField(
@@ -37,22 +44,27 @@ class UploadPictureForm(forms.ModelForm):
         model = TutorProfile
         fields = ('picture',)
 
+
 class UploadPictureView(UpdateView):
     model = TutorProfile
     template_name = 'uploadpicture.html'
     form_class = UploadPictureForm
+
     def get_object(self):
         return self.request.user.tutorprofile
+
     def get_success_url(self):
         return reverse('upload_picture_view')
+
 
 def tutors_view(request, group=None):
     lookup_group = group or 'alle'
 
-    tutorgroup = get_object_or_404(TutorGroup, handle=lookup_group)
+    get_object_or_404(TutorGroup, handle=lookup_group)
 
     try:
-        leader = TutorGroupLeader.objects.get(group=lookup_group, year=settings.YEAR).tutor
+        leader = TutorGroupLeader.objects.get(
+            group=lookup_group, year=settings.YEAR).tutor
     except TutorGroupLeader.DoesNotExist:
         leader = None
     leader_pk = leader.pk if leader else -1
@@ -95,6 +107,7 @@ def tutors_view(request, group=None):
         },
         RequestContext(request))
 
+
 def switch_user(request, new_user):
     from django.contrib.auth import authenticate, login
     user = authenticate(username=new_user, current_user=request.user)
@@ -102,18 +115,19 @@ def switch_user(request, new_user):
         login(request, user)
     return HttpResponseRedirect(reverse('news'))
 
+
 class FrontView(TemplateView):
     template_name = 'front.html'
 
     def get(self, request, *args, **kwargs):
         try:
-            d = user_tutor_data(request.user)
+            user_tutor_data(request.user)
             return HttpResponseRedirect(reverse('news'))
         except NotTutor:
             pass
 
         try:
-            d = user_rus_data(request.user)
+            user_rus_data(request.user)
             return HttpResponseRedirect(reverse('rus_start'))
         except NotTutor:
             pass
@@ -167,7 +181,8 @@ class GroupLeaderView(FormView):
                     year=settings.YEAR, group__handle=handle)
             except TutorGroupLeader.DoesNotExist:
                 current_leader_object = TutorGroupLeader(
-                    year=settings.YEAR, group=TutorGroup.objects.get(handle=handle))
+                    year=settings.YEAR,
+                    group=TutorGroup.objects.get(handle=handle))
 
             try:
                 current_leader = current_leader_object.tutor
@@ -193,7 +208,9 @@ class ResetPasswordForm(forms.Form):
 
     def clean_studentnumbers(self):
         studentnumbers = self.cleaned_data['studentnumbers']
-        tps = list(TutorProfile.objects.filter(studentnumber__in=studentnumbers.split()))
+        tps = list(
+            TutorProfile.objects.filter(
+                studentnumber__in=studentnumbers.split()))
         tp = dict((tp.studentnumber, tp) for tp in tps)
         for sn in studentnumbers.split():
             if sn not in tp:
@@ -250,11 +267,12 @@ class ResetPasswordView(FormView):
             email_backend_type = 'django.core.mail.backends.smtp.EmailBackend'
 
             email_backend = get_connection(backend=email_backend_type)
-            res = email_backend.send_messages(messages)
+            email_backend.send_messages(messages)
 
             return self.render_to_response(
                 self.get_context_data(form=form, success=True))
 
         else:
             return self.render_to_response(
-                self.get_context_data(form=form, confirm=True, tutors=data['studentnumbers']))
+                self.get_context_data(
+                    form=form, confirm=True, tutors=data['studentnumbers']))
