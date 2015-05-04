@@ -13,7 +13,7 @@ from django import forms
 from django.contrib.auth.views import password_change
 from django.views.generic import UpdateView, TemplateView, FormView
 from ..settings import YEAR
-from .models import *
+from .models import TutorProfile, TutorGroup, TutorGroupLeader, Tutor
 from .viewimpl.loginout import logout_view, login_view
 from .viewimpl.profile import profile_view
 from .viewimpl.admin import TutorAdminView, BoardAdminView
