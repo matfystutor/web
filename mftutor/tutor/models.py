@@ -101,6 +101,7 @@ class TutorGroup(models.Model):
 
 class RusClassManager(models.Manager):
     def create_from_official(self, year, official_name):
+        """Translate (2015, "MA1") into a fresh RusClass object."""
         official_study = official_name[:2]
         number = official_name[2:]
         handle, internal_name = next(
