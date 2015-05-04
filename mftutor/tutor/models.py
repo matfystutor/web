@@ -23,18 +23,27 @@ class TutorProfile(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.OneToOneField(User)
 
-    name = models.CharField(max_length=60, verbose_name="Fulde navn")
-    street = models.CharField(max_length=80, blank=True, verbose_name="Adresse")
-    city = models.CharField(max_length=40, blank=True, verbose_name="Postnr. og by")
-    phone = models.CharField(max_length=20, blank=True, verbose_name="Telefonnr.")
-    email = models.EmailField(max_length=75, verbose_name="E-mailadresse")
+    name = models.CharField(
+        max_length=60, verbose_name="Fulde navn")
+    street = models.CharField(
+        max_length=80, blank=True, verbose_name="Adresse")
+    city = models.CharField(
+        max_length=40, blank=True, verbose_name="Postnr. og by")
+    phone = models.CharField(
+        max_length=20, blank=True, verbose_name="Telefonnr.")
+    email = models.EmailField(
+        max_length=75, verbose_name="E-mailadresse")
 
-    birthday = models.DateField(verbose_name="Født", blank=True, null=True)
+    birthday = models.DateField(
+        verbose_name="Født", blank=True, null=True)
 
-    study = models.CharField(max_length=60, blank=True, verbose_name="Studieretning")
-    studentnumber = models.CharField(max_length=20, verbose_name="Årskortnummer", unique=True)
+    study = models.CharField(
+        max_length=60, blank=True, verbose_name="Studieretning")
+    studentnumber = models.CharField(
+        max_length=20, verbose_name="Årskortnummer", unique=True)
 
-    gender = models.CharField(max_length=1, choices=(('m', 'Mand',),('f','Kvinde',),), default='m')
+    gender = models.CharField(
+        max_length=1, choices=(('m', 'Mand'), ('f', 'Kvinde')), default='m')
 
     picture = models.ImageField(
             upload_to=tutorpicture_upload_to,
