@@ -80,13 +80,15 @@ def tutors_view(request, group=None):
 
     groups = TutorGroup.visible_groups.all()
 
-    return render_to_response('tutors.html',
-            {
-                'group': group,
-                'tutor_list': tutors,
-                'groups': groups,
-                },
-            RequestContext(request))
+    return render_to_response(
+        'tutors.html',
+        {
+            'group': group,
+            'tutor_list': tutors,
+            'groups': groups,
+            'tutor_count': len(tutors),
+        },
+        RequestContext(request))
 
 def switch_user(request, new_user):
     from django.contrib.auth import authenticate, login
