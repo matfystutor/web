@@ -13,7 +13,8 @@ from mftutor.tutor.managers import TutorProfileManager, TutorManager, \
 
 def tutorpicture_upload_to(instance, filename):
     extension = re.sub(r'^.*\.', '', filename)
-    return 'tutorpics/'+instance.studentnumber+'.'+extension
+    return 'tutorpics/%s.%s' % (instance.studentnumber, extension)
+
 
 # User data for the project that does not vary from year to year
 class TutorProfile(models.Model):
