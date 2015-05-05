@@ -128,6 +128,7 @@ class EmailListView(ListView, TemplateResponseMixin):
     def get_queryset(self):
         return Email.objects.filter(archive=False)
 
+
 class EmailDetailView(DetailView, TemplateResponseMixin):
     model = Email
     template_name = 'email_detail.html'
