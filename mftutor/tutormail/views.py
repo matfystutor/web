@@ -9,7 +9,7 @@ from django.views.generic.base import TemplateResponseMixin
 from django.http import HttpResponseRedirect
 import django.core.urlresolvers
 import django.core.mail
-from django.core.mail import EmailMessage, EmailMultiAlternatives
+from django.core.mail import EmailMessage
 
 from mftutor.tutormail.models import Email
 from mftutor.tutormail.forms import EmailForm
