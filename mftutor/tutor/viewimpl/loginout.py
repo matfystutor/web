@@ -26,8 +26,10 @@ class LoginView(TemplateView):
 
     def get_user(self, login_name):
         try:
-            return User.objects.get(pk=login_name)
+            return User.objects.get(pk=int(login_name))
         except User.DoesNotExist:
+            pass
+        except ValueError:
             pass
 
         try:
