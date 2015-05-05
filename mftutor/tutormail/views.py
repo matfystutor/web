@@ -101,13 +101,16 @@ class EmailFormView(FormView):
             text += '\n' + repr(recipients)
             recipients = [self.request.user.tutorprofile.email]
 
-        msg = EmailMessage(
-            subject=subject,
-            body=text,
-            from_email='webfar@matfystutor.dk',
-            bcc=recipients,
-            headers={'From': from_email},
-        )
+        messages = []
+        for recipient in recipients:
+            msg = EmailMessage(
+                subject=subject,
+                body=text,
+                from_email='webfar@matfystutor.dk',
+                bcc=[recipient],
+                headers={'From': from_email, 'X-Tutor-Recipient': recipient},
+            )
+            messages.append(msg)
 
         email_backend = django.core.mail.get_connection(
             backend=email_backend_type)
@@ -116,7 +119,7 @@ class EmailFormView(FormView):
         #     backend='django.core.mail.backends.filebased.EmailBackend',
         #     file_path='./mails')
 
-        email_backend.send_messages([msg])
+        email_backend.send_messages(messages)
 
         return HttpResponseRedirect(self.get_success_url())
 
