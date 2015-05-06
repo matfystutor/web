@@ -40,7 +40,7 @@ function navneleg() {
     "Kasper Lynderup Jensen":             ["jomfru jensen"],
     "Katrin Debes Kristensen":            ["solmor"],
     "Kenneth Lund Kjærgaard":             ["smør", 'gris',],
-    "Knud Valdemar Trøllund Lassen":      ["kv"],
+    "Knud Valdemar Trøllund Lassen":      ["kv", 'knude', 'knude vertex'],
     "Kristoffer Winge":                   [P(10, "pr"), "fuan", "winge", "vinge"],
     "Lasse Ellegaard Jørgensen":          ["nano-peter"],
     "Lauge Hoyer":                        ["gefuit", "burløs"],
