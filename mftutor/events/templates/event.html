@@ -2,7 +2,7 @@
 {% block title %}{{ event.title }}{% endblock %}
 
 {% block content %}
-<div class="eventdate">
+<div class="datebox">
     <span class="month">{{ event.start_date|date:"M"|upper }}</span>
     <span class="day">{{ event.start_date|date:"j" }}</span>
 </div>
