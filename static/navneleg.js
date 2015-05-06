@@ -1,6 +1,7 @@
 var navneleg_activated = false;
+var YEAR = 2014;
 function P(year, name) {
-  var rel = 14 - year;
+  var rel = (YEAR - 2000) - year;
   var prefix = ['', 'g', 'b', 'o', 't'];
   if (rel < prefix.length) return prefix[rel] + name;
   else return 't' + (rel - 3) + name;
