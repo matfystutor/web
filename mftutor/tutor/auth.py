@@ -101,12 +101,6 @@ def tutor_required(fn):
                 return fn(request, *args, **kwargs)
             else:
                 return tutor_required_error(request)
-        import inspect
-        namedargs, varargs, varkw, defaults = inspect.getargspec(fn)
-        if varkw is not None or 'tutor' in namedargs:
-            kwargs['tutor'] = d.tutor
-        if varkw is not None or 'profile' in namedargs:
-            kwargs['profile'] = d.profile
         return fn(request, *args, **kwargs)
 
     return wrapper
