@@ -79,8 +79,11 @@ class DumpView(View):
     def get_objects(self, params):
         filter_kwargs = self.get_filter_kwargs(params)
 
-        objects = self.model.objects.filter(**filter_kwargs)
+        objects = self.get_manager().filter(**filter_kwargs)
         return objects
+
+    def get_manager(self):
+        return self.model.objects
 
     def get_filter_kwargs(self, params):
         filter_kwargs = {}
@@ -123,6 +126,9 @@ class TutorDumpView(DumpView):
         'groups': 'groups__handle',
     }
     tex_name = 'tutor'
+
+    def get_manager(self):
+        return Tutor.members
 
     def get_filter_kwargs(self, params):
         gr = params.pop('group', None)
