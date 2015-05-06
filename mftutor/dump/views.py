@@ -14,8 +14,11 @@ class DumpView(View):
     @staticmethod
     def access_field(o, field):
         parts = field.split('__')
-        for p in parts:
+        for i, p in enumerate(parts):
             o = getattr(o, p)
+            if type(o).__name__ in ("RelatedManager", "ManyRelatedManager"):
+                return ','.join(DumpView.access_field(oo, '__'.join(parts[i+1:]))
+                                for oo in o.all())
         return o
 
     def usage(self, s=None):
@@ -117,6 +120,7 @@ class TutorDumpView(DumpView):
         'phone': 'profile__phone',
         'email': 'profile__email',
         'studentnumber': 'profile__studentnumber',
+        'groups': 'groups__handle',
     }
     tex_name = 'tutor'
 
