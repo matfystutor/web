@@ -14,9 +14,9 @@ class ProfileView(TemplateView):
         tp = get_object_or_404(TutorProfile, studentnumber=self.kwargs['studentnumber'])
         context_data['subject'] = tp
         years = []
-        for tutor in tp.tutor_set.all().select_related('profile__tutor'):
+        for tutor in tp.tutor_set.all():
             years.append({'year': tutor.year, 'tutor': tutor})
-        for rus in tp.rus_set.all().select_related('profile__tutor'):
+        for rus in tp.rus_set.all():
             years.append({'year': rus.year, 'rus': rus})
         context_data['years'] = sorted(years, key=lambda y: y['year'])
         return context_data
