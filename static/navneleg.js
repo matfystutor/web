@@ -53,7 +53,7 @@ function navneleg() {
     "Martin Sand":                        ["furt", P(14, 'form')],
     "Mathias Dannesbo":                   ["fuhi", P(13, 'vc')],
     "Mathias Jaquet Mavraganis":          ["tform", "mavraganis", "tantra", P(14, 'kass')],
-    "Mathias Rav":                        [P(13, "form"), "rav", "not so much", "webfar", "webtumling", "webbaby", 'webtween', 'webteen', 'webmathias'],
+    "Mathias Rav":                        [P(13, "form"), "rav", "webfar", "webtumling", "webbaby", 'webtween', 'webteen', 'webmathias', 'amber'],
     "Mette Lysgaard Schulz":              [P(13, "pr"), "metten", "koorbaby"],
     "Mette Galsgaard Malle":              ['biomalle', 'malle'],
     "Morten Henriksen Birk":              ["birk", 'brik'],
