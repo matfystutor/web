@@ -155,6 +155,7 @@ INSTALLED_APPS = (
     'mftutor.rus',
     'mftutor.reg',
     'mftutor.dump',
+    'mftutor.signup',
 )
 
 # A sample logging configuration. The only tangible logging
