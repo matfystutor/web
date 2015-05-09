@@ -1,10 +1,10 @@
 var navneleg_activated = false;
 var YEAR = 2014;
 function P(year, name) {
-  var rel = (YEAR - 2000) - year;
-  var prefix = ['', 'g', 'b', 'o', 't'];
-  if (rel < prefix.length) return prefix[rel] + name;
-  else return 't' + (rel - 3) + name;
+  var age = (YEAR - 2000) - year;
+  var prefix = ['', 'g', 'b', 'o', 'to'];
+  if (age < prefix.length) return prefix[rel] + name;
+  else return 't' + (age - 3) + 'o' + name;
 }
 function navneleg() {
   if (navneleg_activated) return;
