@@ -65,6 +65,7 @@ function navneleg() {
     "Sabrina Tang Christensen":           [P(11, "cerm")],
     "Sandra Bleuenn Picard S Pedersen":   ["fubs"],
     "Sofie Filskov Hermansen":            ['ælling 1']
+    "Emma Hillgaard":                     ['ælling 2']
     //"Alexandra Fogtmann-Schulz":        ["tform"],
     //"Anne Nielsen":                     "",
     //"Diana Christensen":                "",
