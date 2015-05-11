@@ -91,7 +91,8 @@ class EmailFormView(FormView):
     def form_valid(self, form):
         data = form.cleaned_data
         subject = data['subject']
-        text = self.perform_wrapping(data['text'], data['wrapping'])
+        text = data['text']
+        wrapping = data['wrapping']
         from_email = '"%s" <%s@matfystutor.dk>' % (
             data['sender_name'], data['sender_email'])
 
@@ -100,6 +101,8 @@ class EmailFormView(FormView):
         if data['only_me']:
             text += '\n' + repr(recipients)
             recipients = [self.request.user.tutorprofile.email]
+
+        text = self.perform_wrapping(text, wrapping)
 
         messages = []
         for recipient in recipients:
