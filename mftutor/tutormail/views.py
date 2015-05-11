@@ -103,12 +103,17 @@ class EmailFormView(FormView):
 
         messages = []
         for recipient in recipients:
+            headers = {
+                'From': from_email,
+                'X-Tutor-Recipient': recipient,
+                'X-Tutor-Sender': self.request.user.tutorprofile.name,
+            }
             msg = EmailMessage(
                 subject=subject,
                 body=text,
                 from_email='webfar@matfystutor.dk',
                 bcc=[recipient],
-                headers={'From': from_email, 'X-Tutor-Recipient': recipient},
+                headers=headers,
             )
             messages.append(msg)
 
