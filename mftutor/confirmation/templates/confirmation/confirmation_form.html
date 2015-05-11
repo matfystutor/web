@@ -18,11 +18,7 @@
 {% endif %}
 <p>
 <label>{{ field.label }}<br>
-{% if field.name == 'firstaid' %}
-{% for choice in field %}{{ choice }} {% endfor %}
-{% else %}
 {{ field }}
-{% endif %}
 </label>
 </p>
 {% endfor %}
