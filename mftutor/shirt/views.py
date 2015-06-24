@@ -4,10 +4,11 @@ from django.shortcuts import get_object_or_404, render, redirect, render_to_resp
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django import forms
-from django.views.generic import FormView, UpdateView
+from django.views.generic import FormView, UpdateView, TemplateView
 
 #from ..settings import YEAR
 from .models import ShirtOption, ShirtPreference
+from mftutor.tutor.models import Tutor
 
 class ShirtOptionForm(forms.Form):
     choices = forms.CharField(widget=forms.Textarea)
@@ -78,3 +79,27 @@ class ShirtPreferenceView(UpdateView):
             sp.save()
             return sp
 
+
+class ShirtChoicesView(TemplateView):
+    template_name = 'shirt/shirtchoices.html'
+
+    def get_tutors(self):
+        tutors = list(Tutor.members.all())
+        sp = ShirtPreference.objects.filter(profile__tutor__in=tutors)
+        sp_dict = {s.profile.pk: s for s in sp}
+        for tu in tutors:
+            try:
+                s = sp_dict[tu.profile.pk]
+            except KeyError:
+                s = ShirtPreference()
+            tu.choice1 = s.choice1
+            tu.choice2 = s.choice2
+            tu.choice_created = s.created
+            tu.choice_updated = s.updated
+        tutors.sort(key=lambda tu: (0, tu.profile.name) if tu.choice_updated is None or tu.choice1 in ('', 'Ingen') else (1, tu.choice_updated))
+        return tutors
+
+    def get_context_data(self, **kwargs):
+        data = super(ShirtChoicesView, self).get_context_data(**kwargs)
+        data['tutors'] = self.get_tutors()
+        return data

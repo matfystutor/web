@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}T-shirt-valg{% endblock %}
+
+{% block content %}
+<h1>T-shirt-valg</h1>
+
+<ol>
+    {% for tutor in tutors %}
+    <li>{{ tutor.profile.name }}: {{ tutor.choice1 }}, {{ tutor.choice2 }}
+    (oprettet {{ tutor.choice_created }}, ændret {{ tutor.choice_updated }})</li>
+    {% endfor %}
+</ol>
+
+{% endblock %}
