@@ -20,7 +20,7 @@ def add_year(apps, schema_editor):
                 tg_with_year = groupyears[tu.year, tg.handle]
             except KeyError:
                 tg_with_year = TutorGroup(
-                    year=tu.year, handle='%s%s' % (tg.handle, tu.year),
+                    year=tu.year, handle=tg.handle,
                     name=tg.name, visible=tg.visible)
                 tg_with_year.save()
                 groupyears[tu.year, tg.handle] = tg_with_year
