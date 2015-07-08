@@ -22,6 +22,8 @@ class TutorApplication(models.Model):
 
     groups = models.ManyToManyField(
         TutorGroup, through='TutorApplicationGroup')
+    assigned_groups = models.ManyToManyField(
+        TutorGroup, related_name='tutorapplication_assigned_set')
     profile = models.ForeignKey(TutorProfile, null=True, blank=True)
 
     comments = models.TextField(blank=True)
