@@ -20,7 +20,8 @@ class TutorApplication(models.Model):
     accepted = models.BooleanField(default=True)
     buret = models.BooleanField()
 
-    groups = models.ManyToManyField(TutorGroup, through='TutorApplicationGroup')
+    groups = models.ManyToManyField(
+        TutorGroup, through='TutorApplicationGroup')
     profile = models.ForeignKey(TutorProfile, null=True, blank=True)
 
     comments = models.TextField(blank=True)
