@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Tutoransøgninger{% endblock %}
+{% block content %}
+<h1>Tutoransøgninger</h1>
+<ul>
+{% for app in application_list %}
+<li>{{ app.profile.name }}:
+        {% for groupapp in app.tutorapplicationgroup_set.all %}
+        {{ groupapp.priority }}: {{ groupapp.group }}
+        {% endfor %}
+</li>
+{% endfor %}
+</ul>
+{% endblock %}

@@ -31,3 +31,6 @@ class TutorApplicationGroup(models.Model):
     application = models.ForeignKey(TutorApplication)
     group = models.ForeignKey(TutorGroup)
     priority = models.IntegerField()
+
+    class Meta:
+        ordering = ('priority',)

@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 import json
 
-from django.views.generic import UpdateView, TemplateView, FormView
+from django.views.generic import UpdateView, TemplateView, FormView, ListView
 
 from mftutor.signup.forms import SignupImportForm
 from mftutor.signup.models import TutorApplication, TutorApplicationGroup
@@ -71,6 +71,8 @@ class SignupImportView(FormView):
         """
 
         result = form.cleaned_data['applications']
+
+        # 1. Generate TutorApplication objects
         applications = []
         group_names = []
         for a in result:
@@ -95,6 +97,7 @@ class SignupImportView(FormView):
                 if group_name:
                     group_names.append((app, group_name, priority))
 
+        # 2. Retrieve existing TutorProfiles based on studentnumbers
         studentnumbers = [app.studentnumber for app in applications]
         tutorprofiles = TutorProfile.objects.filter(
             studentnumber__in=studentnumbers)
@@ -103,6 +106,7 @@ class SignupImportView(FormView):
             for tp in tutorprofiles
         }
 
+        # 3. Assign existing TutorProfiles
         for app in applications:
             try:
                 tp = tp_dict[app.studentnumber]
@@ -124,6 +128,52 @@ class SignupImportView(FormView):
             app.rus_year = rus.year
             app.previous_tutor_years = len(Tutor.objects.filter(profile=tp))
 
+        # 4. Retrieve all TutorGroups
+        tg_dict = self.get_tutorgroup_dict()
+
+        # 5. Generate TutorApplicationGroup objects
+        application_groups = []
+        unknown_names = []
+        for app, group_name, priority in group_names:
+            try:
+                group = tg_dict[group_name]
+            except KeyError:
+                unknown_names.append(group_name)
+                continue
+            if isinstance(group, dict):
+                study = parse_study(app.study)
+                if study is None:
+                    group = next(iter(group.values()))
+                else:
+                    group = group[study]
+            ag = TutorApplicationGroup(group=group, priority=priority)
+            application_groups.append((app, ag))
+
+        if unknown_names:
+            error = (
+                "Ukendte grupper: %s" %
+                ', '.join(sorted(set(unknown_names))))
+            form.add_error('text', error)
+            return self.render_to_response(
+                self.get_context_data(
+                    form=form))
+
+        # 6. Save TutorApplications
+        for app in applications:
+            app.save()
+
+        # 7. Save TutorApplicationGroups
+        for app, appgroup in application_groups:
+            appgroup.application = app
+            appgroup.save()
+
+        return self.render_to_response(
+            self.get_context_data(
+                form=form,
+                study=json.dumps(sorted(set((a['study'].lower(), parse_study(a['study'])) for a in result))),
+                result=json.dumps(result, indent=0, sort_keys=True)))
+
+    def get_tutorgroup_dict(self):
         tutorgroups = TutorGroup.objects.filter(visible=True)
         tg_dict = {
             tg.name: tg
@@ -160,41 +210,15 @@ class SignupImportView(FormView):
             if app_name not in tg_dict:
                 tg_dict[app_name] = tg_dict[site_name]
 
-        application_groups = []
-        unknown_names = []
-        for app, group_name, priority in group_names:
-            try:
-                group = tg_dict[group_name]
-            except KeyError:
-                unknown_names.append(group_name)
-                continue
-            if isinstance(group, dict):
-                study = parse_study(app.study)
-                if study is None:
-                    group = next(iter(group.values()))
-                else:
-                    group = group[study]
-            ag = TutorApplicationGroup(group=group, priority=priority)
-            application_groups.append((app, ag))
 
-        if unknown_names:
-            error = (
-                "Ukendte grupper: %s" %
-                ', '.join(sorted(set(unknown_names))))
-            form.add_error('text', error)
-            return self.render_to_response(
-                self.get_context_data(
-                    form=form))
+class SignupListView(ListView):
+    model = TutorApplication
+    template_name = 'signup/list.html'
+    context_object_name = 'application_list'
 
-        for app in applications:
-            app.save()
-
-        for app, appgroup in application_groups:
-            appgroup.application = app
-            appgroup.save()
-
-        return self.render_to_response(
-            self.get_context_data(
-                form=form,
-                study=json.dumps(sorted(set((a['study'].lower(), parse_study(a['study'])) for a in result))),
-                result=json.dumps(result, indent=0, sort_keys=True)))
+    def get_queryset(self):
+        qs = TutorApplication.objects.filter(year=self.request.year)
+        return qs.select_related('profile').prefetch_related(
+            'tutorapplicationgroup_set',
+            'tutorapplicationgroup_set__group',
+        )
