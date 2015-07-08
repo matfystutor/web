@@ -66,7 +66,7 @@ def tutors_view(request, group=None):
 
     try:
         leader = TutorGroupLeader.objects.get(
-            group=lookup_group, year=settings.YEAR).tutor
+            group__handle=lookup_group, year=settings.YEAR).tutor
     except TutorGroupLeader.DoesNotExist:
         leader = None
     leader_pk = leader.pk if leader else -1
