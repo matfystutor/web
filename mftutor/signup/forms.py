@@ -21,32 +21,35 @@ class SignupImportForm(forms.Form):
         text = re.sub(r'\r\n|\r|\n', '\n', text)
 
         lines = text.encode('utf-8').splitlines(True)
+        # Read each line from the CSV
         reader = iter(csv.reader(lines, dialect='excel-tab'))
-        header = [c.decode('utf-8') for c in next(reader)]
+        # The first line is the CSV header
+        input_header = [c.decode('utf-8') for c in next(reader)]
 
-        expected_header = set([
-            "Navn",
-            "Mobil",
-            "\u00c5rskortnummer",
-            "E-mail-adresse",
-            "Studieretning",
-            "Antal \u00e5r som tutor",
-            "Hvorn\u00e5r var du rus p\u00e5 mat/fys?",
-            "Buret",
-            "1.",
-            "2.",
-            "3.",
-            "4.",
-            "5.",
-            "6.",
-            "7.",
-            "8.",
-            "Kendskab til LaTeX",
-            "Bem\u00e6rkninger",
-        ])
+        header_fields = {
+            "Navn": "name",
+            "Mobil": "phone",
+            "E-mail-adresse": "email",
+            "\u00c5rskortnummer": "studentnumber",
+            "Studieretning": "study",
+            "Antal \u00e5r som tutor": "previous_tutor_years",
+            "Hvorn\u00e5r var du rus p\u00e5 mat/fys?": "rus_year",
+            "Buret": "buret",
+            "1.": "1",
+            "2.": "2",
+            "3.": "3",
+            "4.": "4",
+            "5.": "5",
+            "6.": "6",
+            "7.": "7",
+            "8.": "8",
+            "Kendskab til LaTeX": "latex",
+            "Bem\u00e6rkninger": "comments",
+        }
+        expected_header = set(header_fields.keys())
         ignored_fields = set(['', 'Tidspunkt', 'Timestamp'])
 
-        header_set = set(header) - ignored_fields
+        header_set = set(input_header) - ignored_fields
 
         if not header_set.issubset(expected_header):
             raise ValidationError(
@@ -59,15 +62,19 @@ class SignupImportForm(forms.Form):
 
         result = []
         for row in reader:
-            values = [c.decode('utf-8').strip() for c in row]
-            if not any(values):
+            row_values = [c.decode('utf-8').strip() for c in row]
+            if not any(row_values):
                 # Skip rows containing only blanks
                 continue
 
-            row_dict = dict(zip(header, values))
-            # Remove any ignored fields present in header
-            for h in ignored_fields:
-                row_dict.pop(h, None)
+            row_dict = {}
+            for h, v in zip(input_header, row_values):
+                try:
+                    k = header_fields[h]
+                except KeyError:
+                    # Header not in header_fields: ignore value
+                    continue
+                row_dict[k] = v
 
             result.append(row_dict)
 

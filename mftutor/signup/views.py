@@ -15,7 +15,30 @@ class SignupImportView(FormView):
 
     def form_valid(self, form):
         result = form.cleaned_data['applications']
-        header = sorted(result[0].keys())
+        applications = []
+        application_groups = []
+        for a in result:
+            o = TutorApplication()
+            o.year = self.request.year
+            o.name = a['name']
+            o.phone = a['phone']
+            o.email = a['email']
+            o.studentnumber = a['studentnumber']
+            o.study = a['study']
+            o.previous_tutor_years = a['previous_tutor_years']
+            o.rus_year = a['rus_year']
+            o.new_password = False  # TODO -- should be part of application
+            o.accepted = False
+            o.buret = bool(a['buret'])
+            o.comments = 'Kendskab til LaTeX: %s' % a['latex']
+            if a['comments']:
+                o.comments = '%s\n\n%s' % (o.comments, a['comments'])
+
+            for i in range(1, 9):
+
+                og = TutorApplicationGroup(
+                    application=o, group=g, priority=i)
+
         return self.render_to_response(
             self.get_context_data(
                 form=form, header=json.dumps(header, indent=0),
