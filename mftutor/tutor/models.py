@@ -73,7 +73,7 @@ class TutorGroup(models.Model):
     visible_groups = VisibleTutorGroups()
 
     handle = models.CharField(
-        max_length=20, primary_key=True, verbose_name="Kort navn",
+        max_length=20, verbose_name="Kort navn",
         help_text="Bruges i gruppens emailadresse")
     name = models.CharField(
         max_length=40, verbose_name="Langt navn",
@@ -138,7 +138,8 @@ class Tutor(models.Model):
     profile = models.ForeignKey(TutorProfile)
     year = models.IntegerField(verbose_name="Tutorår")
     groups = models.ManyToManyField(
-        TutorGroup, verbose_name="Arbejdsgrupper", blank=True)
+        TutorGroup, verbose_name="Arbejdsgrupper", blank=True,
+        through='TutorInTutorGroup')
     early_termination = models.DateTimeField(
         null=True, blank=True, verbose_name="Ekskluderet",
         help_text="Tidspunkt i året hvor tutoren stopper i foreningen")
@@ -200,8 +201,13 @@ class Tutor(models.Model):
         unique_together = (('profile', 'year'),)
 
 
+class TutorInTutorGroup(models.Model):
+    tutorgroup = models.ForeignKey(TutorGroup, to_field='id')
+    tutor = models.ForeignKey(Tutor)
+
+
 class TutorGroupLeader(models.Model):
-    group = models.ForeignKey(TutorGroup)
+    group = models.ForeignKey(TutorGroup, to_field='id', related_name='+')
     year = models.IntegerField()
     tutor = models.ForeignKey(Tutor)
 
