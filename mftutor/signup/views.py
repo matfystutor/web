@@ -86,7 +86,6 @@ class SignupImportView(FormView):
             app.previous_tutor_years = 0
             app.rus_year = 0
             app.new_password = False  # TODO -- should be part of application
-            app.accepted = False
             app.buret = bool(a['buret'])
             app.comments = 'Kendskab til LaTeX: %s' % a['latex']
             if a['comments']:
