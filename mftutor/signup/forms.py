@@ -32,8 +32,6 @@ class SignupImportForm(forms.Form):
             "E-mail-adresse": "email",
             "\u00c5rskortnummer": "studentnumber",
             "Studieretning": "study",
-            "Antal \u00e5r som tutor": "previous_tutor_years",
-            "Hvorn\u00e5r var du rus p\u00e5 mat/fys?": "rus_year",
             "Buret": "buret",
             "1.": "1",
             "2.": "2",
@@ -47,7 +45,10 @@ class SignupImportForm(forms.Form):
             "Bem\u00e6rkninger": "comments",
         }
         expected_header = set(header_fields.keys())
-        ignored_fields = set(['', 'Tidspunkt', 'Timestamp'])
+        ignored_fields = set([
+            '', 'Tidspunkt', 'Timestamp',
+            "Antal \u00e5r som tutor",
+            "Hvorn\u00e5r var du rus p\u00e5 mat/fys?"])
 
         header_set = set(input_header) - ignored_fields
 
