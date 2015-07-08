@@ -82,7 +82,7 @@ class TutorGroup(models.Model):
     year = models.IntegerField(verbose_name="Tutorår", null=True)
 
     def __str__(self):
-        return self.handle
+        return '%s %s' % (self.handle, self.year)
 
     class Meta:
         ordering = ['name', 'handle']

@@ -36,8 +36,8 @@ make_invisible.short_description = 'Gør ikke synlig'
 
 
 class GroupAdmin(admin.ModelAdmin):
-    list_display = ('name', 'handle', 'visible')
-    list_filter = ('visible',)
+    list_display = ('name', 'handle', 'visible', 'year')
+    list_filter = ('visible', 'year')
     search_fields = ['name', 'handle']
     actions = [make_visible, make_invisible]
 
