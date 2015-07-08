@@ -138,8 +138,7 @@ class Tutor(models.Model):
     profile = models.ForeignKey(TutorProfile)
     year = models.IntegerField(verbose_name="Tutorår")
     groups = models.ManyToManyField(
-        TutorGroup, verbose_name="Arbejdsgrupper", blank=True,
-        through='TutorInTutorGroup')
+        TutorGroup, verbose_name="Arbejdsgrupper", blank=True)
     early_termination = models.DateTimeField(
         null=True, blank=True, verbose_name="Ekskluderet",
         help_text="Tidspunkt i året hvor tutoren stopper i foreningen")
