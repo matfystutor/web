@@ -79,6 +79,7 @@ class TutorGroup(models.Model):
         max_length=40, verbose_name="Langt navn",
         help_text="Vises på hjemmesiden")
     visible = models.BooleanField(default=False)
+    year = models.IntegerField(verbose_name="Tutorår", null=True)
 
     def __str__(self):
         return self.handle
