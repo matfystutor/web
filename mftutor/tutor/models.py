@@ -10,7 +10,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from mftutor import settings
 from mftutor.tutor.managers import TutorProfileManager, TutorManager, \
-    TutorMembers, VisibleTutorGroups, RusManager, RusClassManager
+    VisibleTutorGroups, RusManager, RusClassManager
 from mftutor.tutor import tutorpicture_upload_to
 
 
