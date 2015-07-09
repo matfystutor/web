@@ -69,7 +69,7 @@ def tutors_view(request, group=None):
             leader = None
     else:
         tg = get_object_or_404(TutorGroup, handle=group, year=request.year)
-        tutors = tg.tutor_set.all()
+        tutors = Tutor.group_members(tg)
 
         try:
             leader = TutorGroupLeader.objects.get(

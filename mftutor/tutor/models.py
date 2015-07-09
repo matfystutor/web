@@ -157,7 +157,10 @@ class Tutor(models.Model):
 
     @classmethod
     def group_members(cls, handle, year=None):
-        return cls.members(year).filter(group__handle__exact=handle)
+        if isinstance(handle, TutorGroup):
+            return cls.members(handle.year).filter(groups=handle)
+        else:
+            return cls.members(year).filter(groups__handle__exact=handle)
 
     def has_rusclass(self, year=None):
         if year is None:
