@@ -34,9 +34,9 @@ def fill_out_confirmation(tutor):
     c.save()
 
 def fill_out_confirmations(fraction):
-    filled_out = Tutor.members.filter(confirmation__isnull=False)
-    missing = Tutor.members.exclude(confirmation__isnull=False)
-    new = int(fraction * Tutor.members.count()) - filled_out.count()
+    filled_out = Tutor.members().filter(confirmation__isnull=False)
+    missing = Tutor.members().exclude(confirmation__isnull=False)
+    new = int(fraction * Tutor.members().count()) - filled_out.count()
     for tutor in missing:
         if new <= 0:
             break

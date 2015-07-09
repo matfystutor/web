@@ -132,7 +132,6 @@ class RusClass(models.Model):
 @python_2_unicode_compatible
 class Tutor(models.Model):
     objects = TutorManager()
-    members = TutorMembers()
 
     id = models.AutoField(primary_key=True)
     profile = models.ForeignKey(TutorProfile)
@@ -146,6 +145,19 @@ class Tutor(models.Model):
         null=True, blank=True, verbose_name="Eksklusionsårsag",
         help_text="Årsag til at tutoren stopper")
     rusclass = models.ForeignKey(RusClass, null=True, blank=True)
+
+    @classmethod
+    def members(cls, year=None):
+        if year is None:
+            year = settings.YEAR
+
+        return cls.objects.filter(
+            year=year,
+            early_termination__isnull=True)
+
+    @classmethod
+    def group_members(cls, handle, year=None):
+        return cls.members(year).filter(group__handle__exact=handle)
 
     def has_rusclass(self, year=None):
         if year is None:

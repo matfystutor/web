@@ -33,7 +33,7 @@ def event_detail_view(request, eventid):
 
     rsvps = {p.tutor.pk: p for p in event.participants.all()}
     if event.rsvp != None:
-        for tu in Tutor.members.all():
+        for tu in Tutor.members(request.year):
             rsvps.setdefault(tu.pk, EventParticipant(tutor=tu))
     accept = []
     decline = []
@@ -151,7 +151,7 @@ class EventParticipantListView(DetailView):
         event = context_data['event']
         rsvps = {p.tutor.pk: p for p in event.participants.all()}
         names = {}
-        for tutor in Tutor.members.all():
+        for tutor in Tutor.members(self.request.year):
             names[tutor.pk] = tutor.profile.name
             rsvps.setdefault(tutor.pk,
                              EventParticipant(event=event, tutor=tutor))

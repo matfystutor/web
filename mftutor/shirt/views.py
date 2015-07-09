@@ -84,7 +84,7 @@ class ShirtChoicesView(TemplateView):
     template_name = 'shirt/shirtchoices.html'
 
     def get_tutors(self):
-        tutors = list(Tutor.members.all())
+        tutors = list(Tutor.members(self.request.year))
         sp = ShirtPreference.objects.filter(profile__tutor__in=tutors)
         sp_dict = {s.profile.pk: s for s in sp}
         for tu in tutors:

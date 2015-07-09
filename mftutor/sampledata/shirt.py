@@ -17,7 +17,7 @@ def make_tshirt_options():
                 ).save()
 
 def make_tshirt_preferences(response_fraction):
-    tutors = TutorProfile.objects.filter(tutor__in=Tutor.members.all())
+    tutors = TutorProfile.objects.filter(tutor__in=Tutor.members())
     chosen = ShirtPreference.objects.filter(profile__in=tutors)
     add_count = int(response_fraction * tutors.count() - chosen.count())
     options = [so.choice for so in ShirtOption.objects.all()]

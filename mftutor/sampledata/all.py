@@ -5,7 +5,7 @@ from .shirt import make_tshirt_options, make_tshirt_preferences
 from .confirmation import fill_out_confirmations
 
 def populate_all(members):
-    new_tutors = members - Tutor.members.count()
+    new_tutors = members - Tutor.members().count()
 
     while new_tutors > 0:
         new_random_tutor(YEAR)

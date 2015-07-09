@@ -71,7 +71,7 @@ def tutors_view(request, group=None):
         leader = None
     leader_pk = leader.pk if leader else -1
 
-    tutors = list(Tutor.members.group(lookup_group))
+    tutors = list(Tutor.group_members(lookup_group))
     tutors = [{
         'pk': t.pk,
         'studentnumber': t.profile.studentnumber,

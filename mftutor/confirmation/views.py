@@ -47,9 +47,12 @@ class OwnConfirmationView(UpdateView):
 class ConfirmationListView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(ConfirmationListView, self).get_context_data(**kwargs)
-        context['confirmation_list'] = sorted(list(Confirmation.objects.all())
-                + list(Confirmation(tutor=t) for t in Tutor.members.filter(confirmation__isnull=True)),
-                key=lambda c: c.tutor.profile.get_full_name())
+        context['confirmation_list'] = sorted(
+            list(Confirmation.objects.all()) +
+            list(Confirmation(tutor=t)
+                 for t in Tutor.members(self.request.year).filter(
+                     confirmation__isnull=True)),
+            key=lambda c: c.tutor.profile.get_full_name())
         return context
 
 class ConfirmationTableView(ConfirmationListView):

@@ -25,7 +25,7 @@ class AliasesView(TemplateView):
                 continue
 
             tutors = sorted(t.profile.name
-                            for t in Tutor.members.filter(groups=g))
+                            for t in Tutor.members(request.year).filter(groups=g))
             aliases = [a + '@' + current_site.domain
                        for a in aliases_list[g.handle]]
             group = {
