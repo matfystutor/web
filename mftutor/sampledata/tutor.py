@@ -105,6 +105,5 @@ def new_random_tutor(year):
             year=year,
             )
     tu.save()
-    tu.groups.add(get_group('alle', 'Alle tutorer'))
     tu.groups.add(get_group(*random.choice(GROUP)))
     tu.groups.add(get_group(*random.choice(GROUP)))

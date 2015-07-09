@@ -83,8 +83,7 @@ class EmailFormView(FormView):
     def get_recipients(self):
         profiles = TutorProfile.objects.filter(
             tutor__year__exact=TUTORMAIL_YEAR,
-            tutor__early_termination__isnull=True,
-            tutor__groups__handle='alle')
+            tutor__early_termination__isnull=True)
 
         return sorted([profile.email for profile in profiles])
 
