@@ -62,7 +62,7 @@ class UploadPictureView(UpdateView):
 def tutors_view(request, group=None):
     lookup_group = group or 'alle'
 
-    get_object_or_404(TutorGroup, handle=lookup_group)
+    get_object_or_404(TutorGroup, handle=lookup_group, year=request.year)
 
     try:
         leader = TutorGroupLeader.objects.get(
