@@ -66,7 +66,7 @@ def tutors_view(request, group=None):
 
     try:
         leader = TutorGroupLeader.objects.get(
-            group__handle=lookup_group, year=settings.YEAR).tutor
+            group__handle=lookup_group, year=request.year).tutor
     except TutorGroupLeader.DoesNotExist:
         leader = None
     leader_pk = leader.pk if leader else -1
@@ -83,7 +83,7 @@ def tutors_view(request, group=None):
         'email': t.profile.email,
         'study': t.profile.study,
         } for t in tutors]
-    if lookup_group == 'tutorsmiley' and settings.YEAR in [2015]:
+    if lookup_group == 'tutorsmiley' and request.year in [2015]:
         tutors.append({
             'pk': ':)',
             'studentnumber': '88888888',
