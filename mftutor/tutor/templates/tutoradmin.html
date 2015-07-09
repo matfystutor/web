@@ -76,7 +76,7 @@ MultiSelect.prototype.update_link_text = function () {
     var txt = [];
     for (var i = 0, l = this.el.options.length; i < l; ++i) {
         var o = this.el.options[i];
-        if (o.selected) txt.push(o.value);
+        if (o.selected) txt.push(o.textContent);
     }
     var label = txt.length ? txt.join(', ') : '(ingen)';
     this.link.innerHTML = label;

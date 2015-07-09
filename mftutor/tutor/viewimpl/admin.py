@@ -12,6 +12,17 @@ from ..models import Tutor, TutorGroup, TutorProfile, RusClass, BoardMember
 def classy(cl, size=10):
     return forms.TextInput(attrs={'class':cl, 'size':size})
 
+
+class GroupModelMultipleChoiceField(forms.ModelMultipleChoiceField):
+    def __init__(self, **kwargs):
+        super(GroupModelMultipleChoiceField, self).__init__(
+            queryset=TutorGroup.objects.filter(visible=True, year=YEAR),
+            **kwargs)
+
+    def label_from_instance(self, obj):
+        return obj.handle
+
+
 class TutorForm(forms.Form):
     pk = forms.IntegerField(widget=forms.HiddenInput, required=False, label='')
     profile_pk = forms.IntegerField(widget=forms.HiddenInput, required=False, label='')
@@ -20,7 +31,7 @@ class TutorForm(forms.Form):
     study = forms.CharField(label='Studium', widget=classy('study', 7))
     email = forms.EmailField(label='Email', required=False, widget=classy('email', 25))
     rusclass = forms.ModelChoiceField(label='Rushold', queryset=RusClass.objects.filter(year__exact=YEAR), required=False)
-    groups = forms.ModelMultipleChoiceField(label='Grupper', queryset=TutorGroup.objects.filter(visible=True), required=False)
+    groups = GroupModelMultipleChoiceField(label='Grupper', required=False)
 
     def clean_pk(self):
         data = self.cleaned_data['pk']
