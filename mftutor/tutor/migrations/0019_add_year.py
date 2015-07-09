@@ -28,7 +28,13 @@ def add_year(apps, schema_editor):
 
     for tgl in TutorGroupLeader.objects.all():
         if tgl.group.year == None:
-            tgl.group = groupyears[tgl.year, tgl.group.handle]
+            try:
+                tgl.group = groupyears[tgl.year, tgl.group.handle]
+            except ValueError:
+                print(type(groupyears[tgl.year, tgl.group.handle]))
+                print(type(tgl.group))
+                print(type(tgl.group) is type(groupyears[tgl.year, tgl.group.handle]))
+                raise
             tgl.save()
 
 
