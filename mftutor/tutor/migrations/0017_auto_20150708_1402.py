@@ -12,8 +12,28 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
+            model_name='tutorgroupleader',
+            name='group',
+            field=models.IntegerField(),
+        ),
+        migrations.AlterField(
+            model_name='tutorintutorgroup',
+            name='tutorgroup',
+            field=models.IntegerField(),
+        ),
+        migrations.AlterField(
             model_name='tutorgroup',
             name='id',
             field=models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True),
+        ),
+        migrations.AlterField(
+            model_name='tutorgroupleader',
+            name='group',
+            field=models.ForeignKey(related_name='+', to='tutor.TutorGroup'),
+        ),
+        migrations.AlterField(
+            model_name='tutorintutorgroup',
+            name='tutorgroup',
+            field=models.ForeignKey(to='tutor.TutorGroup'),
         ),
     ]

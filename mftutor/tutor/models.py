@@ -214,7 +214,6 @@ class TutorGroupLeader(models.Model):
         ordering = ['-year', 'group']
         verbose_name = 'gruppeansvarlig'
         verbose_name_plural = verbose_name + 'e'
-        unique_together = (('group', 'year'),)
 
 
 @python_2_unicode_compatible

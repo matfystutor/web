@@ -11,7 +11,14 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        # Note: This overrides the old 'group' field!
+        migrations.AlterUniqueTogether(
+            name='tutorgroupleader',
+            unique_together=set([]),
+        ),
+        migrations.RemoveField(
+            model_name='tutorgroupleader',
+            name='group',
+        ),
         migrations.RenameField(
             model_name='tutorgroupleader',
             old_name='group_fake',

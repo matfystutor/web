@@ -12,6 +12,16 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
+            model_name='tutorgroupleader',
+            name='group',
+            field=models.IntegerField(),
+        ),
+        migrations.AlterField(
+            model_name='tutorintutorgroup',
+            name='tutorgroup',
+            field=models.IntegerField(),
+        ),
+        migrations.AlterField(
             model_name='tutorgroup',
             name='fake_id',
             field=models.IntegerField(serialize=False, primary_key=True),
