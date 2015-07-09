@@ -60,18 +60,25 @@ class UploadPictureView(UpdateView):
 
 
 def tutors_view(request, group=None):
-    lookup_group = group or 'alle'
+    if group is None:
+        tutors = Tutor.members(request.year)
+        try:
+            leader = TutorGroupLeader.objects.get(
+                group__handle='best', year=request.year).tutor
+        except TutorGroupLeader.DoesNotExist:
+            leader = None
+    else:
+        tg = get_object_or_404(TutorGroup, handle=group, year=request.year)
+        tutors = tg.tutor_set.all()
 
-    get_object_or_404(TutorGroup, handle=lookup_group, year=request.year)
+        try:
+            leader = TutorGroupLeader.objects.get(
+                group__handle=group, year=request.year).tutor
+        except TutorGroupLeader.DoesNotExist:
+            leader = None
 
-    try:
-        leader = TutorGroupLeader.objects.get(
-            group__handle=lookup_group, year=request.year).tutor
-    except TutorGroupLeader.DoesNotExist:
-        leader = None
     leader_pk = leader.pk if leader else -1
 
-    tutors = list(Tutor.group_members(lookup_group))
     tutors = [{
         'pk': t.pk,
         'studentnumber': t.profile.studentnumber,
@@ -83,7 +90,7 @@ def tutors_view(request, group=None):
         'email': t.profile.email,
         'study': t.profile.study,
         } for t in tutors]
-    if lookup_group == 'tutorsmiley' and request.year in [2015]:
+    if group == 'tutorsmiley' and request.year in [2015]:
         tutors.append({
             'pk': ':)',
             'studentnumber': '88888888',
