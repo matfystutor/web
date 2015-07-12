@@ -9,6 +9,6 @@ DTEND;TZID=Europe/Copenhagen:{{ event.end_date|date:"Ymd"}}T{{ event.end_time|da
 {% else %}DTSTART;TZID=Europe/Copenhagen;VALUE=DATE:{{ event.start_date|date:"Ymd"}}
 DTEND;TZID=Europe/Copenhagen;VALUE=DATE:{{ event.end_date|add_day|date:"Ymd"}}
 {% endif %}SUMMARY:{{ event.title|ical_escape }}
-DESCRIPTION:{{ event.description|ical_escape }}\n\n{{ SITE_URL }}{% url 'event' event.pk %}
+DESCRIPTION:{% if event.description %}{{ event.description|ical_escape }}\n\n{% endif %}{{ SITE_URL }}{% url 'event' event.pk %}
 END:VEVENT
 {% endfor %}END:VCALENDAR
