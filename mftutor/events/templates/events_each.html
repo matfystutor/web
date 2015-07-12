@@ -1,0 +1,35 @@
+<div class="eventsevent {{ event.category }}">
+<div class="datebox">
+    <span class="month">{{ event.start_date|date:"M"|upper }}</span>
+    <span class="day">{{ event.start_date|date:"j" }}</span>
+</div>
+<div class="eventtitle"><a href="{% url 'event' event.pk %}">{{ event.title }}</a>
+{% if event.location %}- <span class="eventlocation">{{ event.location }}</span>{% endif %}
+</div>
+<div class="eventtime">{{ event.start_date|date:"l j. F"|lower|capfirst }}
+{% if event.start_date != event.end_date %}
+til {{ event.end_date|date:"l j. F"|lower }}
+{% endif %}
+</div>
+{% if user.is_authenticated %}
+{% if event.is_rsvp_possible %}
+<div class="rsvp">
+    <form method="post" action="/events/rsvp/{{ event.id }}/">
+	{% csrf_token %}
+	RSVP:
+	<select name="status" onchange="selectchange(this)">
+	    {% if event.rsvp_status = "none" %}<option value="">Vælg...</option>{% endif %}
+	    <option value="yes"{% if event.rsvp_status = "yes" %} selected{% endif %}>Kommer</option>
+	    <option value="no"{% if event.rsvp_status = "no" %} selected{% endif %}>Kommer ikke</option>
+	</select>
+	<span class="saved"></span>
+    </form>
+</div>
+{% endif %}
+{% if not event.is_rsvp_possible %}
+{% if event.rsvp_status != 'none' %}RSVP: {% endif %}
+{% if event.rsvp_status = "yes" %}Kommer{% endif %}
+{% if event.rsvp_status = "no" %}Kommer ikke{% endif %}
+{% endif %}
+</div>
+{% endif %}
