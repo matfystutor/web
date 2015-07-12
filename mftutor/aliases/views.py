@@ -2,7 +2,7 @@ from django.views.generic import TemplateView
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.models import User
-from django.contrib.sites.models import get_current_site
+from django.contrib.sites.shortcuts import get_current_site
 from ..tutor.models import TutorGroup, TutorProfile, Tutor
 from ..settings import YEAR
 from ..tutor.auth import user_tutor_data
