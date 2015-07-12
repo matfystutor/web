@@ -8,8 +8,8 @@ class EventAdmin(admin.ModelAdmin):
     inlines = [RSVPInline]
     date_hierarchy = 'start_date'
     fields = (('title', 'rsvp'), 'description', ('start_date', 'end_date'), ('start_time', 'end_time'))
-    list_display = ('title', 'start_date', 'end_date', 'start_time', 'end_time', 'rsvp')
-    search_fields = ('title', 'description')
+    list_display = ('title', 'location', 'start_date', 'end_date', 'start_time', 'end_time', 'rsvp')
+    search_fields = ('title', 'location', 'description')
 
 def event_title(rsvp):
     return rsvp.event.title
