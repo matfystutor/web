@@ -1,8 +1,17 @@
 from .models import *
 from django.contrib import admin
+from django.forms.models import BaseInlineFormSet
+
+
+class RSVPInlineFormSet(BaseInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        super(RSVPInlineFormSet, self).__init__(*args, **kwargs)
+        self.queryset = self.get_queryset().select_related('tutor__profile__user')
+
 
 class RSVPInline(admin.TabularInline):
     model = EventParticipant
+    formset = RSVPInlineFormSet
 
 class EventAdmin(admin.ModelAdmin):
     inlines = [RSVPInline]

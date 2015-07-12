@@ -6,7 +6,7 @@ class RusManager(models.Manager):
     use_for_related_fields = True
 
     def get_queryset(self):
-        return super(RusManager, self).get_queryset().select_related('profile', 'rusclass', 'initial_rusclass')
+        return super(RusManager, self).get_queryset().select_related('profile', 'rusclass', 'initial_rusclass', 'profile__user')
 
 class TutorProfileManager(models.Manager):
     use_for_related_fields = True
@@ -18,7 +18,7 @@ class TutorManager(models.Manager):
     use_for_related_fields = True
 
     def get_queryset(self):
-        return super(TutorManager, self).get_queryset().select_related('profile')
+        return super(TutorManager, self).get_queryset().select_related('profile', 'profile__user')
 
 class VisibleTutorGroups(models.Manager):
     def get_queryset(self):
