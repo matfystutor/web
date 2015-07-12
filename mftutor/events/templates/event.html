@@ -12,6 +12,9 @@
 til {{ event.end_date|date:"l j. F"|lower }}
 {% endif %}
 </div>
+{% if event.location %}
+<div class="location">{{ event.location }}</div>
+{% endif %}
 
 <p style="white-space: pre-wrap">{% if event.description %}<strong>Beskrivelse:</strong> {{ event.description }}{% else %}Ingen beskrivelse.{% endif %}</p>
 
