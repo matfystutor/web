@@ -8,6 +8,7 @@ from .views import HandoutListView, HandoutNewView, HandoutSummaryView, \
         HandoutResponseView, HandoutResponseDeleteView
 from .views import RusInfoListView, RusInfoView
 from .views import LightboxAdminView
+from .views import ArrivedStatsView
 
 urlpatterns = patterns('',
     url(r'^$', tutorbur_required(BurStartView.as_view()),
@@ -47,4 +48,7 @@ urlpatterns = patterns('',
 
     url(r'^burtavle/$',
         tutorbur_required(LightboxAdminView.as_view()), name='burtavle_admin'),
+
+    url(r'^stats/$',
+        ArrivedStatsView.as_view(), name='arrived_stats'),
 )

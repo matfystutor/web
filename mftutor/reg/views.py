@@ -1121,3 +1121,52 @@ class LightboxAdminView(LightboxView):
         context_data = super(LightboxAdminView, self).get_context_data(**kwargs)
         context_data['form'] = self.get_form()
         return context_data
+
+
+class ArrivedStatsView(TemplateView):
+    template_name = 'reg/arrived_stats.html'
+
+    @staticmethod
+    def kot_optag():
+        return {
+            year: dict(zip('mat mok nano it fys dat'.split(), numbers))
+            for year, numbers in [
+                (2012, [100, 83, 47, 69, 115, 154]),
+                (2013, [113, 74, 74, 70, 116, 155]),
+                (2014, [72, 81, 56, 65, 103, 170]),
+            ]
+        }
+
+    @staticmethod
+    def get_year_list():
+        kot = ArrivedStatsView.kot_optag()
+        years = sorted(
+            set(o['year'] for o in Rus.objects.values('year').distinct()) |
+            set(kot.keys()))
+        rows = []
+        for year in years:
+            cells = []
+            kot_year = kot.get(year, {})
+            for official_name, handle, internal_name in settings.RUSCLASS_BASE:
+                kot_study = kot_year.get(handle, 0)
+                qs = Rus.objects.filter(
+                    year=year, rusclass__handle__startswith=handle)
+                count = qs.count()
+                arrived = qs.filter(arrived=True).count()
+                cells.append({
+                    'handle': handle,
+                    'name': internal_name,
+                    'kot': kot_study,
+                    'count': count,
+                    'arrived': arrived,
+                })
+            rows.append({
+                'year': year,
+                'cells': cells,
+            })
+        return rows
+
+    def get_context_data(self, **kwargs):
+        context_data = super(ArrivedStatsView, self).get_context_data(**kwargs)
+        context_data['year_list'] = self.get_year_list()
+        return context_data

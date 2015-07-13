@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}KOT-optag{% endblock %}
+
+{% block content %}
+<h1>KOT-optag</h1>
+
+<table>
+    {% for row in year_list %}
+    {% ifchanged %}
+    <tr>
+        <th>År</th>
+        {% for cell in row.cells %}
+        <th>{{ cell.name }}</th>
+        {% endfor %}
+    </tr>
+    {% endifchanged %}
+    <tr>
+        <td>{{ row.year }}</td>
+        {% for cell in row.cells %}
+        <td>{{ cell.kot }}/{{ cell.count }}/{{ cell.arrived }}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
