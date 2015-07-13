@@ -1141,7 +1141,7 @@ class ArrivedStatsView(TemplateView):
     def get_year_list():
         kot = ArrivedStatsView.kot_optag()
         years = sorted(
-            set(o['year'] for o in Rus.objects.values('year').distinct()) |
+            set(Rus.objects.values_list('year', flat=True).distinct()) |
             set(kot.keys()))
         rows = []
         for year in years:
