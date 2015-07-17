@@ -15,7 +15,7 @@ from django.contrib.auth.models import User
 
 from .. import settings
 from ..tutor.models import RusClass, TutorProfile, Rus
-from ..tutor.auth import user_tutor_data, tutor_required_error, NotTutor, rusclass_required_error, tutorbest_required_error
+from ..tutor.auth import tutor_required_error, rusclass_required_error, tutorbest_required_error
 
 from .models import ImportSession, ImportLine, Note, ChangeLogEntry, Handout, HandoutRusResponse, HandoutClassResponse
 from .models import LightboxRusClassState, LightboxNote
@@ -378,7 +378,6 @@ class RusCreateView(FormView):
         return rusclass_list
 
     def form_valid(self, form):
-        d = user_tutor_data(self.request.user)
         data = form.cleaned_data
         try:
             first_name, last_name = data['name'].split(' ', 1)
@@ -405,7 +404,7 @@ class RusCreateView(FormView):
                         subject_kind='rus',
                         subject_pk=rus.pk,
                         body=data['note'],
-                        author=d.profile)
+                        author=self.request.tutorprofile)
             return HttpResponseRedirect(reverse('reg_rus_list'))
 
 class RPCError(Exception):
@@ -516,8 +515,7 @@ class RusListRPC(View):
                 serialized_data=note.json_of())
 
     def handle_post(self, request):
-        d = user_tutor_data(request.user)
-        self.author = d.profile
+        self.author = request.tutorprofile
 
         action = self.get_param('action')
         if action not in self.ACTIONS:
@@ -867,8 +865,7 @@ class RusInfoListView(ListView):
         return RusClass.objects.filter(year__exact=self.request.year).order_by('internal_name')
 
     def get(self, request):
-        d = user_tutor_data(request.user)
-        tutor = d.tutor
+        tutor = request.tutor
         if not tutor.is_tutorbur():
             if tutor.rusclass:
                 return HttpResponseRedirect(reverse('rusinfo', kwargs={'handle': tutor.rusclass.handle}))
@@ -937,15 +934,11 @@ class RusInfoView(FormView):
         return data
 
     def dispatch(self, request, handle):
-        try:
-            d = user_tutor_data(request.user)
-        except NotTutor:
-            return tutor_required_error(request)
-        if not d.tutor:
+        if not request.tutor:
             return tutor_required_error(request)
 
         self.rusclass = get_object_or_404(RusClass, handle__exact=handle, year__exact=request.year)
-        if not d.tutor.can_manage_rusclass(self.rusclass):
+        if not request.tutor.can_manage_rusclass(self.rusclass):
             return tutorbest_required_error(request)
 
         self.rus_list = self.get_rus_list()
@@ -968,7 +961,6 @@ class RusInfoView(FormView):
         return context_data
 
     def form_valid(self, form):
-        tutor = user_tutor_data(self.request.user)
         changes = 0
         messages = []
         with transaction.atomic():
@@ -1008,7 +1000,7 @@ class RusInfoView(FormView):
 
                     msg = make_password_reset_message(
                             rus.profile,
-                            tutor.profile,
+                            self.request.tutorprofile,
                             pw)
                     messages.append(msg)
 
@@ -1092,8 +1084,6 @@ class LightboxAdminView(LightboxView):
         return form
 
     def get_post_response(self, request):
-        d = user_tutor_data(request.user)
-
         form = LightboxAdminForm(request.POST)
         if not form.is_valid():
             return {'error': form.errors}
@@ -1114,7 +1104,7 @@ class LightboxAdminView(LightboxView):
 
         state.color = data['color']
         state.note = data['note']
-        state.author = d.profile
+        state.author = request.tutorprofile
         state.save()
         return {'success': True}
 
