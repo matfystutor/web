@@ -4,7 +4,7 @@ from django import forms
 from django.views.generic import UpdateView, TemplateView, View
 from django.views.generic.edit import FormMixin
 
-from ..tutor.auth import user_tutor_data, NotTutor, tutorbest_required_error, tutor_required_error
+from ..tutor.auth import tutorbest_required_error, tutor_required_error
 from ..tutor.models import Tutor
 from .models import Confirmation
 from .forms import OwnConfirmationForm, EditNoteForm
@@ -13,24 +13,19 @@ class OwnConfirmationView(UpdateView):
     form_class = OwnConfirmationForm
 
     def dispatch(self, request, *args, **kwargs):
-        try:
-            td = user_tutor_data(request.user)
-        except NotTutor:
+        if not request.tutor:
             return tutor_required_error(request)
 
         return super(OwnConfirmationView, self).dispatch(request, *args, **kwargs)
 
     def get_object(self):
-        td = user_tutor_data(self.request.user)
         try:
-            return Confirmation.objects.get(tutor=td.tutor)
+            return Confirmation.objects.get(tutor=self.request.tutor)
         except Confirmation.DoesNotExist:
-            return Confirmation(tutor=td.tutor, study=td.profile.study)
+            return Confirmation(tutor=self.request.tutor, study=self.request.profile.study)
 
     def form_valid(self, form):
-        td = user_tutor_data(self.request.user)
-
-        if self.object.tutor.pk != td.tutor.pk:
+        if self.object.tutor != self.request.tutor:
             errors = form._errors.setdefault(forms.forms.NON_FIELD_ERRORS, forms.util.ErrorList())
             errors.append(u"Ugyldig tutor")
             return self.form_invalid(form)
@@ -82,11 +77,9 @@ class EditNoteView(View, FormMixin):
         return super(EditNoteView, self).form_valid(form)
 
     def dispatch(self, request, *args, **kwargs):
-        try:
-            td = user_tutor_data(request.user)
-        except NotTutor:
+        if not request.tutor:
             return tutorbest_required_error(request)
-        if not td.tutor.is_tutorbest():
+        if not request.tutor.is_tutorbest():
             return tutorbest_required_error(request)
 
         return super(EditNoteView, self).dispatch(request, *args, **kwargs)
