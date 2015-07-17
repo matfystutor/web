@@ -1,8 +1,5 @@
-from ..tutor.auth import user_rus_data, NotTutor
-
 def rus_data(request):
-    try:
-        d = user_rus_data(request.user)
-    except NotTutor:
+    if request.rus:
+        return {'rus': request.rus, 'profile': request.tutorprofile}
+    else:
         return {}
-    return {'rus': d.rus, 'profile': d.profile}
