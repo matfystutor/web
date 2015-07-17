@@ -6,7 +6,6 @@ from django.forms.formsets import formset_factory, BaseFormSet
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
-from ...settings import YEAR
 from ..models import Tutor, TutorGroup, TutorProfile, RusClass, BoardMember
 
 def classy(cl, size=10):
@@ -29,7 +28,7 @@ class TutorForm(forms.Form):
     def clean_pk(self):
         data = self.cleaned_data['pk']
         if data is not None:
-            t = Tutor.objects.filter(pk=data, year=YEAR)
+            t = Tutor.objects.filter(pk=data, year=self.year)
             if t.count == 0:
                 raise forms.ValidationError('Tutor med dette interne ID findes ikke.')
         return data
@@ -52,6 +51,7 @@ class TutorFormSet(BaseFormSet):
 
     def add_fields(self, form, index):
         super(TutorFormSet, self).add_fields(form, index)
+        form.year = self.year
         form.fields['rusclass'] = forms.ModelChoiceField(
             label='Rushold', required=False,
             queryset=RusClass.objects.filter(year__exact=self.year))
@@ -91,7 +91,8 @@ class TutorAdminView(FormView):
         return kwargs
 
     def get_initial(self):
-        tutors = Tutor.objects.filter(year=YEAR).select_related('profile')
+        tutors = Tutor.objects.filter(year=self.request.year)
+        tutors = tutors.select_related('profile')
         result = []
         for tutor in tutors:
             result.append(self.get_initial_for_tutor(tutor))
@@ -130,14 +131,14 @@ class TutorAdminView(FormView):
             if data['pk'] is None:
                 try:
                     profile = TutorProfile.objects.get(studentnumber__exact=in_studentnumber)
-                    tutor = Tutor.objects.get(year=YEAR, profile=profile)
+                    tutor = Tutor.objects.get(year=self.request.year, profile=profile)
                 except TutorProfile.DoesNotExist:
                     user = User.objects.create(username=in_studentnumber)
                     profile = TutorProfile(studentnumber=in_studentnumber, user=user)
                     profile.save()
-                    tutor = Tutor(year=YEAR, profile=profile)
+                    tutor = Tutor(year=self.request.year, profile=profile)
                 except Tutor.DoesNotExist:
-                    tutor = Tutor(year=YEAR, profile=profile)
+                    tutor = Tutor(year=self.request.year, profile=profile)
                 tutor.save()
                 prev_data = self.get_initial_for_tutor(tutor)
                 if not in_name: data['name'] = in_name = prev_data['name']
@@ -147,7 +148,7 @@ class TutorAdminView(FormView):
                 if not in_groups: data['groups'] = in_groups = prev_data['groups']
 
             else:
-                tutor = Tutor.objects.select_related().get(pk=data['pk'], year=YEAR)
+                tutor = Tutor.objects.select_related().get(pk=data['pk'], year=self.request.year)
                 profile = tutor.profile
 
                 prev_data = self.get_initial_for_tutor(tutor)
@@ -209,7 +210,7 @@ class TutorAdminView(FormView):
             tutor.save()
 
         # Here, we throw away the formset and instead get a fresh form
-        formset = TutorFormSet(initial=self.get_initial())
+        formset = TutorFormSet(initial=self.get_initial(), year=self.request.year)
         ctxt = self.get_context_data(form=formset, changes=changes)
 
         return self.render_to_response(ctxt)
