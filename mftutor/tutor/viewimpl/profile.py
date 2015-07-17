@@ -1,10 +1,6 @@
 # encoding: utf-8
 from django import forms
-from django.forms.extras import SelectDateWidget
-from django.shortcuts import render, redirect
-from django.contrib.sites.models import get_current_site
 from django.views.generic import FormView
-from ...settings import YEAR
 from ..auth import user_tutor_data
 
 class ProfileForm(forms.Form):
