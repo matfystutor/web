@@ -24,7 +24,7 @@ class RusStartView(TemplateView):
 
     def get(self, request):
         self.form = None
-        if request.rus is not None:
+        if request.rus:
             in_phone = request.tutorprofile.phone
             in_email = request.tutorprofile.email
             if in_phone == '' or in_email == '':
