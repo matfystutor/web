@@ -17,7 +17,7 @@ from django import forms
 from django.contrib.auth.views import password_change
 from django.views.generic import UpdateView, TemplateView, FormView, ListView
 
-from mftutor.tutor.models import TutorProfile, TutorGroup, TutorGroupLeader, \
+from mftutor.tutor.models import TutorProfile, TutorGroup, \
     Tutor, BoardMember
 
 # Reexport the following views:
@@ -60,20 +60,12 @@ class UploadPictureView(UpdateView):
 def tutors_view(request, group=None):
     if group is None:
         tutors = Tutor.members(request.year)
-        try:
-            leader = TutorGroupLeader.objects.get(
-                group__handle='best', group__year=request.year).tutor
-        except TutorGroupLeader.DoesNotExist:
-            leader = None
+        best = TutorGroup.objects.get(handle='best', year=request.year)
+        leader = best.leader
     else:
         tg = get_object_or_404(TutorGroup, handle=group, year=request.year)
         tutors = Tutor.group_members(tg)
-
-        try:
-            leader = TutorGroupLeader.objects.get(
-                group__handle=group, group__year=request.year).tutor
-        except TutorGroupLeader.DoesNotExist:
-            leader = None
+        leader = tg.leader
 
     leader_pk = leader.pk if leader else -1
 
@@ -147,11 +139,7 @@ class GroupLeaderForm(forms.Form):
             ]
             choices[0:0] = [('', '')]
 
-            try:
-                current_leader = TutorGroupLeader.objects.get(
-                    group=group).tutor.pk
-            except TutorGroupLeader.DoesNotExist:
-                current_leader = ''
+            current_leader = group.leader.pk or ''
 
             self.fields['group_%s' % group.pk] = forms.ChoiceField(
                 label=group.name,
@@ -177,27 +165,16 @@ class GroupLeaderView(FormView):
                 continue
 
             pk = field.name[6:]
-
-            try:
-                current_leader_object = TutorGroupLeader.objects.get(
-                    group__pk=pk)
-            except TutorGroupLeader.DoesNotExist:
-                current_leader_object = TutorGroupLeader(
-                    group=TutorGroup.objects.get(pk=pk))
-
-            try:
-                current_leader = current_leader_object.tutor
-            except Tutor.DoesNotExist:
-                current_leader = None
+            gr = TutorGroup.objects.get(pk=pk)
 
             if field.data:
                 new_leader = Tutor.objects.get(pk=field.data)
             else:
                 new_leader = None
 
-            if current_leader != new_leader:
-                current_leader_object.tutor = new_leader
-                current_leader_object.save()
+            if gr.leader != new_leader:
+                gr.leader = new_leader
+                gr.save()
 
         return self.render_to_response(
             self.get_context_data(form=form, success=True))

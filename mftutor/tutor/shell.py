@@ -47,11 +47,8 @@ def group_leader(handle, studentnumber):
     except TutorGroup.DoesNotExist:
         return 'Tutor group does not exist'
 
-    try:
-        gl = TutorGroupLeader.objects.get(group=group)
-        return u"Group already has leader "+unicode(gl.tutor)
-    except TutorGroupLeader.DoesNotExist:
-        pass
+    if group.leader:
+        return u"Group already has leader "+unicode(group.leader)
 
     try:
         tutor = Tutor.objects.get(
@@ -59,9 +56,8 @@ def group_leader(handle, studentnumber):
     except Tutor.DoesNotExist:
         return str(student)+" was not found"
 
-    tgl = TutorGroupLeader(group=group, tutor=tutor)
-    tgl.year = YEAR  # XXX: Until TutorGroupLeader.year is removed
-    tgl.save()
+    group.leader = tutor
+    group.save()
     return u"OK "+unicode(tutor)
 
 
