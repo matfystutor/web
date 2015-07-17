@@ -5,13 +5,11 @@ import json
 import subprocess
 
 from django.db import transaction
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, Http404
-from django.shortcuts import get_object_or_404, render, redirect, render_to_response
+from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
-from django.template import RequestContext
 from django import forms
-from django.views.decorators.http import condition
-from django.views.generic import ListView, FormView, UpdateView, TemplateView, View, CreateView
+from django.views.generic import ListView, FormView, UpdateView, TemplateView, View
 from django.views.generic.edit import ProcessFormView
 from django.contrib.auth.models import User
 
