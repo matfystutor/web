@@ -19,12 +19,13 @@ class NewsPostForm(forms.ModelForm):
         super(NewsPostForm, self).__init__(**kwargs)
         author_field = self.fields['author']
         author_field.queryset = author_field.queryset.filter(
+            tutorprofile__tutor__groups__handle='best',
             tutorprofile__tutor__year__in=[year])
 
     author = AuthorModelChoiceField(
         label = 'Forfatter',
         empty_label = None,
-        queryset = User.objects.filter(tutorprofile__tutor__groups__handle='best'))
+        queryset = User.objects.all())
 
     def clean_body(self):
         data = self.cleaned_data['body']
