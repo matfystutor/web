@@ -221,16 +221,6 @@ class TutorInTutorGroup(models.Model):
     tutor = models.ForeignKey(Tutor)
 
 
-class TutorGroupLeader(models.Model):
-    group = models.ForeignKey(TutorGroup, to_field='id', related_name='+')
-    tutor = models.ForeignKey(Tutor)
-
-    class Meta:
-        ordering = ['group']
-        verbose_name = 'gruppeansvarlig'
-        verbose_name_plural = verbose_name + 'e'
-
-
 @python_2_unicode_compatible
 class BoardMember(models.Model):
     id = models.AutoField(primary_key=True)
