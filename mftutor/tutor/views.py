@@ -17,7 +17,6 @@ from django import forms
 from django.contrib.auth.views import password_change
 from django.views.generic import UpdateView, TemplateView, FormView, ListView
 
-from mftutor import settings
 from mftutor.tutor.models import TutorProfile, TutorGroup, TutorGroupLeader, \
     Tutor, BoardMember
 
@@ -174,7 +173,7 @@ class GroupLeaderView(FormView):
 
     def get_form_kwargs(self):
         kwargs = super(GroupLeaderView, self).get_form_kwargs()
-        kwargs['year'] = settings.YEAR
+        kwargs['year'] = self.request.year
         kwargs['groups'] = TutorGroup.objects.filter(visible=True)
         return kwargs
 
@@ -187,10 +186,10 @@ class GroupLeaderView(FormView):
 
             try:
                 current_leader_object = TutorGroupLeader.objects.get(
-                    year=settings.YEAR, group__handle=handle)
+                    year=self.request.year, group__handle=handle)
             except TutorGroupLeader.DoesNotExist:
                 current_leader_object = TutorGroupLeader(
-                    year=settings.YEAR,
+                    year=self.request.year,
                     group=TutorGroup.objects.get(handle=handle))
 
             try:
