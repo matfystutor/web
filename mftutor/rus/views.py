@@ -6,7 +6,6 @@ from django.views.generic import TemplateView, FormView
 from django.views.generic.base import TemplateResponseMixin
 from django.contrib.auth.forms import PasswordChangeForm
 from ..news.views import BaseNewsView
-from ..tutor.auth import user_tutor_data, user_rus_data, NotTutor
 from ..tutor.models import RusClass
 
 class RusNewsView(BaseNewsView, TemplateResponseMixin):
@@ -136,16 +135,12 @@ class ProfileView(FormView):
     template_name = 'rus/profileform.html'
 
     def dispatch(self, request, *args, **kwargs):
-        self.request = request
-        try:
-            d = user_rus_data(self.request.user)
-        except NotTutor:
+        if not request.rus:
             return self.render_to_response(self.get_context_data(error=u'Du er ikke rus!', form=ProfileForm()))
         return super(ProfileView, self).dispatch(request, *args, **kwargs)
 
     def get_initial(self):
-        d = user_rus_data(self.request.user)
-        profile = d.rus.profile
+        profile = self.request.tutorprofile
 
         return {
             'street': profile.street,
@@ -155,8 +150,7 @@ class ProfileView(FormView):
         }
 
     def form_valid(self, form):
-        d = user_rus_data(self.request.user)
-        profile = d.rus.profile
+        profile = self.request.tutorprofile
         data = form.cleaned_data
         with transaction.atomic():
             profile.street = data['street']
