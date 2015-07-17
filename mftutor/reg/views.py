@@ -35,13 +35,13 @@ class ChooseSessionView(ListView):
     model = ImportSession
 
     def get_queryset(self):
-        return ImportSession.objects.filter(year__exact=YEAR)
+        return ImportSession.objects.filter(year__exact=self.request.year)
 
 class NewSessionView(ProcessFormView):
     """POST target used by ChooseSessionView to create a new ImportSession."""
 
     def post(self, request):
-        importsession = ImportSession(year=YEAR, author=request.user.tutorprofile)
+        importsession = ImportSession(year=request.year, author=request.user.tutorprofile)
         importsession.save()
         return HttpResponseRedirect(reverse('import_session_edit', kwargs={'pk': importsession.pk}))
 
@@ -330,11 +330,11 @@ class RusListView(TemplateView):
         return note_list_data
 
     def get_rus_list(self):
-        rus_list = Rus.objects.filter(year=YEAR)
+        rus_list = Rus.objects.filter(year=self.request.year)
         return rus_list
 
     def get_rusclass_list(self):
-        rusclass_list = RusClass.objects.filter(year=YEAR)
+        rusclass_list = RusClass.objects.filter(year=self.request.year)
         return rusclass_list
 
 
@@ -362,7 +362,7 @@ class RusCreateView(FormView):
         return context_data
 
     def get_rusclass_list(self):
-        rusclass_list = RusClass.objects.filter(year=YEAR)
+        rusclass_list = RusClass.objects.filter(year=self.request.year)
         for rusclass in rusclass_list:
             rusclass.notes = Note.objects.filter(subject_kind='rusclass', subject_pk=rusclass.pk)
             rusclass.arrived_rus_count = Rus.objects.filter(rusclass=rusclass, arrived=True).count()
@@ -389,7 +389,7 @@ class RusCreateView(FormView):
                     email=data['email'])
             rus = Rus.objects.create(
                     profile=tutorprofile,
-                    year=YEAR,
+                    year=self.request.year,
                     arrived=data['arrived'],
                     rusclass=data['rusclass'])
             if data['note']:
@@ -526,13 +526,13 @@ class RusListRPC(View):
 
         if 'rus' in args:
             try:
-                params['rus'] = Rus.objects.get(year=YEAR, profile__studentnumber=self.get_param('rus'))
+                params['rus'] = Rus.objects.get(year=self.request.year, profile__studentnumber=self.get_param('rus'))
             except Rus.DoesNotExist:
                 raise RPCError(u'No such rus')
 
         if 'rusclass' in args:
             try:
-                params['rusclass'] = RusClass.objects.get(year=YEAR, handle=self.get_param('rusclass'))
+                params['rusclass'] = RusClass.objects.get(year=self.request.year, handle=self.get_param('rusclass'))
             except Rus.DoesNotExist:
                 raise RPCError(u'No such rusclass')
 
@@ -566,8 +566,8 @@ class RusChangesView(TemplateView):
 
     def get_rus_list(self):
         from django.db.models import F
-        rus_list = (list(Rus.objects.filter(year=YEAR).exclude(rusclass=F('initial_rusclass')))
-                + list(Rus.objects.filter(year=YEAR, initial_rusclass__isnull=True)))
+        rus_list = (list(Rus.objects.filter(year=self.request.year).exclude(rusclass=F('initial_rusclass')))
+                + list(Rus.objects.filter(year=self.request.year, initial_rusclass__isnull=True)))
         return rus_list
 
 
@@ -579,8 +579,8 @@ class HandoutListView(TemplateView):
     def get_context_data(self, **kwargs):
         context_data = super(HandoutListView, self).get_context_data(**kwargs)
 
-        handouts = Handout.objects.filter(year=YEAR)
-        rusclasses = RusClass.objects.filter(year=YEAR)
+        handouts = Handout.objects.filter(year=self.request.year)
+        rusclasses = RusClass.objects.filter(year=self.request.year)
 
         responses = HandoutClassResponse.objects.filter(handout__in=handouts, rusclass__in=rusclasses)
         response_matrix = {}
@@ -621,7 +621,7 @@ class HandoutNewView(FormView):
 
     def form_valid(self, form):
         data = form.cleaned_data
-        handout = Handout(year=YEAR,
+        handout = Handout(year=self.request.year,
                 kind=data['kind'], name=data['name'], note=data['note'])
         handout.save()
         return super(HandoutNewView, self).form_valid(form)
@@ -732,9 +732,9 @@ class HandoutResponseView(FormView):
     def dispatch(self, request, *args, **kwargs):
         try:
             handout = Handout.objects.get(
-                    year=YEAR, pk=kwargs['handout'])
+                    year=request.year, pk=kwargs['handout'])
             rusclass = RusClass.objects.get(
-                    year=YEAR, handle__exact=kwargs['rusclass'])
+                    year=request.year, handle__exact=kwargs['rusclass'])
         except Handout.DoesNotExist:
             raise Http404()
         except RusClass.DoesNotExist:
@@ -816,9 +816,9 @@ class HandoutResponseDeleteView(TemplateView):
     def dispatch(self, request, *args, **kwargs):
         try:
             handout = Handout.objects.get(
-                    year=YEAR, pk=kwargs['handout'])
+                    year=request.year, pk=kwargs['handout'])
             rusclass = RusClass.objects.get(
-                    year=YEAR, handle__exact=kwargs['rusclass'])
+                    year=request.year, handle__exact=kwargs['rusclass'])
         except Handout.DoesNotExist:
             raise Http404()
         except RusClass.DoesNotExist:
@@ -856,7 +856,7 @@ class RusInfoListView(ListView):
     context_object_name = 'rusclasses'
 
     def get_queryset(self):
-        return RusClass.objects.filter(year__exact=YEAR).order_by('internal_name')
+        return RusClass.objects.filter(year__exact=self.request.year).order_by('internal_name')
 
     def get(self, request):
         d = user_tutor_data(request.user)
@@ -936,7 +936,7 @@ class RusInfoView(FormView):
         if not d.tutor:
             return tutor_required_error(request)
 
-        self.rusclass = get_object_or_404(RusClass, handle__exact=handle, year__exact=YEAR)
+        self.rusclass = get_object_or_404(RusClass, handle__exact=handle, year__exact=request.year)
         if not d.tutor.can_manage_rusclass(self.rusclass):
             return tutorbest_required_error(request)
 
@@ -1045,7 +1045,7 @@ class LightboxView(TemplateView):
     def get_context_data(self, **kwargs):
         context_data = super(LightboxView, self).get_context_data(**kwargs)
 
-        d = get_lightbox_state(YEAR)
+        d = get_lightbox_state(self.request.year)
         context_data['note'] = d['note']
         context_data['state_by_study'] = d['by_study']
 
@@ -1079,7 +1079,7 @@ class LightboxAdminView(LightboxView):
     template_name = 'reg/burtavle_admin.html'
 
     def get_form(self):
-        note = LightboxNote.objects.get_for_year(YEAR)
+        note = LightboxNote.objects.get_for_year(self.request.year)
         form = LightboxAdminForm({'note': note.note, 'color': note.color})
         return form
 
@@ -1093,7 +1093,7 @@ class LightboxAdminView(LightboxView):
         data = form.cleaned_data
         if data['rusclass']:
             try:
-                rusclass = RusClass.objects.get(year=YEAR, handle=data['rusclass'])
+                rusclass = RusClass.objects.get(year=request.year, handle=data['rusclass'])
             except RusClass.DoesNotExist:
                 return {'error': 'no such rusclass'}
 
@@ -1102,7 +1102,7 @@ class LightboxAdminView(LightboxView):
             except LightboxRusClassState.DoesNotExist:
                 state = LightboxRusClassState(rusclass=rusclass)
         else:
-            state = LightboxNote.objects.get_for_year(YEAR)
+            state = LightboxNote.objects.get_for_year(request.year)
 
         state.color = data['color']
         state.note = data['note']
