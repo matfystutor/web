@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from ..settings import YEAR, TIDY_NEWS_HTML
+from ..settings import TIDY_NEWS_HTML
 from .models import NewsPost
 
 
@@ -17,8 +17,7 @@ class NewsPostForm(forms.ModelForm):
     author = AuthorModelChoiceField(
         label = 'Forfatter',
         empty_label = None,
-        queryset = User.objects.filter(tutorprofile__tutor__groups__handle='best',
-            tutorprofile__tutor__year__in=[YEAR]))
+        queryset = User.objects.filter(tutorprofile__tutor__groups__handle='best'))
 
     def clean_body(self):
         data = self.cleaned_data['body']
