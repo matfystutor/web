@@ -45,13 +45,13 @@ class RusStartView(TemplateView):
     def get_context_data(self, **kwargs):
         context_data = super(RusStartView, self).get_context_data(**kwargs)
 
-        if self.rusclass is not None:
-            context_data['rusclass'] = self.rusclass
+        if self.request.rus:
+            rusclass = context_data['rusclass'] = self.request.rus.rusclass
             context_data['rusclass_tutors'] = sorted(
-                    self.rusclass.get_tutors(),
+                    rusclass.get_tutors(),
                     key=lambda o: o.profile.get_full_name())
             context_data['rusclass_russes'] = sorted(
-                    self.rusclass.get_russes(),
+                    rusclass.get_russes(),
                     key=lambda o: o.profile.get_full_name())
 
         if self.form is not None:
