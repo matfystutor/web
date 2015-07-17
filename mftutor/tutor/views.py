@@ -15,11 +15,11 @@ from django.core.mail import EmailMessage
 from django.core.mail import get_connection
 from django import forms
 from django.contrib.auth.views import password_change
-from django.views.generic import UpdateView, TemplateView, FormView
+from django.views.generic import UpdateView, TemplateView, FormView, ListView
 
 from mftutor import settings
 from mftutor.tutor.models import TutorProfile, TutorGroup, TutorGroupLeader, \
-    Tutor
+    Tutor, BoardMember
 
 # Reexport the following views:
 from mftutor.tutor.viewimpl.loginout import logout_view, login_view
@@ -285,3 +285,12 @@ class ResetPasswordView(FormView):
             return self.render_to_response(
                 self.get_context_data(
                     form=form, confirm=True, tutors=data['studentnumbers']))
+
+
+class BoardMemberListView(ListView):
+    template_name = "board.html"
+    context_object_name = "tutor_list"
+
+    def get_queryset(self):
+        qs = BoardMember.objects.filter(tutor__year=self.request.year)
+        return qs.select_related()

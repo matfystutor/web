@@ -1,23 +1,16 @@
 from django.conf.urls import patterns, url
-from django.views.generic import DetailView, ListView
-from ..settings import YEAR
 from ..aliases.views import AliasesView, MyGroupsView
-from .models import Tutor, TutorGroup, BoardMember
-from .views import logout_view, login_view, profile_view, \
-    tutor_password_change_view, UploadPictureView, tutors_view, \
-    TutorAdminView, switch_user, FrontView, BoardAdminView, GroupLeaderView, ResetPasswordView
+from .views import (
+    logout_view, login_view, profile_view, tutor_password_change_view,
+    UploadPictureView, tutors_view, TutorAdminView, switch_user, FrontView,
+    BoardAdminView, GroupLeaderView, ResetPasswordView, BoardMemberListView)
 from .auth import tutorbest_required, tutor_required
 
 urlpatterns = patterns('',
     url(r'^$', FrontView.as_view(), name='front'),
     url(r'^tutors/$', tutor_required(tutors_view), name='tutors'),
     url(r'^tutors/([^/?]+)/$', tutor_required(tutors_view), name='tutorgroup'),
-    url(r'^board/$',
-        ListView.as_view(
-            queryset=BoardMember.objects.filter(tutor__year=YEAR).select_related(),
-            template_name="board.html",
-            context_object_name="tutor_list"),
-        name='board'),
+    url(r'^board/$', BoardMemberListView.as_view(), name='board'),
     url(r'^logout/$', logout_view, name="logout_view"),
     url(r'^login/$', login_view, name='tutor_login'),
     url(r'^login/\?err=(?P<err>.*)$', login_view, name='login_error'),
