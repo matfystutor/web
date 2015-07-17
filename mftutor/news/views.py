@@ -1,7 +1,8 @@
 import datetime
 from django.http import HttpResponseRedirect
-from django.views.generic.base import TemplateResponseMixin
 from django.views.generic import CreateView, UpdateView, DeleteView, TemplateView, View
+from django.views.generic.base import TemplateResponseMixin
+from django.views.generic.edit import ModelFormMixin
 from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404, render, redirect, render_to_response
 from django.template import RequestContext
@@ -56,7 +57,7 @@ class NewsView(BaseNewsView, TemplateResponseMixin):
         return u'alle'
 
 
-class NewsPostFormMixin(object):
+class NewsPostFormMixin(TemplateResponseMixin, ModelFormMixin):
     model = NewsPost
     template_name = "newsform.html"
     form_class = NewsPostForm
