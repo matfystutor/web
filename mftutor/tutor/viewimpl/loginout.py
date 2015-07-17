@@ -8,8 +8,7 @@ from django.contrib.auth.models import User
 from django.views.generic import TemplateView, View
 from django.http import HttpResponseRedirect
 
-from mftutor.tutor.models import TutorProfile
-from mftutor.tutor.auth import user_tutor_data, NotTutor, user_rus_data
+from mftutor.tutor.models import TutorProfile, Tutor, Rus
 
 
 class LogoutView(View):
@@ -79,7 +78,7 @@ class LoginView(TemplateView):
 
         try:
             rus = profile.rus_set.get(year=request.rusyear)
-        except Tutor.DoesNotExist:
+        except Rus.DoesNotExist:
             rus = None
 
         if not tutor and not rus:

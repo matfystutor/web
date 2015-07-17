@@ -7,7 +7,7 @@ from mftutor.tutor.models import TutorProfile, Tutor, Rus
 
 def get_tutorprofile(request):
     try:
-        return TutorProfile.objects.get(user=request.user)
+        return TutorProfile.objects.get(user_id=request.user.id)
     except TutorProfile.DoesNotExist:
         return None
 
