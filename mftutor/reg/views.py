@@ -16,7 +16,6 @@ from django.views.generic.edit import ProcessFormView
 from django.contrib.auth.models import User
 
 from .. import settings
-from ..settings import YEAR
 from ..tutor.models import RusClass, TutorProfile, Rus
 from ..tutor.auth import user_tutor_data, tutor_required_error, NotTutor, rusclass_required_error, tutorbest_required_error
 
@@ -342,9 +341,15 @@ class RusCreateForm(forms.Form):
     name = forms.CharField(label='Navn')
     studentnumber = forms.CharField(label=u'Årskortnummer')
     email = forms.CharField(required=False, label='Email')
-    rusclass = forms.ModelChoiceField(queryset=RusClass.objects.filter(year=YEAR), label='Hold')
+    rusclass = forms.ModelChoiceField(queryset=RusClass.objects.all(), label='Hold')
     arrived = forms.BooleanField(required=False, label='Ankommet')
     note = forms.CharField(required=False, label='Note')
+
+    def __init__(self, **kwargs):
+        year = kwargs.pop('year')
+        super(RusCreateForm).__init__(**kwargs)
+        f = self.fields['rusclass']
+        f.queryset = f.queryset.filter(year=year)
 
     def clean_studentnumber(self):
         studentnumber = self.cleaned_data['studentnumber']
@@ -355,6 +360,11 @@ class RusCreateForm(forms.Form):
 class RusCreateView(FormView):
     template_name = 'reg/ruscreateform.html'
     form_class = RusCreateForm
+
+    def get_form_kwargs(self):
+        kwargs = super(RusCreateView, self).get_form_kwargs()
+        kwargs['year'] = self.request.year
+        return kwargs
 
     def get_context_data(self, **kwargs):
         context_data = super(RusCreateView, self).get_context_data(**kwargs)
