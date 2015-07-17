@@ -79,11 +79,9 @@ def tutorbest_required(fn):
     def wrapper(request, *args, **kwargs):
         if request.user.is_superuser:
             return fn(request, *args, **kwargs)
-        try:
-            d = user_tutor_data(request.user)
-        except NotTutor as e:
+        if not request.tutor:
             return tutorbest_required_error(request)
-        if not d.tutor.is_tutorbest(year=d.tutor.year):
+        if not request.tutor.is_tutorbest(year=request.year):
             return tutorbest_required_error(request)
         return fn(request, *args, **kwargs)
 
@@ -94,14 +92,12 @@ def tutorbest_required(fn):
 def tutor_required(fn):
     @functools.wraps(fn)
     def wrapper(request, *args, **kwargs):
-        try:
-            d = user_tutor_data(request.user)
-        except NotTutor as e:
-            if request.user.is_superuser:
-                return fn(request, *args, **kwargs)
-            else:
-                return tutor_required_error(request)
-        return fn(request, *args, **kwargs)
+        if request.tutor:
+            return fn(request, *args, **kwargs)
+        elif request.user.is_superuser:
+            return fn(request, *args, **kwargs)
+        else:
+            return tutor_required_error(request)
 
     return wrapper
 
@@ -112,13 +108,12 @@ def tutorbur_required(fn):
     def wrapper(request, *args, **kwargs):
         if request.user.is_superuser:
             return fn(request, *args, **kwargs)
-        try:
-            d = user_tutor_data(request.user)
-        except NotTutor as e:
+        if not request.tutor:
             return tutorbest_required_error(request)
-        if not d.tutor.is_tutorbur():
+        elif not request.tutor.is_tutorbur():
             return tutorbest_required_error(request)
-        return fn(request, *args, **kwargs)
+        else:
+            return fn(request, *args, **kwargs)
 
     return wrapper
 
