@@ -63,7 +63,7 @@ class NewsPostFormMixin(object):
 
     def get_form_kwargs(self):
         kwargs = super(NewsPostFormMixin, self).get_form_kwargs()
-        kwargs['year'] = self.request.view
+        kwargs['year'] = self.request.year
         return kwargs
 
     def get_success_url(self):
