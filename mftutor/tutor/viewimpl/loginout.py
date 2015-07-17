@@ -95,10 +95,7 @@ class LoginView(TemplateView):
             return redirect('news')
 
     def get_context_data(self, **kwargs):
-        try:
-            error_code = kwargs.pop('error_code')
-        except KeyError:
-            error_code = ''
+        error_code = kwargs.pop('error_code', '')
 
         context_data = super(LoginView, self).get_context_data(**kwargs)
 
