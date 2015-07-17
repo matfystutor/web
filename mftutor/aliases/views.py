@@ -1,7 +1,6 @@
 from django.views.generic import TemplateView
 from django.contrib.sites.shortcuts import get_current_site
 from ..tutor.models import TutorGroup, Tutor
-from ..tutor.auth import user_tutor_data
 from .models import resolve_aliases_reversed
 
 class AliasesView(TemplateView):
@@ -39,5 +38,4 @@ class AliasesView(TemplateView):
 
 class MyGroupsView(AliasesView):
     def get_queryset(self, request):
-        utd = user_tutor_data(request.user)
-        return utd.tutor.groups
+        return request.tutor.groups
