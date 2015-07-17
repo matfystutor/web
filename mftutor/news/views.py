@@ -86,7 +86,7 @@ class NewsCreateView(CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        self.object.year = YEAR
+        self.object.year = self.request.year
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
 
