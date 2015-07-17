@@ -6,7 +6,6 @@ from django.views.generic import TemplateView, FormView
 from django.views.generic.base import TemplateResponseMixin
 from django.contrib.auth.forms import PasswordChangeForm
 from ..news.views import BaseNewsView
-from ..settings import RUSMAIL_YEAR
 from ..tutor.auth import user_tutor_data, user_rus_data, NotTutor
 from ..tutor.models import RusClass
 
@@ -79,7 +78,7 @@ class RusClassView(TemplateView):
     def get_rusclass_list(self):
         from django.db.models import Count
         return (RusClass.objects
-                .filter(year=RUSMAIL_YEAR)
+                .filter(year=self.request.rusyear)
                 .annotate(num_russes=Count('rus'), num_tutors=Count('tutor')))
 
     def get_context_data(self, **kwargs):
@@ -91,25 +90,13 @@ class RusClassView(TemplateView):
 class RusClassDetailView(RusClassView):
     def get(self, request, handle):
         self.rusclass = self.get_rusclass(handle)
-        is_logged_in = False
-
-        try:
-            rus_data = user_rus_data(request.user)
-            is_logged_in = True
-        except NotTutor:
-            pass
-        try:
-            tutor_data = user_tutor_data(request.user)
-            is_logged_in = True
-        except NotTutor:
-            pass
-
+        is_logged_in = bool(request.tutor or request.rus)
         return self.render_to_response(self.get_context_data(is_logged_in=is_logged_in))
 
     def get_rusclass(self, handle):
         if handle == u'tk1':
-            return RusClass(year=RUSMAIL_YEAR, handle=handle, internal_name=u'Teknokemi 1', official_name=u'TÅ1')
-        return get_object_or_404(RusClass, year=RUSMAIL_YEAR, handle=handle)
+            return RusClass(year=self.request.rusyear, handle=handle, internal_name=u'Teknokemi 1', official_name=u'TÅ1')
+        return get_object_or_404(RusClass, year=self.request.rusyear, handle=handle)
 
     def get_rus_list(self):
         return self.rusclass.get_russes().order_by('profile__name')
