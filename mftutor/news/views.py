@@ -95,15 +95,6 @@ class NewsUpdateView(UpdateView):
     template_name = "newsform.html"
     form_class = NewsPostForm
 
-    def get_form(self, form_class):
-        f = form_class(**self.get_form_kwargs())
-        f.fields['author'] = AuthorModelChoiceField(
-                label = 'Forfatter',
-                empty_label = None,
-                queryset = User.objects.filter(tutorprofile__tutor__groups__handle='best',
-                    tutorprofile__tutor__year__in=[YEAR]))
-        return f
-
     def get_success_url(self):
         return reverse("news")
 
