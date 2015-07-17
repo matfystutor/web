@@ -44,7 +44,7 @@ class GroupAdmin(admin.ModelAdmin):
 
 class LeaderAdmin(admin.ModelAdmin):
     list_select_related = True
-    list_display = ('year', 'group', 'tutor')
+    list_display = ('group', 'tutor')
     list_display_links = ('tutor',)
 
 

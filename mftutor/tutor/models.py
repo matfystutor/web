@@ -222,7 +222,6 @@ class TutorInTutorGroup(models.Model):
 
 class TutorGroupLeader(models.Model):
     group = models.ForeignKey(TutorGroup, to_field='id', related_name='+')
-    year = models.IntegerField()
     tutor = models.ForeignKey(Tutor)
 
     class Meta:
