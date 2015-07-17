@@ -4,7 +4,6 @@ from django.forms.extras import SelectDateWidget
 from django.views.generic import UpdateView, TemplateView, CreateView, DeleteView
 from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
-from ..settings import YEAR
 from .models import Document
 from ..tutor.auth import tutorbest_required, tutor_required
 
@@ -13,7 +12,8 @@ class UploadDocumentForm(forms.ModelForm):
         model = Document
         fields = ('title', 'year', 'published', 'type', 'doc_file')
 
-    published = forms.DateField(widget=SelectDateWidget(years=range(1970,YEAR+1)),
+    # TODO get year from request
+    published = forms.DateField(widget=SelectDateWidget(years=range(1970,2020)),
             label='Dato',
             initial=Document._meta.get_field('published').default)
 
