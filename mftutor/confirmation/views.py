@@ -22,7 +22,7 @@ class OwnConfirmationView(UpdateView):
         try:
             return Confirmation.objects.get(tutor=self.request.tutor)
         except Confirmation.DoesNotExist:
-            return Confirmation(tutor=self.request.tutor, study=self.request.profile.study)
+            return Confirmation(tutor=self.request.tutor, study=self.request.tutorprofile.study)
 
     def form_valid(self, form):
         if self.object.tutor != self.request.tutor:
