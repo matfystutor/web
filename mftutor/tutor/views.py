@@ -139,7 +139,7 @@ class GroupLeaderForm(forms.Form):
             ]
             choices[0:0] = [('', '')]
 
-            current_leader = group.leader.pk or ''
+            current_leader = group.leader.pk if group.leader else ''
 
             self.fields['group_%s' % group.pk] = forms.ChoiceField(
                 label=group.name,
