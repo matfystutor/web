@@ -1,7 +1,12 @@
 # coding: utf-8
+import copy
+import datetime
+
 from django import forms
 from django.forms.extras import SelectDateWidget
 from django.views.generic import UpdateView, TemplateView, CreateView, DeleteView
+from django.views.generic.base import TemplateResponseMixin
+from django.views.generic.edit import ModelFormMixin
 from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
 from .models import Document
@@ -13,12 +18,21 @@ class UploadDocumentForm(forms.ModelForm):
         fields = ('title', 'year', 'published', 'type', 'doc_file')
 
     # TODO get year from request
-    published = forms.DateField(widget=SelectDateWidget(years=range(1970,2020)),
-            label='Dato',
-            initial=Document._meta.get_field('published').default)
+    published = forms.DateField(
+        widget=SelectDateWidget(years=[]),
+        label='Dato')
+
+    def __init__(self, **kwargs):
+        year = kwargs.pop('year')
+        initial = copy.deepcopy(kwargs.pop('initial', {}))
+        initial.setdefault('year', year)
+        initial.setdefault('published', datetime.date.today())
+        kwargs['initial'] = initial
+        super(UploadDocumentForm, self).__init__(**kwargs)
+        self.fields['published'].widget.years = range(1970, year + 1)
 
 
-class UploadDocumentView(CreateView):
+class UploadDocumentFormMixin(TemplateResponseMixin, ModelFormMixin):
     model = Document
     template_name = "documentuploader.html"
     form_class = UploadDocumentForm
@@ -28,28 +42,29 @@ class UploadDocumentView(CreateView):
 
     @method_decorator(tutorbest_required)
     def dispatch(self, *args, **kwargs):
-        return super(UploadDocumentView, self).dispatch(*args, **kwargs)
+        return super(UploadDocumentFormMixin, self).dispatch(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        d = super(UploadDocumentView, self).get_context_data(**kwargs)
-        d['create'] = True
-        return d     
-
-class EditDocumentView(UpdateView):
-    model = Document
-    template_name = "documentuploader.html"
-    form_class = UploadDocumentForm
-
-    def get_success_url(self):
-        return reverse("list_"+self.object.type)
-
-    @method_decorator(tutorbest_required)
-    def dispatch(self, *args, **kwargs):
-        return super(EditDocumentView, self).dispatch(*args, **kwargs)
-    def get_context_data(self, **kwargs):
-        d = super(EditDocumentView, self).get_context_data(**kwargs)
-        d['create'] = False
+        d = super(UploadDocumentFormMixin, self).get_context_data(**kwargs)
+        if isinstance(self, CreateView):
+            d['create'] = True
+        else:
+            d['create'] = False
         return d
+
+    def get_form_kwargs(self):
+        kwargs = super(UploadDocumentFormMixin, self).get_form_kwargs()
+        kwargs['year'] = self.request.year
+        return kwargs
+
+
+class UploadDocumentView(CreateView, UploadDocumentFormMixin):
+    pass
+
+
+class EditDocumentView(UpdateView, UploadDocumentFormMixin):
+    pass
+
 
 class DeleteDocumentView(DeleteView):
     model=Document
