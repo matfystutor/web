@@ -1,12 +1,8 @@
 # vim: set fileencoding=utf8:
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render, redirect, render_to_response
 from django.core.urlresolvers import reverse
-from django.template import RequestContext
 from django import forms
 from django.views.generic import FormView, UpdateView, TemplateView
 
-#from ..settings import YEAR
 from .models import ShirtOption, ShirtPreference
 from mftutor.tutor.models import Tutor
 
