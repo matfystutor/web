@@ -8,53 +8,6 @@ from mftutor.settings import YEAR, TUTORMAIL_YEAR
 from mftutor.tutor.models import TutorProfile, Tutor, Rus
 
 
-class NotTutor(Exception):
-    def __init__(self, value):
-        self.value = value
-
-    def __str__(self):
-        return repr(self.value)
-
-
-class TutorData:
-    pass
-
-
-def user_profile_data(user):
-    d = TutorData()
-    if user is None or not user.is_authenticated():
-        raise NotTutor('failauth')
-    if not user.is_active:
-        raise NotTutor('djangoinactive')
-    try:
-        d.profile = user.tutorprofile
-    except TutorProfile.DoesNotExist:
-        raise NotTutor('notutorprofile')
-    return d
-
-
-def user_tutor_data(user):
-    d = user_profile_data(user)
-    d.tutor = None
-    try:
-        d.tutor = Tutor.objects.get(year=YEAR, profile=d.profile)
-    except Tutor.DoesNotExist:
-        try:
-            d.tutor = Tutor.objects.get(year=TUTORMAIL_YEAR, profile=d.profile)
-        except Tutor.DoesNotExist:
-            raise NotTutor('notutoryear')
-    return d
-
-
-def user_rus_data(user):
-    d = user_profile_data(user)
-    try:
-        d.rus = Rus.objects.get(profile=d.profile, year=YEAR)
-    except Rus.DoesNotExist:
-        raise NotTutor('norusyear')
-    return d
-
-
 def rusclass_required_error(request):
     t = loader.get_template('rusclass_required.html')
     c = RequestContext(request)
