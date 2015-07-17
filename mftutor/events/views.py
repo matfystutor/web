@@ -3,7 +3,6 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.http import HttpResponse
-from ..tutor.auth import user_tutor_data, NotTutor
 from .. import settings
 from mftutor.tutor.models import Tutor
 from .models import Event, EventParticipant
@@ -13,22 +12,23 @@ import mftutor.events.bulk
 def event_detail_view(request, eventid):
     event = get_object_or_404(Event.objects.filter(pk=eventid))
 
-    try:
-        tutordata = user_tutor_data(request.user)
-        tutor = tutordata.tutor
-
+    if request.tutor:
         try:
-            instance = EventParticipant.objects.get(event=event, tutor=tutor)
+            instance = EventParticipant.objects.get(
+                event=event, tutor=request.tutor)
         except EventParticipant.DoesNotExist:
             instance = EventParticipant()
 
         if request.method == 'POST':
-            form = RSVPForm(data=request.POST, instance=instance, expect_event=event, expect_tutor=tutor)
+            form = RSVPForm(
+                data=request.POST, instance=instance,
+                expect_event=event, expect_tutor=request.tutor)
             if form.is_valid():
                 form.save()
         else:
-            form = RSVPForm(instance=instance, expect_event=event, expect_tutor=tutor)
-    except NotTutor:
+            form = RSVPForm(instance=instance,
+                            expect_event=event, expect_tutor=request.tutor)
+    else:
         form = None
 
     rsvps = {p.tutor.pk: p for p in event.participants.all()}
@@ -83,16 +83,12 @@ class EventListView(ListView):
 
     def get_context_data(self, **kwargs):
         d = super(EventListView, self).get_context_data(**kwargs)
-        try:
-            tutordata = user_tutor_data(self.request.user)
-        except NotTutor:
-            tutordata = None
         for e in d['event_list']:
             e.rsvp_status = 'none'
-            if tutordata:
+            if self.request.tutor:
                 try:
                     e.rsvp_status = EventParticipant.objects.get(
-                        event=e, tutor=tutordata.tutor).status
+                        event=e, tutor=self.request.tutor).status
                 except EventParticipant.DoesNotExist:
                     pass
         return d
@@ -107,12 +103,13 @@ class RSVPFormView(FormView):
         return reverse('events')
 
     def form_valid(self, form):
-        tutordata = user_tutor_data(self.request.user)
         event = Event.objects.get(pk__exact=self.args[0])
         try:
-            ep = EventParticipant.objects.get(tutor=tutordata.tutor, event=event)
+            ep = EventParticipant.objects.get(
+                tutor=self.request.tutor, event=event)
         except EventParticipant.DoesNotExist:
-            ep = EventParticipant(tutor=tutordata.tutor, event=event)
+            ep = EventParticipant(
+                tutor=self.request.tutor, event=event)
         ep.status = form.cleaned_data['status']
         ep.save()
 
