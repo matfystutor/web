@@ -1,6 +1,6 @@
 # vim: set fileencoding=utf-8:
 from .models import Email
-from ..tutor.models import TutorProfile, Tutor, TutorGroupLeader
+from ..tutor.models import TutorProfile, Tutor, TutorGroup
 from ..settings import YEAR
 
 # -----------------------------------------------------------------------------
@@ -70,7 +70,7 @@ def delayed_send_all():
     from datetime import datetime
     emails = get_queryset()
     for email in emails.all():
-        print email
+        print(email)
         send_messages((make_email_message(email),), email_backend_type)
         email.sent = datetime.now()
         email.save()
@@ -137,11 +137,15 @@ def make_mails(not_tutor, joker_numbers, no_mail, passwords):
     all_tutors = Tutor.objects.filter(groups__handle='alle', year=YEAR).exclude(profile__studentnumber__in=no_mail)
     buret = all_tutors.filter(groups__handle='buret').all()
     tutors = all_tutors.exclude(groups__handle='buret').exclude(profile__studentnumber__in=joker_numbers).all()
-    group_leaders = list(TutorGroupLeader.objects.filter(group__year=YEAR).exclude(group__handle__in=hide_groups).all())
+    group_leaders = [
+        tg.leader.profile
+        for tg in TutorGroup.objects.filter(year=YEAR)
+            .exclude(handle__in=hide_groups, leader__isnull=True)
+    ]
     jokers = all_tutors.filter(profile__studentnumber__in=joker_numbers).all()
 
     webfar = Tutor.objects.filter(year=YEAR, groups__handle='webfar').get().profile
-    burfar = TutorGroupLeader.objects.filter(group__handle='buret', group__year=YEAR).get().tutor.profile
+    burfar = TutorGroup.objects.get(handle='buret', year=YEAR).leader.profile
 
     webfar_sender = '"%s" <webfar@matfystutor.dk>' % webfar.name
     burfar_sender = '"%s" <best@matfystutor.dk>' % burfar.name
@@ -217,7 +221,7 @@ def make_mails(not_tutor, joker_numbers, no_mail, passwords):
     for t in jokers:
         groups = list(group_queryset(t).all())
         if len(groups) != 3:
-            print profile.name+u' does not have three groups, but '+unicode(len(groups))
+            print(profile.name+u' does not have three groups, but '+unicode(len(groups)))
         group1 = groups[0].name
         group2 = groups[1].name
         group3 = groups[2].name
