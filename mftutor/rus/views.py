@@ -6,9 +6,9 @@ from django.views.generic import TemplateView, FormView
 from django.views.generic.base import TemplateResponseMixin
 from django.contrib.auth.forms import PasswordChangeForm
 from ..news.views import BaseNewsView
-from ..settings import YEAR, RUSMAIL_YEAR
+from ..settings import RUSMAIL_YEAR
 from ..tutor.auth import user_tutor_data, user_rus_data, NotTutor
-from ..tutor.models import Tutor, Rus, RusClass
+from ..tutor.models import RusClass
 
 class RusNewsView(BaseNewsView, TemplateResponseMixin):
     template_name = 'rus/nyheder.html'
