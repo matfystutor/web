@@ -1,9 +1,5 @@
 from django.conf.urls import patterns, url
-from django.views.generic import DetailView, ListView
-from ..tutor.models import Tutor, TutorGroup, BoardMember
 from mftutor.tutor.auth import tutorbest_required
-from ..settings import YEAR
-from .models import Event
 from .views import event_detail_view, CalendarFeedView, EventListView, \
     RSVPFormView, BulkExportView, BulkImportView, EventParticipantListView, \
     EventParticipantEditView
