@@ -7,7 +7,7 @@
 <form class="twocol" method="post" enctype="multipart/form-data">{% csrf_token %}
 {{ form.non_field_errors }}
 {% for field in form %}
-<div class="label">{{ field.label_tag }}:</div>
+<div class="label">{{ field.label_tag }}</div>
 <div class="field">{{ field }}</div>
 {{ field.errors }}
 {% endfor %}
