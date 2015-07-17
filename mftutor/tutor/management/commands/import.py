@@ -13,8 +13,7 @@ from django.contrib.auth.models import User
 import django.core.files
 
 from mftutor.tutor.models import (
-    TutorProfile, Tutor, Rus, RusClass,
-    TutorGroup, TutorGroupLeader,
+    TutorProfile, Tutor, Rus, RusClass, TutorGroup,
 )
 
 from mftutor.documents.models import Document
@@ -118,8 +117,8 @@ class Command(BaseCommand):
 
             for groupdata in tudata['groupleader']:
                 gr = self.load_tutorgroup(groupdata)
-                tgl = TutorGroupLeader(tutor=tu, year=tu.year, group=gr)
-                tgl.save()
+                gr.leader = tu
+                gr.save()
 
         for rusdata in tpdata['rus']:
             rus = self.load_basic(Rus, rusdata, 'arrived year'.split())

@@ -3,7 +3,7 @@
 from django.contrib import admin
 
 from mftutor.tutor.models import (
-    Tutor, TutorProfile, TutorGroup, TutorGroupLeader,
+    Tutor, TutorProfile, TutorGroup,
     BoardMember, RusClass, Rus)
 
 
@@ -42,12 +42,6 @@ class GroupAdmin(admin.ModelAdmin):
     actions = [make_visible, make_invisible]
 
 
-class LeaderAdmin(admin.ModelAdmin):
-    list_select_related = True
-    list_display = ('group', 'tutor')
-    list_display_links = ('tutor',)
-
-
 def board_full_name(bm):
     return bm.tutor.profile.get_full_name()
 board_full_name.short_description = 'Navn'
@@ -80,7 +74,6 @@ class RusAdmin(admin.ModelAdmin):
 admin.site.register(Tutor, TutorAdmin)
 admin.site.register(TutorProfile, ProfileAdmin)
 admin.site.register(TutorGroup, GroupAdmin)
-admin.site.register(TutorGroupLeader, LeaderAdmin)
 admin.site.register(BoardMember, BoardAdmin)
 admin.site.register(RusClass, RusClassAdmin)
 admin.site.register(Rus, RusAdmin)
