@@ -85,7 +85,7 @@ class TutorGroup(models.Model):
         return '%s %s' % (self.handle, self.year)
 
     class Meta:
-        ordering = ['name', 'handle']
+        ordering = ['-year', 'name', 'handle']
         verbose_name = 'arbejdsgruppe'
         verbose_name_plural = verbose_name + 'r'
 
