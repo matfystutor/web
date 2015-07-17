@@ -73,11 +73,13 @@ class CalendarFeedView(ListView):
         return d
 
     def get_queryset(self):
-        return Event.objects.filter(start_date__year=settings.YEAR).order_by('start_date')
+        qs = Event.objects.filter(start_date__year=self.request.year)
+        return qs.order_by('start_date')
 
 class EventListView(ListView):
     def get_queryset(self):
-        return Event.objects.filter(start_date__year=settings.YEAR).order_by('start_date')
+        qs = Event.objects.filter(start_date__year=self.request.year)
+        return qs.order_by('start_date')
 
     def get_context_data(self, **kwargs):
         d = super(EventListView, self).get_context_data(**kwargs)
