@@ -23,22 +23,11 @@ class MyInfoForm(forms.Form):
 class RusStartView(TemplateView):
     template_name = 'rus/start.html'
 
-    def dispatch(self, request):
-        self.form = None
-        try:
-            d = user_rus_data(request.user)
-            self.rus = d.rus
-            self.rusclass = self.rus.rusclass
-        except NotTutor:
-            self.rus = None
-            self.rusclass = None
-
-        return super(RusStartView, self).dispatch(request)
-
     def get(self, request):
-        if self.rus is not None:
-            in_phone = self.rus.profile.phone
-            in_email = self.rus.profile.email
+        self.form = None
+        if request.rus is not None:
+            in_phone = request.tutorprofile.phone
+            in_email = request.tutorprofile.email
             if in_phone == '' or in_email == '':
                 self.form = MyInfoForm(initial={'phone': in_phone, 'email': in_email})
 
@@ -47,9 +36,9 @@ class RusStartView(TemplateView):
     def post(self, request):
         form = self.form = MyInfoForm(request.POST)
         if form.is_valid():
-            self.rus.profile.phone = form.cleaned_data['phone']
-            self.rus.profile.email = form.cleaned_data['email']
-            self.rus.profile.save()
+            request.tutorprofile.phone = form.cleaned_data['phone']
+            request.tutorprofile.email = form.cleaned_data['email']
+            request.tutorprofile.save()
             return self.render_to_response(self.get_context_data(form_saved=True))
         else:
             return self.render_to_response(self.get_context_data(form_errors=True))
