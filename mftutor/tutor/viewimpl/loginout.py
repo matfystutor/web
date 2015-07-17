@@ -67,15 +67,27 @@ class LoginView(TemplateView):
             return self.render_to_response(context_data)
 
         try:
-            tutordata = user_tutor_data(user)
-        except NotTutor as e:
-            try:
-                tutordata = user_rus_data(user)
-            except NotTutor as e:
-                context_data = self.get_context_data(error_code=e.value)
-                return self.render_to_response(context_data)
+            profile = user.tutorprofile
+        except TutorProfile.DoesNotExist:
+            context_data = self.get_context_data(error_code='notutorprofile')
+            return self.render_to_response(context_data)
+
+        try:
+            tutor = profile.tutor_set.get(year=request.year)
+        except Tutor.DoesNotExist:
+            tutor = None
+
+        try:
+            rus = profile.rus_set.get(year=request.rusyear)
+        except Tutor.DoesNotExist:
+            rus = None
+
+        if not tutor and not rus:
+            context_data = self.get_context_data(error_code='noyear')
+            return self.render_to_response(context_data)
+
         login(request, user)
-        if hasattr(tutordata, 'rus') and tutordata.rus:
+        if rus and not tutor:
             return redirect('rus_start')
         try:
             return HttpResponseRedirect(request.POST['next'])
@@ -96,6 +108,7 @@ class LoginView(TemplateView):
             'djangoinactive': 'Din bruger er inaktiv.',
             'notutorprofile': 'Din bruger har ingen tutorprofil.',
             'notutoryear': 'Du er ikke tutor i år.',
+            'noyear': 'Du er ikke tutor eller rus i år.',
         }
 
         context_data['error'] = errors.get(error_code, '')
