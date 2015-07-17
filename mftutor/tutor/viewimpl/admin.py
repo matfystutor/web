@@ -14,11 +14,6 @@ def classy(cl, size=10):
 
 
 class GroupModelMultipleChoiceField(forms.ModelMultipleChoiceField):
-    def __init__(self, **kwargs):
-        super(GroupModelMultipleChoiceField, self).__init__(
-            queryset=TutorGroup.objects.filter(visible=True, year=YEAR),
-            **kwargs)
-
     def label_from_instance(self, obj):
         return obj.handle
 
@@ -30,8 +25,6 @@ class TutorForm(forms.Form):
     studentnumber = forms.CharField(label='Årskort', widget=classy('studentnumber', 7))
     study = forms.CharField(label='Studium', widget=classy('study', 7))
     email = forms.EmailField(label='Email', required=False, widget=classy('email', 25))
-    rusclass = forms.ModelChoiceField(label='Rushold', queryset=RusClass.objects.filter(year__exact=YEAR), required=False)
-    groups = GroupModelMultipleChoiceField(label='Grupper', required=False)
 
     def clean_pk(self):
         data = self.cleaned_data['pk']
@@ -41,7 +34,31 @@ class TutorForm(forms.Form):
                 raise forms.ValidationError('Tutor med dette interne ID findes ikke.')
         return data
 
-TutorFormSet = formset_factory(TutorForm, extra=50)
+
+class TutorFormSet(BaseFormSet):
+    form = TutorForm
+    extra = 50
+    can_order = False
+    can_delete = False
+    min_num = 0
+    max_num = 1000
+    absolute_max = 2000
+    validate_min = False
+    validate_max = False
+
+    def __init__(self, **kwargs):
+        self.year = kwargs.pop('year')
+        super(TutorFormSet, self).__init__(**kwargs)
+
+    def add_fields(self, form, index):
+        super(TutorFormSet, self).add_fields(form, index)
+        form.fields['rusclass'] = forms.ModelChoiceField(
+            label='Rushold', required=False,
+            queryset=RusClass.objects.filter(year__exact=self.year))
+        form.fields['groups'] = GroupModelMultipleChoiceField(
+            label='Grupper', required=False,
+            queryset=TutorGroup.objects.filter(visible=True, year=self.year))
+
 
 class TutorAdminView(FormView):
     form_class = TutorFormSet
@@ -67,6 +84,11 @@ class TutorAdminView(FormView):
             'rusclass': rusclass,
             'groups': groups,
         }
+
+    def get_form_kwargs(self):
+        kwargs = super(TutorAdminView, self).get_form_kwargs()
+        kwargs['year'] = self.request.year
+        return kwargs
 
     def get_initial(self):
         tutors = Tutor.objects.filter(year=YEAR).select_related('profile')
