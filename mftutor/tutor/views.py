@@ -161,7 +161,8 @@ class GroupLeaderForm(forms.Form):
             except TutorGroupLeader.DoesNotExist:
                 current_leader = ''
 
-            self.fields['group_%s' % group.handle] = forms.ChoiceField(
+            self.fields['group_%s' % group.pk] = forms.ChoiceField(
+                label=group.name,
                 required=False,
                 choices=choices,
                 initial=current_leader)
@@ -174,7 +175,8 @@ class GroupLeaderView(FormView):
     def get_form_kwargs(self):
         kwargs = super(GroupLeaderView, self).get_form_kwargs()
         kwargs['year'] = self.request.year
-        kwargs['groups'] = TutorGroup.objects.filter(visible=True)
+        kwargs['groups'] = TutorGroup.objects.filter(
+            visible=True, year=self.request.year)
         return kwargs
 
     def form_valid(self, form):
@@ -182,15 +184,15 @@ class GroupLeaderView(FormView):
             if not field.name.startswith('group_'):
                 continue
 
-            handle = field.name[6:]
+            pk = field.name[6:]
 
             try:
                 current_leader_object = TutorGroupLeader.objects.get(
-                    year=self.request.year, group__handle=handle)
+                    year=self.request.year, group__pk=pk)
             except TutorGroupLeader.DoesNotExist:
                 current_leader_object = TutorGroupLeader(
                     year=self.request.year,
-                    group=TutorGroup.objects.get(handle=handle))
+                    group=TutorGroup.objects.get(pk=pk))
 
             try:
                 current_leader = current_leader_object.tutor
