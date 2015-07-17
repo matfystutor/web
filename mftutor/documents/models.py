@@ -22,7 +22,7 @@ class Document(models.Model):
     title = models.CharField(
         max_length=100, verbose_name='Titel')
     year = models.IntegerField(
-        verbose_name="Tutorår", default=settings.YEAR)
+        verbose_name="Tutorår")
     published = models.DateField(
         verbose_name='Dato')
     time_of_upload = models.DateTimeField(
