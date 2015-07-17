@@ -25,6 +25,9 @@ class LoginView(TemplateView):
     template_name = 'login_form.html'
 
     def get_user(self, login_name):
+        if not login_name:
+            return None
+
         try:
             return User.objects.get(pk=int(login_name))
         except User.DoesNotExist:
