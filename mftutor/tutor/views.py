@@ -24,7 +24,6 @@ from mftutor.tutor.models import TutorProfile, TutorGroup, TutorGroupLeader, \
 from mftutor.tutor.viewimpl.loginout import logout_view, login_view
 from mftutor.tutor.viewimpl.profile import profile_view
 from mftutor.tutor.viewimpl.admin import TutorAdminView, BoardAdminView
-from mftutor.tutor.auth import user_tutor_data, user_rus_data, NotTutor
 
 
 def tutor_password_change_view(request):
@@ -128,19 +127,12 @@ class FrontView(TemplateView):
     template_name = 'front.html'
 
     def get(self, request, *args, **kwargs):
-        try:
-            user_tutor_data(request.user)
+        if request.tutor:
             return HttpResponseRedirect(reverse('news'))
-        except NotTutor:
-            pass
-
-        try:
-            user_rus_data(request.user)
+        elif request.rus:
             return HttpResponseRedirect(reverse('rus_start'))
-        except NotTutor:
-            pass
-
-        return super(FrontView, self).get(request, *args, **kwargs)
+        else:
+            return super(FrontView, self).get(request, *args, **kwargs)
 
 
 class GroupLeaderForm(forms.Form):
