@@ -1,7 +1,6 @@
 # encoding: utf-8
 from django import forms
 from django.views.generic import FormView
-from ..auth import user_tutor_data
 
 class ProfileForm(forms.Form):
     name = forms.CharField(label='Navn')
@@ -15,18 +14,13 @@ class ProfileView(FormView):
     form_class = ProfileForm
     template_name = 'profile.html'
 
-    def dispatch(self, request, *args, **kwargs):
-        d = user_tutor_data(request.user)
-        self.tutorprofile = d.profile
-        return super(ProfileView, self).dispatch(request, *args, **kwargs)
-
     def get_context_data(self, **kwargs):
         context_data = super(ProfileView, self).get_context_data(**kwargs)
-        context_data['studentnumber'] = self.tutorprofile.studentnumber
+        context_data['studentnumber'] = self.request.tutorprofile.studentnumber
         return context_data
 
     def get_initial(self):
-        tp = self.tutorprofile
+        tp = self.request.tutorprofile
         return {
                 'name': tp.name,
                 'street': tp.street,
@@ -37,7 +31,7 @@ class ProfileView(FormView):
                 }
 
     def form_valid(self, form):
-        tp = self.tutorprofile
+        tp = self.request.tutorprofile
         u = tp.user
         tp.name = form.cleaned_data['name']
         if ' ' in tp.name:
