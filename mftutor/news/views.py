@@ -9,7 +9,6 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured
 from ..tutor.auth import tutorbest_required
-from ..settings import YEAR
 from .forms import AuthorModelChoiceField, NewsPostForm
 from .models import NewsPost
 
@@ -39,7 +38,7 @@ class BaseNewsView(View):
         elif year:
             news_list = news_list.filter(posted__year=year)
         else:
-            news_list = news_list.filter(year=YEAR)
+            news_list = news_list.filter(year=request.year)
 
         params = {
                 'news_list': news_list,
