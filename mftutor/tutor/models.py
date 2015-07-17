@@ -226,7 +226,7 @@ class TutorGroupLeader(models.Model):
     tutor = models.ForeignKey(Tutor)
 
     class Meta:
-        ordering = ['-year', 'group']
+        ordering = ['group']
         verbose_name = 'gruppeansvarlig'
         verbose_name_plural = verbose_name + 'e'
 
