@@ -62,6 +62,11 @@ class NewsCreateView(CreateView):
     template_name = "newsform.html"
     form_class = NewsPostForm
 
+    def get_form_kwargs(self):
+        kwargs = super(NewsCreateView, self).get_form_kwargs()
+        kwargs['year'] = self.request.view
+        return kwargs
+
     def get_context_data(self, **kwargs):
         d = super(NewsCreateView, self).get_context_data(**kwargs)
         d['create'] = True
@@ -94,6 +99,11 @@ class NewsUpdateView(UpdateView):
     model = NewsPost
     template_name = "newsform.html"
     form_class = NewsPostForm
+
+    def get_form_kwargs(self):
+        kwargs = super(NewsUpdateView, self).get_form_kwargs()
+        kwargs['year'] = self.request.view
+        return kwargs
 
     def get_success_url(self):
         return reverse("news")

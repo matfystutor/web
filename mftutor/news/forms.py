@@ -14,6 +14,13 @@ class NewsPostForm(forms.ModelForm):
         model = NewsPost
         fields = ('author', 'title', 'posted', 'body', 'group_handle')
 
+    def __init__(self, **kwargs):
+        year = kwargs.pop('year')
+        super(NewsPostForm, self).__init__(**kwargs)
+        author_field = self.fields['author']
+        author_field.queryset = author_field.queryset.filter(
+            tutorprofile__tutor__year__in=[year]))
+
     author = AuthorModelChoiceField(
         label = 'Forfatter',
         empty_label = None,
