@@ -10,10 +10,7 @@ import datetime
 from optparse import make_option
 from django.core.management.base import BaseCommand
 
-from mftutor.tutor.models import (
-    TutorProfile, Tutor, Rus, RusClass,
-    TutorGroup, TutorGroupLeader,
-)
+from mftutor.tutor.models import TutorProfile
 from mftutor.documents.models import Document
 from mftutor.aliases.models import Alias
 
