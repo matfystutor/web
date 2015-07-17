@@ -80,6 +80,7 @@ class TutorGroup(models.Model):
         help_text="Vises på hjemmesiden")
     visible = models.BooleanField(default=False)
     year = models.IntegerField(verbose_name="Tutorår", null=True)
+    leader = models.ForeignKey('Tutor', verbose_name='Gruppeansvarlig', null=True)
 
     def __str__(self):
         return '%s %s' % (self.handle, self.year)
