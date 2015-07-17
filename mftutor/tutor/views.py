@@ -62,7 +62,7 @@ def tutors_view(request, group=None):
         tutors = Tutor.members(request.year)
         try:
             leader = TutorGroupLeader.objects.get(
-                group__handle='best', year=request.year).tutor
+                group__handle='best', group__year=request.year).tutor
         except TutorGroupLeader.DoesNotExist:
             leader = None
     else:
@@ -71,7 +71,7 @@ def tutors_view(request, group=None):
 
         try:
             leader = TutorGroupLeader.objects.get(
-                group__handle=group, year=request.year).tutor
+                group__handle=group, group__year=request.year).tutor
         except TutorGroupLeader.DoesNotExist:
             leader = None
 
@@ -149,7 +149,7 @@ class GroupLeaderForm(forms.Form):
 
             try:
                 current_leader = TutorGroupLeader.objects.get(
-                    year=year, group=group).tutor.pk
+                    group=group).tutor.pk
             except TutorGroupLeader.DoesNotExist:
                 current_leader = ''
 
@@ -180,10 +180,9 @@ class GroupLeaderView(FormView):
 
             try:
                 current_leader_object = TutorGroupLeader.objects.get(
-                    year=self.request.year, group__pk=pk)
+                    group__pk=pk)
             except TutorGroupLeader.DoesNotExist:
                 current_leader_object = TutorGroupLeader(
-                    year=self.request.year,
                     group=TutorGroup.objects.get(pk=pk))
 
             try:

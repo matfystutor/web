@@ -40,15 +40,15 @@ def add_to_group(handle, *students):
 # Given a tutor group handle and a student number, make the tutor the group
 # leader.
 def group_leader(handle, studentnumber):
-    try:
-        group = TutorGroup.objects.get(handle=handle)
-    except TutorGroup.DoesNotExist:
-        return 'Tutor group does not exist'
-
     from mftutor.settings import YEAR
 
     try:
-        gl = TutorGroupLeader.objects.get(group=group, year=YEAR)
+        group = TutorGroup.objects.get(handle=handle, year=YEAR)
+    except TutorGroup.DoesNotExist:
+        return 'Tutor group does not exist'
+
+    try:
+        gl = TutorGroupLeader.objects.get(group=group)
         return u"Group already has leader "+unicode(gl.tutor)
     except TutorGroupLeader.DoesNotExist:
         pass
@@ -59,7 +59,9 @@ def group_leader(handle, studentnumber):
     except Tutor.DoesNotExist:
         return str(student)+" was not found"
 
-    TutorGroupLeader(group=group, tutor=tutor, year=YEAR).save()
+    tgl = TutorGroupLeader(group=group, tutor=tutor)
+    tgl.year = YEAR  # XXX: Until TutorGroupLeader.year is removed
+    tgl.save()
     return u"OK "+unicode(tutor)
 
 

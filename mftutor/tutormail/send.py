@@ -137,11 +137,11 @@ def make_mails(not_tutor, joker_numbers, no_mail, passwords):
     all_tutors = Tutor.objects.filter(groups__handle='alle', year=YEAR).exclude(profile__studentnumber__in=no_mail)
     buret = all_tutors.filter(groups__handle='buret').all()
     tutors = all_tutors.exclude(groups__handle='buret').exclude(profile__studentnumber__in=joker_numbers).all()
-    group_leaders = list(TutorGroupLeader.objects.filter(year=YEAR).exclude(group__handle__in=hide_groups).all())
+    group_leaders = list(TutorGroupLeader.objects.filter(group__year=YEAR).exclude(group__handle__in=hide_groups).all())
     jokers = all_tutors.filter(profile__studentnumber__in=joker_numbers).all()
 
     webfar = Tutor.objects.filter(year=YEAR, groups__handle='webfar').get().profile
-    burfar = TutorGroupLeader.objects.filter(group__handle='buret', year=YEAR).get().tutor.profile
+    burfar = TutorGroupLeader.objects.filter(group__handle='buret', group__year=YEAR).get().tutor.profile
 
     webfar_sender = '"%s" <webfar@matfystutor.dk>' % webfar.name
     burfar_sender = '"%s" <best@matfystutor.dk>' % burfar.name
