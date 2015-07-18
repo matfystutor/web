@@ -36,7 +36,8 @@ class TutorProfile(models.Model):
     study = models.CharField(
         max_length=60, blank=True, verbose_name="Studieretning")
     studentnumber = models.CharField(
-        max_length=20, verbose_name="Årskortnummer", unique=True)
+        max_length=20, unique=True, blank=True, null=True,
+        verbose_name="Årskortnummer")
 
     picture = models.ImageField(
         upload_to=tutorpicture_upload_to,
