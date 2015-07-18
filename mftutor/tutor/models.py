@@ -45,10 +45,14 @@ class TutorProfile(models.Model):
     )
 
     def __str__(self):
+        try:
+            u = self.user
+        except User.DoesNotExist:
+            u = None
         return '%s %s %s' % (
             self.studentnumber,
             self.get_full_name(),
-            self.user.username if self.user else '(no user)',
+            u.username if u else '(no user)',
         )
 
     def set_default_email(self):
@@ -208,7 +212,11 @@ class Tutor(models.Model):
                 self.rusclass == rusclass)
 
     def __str__(self):
-        return '%s (%s)' % (self.profile, self.year)
+        try:
+            p = self.profile
+        except:
+            p = None
+        return '%s (%s)' % (p, self.year)
 
     class Meta:
         ordering = ['-year']

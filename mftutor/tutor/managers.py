@@ -1,6 +1,6 @@
 # vim:set fileencoding=utf-8:
 from django.db import models
-from ..settings import YEAR
+from .. import settings
 
 class RusManager(models.Manager):
     use_for_related_fields = True
@@ -23,7 +23,7 @@ class TutorManager(models.Manager):
 class VisibleTutorGroups(models.Manager):
     def get_queryset(self):
         qs = super(VisibleTutorGroups, self).get_queryset()
-        return qs.filter(visible=True, tutor__year__in=[YEAR]).distinct()
+        return qs.filter(visible=True, tutor__year__in=[settings.YEAR]).distinct()
 
 
 class RusClassManager(models.Manager):
