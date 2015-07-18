@@ -6,12 +6,14 @@ from django.db.models import Count
 
 from ..tutor.models import TutorProfile, RusClass, TutorGroup, Tutor
 
+
 class ProfileView(TemplateView):
     template_name = 'browser/profile.html'
 
     def get_context_data(self, **kwargs):
         context_data = super(ProfileView, self).get_context_data(**kwargs)
-        tp = get_object_or_404(TutorProfile, studentnumber=self.kwargs['studentnumber'])
+        tp = get_object_or_404(
+            TutorProfile, studentnumber=self.kwargs['studentnumber'])
         context_data['subject'] = tp
         years = []
         for tutor in tp.tutor_set.all():
@@ -21,13 +23,16 @@ class ProfileView(TemplateView):
         context_data['years'] = sorted(years, key=lambda y: y['year'])
         return context_data
 
+
 class RusClassView(TemplateView):
     template_name = 'browser/rusclass.html'
 
     def get_context_data(self, **kwargs):
         context_data = super(RusClassView, self).get_context_data(**kwargs)
-        context_data['rusclass'] = get_object_or_404(RusClass, year=self.kwargs['year'], handle=self.kwargs['handle'])
+        context_data['rusclass'] = get_object_or_404(
+            RusClass, year=self.kwargs['year'], handle=self.kwargs['handle'])
         return context_data
+
 
 class GroupView(TemplateView):
     template_name = 'browser/group.html'
@@ -35,13 +40,17 @@ class GroupView(TemplateView):
     def get_context_data(self, **kwargs):
         context_data = super(GroupView, self).get_context_data(**kwargs)
         context_data['year'] = self.kwargs['year']
-        group = context_data['group'] = get_object_or_404(TutorGroup, handle=self.kwargs['handle'])
-        context_data['members'] = get_list_or_404(Tutor, year=self.kwargs['year'], groups=group)
+        group = context_data['group'] = get_object_or_404(
+            TutorGroup, handle=self.kwargs['handle'], year=self.kwargs['year'])
+        context_data['members'] = get_list_or_404(
+            Tutor, year=self.kwargs['year'], groups=group)
         return context_data
+
 
 class SearchForm(forms.Form):
     query = forms.CharField()
     tutors_only = forms.BooleanField(required=False, initial=True)
+
 
 class SearchView(TemplateView):
     template_name = 'browser/search.html'
@@ -52,12 +61,13 @@ class SearchView(TemplateView):
         if form.is_valid():
             query = context_data['query'] = form.cleaned_data['query']
             if form.cleaned_data['tutors_only']:
-                context_data['results'] = (
-                        TutorProfile.objects.filter(name__icontains=query)
-                        .annotate(tutor_count=Count('tutor'))
-                        .filter(tutor_count__gt=0))
+                results = TutorProfile.objects.filter(name__icontains=query)
+                results = results.annotate(tutor_count=Count('tutor'))
+                results = results.filter(tutor_count__gt=0)
             else:
-                context_data['results'] = TutorProfile.objects.filter(name__icontains=query)[0:30]
+                results = TutorProfile.objects.filter(name__icontains=query)
+                results = results[0:30]
+            context_data['results'] = results
         else:
             form = SearchForm()
         context_data['form'] = form
