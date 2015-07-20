@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 import re
 
 from django.utils.encoding import python_2_unicode_compatible
-from django.db import models
+from django.db import models, IntegrityError
 from django.contrib.auth.models import User
 from mftutor import settings
 from mftutor.tutor.managers import TutorProfileManager, TutorManager, \
@@ -69,6 +69,38 @@ class TutorProfile(models.Model):
 
     def get_full_name(self):
         return self.name
+
+    def get_or_create_user(self):
+        u = self.user
+        if u is not None:
+            return u
+        sn = self.studentnumber
+        if sn is None:
+            raise IntegrityError(
+                'TutorProfile.get_or_create_user: No studentnumber')
+        self.user = User(
+            username=self.studentnumber,
+            email=self.email)
+        self.set_user_name()
+        self.user.save()
+        self.save()
+
+    @classmethod
+    def set_instance_user_name(cls, tp, user=None):
+        if user is None:
+            user = tp.user
+            if user is None:
+                raise ValueError(
+                    "set_instance_user_name: TutorProfile has no user")
+        try:
+            first_name, last_name = tp.name.split(' ', 1)
+        except ValueError:
+            first_name, last_name = tp.name, ''
+        tp.user.first_name = first_name
+        tp.user.last_name = last_name
+
+    def set_user_name(self, user=None):
+        self.set_instance_user_name(self, user)
 
 
 # "Arbejdsgruppe"
