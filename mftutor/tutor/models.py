@@ -20,7 +20,7 @@ class TutorProfile(models.Model):
     objects = TutorProfileManager()
 
     id = models.AutoField(primary_key=True)
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, null=True, blank=True, on_delete=models.SET_NULL)
 
     name = models.CharField(
         max_length=60, verbose_name="Fulde navn")
