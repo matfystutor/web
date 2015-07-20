@@ -345,7 +345,7 @@ class RusCreateForm(forms.Form):
 
     def __init__(self, **kwargs):
         year = kwargs.pop('year')
-        super(RusCreateForm).__init__(**kwargs)
+        super(RusCreateForm, self).__init__(**kwargs)
         f = self.fields['rusclass']
         f.queryset = f.queryset.filter(year=year)
 
