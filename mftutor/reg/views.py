@@ -337,7 +337,7 @@ class RusListView(TemplateView):
 
 class RusCreateForm(forms.Form):
     name = forms.CharField(label='Navn')
-    studentnumber = forms.CharField(label=u'Årskortnummer')
+    studentnumber = forms.CharField(label=u'Årskortnummer', required=False)
     email = forms.CharField(required=False, label='Email')
     rusclass = forms.ModelChoiceField(queryset=RusClass.objects.all(), label='Hold')
     arrived = forms.BooleanField(required=False, label='Ankommet')
@@ -351,8 +351,13 @@ class RusCreateForm(forms.Form):
 
     def clean_studentnumber(self):
         studentnumber = self.cleaned_data['studentnumber']
-        if TutorProfile.objects.filter(studentnumber=studentnumber).exists():
-            raise forms.ValidationError(u"Årskortnummeret findes allerede på hjemmesiden.")
+        existing = TutorProfile.objects.filter(studentnumber=studentnumber)
+        if studentnumber:
+            if existing.exists():
+                raise forms.ValidationError(
+                    u"Årskortnummeret findes allerede på hjemmesiden.")
+        else:
+            studentnumber = None
         return studentnumber
 
 class RusCreateView(FormView):
@@ -379,21 +384,14 @@ class RusCreateView(FormView):
 
     def form_valid(self, form):
         data = form.cleaned_data
-        try:
-            first_name, last_name = data['name'].split(' ', 1)
-        except ValueError:
-            first_name, last_name = data['name'], ''
         with transaction.atomic():
-            user = User.objects.create(
-                    username=data['studentnumber'],
-                    first_name=first_name,
-                    last_name=last_name,
-                    email=data['email'])
             tutorprofile = TutorProfile.objects.create(
-                    studentnumber=data['studentnumber'],
-                    user=user,
-                    name=data['name'],
-                    email=data['email'])
+                studentnumber=data['studentnumber'],
+                name=data['name'],
+                email=data['email'])
+            if data['studentnumber'] is not None:
+                tutorprofile.get_or_create_user()
+            tutorprofile.save()
             rus = Rus.objects.create(
                     profile=tutorprofile,
                     year=self.request.year,
