@@ -24,22 +24,22 @@ og indtaste russen på ny.)
 
 {{ form.non_field_errors }}
 <form method="post" class="twocol">{% csrf_token %}
-    <div class="label">{{ form.name.label_tag }}:</div>
+    <div class="label">{{ form.name.label_tag }}</div>
     <div class="field">{{ form.name }}</div>
     {{ form.name.errors }}
-    <div class="label">{{ form.studentnumber.label_tag }}:</div>
+    <div class="label">{{ form.studentnumber.label_tag }}</div>
     <div class="field">{{ form.studentnumber }}</div>
     {{ form.studentnumber.errors }}
-    <div class="label">{{ form.email.label_tag }}:</div>
+    <div class="label">{{ form.email.label_tag }}</div>
     <div class="field">{{ form.email }}</div>
     {{ form.email.errors }}
-    <div class="label">{{ form.arrived.label_tag }}:</div>
+    <div class="label">{{ form.arrived.label_tag }}</div>
     <div class="field">{{ form.arrived }}</div>
     {{ form.arrived.errors }}
-    <div class="label">{{ form.note.label_tag }}:</div>
+    <div class="label">{{ form.note.label_tag }}</div>
     <div class="field">{{ form.note }}</div>
     {{ form.note.errors }}
-    <div class="label">{{ form.rusclass.label }}:</div>
+    <div class="label">{{ form.rusclass.label }}</div>
     <div class="field">
     {% for rusclass in rusclass_list %}
     <div>
