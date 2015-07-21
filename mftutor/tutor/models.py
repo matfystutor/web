@@ -303,15 +303,15 @@ class Rus(models.Model):
         else:
             initial_handle = None
         return {
-                'year': self.year,
-                'rusclass': self.rusclass.handle,
-                'arrived': self.arrived,
-                'studentnumber': self.profile.studentnumber,
-                'name': self.profile.get_full_name(),
-                'street': self.profile.street,
-                'city': self.profile.city,
-                'phone': self.profile.phone,
-                'email': self.profile.email,
+            'year': self.year,
+            'rusclass': self.rusclass.handle,
+            'arrived': self.arrived,
+            'studentnumber': self.profile.studentnumber,
+            'name': self.profile.get_full_name(),
+            'street': self.profile.street,
+            'city': self.profile.city,
+            'phone': self.profile.phone,
+            'email': self.profile.email,
 
-                'initial_rusclass': initial_handle,
-                }
+            'initial_rusclass': initial_handle,
+        }
