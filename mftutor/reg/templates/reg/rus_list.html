@@ -80,6 +80,7 @@ td form { display: inline; }
 RusDataRaw = ({{ page_data_json|safe }});
 function reverse(name) {
     if (name == 'reg_rpc') return '{% url 'reg_rpc' %}';
+    else if (name == 'studentnumber_list') return '{% url 'studentnumber_list' %}';
     else return null;
 }
 </script>
@@ -207,7 +208,12 @@ TextColumn.prototype.get_value = function (rus) {
 }
 
 TextColumn.prototype.render = function (rus, cell) {
-    cell.textContent = this.get_value(rus);
+    if (this.field_name === 'studentnumber' && !rus.studentnumber) {
+        var url = reverse('studentnumber_list') + rus.pk + '/';
+        cell.innerHTML = '<a href="' + url + '">Ukendt</a>';
+    } else {
+        cell.textContent = this.get_value(rus);
+    }
 }
 
 function NotesColumn() {}
@@ -944,7 +950,9 @@ onsubmit="return reg_change_arrived('{% url 'reg_change_arrived_ajax' pk=rus.pk 
 <input type="submit" value="&rarr; {{ rus.arrived|yesno:"nej,ja" }}" class="link_button" />
 </form>
 </td>
-<td>{{ rus.profile.studentnumber }}</td>
+<td>{% if rus.profile.studentnumber %}{{ rus.profile.studentnumber }}
+    {% else %}<a href="{% url studentnumber_set pk=rus.profile.pk %}">Ukendt</a>
+    {% endif %}</td>
 <td>{{ rus.profile.get_full_name }}</td>
 <td>{{ rus.profile.street }} {{ rus.profile.city }}</td>
 <td>{{ rus.profile.phone }}</td>
