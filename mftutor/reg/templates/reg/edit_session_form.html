@@ -31,6 +31,8 @@ kan du bruge det regulære udtryk:<br>
 <form method="post">{% csrf_token %}
 {% if imported %}
 <div class="success_message">Russerne er oprettet i systemet {{ imported }}, og du kan ikke længere redigere denne rusliste.</div>
+{% elif create_error %}
+<div class="errorlist">{{ create_error }}</div>
 {% elif lines_saved %}
 <div class="success_message">Listen er gemt i databasen, men russerne er endnu ikke oprettet i systemet.
 Tjek fortolkningen nedenfor for fejl, og hvis det ser godt ud, tryk opret.</div>
