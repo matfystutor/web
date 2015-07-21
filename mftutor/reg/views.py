@@ -1314,3 +1314,50 @@ class ArrivedStatsView(TemplateView):
         context_data = super(ArrivedStatsView, self).get_context_data(**kwargs)
         context_data['year_list'] = self.get_year_list()
         return context_data
+
+
+class StudentnumberListView(ListView):
+    template_name = 'reg/studentnumber_list.html'
+    model = Rus
+
+    def get_queryset(self):
+        return Rus.objects.filter(
+            year=self.request.year,
+            profile__studentnumber__isnull=True)
+
+
+class StudentnumberForm(forms.Form):
+    studentnumber = forms.CharField(label=u'Årskortnummer')
+
+
+class StudentnumberView(FormView):
+    template_name = 'reg/studentnumber_set.html'
+    form_class = StudentnumberForm
+
+    def get_rus(self):
+        return get_object_or_404(
+            Rus,
+            profile__pk=self.kwargs['pk'],
+            year=self.request.year,
+            profile__studentnumber__isnull=True)
+
+    def get_context_data(self, **kwargs):
+        context_data = super(StudentnumberView, self).get_context_data(
+            **kwargs)
+        context_data['rus'] = self.get_rus()
+        return context_data
+
+    def form_valid(self, form):
+        sn = form.cleaned_data['studentnumber']
+        existing = Rus.objects.filter(profile__studentnumber=sn)
+        if existing.exists():
+            e = forms.ValidationError(
+                u'Årskortnummeret findes allerede')
+            form.add_error('studentnumber', e)
+            return self.render_to_response(
+                self.get_context_data(form=form))
+        rus = self.get_rus()
+        rus.profile.studentnumber = sn
+        rus.profile.save()
+        rus.profile.get_or_create_user()
+        return HttpResponseRedirect(reverse('studentnumber_list'))

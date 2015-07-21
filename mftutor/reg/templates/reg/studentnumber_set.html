@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Angiv årskortnummer{% endblock %}
+{% block content %}
+<h1>Angiv årskortnummer</h1>
+
+<form method="post">{% csrf_token %}
+    <p>Navn: {{ rus.profile.name }}</p>
+    <p>Rushold: {{ rus.rusclass.internal_name }}</p>
+    {{ form.as_p }}
+    <input type="submit" value="Gem" />
+</form>
+{% endblock %}

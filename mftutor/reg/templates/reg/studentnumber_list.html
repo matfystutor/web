@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Manglende årskortnumre{% endblock %}
+{% block content %}
+<h1>Manglende årskortnumre</h1>
+
+{% if not rus_list %}
+<p>Ingen russer mangler årskortnummer.</p>
+{% endif %}
+<ul>
+    {% for rus in rus_list %}
+    <li><a href="{% url 'studentnumber_set' pk=rus.profile.pk %}">
+        {{ rus.profile.name }} ({{ rus.rusclass.internal_name }})</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}

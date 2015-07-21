@@ -9,6 +9,7 @@ from .views import HandoutListView, HandoutNewView, HandoutSummaryView, \
 from .views import RusInfoListView, RusInfoView
 from .views import LightboxAdminView
 from .views import ArrivedStatsView
+from .views import StudentnumberListView, StudentnumberView
 
 urlpatterns = patterns('',
     url(r'^$', tutorbur_required(BurStartView.as_view()),
@@ -51,4 +52,10 @@ urlpatterns = patterns('',
 
     url(r'^stats/$',
         ArrivedStatsView.as_view(), name='arrived_stats'),
+
+    url(r'^studentnumber/$',
+        tutorbur_required(StudentnumberListView.as_view()), name='studentnumber_list'),
+
+    url(r'^studentnumber/(?P<pk>\d+)/$',
+        tutorbur_required(StudentnumberView.as_view()), name='studentnumber_set'),
 )
