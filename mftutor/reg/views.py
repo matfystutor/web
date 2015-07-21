@@ -300,13 +300,9 @@ class EditSessionView(UpdateView):
                                      u"ruslisterne") %
                                     (il.studentnumber,))
                         else:
-                            first_name, last_name = il.name.split(' ', 1)
-                            u = User.objects.create(
-                                username=il.studentnumber,
-                                first_name=first_name, last_name=last_name)
                             tp = TutorProfile.objects.create(
-                                name=il.name, studentnumber=il.studentnumber,
-                                user=u)
+                                name=il.name, studentnumber=il.studentnumber)
+                            tp.get_or_create_user()
                             tp.set_default_email()
 
                         Rus.objects.create(
