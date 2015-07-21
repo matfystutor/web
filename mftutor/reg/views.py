@@ -592,7 +592,7 @@ class RusListRPC(View):
             try:
                 params['rus'] = Rus.objects.get(
                     year=self.request.year,
-                    profile__studentnumber=self.get_param('rus'))
+                    profile__pk=self.get_param('rus'))
             except Rus.DoesNotExist:
                 raise RPCError(u'No such rus')
 

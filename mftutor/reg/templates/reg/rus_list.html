@@ -117,8 +117,9 @@ function add_note_delete_form(note, el) {
 ///////////////////////////////////////////////////////////////////////////////
 // Rus object containing an interpretation of a rus DOM node.
 ///////////////////////////////////////////////////////////////////////////////
-function Rus(rusclass, arrived, studentnumber, name, street, city, phone, email) {
+function Rus(pk, rusclass, arrived, studentnumber, name, street, city, phone, email) {
     this.row = null;
+    this.pk = pk;
     this.rusclass = rusclass;
     this.arrived = arrived;
     this.studentnumber = studentnumber;
@@ -135,9 +136,10 @@ Rus.objects = {};
 Rus.objects.all = [];
 
 Rus.objects.studentnumber_dict = {};
+Rus.objects.pk_dict = {};
 
-Rus.objects.create = function (rusclass, arrived, studentnumber, name, street, city, phone, email) {
-    var rus = new Rus(rusclass, arrived, studentnumber, name, street, city, phone, email);
+Rus.objects.create = function (pk, rusclass, arrived, studentnumber, name, street, city, phone, email) {
+    var rus = new Rus(pk, rusclass, arrived, studentnumber, name, street, city, phone, email);
     rus.objects.all.push(rus);
     return rus;
 };
@@ -146,7 +148,7 @@ function ChangeClassColumn() {}
 
 ChangeClassColumn.prototype.render = function (rus, cell) {
     var change_class_form = document.createElement('form');
-    make_rpc_form(change_class_form, 'rusclass', {'rus': rus.studentnumber});
+    make_rpc_form(change_class_form, 'rusclass', {'rus': rus.pk});
 
     var select = document.createElement('select');
     select.name = 'rusclass';
@@ -177,7 +179,7 @@ ArrivedColumn.prototype.render = function (rus, cell) {
     var next = rus.arrived ? 'nej' : 'ja';
     cell.appendChild(document.createTextNode(current+' '));
     var change_arrived_form = document.createElement('form');
-    make_rpc_form(change_arrived_form, 'arrived', {'rus': rus.studentnumber});
+    make_rpc_form(change_arrived_form, 'arrived', {'rus': rus.pk});
 
     var submit = document.createElement('input');
     submit.type = 'submit';
@@ -212,9 +214,9 @@ function NotesColumn() {}
 
 NotesColumn.prototype.render = function (rus, cell) {
     var link = document.createElement('a');
-    link.href = '#notes-rus-'+rus.studentnumber;
+    link.href = '#notes-rus-'+rus.pk;
     link.onclick = function (event) {
-        show_notes('notes-rus-'+rus.studentnumber);
+        show_notes('notes-rus-'+rus.pk);
         event.preventDefault();
         return false;
     };
@@ -282,7 +284,7 @@ Rus.prototype.render_to = function (el, before) {
     this.row = document.createElement('tr');
     this.notes_row = document.createElement('tr');
     this.notes_row.className = 'notes';
-    this.notes_row.id = 'notes-rus-'+this.studentnumber;
+    this.notes_row.id = 'notes-rus-'+this.pk;
     var notes_cell = document.createElement('td');
     notes_cell.colSpan = 9;
     this.notes_ul = document.createElement('ul');
@@ -303,7 +305,7 @@ Rus.prototype.render_to = function (el, before) {
 
     var notes_new_li = document.createElement('li');
     var notes_new_form = document.createElement('form');
-    make_rpc_form(notes_new_form, 'add_rus_note', {'rus': this.studentnumber});
+    make_rpc_form(notes_new_form, 'add_rus_note', {'rus': this.pk});
     var note_body = document.createElement('input');
     note_body.name = 'body';
     note_body.className = 'noteform_body';
@@ -333,18 +335,27 @@ Rus.prototype.rerender = function () {
 
 Rus.objects.create_from_initial = function (dict) {
     var studentnumber = dict['studentnumber'];
-    if (Rus.objects.studentnumber_dict[studentnumber])
+    if (studentnumber !== null && Rus.objects.studentnumber_dict[studentnumber])
         throw oops("Rus.create_from_initial: Duplicate studentnumber ["+studentnumber+"]");
-    var rus = new Rus(RusClass.objects.get_by_handle(dict['rusclass']),
-                   dict['arrived'],
-                   dict['studentnumber'],
-                   dict['name'],
-                   dict['street'],
-                   dict['city'],
-                   dict['phone'],
-                   dict['email']);
+    var pk = dict['pk'];
+    if (!pk)
+        throw oops("Rus.create_from_initial: !pk");
+    if (Rus.objects.pk_dict[pk])
+        throw oops("Rus.create_from_initial: Duplicate pk ["+pk+"]");
+    var rus = new Rus(
+        dict['pk'],
+        RusClass.objects.get_by_handle(dict['rusclass']),
+        dict['arrived'],
+        dict['studentnumber'],
+        dict['name'],
+        dict['street'],
+        dict['city'],
+        dict['phone'],
+        dict['email']);
     Rus.objects.all.push(rus);
-    Rus.objects.studentnumber_dict[studentnumber] = rus;
+    Rus.objects.pk_dict[pk] = rus;
+    if (studentnumber !== null)
+        Rus.objects.studentnumber_dict[studentnumber] = rus;
     return rus;
 };
 
@@ -352,6 +363,12 @@ Rus.objects.get_by_studentnumber = function (studentnumber) {
     if (!Rus.objects.studentnumber_dict[studentnumber])
         throw oops("Rus.get_by_studentnumber: No such studentnumber ["+studentnumber+"]");
     return Rus.objects.studentnumber_dict[studentnumber];
+};
+
+Rus.objects.get_by_pk = function (pk) {
+    if (!Rus.objects.pk_dict[pk])
+        throw oops("Rus.get_by_pk: No such pk ["+pk+"]");
+    return Rus.objects.pk_dict[pk];
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -424,7 +441,7 @@ RusClass.prototype.change_display_filter = function (str) {
 RusClass.prototype.remove_rus = function (rus) {
     var i = 0, l = this.russes.length;
     while (i < l) {
-        if (this.russes[i].studentnumber == rus.studentnumber) break;
+        if (this.russes[i].pk == rus.pk) break;
         ++i;
     }
     if (i == l) throw oops('remove_rus: none found');
@@ -433,7 +450,8 @@ RusClass.prototype.remove_rus = function (rus) {
 
 RusClass.prototype.add_rus = function (rus) {
     var i = 0, l = this.russes.length;
-    while (i < l) {
+    // If studentnumber is null, insert in beginning...
+    while (i < l && rus.studentnumber !== null) {
         if (!(this.russes[i].studentnumber < rus.studentnumber)) break;
         ++i;
     }
@@ -691,9 +709,9 @@ function show_notes(id) {
 }
 
 function update_rus(rpc_rus, version) {
-    var rus = Rus.objects.get_by_studentnumber(rpc_rus['studentnumber']);
+    var rus = Rus.objects.get_by_pk(rpc_rus['pk']);
     var rusclass = RusClass.objects.get_by_handle(rpc_rus['rusclass']);
-    if (!rus) throw oops("update_rus: No such rus ["+rpc_rus['studentnumber']+"]");
+    if (!rus) throw oops("update_rus: No such rus ["+rpc_rus['pk']+"]");
     if (!rusclass) throw oops("update_rus: No such rusclass ["+rpc_rus['rusclass']+"]");
     if (rus.version && rus.version >= version) return;
     rus.version = version;
@@ -703,6 +721,15 @@ function update_rus(rpc_rus, version) {
     rus.city = rpc_rus['city'];
     rus.phone = rpc_rus['phone'];
     rus.email = rpc_rus['email'];
+    if (rus.studentnumber !== rpc_rus['studentnumber']) {
+        if (rus.studentnumber !== null) {
+            delete Rus.objects.studentnumber_dict[rus.studentnumber];
+        }
+        rus.studentnumber = rpc_rus['studentnumber'];
+        if (rus.studentnumber !== null) {
+            Rus.objects.studentnumber_dict[rus.studentnumber] = rus;
+        }
+    }
     if (rusclass != rus.rusclass) {
         rus.rusclass.remove_rus(rus);
         rus.rusclass.rerender();
@@ -715,7 +742,7 @@ function update_rus(rpc_rus, version) {
 }
 
 function get_note_subject(rpc_note) {
-    if (rpc_note['kind'] == 'rus') return Rus.objects.get_by_studentnumber(rpc_note['subject']);
+    if (rpc_note['kind'] == 'rus') return Rus.objects.get_by_pk(rpc_note['subject']);
     else if (rpc_note['kind'] == 'rusclass') return RusClass.objects.get_by_handle(rpc_note['subject']);
     else throw oops("Unknown note kind ["+rpc_note['kind']+"]");
 }

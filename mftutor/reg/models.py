@@ -109,7 +109,7 @@ class Note(models.Model):
                 'time_pretty': dateformat.format(self.time, "d M y, H:i"),
                 }
         if self.subject_kind == 'rus':
-            note_data['subject'] = TutorProfile.objects.get(rus__pk=self.subject_pk).studentnumber
+            note_data['subject'] = TutorProfile.objects.get(rus__pk=self.subject_pk).pk
         elif self.subject_kind == 'rusclass':
             note_data['subject'] = RusClass.objects.get(pk=self.subject_pk).handle
         return note_data
