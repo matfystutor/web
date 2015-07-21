@@ -76,7 +76,9 @@ class EditSessionForm(forms.ModelForm):
         try:
             re.compile(data)
         except re.error as v:
-            raise forms.ValidationError(u"Fejl i regulært udtryk: %s" % (v,))
+            e = forms.ValidationError(u"Fejl i regulært udtryk: %s" % (v,))
+            self.add_error('regex', e)
+            return
 
         return data
 
@@ -126,31 +128,41 @@ class EditSessionForm(forms.ModelForm):
                     # `groupdict` contains only named match groups.
                     # We only want named match groups.
                     if len(groups) != len(groupdict):
-                        raise forms.ValidationError(
+                        e = forms.ValidationError(
                             (u"Det regulære udtryk matcher UNAVNGIVNE " +
                              u"grupper. Brug kun navngivne grupper %s") %
                             (expected_string,))
+                        self.add_error('regex', e)
+                        return
                     groupkeys = frozenset(groupdict.keys())
                     if not groupkeys.issubset(expected):
-                        raise forms.ValidationError(
+                        e = forms.ValidationError(
                             (u"Det regulære udtryk matcher UKENDTE " +
                              u"gruppenavne. Brug kun navngivne grupper %s") %
                             (expected_string,))
+                        self.add_error('regex', e)
+                        return
                     if not expected.issubset(groupkeys):
-                        raise forms.ValidationError(
+                        e = forms.ValidationError(
                             (u"Det regulære udtryk matcher IKKE " +
                              u"alle de navngivne grupper %s") %
                             (expected_string,))
+                        self.add_error('regex', e)
+                        return
 
                     for n, v in groupdict.items():
                         if v == '':
-                            raise forms.ValidationError(
+                            e = forms.ValidationError(
                                 (u"Det regulære udtryk matcher gruppen '%s' " +
                                  u"som den tomme streng.") % (n,))
+                            self.add_error('regex', e)
+                            return
 
             if matches == 0:
-                raise forms.ValidationError(
+                e = forms.ValidationError(
                     u"Det regulære udtryk matcher ingen strenge i input.")
+                self.add_error('regex', e)
+                return
 
         return cleaned_data
 
