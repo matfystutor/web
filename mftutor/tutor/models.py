@@ -306,6 +306,7 @@ class Rus(models.Model):
             'year': self.year,
             'rusclass': self.rusclass.handle,
             'arrived': self.arrived,
+            'pk': self.profile.pk,
             'studentnumber': self.profile.studentnumber,
             'name': self.profile.get_full_name(),
             'street': self.profile.street,
