@@ -78,11 +78,12 @@ class TutorProfile(models.Model):
         if sn is None:
             raise IntegrityError(
                 'TutorProfile.get_or_create_user: No studentnumber')
-        self.user = User(
+        u = User(
             username=self.studentnumber,
             email=self.email)
-        self.set_user_name()
-        self.user.save()
+        self.set_user_name(u)
+        u.save()
+        self.user = u
         self.save()
 
     @classmethod
