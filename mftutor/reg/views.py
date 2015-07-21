@@ -1,7 +1,9 @@
 # vim: set fileencoding=utf8:
 import re
-import datetime
 import json
+import random
+import string
+import datetime
 import subprocess
 
 from django.db import transaction
