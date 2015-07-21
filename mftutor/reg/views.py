@@ -1084,6 +1084,11 @@ class RusInfoView(FormView):
                     changes += 1
 
                 if in_password:
+                    if not rus.profile.studentnumber:
+                        e = forms.ValidationError(
+                            u'Rus har intet årskortnummer')
+                        form.add_error('rus_%s_reset_password' % rus.pk, e)
+                        continue
                     pwlength = 8
                     try:
                         p = subprocess.Popen(

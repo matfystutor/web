@@ -45,7 +45,7 @@ vælge "Nulstil kodeord", og så vil der blive sendt et nyt kodeord til den valg
 <p>De kontaktoplysninger, du indtaster her, vil blive synlige for alle tutorer
 og russer der logger ind på rushjemmesiden.</p>
 
-<p>Hvis navn eller årskortnummer er forkert,
+<p>Hvis navn eller årskortnummer er forkert eller mangler,
 skal du kontakte den webansvarlige i tutorbestyrelsen.</p>
 
 {% if form_errors %}
@@ -80,13 +80,16 @@ skal du kontakte den webansvarlige i tutorbestyrelsen.</p>
 <tbody>
 {% for rus in rus_list %}
 <tr>
-    <td>{{ rus.profile.studentnumber }}</td>
+    <td>{% if rus.profile.studentnumber %}
+        {{ rus.profile.studentnumber }}{% endif %}</td>
     <td>{{ rus.profile.get_full_name }}</td>
     <td>{{ rus.street_field }} {{ rus.street_field.errors }}</td>
     <td>{{ rus.city_field }} {{ rus.city_field.errors }}</td>
     <td>{{ rus.email_field }} {{ rus.email_field.errors }}</td>
     <td>{{ rus.phone_field }} {{ rus.phone_field.errors }}</td>
-    <td>{{ rus.reset_password_field }} {{ rus.reset_password_field.errors }}</td>
+    <td>{% if rus.profile.studentnumber %}{{ rus.reset_password_field }}
+        {% endif %}
+        {{ rus.reset_password_field.errors }}</td>
 </tr>
 {% endfor %}
 </tbody>
