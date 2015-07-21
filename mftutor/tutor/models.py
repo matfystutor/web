@@ -97,8 +97,8 @@ class TutorProfile(models.Model):
             first_name, last_name = tp.name.split(' ', 1)
         except ValueError:
             first_name, last_name = tp.name, ''
-        tp.user.first_name = first_name
-        tp.user.last_name = last_name
+        user.first_name = first_name
+        user.last_name = last_name
 
     def set_user_name(self, user=None):
         self.set_instance_user_name(self, user)
