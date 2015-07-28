@@ -8,7 +8,8 @@ class MinutesFeed(Feed):
     description = 'Referater fra Mat/Fys-Tutorgruppens møder.'
 
     def items(self):
-        return Document.objects.filter(type__exact='referater').order_by('published')[:5]
+        qs = Document.objects.filter(type__exact='referater')
+        return qs.order_by('-published')[:5]
 
     def item_title(self, item):
         return item.published.strftime(u'%Y-%m-%d')+u' '+item.title
