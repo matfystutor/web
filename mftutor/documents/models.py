@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 
 from django.db import models
 
+from mftutor import settings
+
 class ReferaterManager(models.Manager):
     def get_queryset(self):
         return super(ReferaterManager, self).get_queryset().filter(
