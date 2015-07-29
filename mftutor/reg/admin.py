@@ -16,9 +16,12 @@ class ImportLineAdmin(admin.ModelAdmin):
 class ChangeLogEntryAdmin(admin.ModelAdmin):
     list_display = ('author', 'time', 'kind')
 
+class HandoutAdmin(admin.ModelAdmin):
+    list_filter = ('year',)
+
 admin.site.register(ImportSession, ImportSessionAdmin)
 admin.site.register(ImportLine, ImportLineAdmin)
-admin.site.register(Handout, admin.ModelAdmin)
+admin.site.register(Handout, HandoutAdmin)
 admin.site.register(HandoutClassResponse, admin.ModelAdmin)
 admin.site.register(HandoutRusResponse, admin.ModelAdmin)
 admin.site.register(ChangeLogEntry, ChangeLogEntryAdmin)
