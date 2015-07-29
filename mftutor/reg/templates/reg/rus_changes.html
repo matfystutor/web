@@ -11,7 +11,13 @@
 <ul>
 {% for rus in rus_list %}
 <li>
-{{ rus.profile.studentnumber }} {{ rus.profile.get_full_name }} er
+{{ rus.profile.name }}
+{% if rus.profile.studentnumber %}
+({{ rus.profile.studentnumber }})
+{% else %}
+(ukendt årskortnummer)
+{% endif %}
+er
 {% if rus.initial_rusclass %}
 flyttet fra {{ rus.initial_rusclass }} til {{ rus.rusclass }}
 {% else %}
