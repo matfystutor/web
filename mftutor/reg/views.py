@@ -1056,6 +1056,8 @@ class RusInfoView(FormView):
             for field in self.fields:
                 k = 'rus_%s_%s' % (rus.pk, field)
                 setattr(rus, '%s_field' % field, form[k])
+                if form[k].errors:
+                    rus.errors = 'errors'
         context_data['rus_list'] = self.rus_list
         context_data['rusclass'] = self.rusclass
         return context_data

@@ -20,6 +20,9 @@
     text-align: center;
     vertical-align: top;
 }
+.rusinfo tr.errors td {
+    background-color: #FCC;
+}
 .rusinfo .errorlist {
     border: 0 none;
     padding: 0;
@@ -84,7 +87,7 @@ skal du kontakte den webansvarlige i tutorbestyrelsen.</p>
 </thead>
 <tbody>
 {% for rus in rus_list %}
-<tr>
+<tr class="{{ rus.errors }}">
     <td>{{ rus.profile.studentnumber|default_if_none:"" }}</td>
     <td>{{ rus.profile.name }}</td>
     <td>{{ rus.street_field }} {{ rus.street_field.errors }}</td>
