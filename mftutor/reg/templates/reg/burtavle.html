@@ -53,9 +53,6 @@ function set_height() {
     }
     var availableHeight = 220 - noteTop - 16;
     var scale = availableHeight/noteHeight;
-    console.log({note: note, parentHeight: note.parentNode.clientHeight,
-        noteHeight: noteHeight, noteTop: noteTop,
-        availableHeight: availableHeight, scale: scale});
     note.style.fontSize = parseFloat(note.style.fontSize) * scale + 'px';
 }
 </script>
