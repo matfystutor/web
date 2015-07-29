@@ -4,6 +4,9 @@
 {% block content %}
 <h1>Ændrede russer</h1>
 
+<p>Hvis nogen russer mangler årskortnummer, kan du
+<a href="{% url "studentnumber_list" %}">indtaste dem</a>.</p>
+
 {% if rus_list %}
 <ul>
 {% for rus in rus_list %}
