@@ -12,16 +12,6 @@
 {% block content %}
 <h1>Ny rus</h1>
 
-<p>Her kan du oprette en ny rus.
-Hvis du ikke kender russens årskortnummer,
-skal du skrive et unikt brugernavn til russen.</p>
-
-<p>Hvis du laver fejl i årskortnummer eller navn,
-så kan webfar slette/ændre det gennem Djangos administrationsside.
-(I så fald er det bedst at slette både rus-objektet og det tilhørende tutorprofil- og bruger-objekt
-og indtaste russen på ny.)
-</p>
-
 {{ form.non_field_errors }}
 <form method="post" class="twocol">{% csrf_token %}
     <div class="label">{{ form.name.label_tag }}</div>
