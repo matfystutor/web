@@ -696,12 +696,32 @@ class HandoutNewView(FormView):
     def get_context_data(self, **kwargs):
         context_data = super(HandoutNewView, self).get_context_data(**kwargs)
 
-        context_data['presets'] = [
-            {'name': name, 'kind': kind}
-            for name, kind in Handout.PRESETS
-        ]
+        presets = []
+        existing = [(h.name, h.kind)
+                    for h in Handout.objects.filter(year=self.request.year)]
+        for i, (name, kind) in enumerate(Handout.PRESETS):
+            if (name, kind) in existing:
+                checked = ''
+            else:
+                checked = 'checked'
+            p = {'i': i, 'name': name, 'kind': kind, 'checked': checked}
+            presets.append(p)
+        context_data['presets'] = presets
 
         return context_data
+
+    def post(self, request):
+        if request.POST.get('make_presets'):
+            handouts = []
+            for i, (name, kind) in enumerate(Handout.PRESETS):
+                if request.POST.get('preset_%d' % i):
+                    h = Handout(year=request.year, kind=kind, name=name)
+                    handouts.append(h)
+            for h in handouts:
+                h.save()
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            return super(HandoutNewView, self).post(request)
 
     def form_valid(self, form):
         data = form.cleaned_data

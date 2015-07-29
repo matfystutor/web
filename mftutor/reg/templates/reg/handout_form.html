@@ -1,21 +1,17 @@
 {% extends "base.html" %}
 {% block title %}Tilmeldingsliste{% endblock %}
 {% block head %}
-<script>
-function use_preset(select) {
-    var name = select.options[select.selectedIndex].textContent;
-    var kind = select.options[select.selectedIndex].value;
-
-    document.getElementById('id_name').value = name;
-
-    var kindField = document.getElementById('id_kind');
-    for (var i = 0, l = kindField.options.length; i < l; ++i) {
-        if (kindField.options[i].value == kind) {
-            kindField.selectedIndex = i;
-        }
-    }
+<style>
+.list-item-with-checkbox {
+    list-style-type: none;
 }
-</script>
+.list-item-checkbox {
+    box-sizing: border-box;
+    padding: 0px;
+    margin: 0px 0.35em 0.25em -1.6em;
+    vertical-align: middle;
+}
+</style>
 {% endblock %}
 
 {% block content %}
@@ -27,13 +23,18 @@ function use_preset(select) {
 
 <form method="post">{% csrf_token %}
     {% if presets %}
-    <p>Forslag:
-    <select onchange="use_preset(this)">
-        <option value=""></option>
+    <p>Standardlister:</p>
+    <ul>
         {% for preset in presets %}
-        <option value="{{ preset.kind }}">{{ preset.name }}</option>
+        <li class="list-item-with-checkbox"><label>
+            <input {% if preset.checked %}checked="checked"{% endif %}
+                class="list-item-checkbox" type="checkbox"
+                name="preset_{{ preset.i }}" />
+            {{ preset.name }}</label></li>
         {% endfor %}
-    </select></p>
+    </ul>
+    <input type="submit" name="make_presets" value="Opret valgte" />
+
     {% endif %}
     <p>Navn: {{ form.name }} {{ form.name.errors }}</p>
     <p>Slags: {{ form.kind }} {{ form.kind.errors }}</p>
