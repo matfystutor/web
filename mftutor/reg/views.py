@@ -1139,19 +1139,44 @@ class ArrivedStatsView(TemplateView):
     @staticmethod
     def get_year_list():
         kot = ArrivedStatsView.kot_optag()
+        old_study = 'dat fys mat mok nano it'.split()
+        old_data = dict(
+            [(2012, dict(zip(old_study,
+                             [(142, 153), (114, 115), (65, 71),
+                              (117, 124), (93, 96), (48, 50)]))),
+             (2011, dict(zip(old_study,
+                             [(154, 161), (105, 109), (59, 62),
+                              (87, 90), (69, 71), (45, 46)]))),
+             (2010, dict(zip(old_study,
+                             [(115, 119), (109, 111), (59, 60),
+                              (78, 84), (44, 46), (37, 37)]))),
+             (2009, dict(zip(old_study,
+                             [(107, 119), (78, 84), (63, 67),
+                              (70, 78), (22, 26), (35, 36)]))),
+             (2008, dict(zip(old_study,
+                             [('-', 119), ('-', 73), ('-', 51),
+                              ('-', 63), ('-', 28), ('-', 43)])))]
+        )
         years = sorted(
             set(Rus.objects.values_list('year', flat=True).distinct()) |
-            set(kot.keys()))
+            set(kot.keys()) |
+            set(old_data.keys()))
         rows = []
         for year in years:
             cells = []
             kot_year = kot.get(year, {})
             for official_name, handle, internal_name in settings.RUSCLASS_BASE:
-                kot_study = kot_year.get(handle, 0)
-                qs = Rus.objects.filter(
-                    year=year, rusclass__handle__startswith=handle)
-                count = qs.count()
-                arrived = qs.filter(arrived=True).count()
+                kot_study = kot_year.get(handle, '-')
+
+                o = old_data.get(year, {}).get(handle, None)
+                if o:
+                    arrived, count = o
+                else:
+                    qs = Rus.objects.filter(
+                        year=year, rusclass__handle__startswith=handle)
+                    count = qs.count()
+                    arrived = qs.filter(arrived=True).count()
+
                 cells.append({
                     'handle': handle,
                     'name': internal_name,
