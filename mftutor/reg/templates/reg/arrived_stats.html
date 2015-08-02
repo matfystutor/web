@@ -1,10 +1,15 @@
 {% extends "base.html" %}
 {% block title %}KOT-optag{% endblock %}
+{% block head %}
+<style>
+.kot td { text-align: center; }
+</style>
+{% endblock %}
 
 {% block content %}
 <h1>KOT-optag</h1>
 
-<table>
+<table class="kot">
     {% for row in year_list %}
     {% ifchanged %}
     <tr>
