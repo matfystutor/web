@@ -16,10 +16,16 @@ Her kan du vælge gruppeansvarlige!
 
 {% if success %}Succes!{% endif %}
 
-<form method="post" action="">{% csrf_token %}
 {{ form.non_field_errors }}
-{{ form.as_p }}
+<form method="post" action="" class="twocol">{% csrf_token %}
+{% for field in form %}
+<div class="label">{{ field.label_tag }}</div>
+<div class="field">{{ field }}
+{{ field.errors }}</div>
+{% endfor %}
+<div class="field">
 <input type="submit" value="Gem ændringer" />
+</div>
 </form>
 
 {% endblock %}
