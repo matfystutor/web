@@ -172,8 +172,15 @@ class Handout(models.Model):
 
 
 class HandoutClassResponse(models.Model):
+    COLORS = (
+        ('green', u'Grøn'),
+        ('yellow', u'Gul'),
+        ('red', u'Rød'),
+    )
+
     handout = models.ForeignKey(Handout)
     rusclass = models.ForeignKey(RusClass)
+    color = models.CharField(max_length=10, choices=COLORS, default='green')
     note = models.TextField(blank=True)
 
     created = models.DateTimeField(auto_now_add=True, verbose_name="Oprettet")
