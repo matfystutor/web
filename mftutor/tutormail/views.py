@@ -125,7 +125,7 @@ class EmailFormView(FormView):
             headers = {
                 'From': from_field,
                 'X-Tutor-Recipient': recipient,
-                'X-Tutor-Sender': self.request.user.tutorprofile.name,
+                'X-Tutor-Sender': self.request.tutorprofile.name,
             }
             msg = EmailMessage(
                 subject=subject,
