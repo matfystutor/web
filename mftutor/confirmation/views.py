@@ -101,7 +101,7 @@ class ReminderEmailView(EmailFormView):
 
     def get_initial(self):
         initial_data = super(ReminderEmailView, self).get_initial()
-        initial_data['subject'] = u'Husk at besvare tutorbekræftelsen!'
+        initial_data['subject'] = u'Husk at udfylde tutorbekræftelsen!'
         initial_data['text'] = (
             u'Kære tutorer!\n\n' +
             u'Husk at besvare tutorbekræftelsen ' +
