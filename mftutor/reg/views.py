@@ -443,6 +443,11 @@ class RusCreateView(FormView):
             rusclass.rus_count = Rus.objects.filter(rusclass=rusclass).count()
         return rusclass_list
 
+    def get_initial(self):
+        initial_data = super(RusCreateView, self).get_initial()
+        initial_data['arrived'] = True
+        return initial_data
+
     def form_valid(self, form):
         data = form.cleaned_data
         with transaction.atomic():
