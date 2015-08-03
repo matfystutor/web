@@ -87,7 +87,7 @@ Formularen er gemt.
 <tr>
     <td>{{ rus.checkmark_field }} {{ rus.checkmark_field.errors }}</td>
     <td><label for="id_rus_{{ rus.pk }}_checkmark">
-            {{ rus.profile.studentnumber }}</label></td>
+            {{ rus.profile.studentnumber|default:"(ukendt)" }}</label></td>
     <td><label for="id_rus_{{ rus.pk }}_checkmark">
             {{ rus.profile.get_full_name }}</label></td>
     <td>{{ rus.note_field }} {{ rus.note_field.errors }}</td>
