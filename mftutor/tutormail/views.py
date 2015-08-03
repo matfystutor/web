@@ -39,7 +39,8 @@ class EmailFormView(FormView):
 
     def get_context_data(self, **kwargs):
         data = super(EmailFormView, self).get_context_data(**kwargs)
-        data['recipients'] = self.get_recipients()
+        year = self.get_year()
+        data['recipients'] = self.get_recipients(data['form'], year)
         data['page_title'] = self.get_page_title()
         return data
 
@@ -84,9 +85,12 @@ class EmailFormView(FormView):
         else:
             return super(EmailFormView, self).post(request)
 
-    def get_recipients(self):
+    def get_year(self):
+        return TUTORMAIL_YEAR
+
+    def get_recipients(self, form, year):
         profiles = TutorProfile.objects.filter(
-            tutor__year__exact=TUTORMAIL_YEAR,
+            tutor__year__exact=year,
             tutor__early_termination__isnull=True)
 
         return sorted([profile.email for profile in profiles])
@@ -99,7 +103,8 @@ class EmailFormView(FormView):
         from_email = '"%s" <%s@matfystutor.dk>' % (
             data['sender_name'], data['sender_email'])
 
-        recipients = self.get_recipients()
+        year = self.get_year()
+        recipients = self.get_recipients(form, year)
 
         if data['only_me']:
             text += '\n' + repr(recipients)
