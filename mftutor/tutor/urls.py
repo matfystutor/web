@@ -9,7 +9,7 @@ from .auth import tutorbest_required, tutor_required
 urlpatterns = patterns('',
     url(r'^$', FrontView.as_view(), name='front'),
     url(r'^tutors/$', tutor_required(tutors_view), name='tutors'),
-    url(r'^tutors/([^/?]+)/$', tutor_required(tutors_view), name='tutorgroup'),
+    url(r'^tutors/(?P<group>[^/?]+)/$', tutor_required(tutors_view), name='tutorgroup'),
     url(r'^board/$', BoardMemberListView.as_view(), name='board'),
     url(r'^logout/$', logout_view, name="logout_view"),
     url(r'^login/$', login_view, name='tutor_login'),

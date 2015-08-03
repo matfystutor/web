@@ -57,54 +57,60 @@ class UploadPictureView(UpdateView):
         return reverse('upload_picture_view')
 
 
-def tutors_view(request, group=None):
-    if group is None:
-        tutors = Tutor.members(request.year)
-        best = TutorGroup.objects.get(handle='best', year=request.year)
-        leader = best.leader
-    else:
-        tg = get_object_or_404(TutorGroup, handle=group, year=request.year)
-        tutors = Tutor.group_members(tg)
-        leader = tg.leader
+class TutorListView(TemplateView):
+    template_name = 'tutors.html'
 
-    leader_pk = leader.pk if leader else -1
+    def get_context_data(self, **kwargs):
+        context_data = super(TutorListView, self).get_context_data(**kwargs)
+        group = self.kwargs.get('group')
+        if group is None:
+            tutors = Tutor.members(self.request.year)
+            best = TutorGroup.objects.get(
+                handle='best', year=self.request.year)
+            leader = best.leader
+        else:
+            tg = get_object_or_404(
+                TutorGroup, handle=group, year=self.request.year)
+            tutors = Tutor.group_members(tg)
+            leader = tg.leader
 
-    tutors = [{
-        'pk': t.pk,
-        'studentnumber': t.profile.studentnumber,
-        'picture': t.profile.picture.url if t.profile.picture else '',
-        'full_name': t.profile.get_full_name(),
-        'street': t.profile.street,
-        'city': t.profile.city,
-        'phone': t.profile.phone,
-        'email': t.profile.email,
-        'study': t.profile.study,
-        } for t in tutors]
-    if group == 'tutorsmiley' and request.year in [2015]:
-        tutors.append({
-            'pk': ':)',
-            'studentnumber': '88888888',
-            'picture': '/upload/tutorpics/smiley.png',
-            'full_name': 'Smiley',
-            'street': 'Skovbrynet 5',
-            'city': 'Smilets By',
-            'phone': '88888888',
-            'email': u'SMILEY@SMILEY.☺',
-            'study': 'Smil',
-        })
-    tutors.sort(key=lambda t: (t['pk'] != leader_pk, t['full_name']))
+        leader_pk = leader.pk if leader else -1
 
-    groups = TutorGroup.visible_groups.all()
+        tutors = [{
+            'pk': t.pk,
+            'studentnumber': t.profile.studentnumber,
+            'picture': t.profile.picture.url if t.profile.picture else '',
+            'full_name': t.profile.get_full_name(),
+            'street': t.profile.street,
+            'city': t.profile.city,
+            'phone': t.profile.phone,
+            'email': t.profile.email,
+            'study': t.profile.study,
+            } for t in tutors]
+        if group == 'tutorsmiley' and self.request.year in [2015]:
+            tutors.append({
+                'pk': ':)',
+                'studentnumber': '88888888',
+                'picture': '/upload/tutorpics/smiley.png',
+                'full_name': 'Smiley',
+                'street': 'Skovbrynet 5',
+                'city': 'Smilets By',
+                'phone': '88888888',
+                'email': u'SMILEY@SMILEY.☺',
+                'study': 'Smil',
+            })
+        tutors.sort(key=lambda t: (t['pk'] != leader_pk, t['full_name']))
 
-    return render_to_response(
-        'tutors.html',
-        {
-            'group': group,
-            'tutor_list': tutors,
-            'groups': groups,
-            'tutor_count': len(tutors),
-        },
-        RequestContext(request))
+        groups = TutorGroup.visible_groups.all()
+
+        context_data['group'] = group
+        context_data['tutor_list'] = tutors
+        context_data['groups'] = groups
+        context_data['tutor_count'] = len(tutors)
+        return context_data
+
+
+tutors_view = TutorListView.as_view()
 
 
 def switch_user(request, new_user):
