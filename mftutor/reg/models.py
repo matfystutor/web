@@ -36,16 +36,16 @@ class ChangeLogEntry(models.Model):
         time_epoch = time.mktime(self.time.timetuple())
 
         return {
-                'pk': self.pk,
-                'author': self.author.studentnumber,
-                'author_name': self.author.get_full_name(),
-                'time_epoch': time_epoch,
-                'time_pretty': dateformat.format(self.time, "d M y, H:i"),
-                'kind': self.kind,
-                'payload': self.payload,
-                'related_pk': self.related_pk,
-                'serialized_data': self.serialized_data,
-                }
+            'pk': self.pk,
+            'author': self.author.studentnumber,
+            'author_name': self.author.get_full_name(),
+            'time_epoch': time_epoch,
+            'time_pretty': dateformat.format(self.time, "d M y, H:i"),
+            'kind': self.kind,
+            'payload': self.payload,
+            'related_pk': self.related_pk,
+            'serialized_data': self.serialized_data,
+        }
 
     def get_related_object(self):
         if self.kind.startswith('rus_'):
@@ -112,12 +112,12 @@ class Note(models.Model):
 
     def json_of(self):
         note_data = {
-                'kind': self.subject_kind,
-                'body': self.body,
-                'author': self.author.studentnumber,
-                'author_name': self.author.get_full_name(),
-                'time_pretty': dateformat.format(self.time, "d M y, H:i"),
-                }
+            'kind': self.subject_kind,
+            'body': self.body,
+            'author': self.author.studentnumber,
+            'author_name': self.author.get_full_name(),
+            'time_pretty': dateformat.format(self.time, "d M y, H:i"),
+        }
         if self.subject_kind == 'rus':
             tp = TutorProfile.objects.get(rus__pk=self.subject_pk)
             note_data['subject'] = tp.pk
