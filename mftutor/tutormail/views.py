@@ -82,8 +82,14 @@ class EmailFormView(FormView):
                 raise ValueError(u'Line wrapping failed (no fixpoint)')
 
             return self.render_to_response(self.get_context_data(form=form))
+        elif request.POST.get('send') or request.POST.get('only_me'):
+            if form.is_valid():
+                return self.form_valid(form)
+            else:
+                return self.form_invalid(form)
         else:
-            return super(EmailFormView, self).post(request)
+            form.add_error(None, u'Tryk på en knap')
+            return self.render_to_response(self.get_context_data(form=form))
 
     def get_year(self):
         return TUTORMAIL_YEAR
