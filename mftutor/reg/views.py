@@ -819,6 +819,8 @@ class HandoutSummaryView(TemplateView):
 
 class HandoutResponseForm(forms.Form):
     note = forms.CharField(required=False, widget=forms.Textarea)
+    color = forms.ChoiceField(choices=HandoutClassResponse.COLORS,
+                              label='Farve')
 
     def __init__(self, *args, **kwargs):
         rus_list = kwargs.pop('rus_list')
@@ -841,7 +843,14 @@ class HandoutResponseView(FormView):
         return kwargs
 
     def get_initial(self):
-        data = {'note': self.handout_response.note}
+        if self.handout_response.pk:
+            color = self.handout_response.color
+        else:
+            color = 'green'
+        data = {
+            'note': self.handout_response.note,
+            'color': color
+        }
         for rus in self.rus_list:
             data['rus_%s_checkmark' % rus.pk] = rus.rus_response.checkmark
             data['rus_%s_note' % rus.pk] = rus.rus_response.note
@@ -917,6 +926,7 @@ class HandoutResponseView(FormView):
         with transaction.atomic():
             data = form.cleaned_data
             self.handout_response.note = data['note']
+            self.handout_response.color = data['color']
             self.handout_response.save()
             for rus in self.rus_list:
                 rus.rus_response.checkmark = data['rus_%s_checkmark' % rus.pk]

@@ -71,6 +71,7 @@ Formularen er gemt.
 
 <form method="post">{% csrf_token %}
     <p>{{ form.note }}</p>
+    <p>{{ form.color.label_tag }} {{ form.color }}</p>
 {% if display_rus_list %}
 <p>Tip: Hvis du holder shift inde, kan du markere/afmarkere flere russer samtidigt.</p>
 <table class="response_table">
