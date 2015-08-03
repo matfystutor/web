@@ -679,7 +679,7 @@ class HandoutListView(TemplateView):
                     handout.row.append(response_matrix[x])
                 else:
                     r = HandoutClassResponse(
-                        handout=handout, rusclass=rusclass)
+                        handout=handout, rusclass=rusclass, color='red')
                     handout.row.append(r)
 
         context_data['handouts'] = handouts
