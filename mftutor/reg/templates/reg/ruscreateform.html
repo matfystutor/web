@@ -12,6 +12,12 @@
 {% block content %}
 <h1>Ny rus</h1>
 
+<p>Som noget nyt i 2015 er det ikke nødvendigt at skrive et årskortnummer,
+hvis det ikke er kendt.</p>
+
+<p>Man kan dog ikke logge ind på rushjemmesiden uden at ens årskortnummer
+er registreret i Buret.</p>
+
 {{ form.non_field_errors }}
 <form method="post" class="twocol">{% csrf_token %}
     <div class="label">{{ form.name.label_tag }}</div>
