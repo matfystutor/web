@@ -1,0 +1,3 @@
+Name	Email Address	Mobile Phone
+{% for tutor in tutor_list %}{{ tutor.full_name }}	{{ tutor.email }}	{{ tutor.phone }}
+{% endfor %}

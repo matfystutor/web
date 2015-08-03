@@ -3,13 +3,16 @@ from ..aliases.views import AliasesView, MyGroupsView
 from .views import (
     logout_view, login_view, profile_view, tutor_password_change_view,
     UploadPictureView, tutors_view, TutorAdminView, switch_user, FrontView,
-    BoardAdminView, GroupLeaderView, ResetPasswordView, BoardMemberListView)
+    BoardAdminView, GroupLeaderView, ResetPasswordView, BoardMemberListView,
+    TutorDumpView)
 from .auth import tutorbest_required, tutor_required
 
 urlpatterns = patterns('',
     url(r'^$', FrontView.as_view(), name='front'),
     url(r'^tutors/$', tutor_required(tutors_view), name='tutors'),
     url(r'^tutors/(?P<group>[^/?]+)/$', tutor_required(tutors_view), name='tutorgroup'),
+    url(r'^tutordump/$', tutor_required(TutorDumpView.as_view()), name='tutordump'),
+    url(r'^tutordump/(?P<group>[^/?]+)/$', tutor_required(TutorDumpView.as_view()), name='tutordumpgroup'),
     url(r'^board/$', BoardMemberListView.as_view(), name='board'),
     url(r'^logout/$', logout_view, name="logout_view"),
     url(r'^login/$', login_view, name='tutor_login'),

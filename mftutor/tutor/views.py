@@ -113,6 +113,15 @@ class TutorListView(TemplateView):
 tutors_view = TutorListView.as_view()
 
 
+class TutorDumpView(TutorListView):
+    template_name = 'tutors.csv'
+
+    def render_to_response(self, context, **response_kwargs):
+        response_kwargs['content_type'] = 'text/csv'
+        return super(TutorDumpView, self).render_to_response(
+            context, **response_kwargs)
+
+
 def switch_user(request, new_user):
     from django.contrib.auth import authenticate, login
     user = authenticate(username=new_user, current_user=request.user)
