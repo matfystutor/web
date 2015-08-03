@@ -15,6 +15,7 @@ from mftutor.tutormail.models import Email
 from mftutor.tutormail.forms import EmailForm
 from mftutor.tutor.models import TutorProfile
 from mftutor.settings import TUTORMAIL_YEAR
+from mftutor.aliases.models import resolve_alias
 
 
 email_backend_type = 'django.core.mail.backends.smtp.EmailBackend'
@@ -113,6 +114,14 @@ class EmailFormView(FormView):
 
         year = self.get_year()
         recipients = self.get_recipients(form, year)
+        group_handles = resolve_alias(data['sender_email'])
+        cc_recipients = TutorProfile.objects.filter(
+            tutor__year__exact=TUTORMAIL_YEAR,
+            tutor__early_termination__isnull=True,
+            tutor__groups__handle__in=group_handles)
+        cc_emails = [profile.email for profile in cc_recipients]
+        cc_emails = sorted(set(cc_emails) - set(recipients))
+        recipients += cc_emails
 
         if data['only_me']:
             text += '\n' + repr(recipients)
@@ -127,6 +136,8 @@ class EmailFormView(FormView):
                 'X-Tutor-Recipient': recipient,
                 'X-Tutor-Sender': self.request.tutorprofile.name,
             }
+            if cc_emails:
+                headers['Cc'] = from_email
             msg = EmailMessage(
                 subject=subject,
                 body=text,
