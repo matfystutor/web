@@ -12,12 +12,13 @@
 <h1>Send email til alle tutorer</h1>
 
 <form method="post">{% csrf_token %}
-  <p>Afsenders navn: {{ form.sender_name }}</p>
-  <p>Svar til: {{ form.sender_email }}@matfystutor.dk</p>
-  <p>Emne: {{ form.subject }}</p>
+  {{ form.non_field_errors }}
+  <p>Afsenders navn: {{ form.sender_name }}{{ form.sender_name.errors }}</p>
+  <p>Svar til: {{ form.sender_email }}@matfystutor.dk{{ form.sender_email.errors }}</p>
+  <p>Emne: {{ form.subject }}{{ form.subject.errors }}</p>
   <p>Indhold:</p>
-  <p>{{ form.text }}</p>
-  <p>Linjeombrydning: {{ form.wrapping }}</p>
+  <p>{{ form.text }}{{ form.text.errors }}</p>
+  <p>Linjeombrydning: {{ form.wrapping }}{{ form.wrapping.errors }}</p>
   <p>
     <input name="wrap" type="submit" value="Ombryd linjer" />
     <input name="send" type="submit" value="Send mail!" />
