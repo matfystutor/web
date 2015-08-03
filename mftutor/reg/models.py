@@ -5,26 +5,28 @@ import time
 from django.utils import dateformat
 from django.db import models
 
-from ..tutor.models import TutorProfile, Rus, RusClass
+from mftutor.tutor.models import Tutor, TutorProfile, Rus, RusClass
+
 
 class ChangeLogEntry(models.Model):
     KINDS = (
-            ('import', u'Import af ruslister'),
-            ('rus_profile', u'Rus: profil ændret'),
-            ('rus_rusclass', u'Rus: rushold ændret'),
-            ('rus_arrived', u'Rus: ankommet ændret'),
-            ('rus_password', u'Rus: kodeord ændret'),
-            ('note_add', u'Notat tilføjet'),
-            ('note_delete', u'Notat slettet'),
-            ('tutor_profile', u'Tutor: profil ændret'),
-            ('tutor_rusclass', u'Tutor: rushold ændret'),
-            ('tutor_password', u'Tutor: kodeord ændret'),
-            )
+        ('import', u'Import af ruslister'),
+        ('rus_profile', u'Rus: profil ændret'),
+        ('rus_rusclass', u'Rus: rushold ændret'),
+        ('rus_arrived', u'Rus: ankommet ændret'),
+        ('rus_password', u'Rus: kodeord ændret'),
+        ('note_add', u'Notat tilføjet'),
+        ('note_delete', u'Notat slettet'),
+        ('tutor_profile', u'Tutor: profil ændret'),
+        ('tutor_rusclass', u'Tutor: rushold ændret'),
+        ('tutor_password', u'Tutor: kodeord ændret'),
+    )
     KIND_CHOICES = KINDS
 
     author = models.ForeignKey(TutorProfile, verbose_name="Forfatter")
     time = models.DateTimeField(auto_now_add=True, verbose_name="Tidspunkt")
-    kind = models.CharField(max_length=20, choices=KIND_CHOICES, verbose_name='Slags')
+    kind = models.CharField(
+        max_length=20, choices=KIND_CHOICES, verbose_name='Slags')
     payload = models.TextField(blank=True, verbose_name='Beskedparameter')
     related_pk = models.IntegerField()
     serialized_data = models.TextField(blank=True)
@@ -53,6 +55,7 @@ class ChangeLogEntry(models.Model):
         else:
             return None
 
+
 class ImportSession(models.Model):
     year = models.IntegerField(verbose_name="Tutorår")
     name = models.CharField(max_length=200, verbose_name="Navn")
@@ -61,7 +64,9 @@ class ImportSession(models.Model):
 
     created = models.DateTimeField(auto_now_add=True, verbose_name="Oprettet")
     updated = models.DateTimeField(auto_now=True, verbose_name="Sidst ændret")
-    imported = models.DateTimeField(null=True, blank=True, verbose_name="Importeret")
+    imported = models.DateTimeField(
+        null=True, blank=True, verbose_name="Importeret")
+
 
 class ImportLine(models.Model):
     session = models.ForeignKey(ImportSession)
@@ -73,7 +78,8 @@ class ImportLine(models.Model):
     studentnumber = models.CharField(max_length=500, blank=True)
     name = models.CharField(max_length=500, blank=True)
 
-    rus = models.ForeignKey(Rus, null=True, blank=True, on_delete=models.SET_NULL)
+    rus = models.ForeignKey(
+        Rus, null=True, blank=True, on_delete=models.SET_NULL)
 
     def clean(self):
         from django.core.exceptions import ValidationError
@@ -82,7 +88,8 @@ class ImportLine(models.Model):
         if self.matched:
             for nonblank in ('rusclass', 'studentnumber', 'name'):
                 if self[nonblank] == '':
-                    errors[nonblank] = u'Dette felt må ikke være tomt når matched=True.'
+                    errors[nonblank] = (
+                        u'Dette felt må ikke være tomt når matched=True.')
 
         if errors:
             raise ValidationError(errors)
@@ -90,15 +97,18 @@ class ImportLine(models.Model):
     class Meta:
         ordering = ['position']
 
+
 class Note(models.Model):
-    subject_kind = models.CharField(max_length=10, choices=[(a,a) for a in ('rus', 'rusclass', 'tutor')])
+    subject_kind = models.CharField(
+        max_length=10, choices=[(a, a) for a in ('rus', 'rusclass', 'tutor')])
     subject_pk = models.IntegerField()
     body = models.TextField(verbose_name='Note')
 
     author = models.ForeignKey(TutorProfile, verbose_name="Forfatter")
     time = models.DateTimeField(auto_now_add=True, verbose_name="Tidspunkt")
 
-    deleted = models.DateTimeField(blank=True, null=True, verbose_name="Slettet")
+    deleted = models.DateTimeField(
+        blank=True, null=True, verbose_name="Slettet")
 
     def json_of(self):
         note_data = {
@@ -109,10 +119,13 @@ class Note(models.Model):
                 'time_pretty': dateformat.format(self.time, "d M y, H:i"),
                 }
         if self.subject_kind == 'rus':
-            note_data['subject'] = TutorProfile.objects.get(rus__pk=self.subject_pk).pk
+            tp = TutorProfile.objects.get(rus__pk=self.subject_pk)
+            note_data['subject'] = tp.pk
         elif self.subject_kind == 'rusclass':
-            note_data['subject'] = RusClass.objects.get(pk=self.subject_pk).handle
+            rc = RusClass.objects.get(pk=self.subject_pk)
+            note_data['subject'] = rc.handle
         return note_data
+
 
 class Handout(models.Model):
     KINDS = (
@@ -137,9 +150,9 @@ class Handout(models.Model):
 
     year = models.IntegerField(verbose_name="Tutorår")
     kind = models.CharField(blank=False, max_length=10, choices=KINDS,
-            verbose_name='Slags')
+                            verbose_name='Slags')
     name = models.CharField(max_length=100,
-            verbose_name='Navn')
+                            verbose_name='Navn')
     note = models.TextField(blank=True)
 
     created = models.DateTimeField(auto_now_add=True, verbose_name="Oprettet")
@@ -157,6 +170,7 @@ class Handout(models.Model):
 
         unique_together = (('year', 'name'),)
 
+
 class HandoutClassResponse(models.Model):
     handout = models.ForeignKey(Handout)
     rusclass = models.ForeignKey(RusClass)
@@ -169,6 +183,7 @@ class HandoutClassResponse(models.Model):
         verbose_name = 'holdbesvarelse'
         verbose_name_plural = verbose_name + 'r'
         unique_together = (('handout', 'rusclass'),)
+
 
 class HandoutRusResponse(models.Model):
     handout = models.ForeignKey(Handout)
@@ -188,38 +203,44 @@ class HandoutRusResponse(models.Model):
 class LightboxRusClassStateManager(models.Manager):
     def get_for_year(self, year):
         rusclasses = RusClass.objects.filter(year=year)
-        rusclass_handles = frozenset(rusclass.handle for rusclass in rusclasses)
+        rusclass_handles = frozenset(
+            rusclass.handle for rusclass in rusclasses)
         rusclass_dict = {}
         for rusclass in rusclasses:
             rusclass_dict[rusclass.handle] = rusclass
 
-        states = self.model.objects.filter(rusclass__in=rusclasses).select_related('rusclass')
+        states = self.model.objects.filter(rusclass__in=rusclasses)
+        states = states.select_related('rusclass')
         state_handles = frozenset(state.rusclass.handle for state in states)
 
         missing = rusclass_handles.difference(state_handles)
-        new = [self.model(rusclass=rusclass_dict[handle]) for handle in missing]
+        new = [self.model(rusclass=rusclass_dict[handle])
+               for handle in missing]
 
         return list(states) + list(new)
+
 
 class LightboxRusClassState(models.Model):
     objects = LightboxRusClassStateManager()
 
     COLORS = (
-            ('green', u'Grøn'),
-            ('yellow', u'Gul'),
-            ('red', u'Rød'),
-            )
+        ('green', u'Grøn'),
+        ('yellow', u'Gul'),
+        ('red', u'Rød'),
+    )
 
     rusclass = models.OneToOneField(RusClass)
     color = models.CharField(max_length=10, choices=COLORS, default='green')
     note = models.TextField(blank=True)
-    author = models.ForeignKey(TutorProfile, null=True, verbose_name="Forfatter")
+    author = models.ForeignKey(
+        TutorProfile, null=True, verbose_name="Forfatter")
     updated = models.DateTimeField(auto_now=True, verbose_name="Sidst ændret")
 
     class Meta:
         verbose_name = 'tavlestatus'
         verbose_name_plural = verbose_name + 'er'
         ordering = ['rusclass']
+
 
 class LightboxNoteManager(models.Manager):
     def get_for_year(self, year):
@@ -228,16 +249,18 @@ class LightboxNoteManager(models.Manager):
         except self.model.DoesNotExist:
             return self.model(year=year)
 
+
 class LightboxNote(models.Model):
     objects = LightboxNoteManager()
     COLORS = (
-            (u'Grøn', 'green'),
-            (u'Gul', 'yellow'),
-            (u'Rød', 'red'),
-            )
+        (u'Grøn', 'green'),
+        (u'Gul', 'yellow'),
+        (u'Rød', 'red'),
+    )
 
     year = models.IntegerField(verbose_name="Tutorår", unique=True)
     note = models.TextField(blank=True)
-    author = models.ForeignKey(TutorProfile, null=True, verbose_name="Forfatter")
+    author = models.ForeignKey(
+        TutorProfile, null=True, verbose_name="Forfatter")
     updated = models.DateTimeField(auto_now=True, verbose_name="Sidst ændret")
     color = models.CharField(max_length=10, choices=COLORS, default='green')
