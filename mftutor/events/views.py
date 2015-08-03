@@ -1,13 +1,16 @@
+# vim:set fileencoding=utf-8:
 from django.views.generic import DetailView, ListView, FormView, View
 from django.shortcuts import render_to_response, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.http import HttpResponse
 from .. import settings
-from mftutor.tutor.models import Tutor
+from mftutor.tutor.models import Tutor, TutorProfile
 from .models import Event, EventParticipant
 from .forms import RSVPForm, RSVPFormAjax, BulkImportForm, EventParticipantForm
 import mftutor.events.bulk
+
+from mftutor.tutormail.views import EmailFormView
 
 def event_detail_view(request, eventid):
     event = get_object_or_404(Event.objects.filter(pk=eventid))
@@ -199,3 +202,33 @@ class EventParticipantEditView(FormView):
             rsvp.notes = data['notes']
             rsvp.save()
         return super(EventParticipantEditView, self).form_valid(form)
+
+
+class ReminderEmailView(EmailFormView):
+    def get_event(self):
+        return get_object_or_404(Event.objects.filter(pk=self.kwargs['pk']))
+
+    def get_page_title(self):
+        return u'Send reminder: %s' % self.get_event().title
+
+    def get_recipients(self, form, year):
+        event = self.get_event()
+        profiles = TutorProfile.objects.filter(
+            tutor__year__exact=year,
+            tutor__early_termination__isnull=True)
+        profiles = profiles.exclude(
+            tutor__year__exact=year,
+            tutor__events__event__pk=event.pk)
+        return sorted([profile.email for profile in profiles])
+
+    def get_initial(self):
+        initial_data = super(ReminderEmailView, self).get_initial()
+        event = self.get_event()
+        initial_data['subject'] = u'Husk tilmelding til %s!' % event.title
+        initial_data['text'] = (
+            u'Kære tutorer!\n\n' +
+            u'Husk at tilmelde jer %s ' % event.title +
+            u'på tutorhjemmesiden:\n' +
+            u'http://matfystutor.dk/events/%s/\n' % event.pk
+        )
+        return initial_data

@@ -5,7 +5,8 @@ from django.views.generic import UpdateView, TemplateView, View
 from django.views.generic.edit import FormMixin
 
 from ..tutor.auth import tutorbest_required_error, tutor_required_error
-from ..tutor.models import Tutor
+from mftutor.tutor.models import Tutor, TutorProfile
+from mftutor.tutormail.views import EmailFormView
 from .models import Confirmation
 from .forms import OwnConfirmationForm, EditNoteForm
 
@@ -84,3 +85,27 @@ class EditNoteView(View, FormMixin):
 
         return super(EditNoteView, self).dispatch(request, *args, **kwargs)
 
+
+class ReminderEmailView(EmailFormView):
+    def get_page_title(self):
+        return u'Send reminder om tutorbekræftelsen'
+
+    def get_recipients(self, form, year):
+        profiles = TutorProfile.objects.filter(
+            tutor__year__exact=year,
+            tutor__early_termination__isnull=True)
+        profiles = profiles.exclude(
+            tutor__year__exact=year,
+            tutor__confirmation__pk__gt=0)
+        return sorted([profile.email for profile in profiles])
+
+    def get_initial(self):
+        initial_data = super(ReminderEmailView, self).get_initial()
+        initial_data['subject'] = u'Husk at besvare tutorbekræftelsen!'
+        initial_data['text'] = (
+            u'Kære tutorer!\n\n' +
+            u'Husk at besvare tutorbekræftelsen ' +
+            u'på tutorhjemmesiden:\n' +
+            u'http://matfystutor.dk/confirmation/\n'
+        )
+        return initial_data
