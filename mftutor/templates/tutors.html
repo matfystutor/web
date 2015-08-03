@@ -15,6 +15,11 @@ Vælg gruppe:
 {% endfor %}
 </select>
 </p>
+{% if group %}
+<p><a href="{% url "tutordumpgroup" group=group %}">Eksporter gruppen til Google Contacts</a></p>
+{% else %}
+<p><a href="{% url "tutordump" %}">Eksporter alle tutorer til Google Contacts</a></p>
+{% endif %}
 <p>Vis som:
 <label>
 <input onclick="document.getElementsByClassName('tutorcontainer')[0].className = 'tutorcontainer tutorlist'"
