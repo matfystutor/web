@@ -106,8 +106,10 @@ class EmailFormView(FormView):
         subject = data['subject']
         text = data['text']
         wrapping = data['wrapping']
-        from_email = '"%s" <%s@matfystutor.dk>' % (
-            data['sender_name'], data['sender_email'])
+        from_email = '%s@matfystutor.dk' % (
+            data['sender_email'],)
+        from_field = '"%s" <%s>' % (
+            data['sender_name'], from_email)
 
         year = self.get_year()
         recipients = self.get_recipients(form, year)
@@ -121,7 +123,7 @@ class EmailFormView(FormView):
         messages = []
         for recipient in recipients:
             headers = {
-                'From': from_email,
+                'From': from_field,
                 'X-Tutor-Recipient': recipient,
                 'X-Tutor-Sender': self.request.user.tutorprofile.name,
             }
