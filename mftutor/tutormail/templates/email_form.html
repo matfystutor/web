@@ -9,7 +9,7 @@
 {% block title %}Email{% endblock %}
 
 {% block content %}
-<h1>Send email til alle tutorer</h1>
+<h1>{{ page_title }}</h1>
 
 <form method="post">{% csrf_token %}
   {{ form.non_field_errors }}

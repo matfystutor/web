@@ -34,9 +34,13 @@ class EmailFormView(FormView):
     def get_success_url(self):
         return django.core.urlresolvers.reverse('email_form')
 
+    def get_page_title(self):
+        return 'Send email til alle tutorer'
+
     def get_context_data(self, **kwargs):
         data = super(EmailFormView, self).get_context_data(**kwargs)
         data['recipients'] = self.get_recipients()
+        data['page_title'] = self.get_page_title()
         return data
 
     def get_sender(self):
