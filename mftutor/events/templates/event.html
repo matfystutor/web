@@ -12,6 +12,11 @@
 til {{ event.end_date|date:"l j. F"|lower }}
 {% endif %}
 </div>
+{% if tutor.is_tutorbest %}
+{% if event.is_rsvp_possible %}
+<p>Tutorbest: <a href="{% url 'events_reminder' pk=event.pk %}">Send reminder</a></p>
+{% endif %}
+{% endif %}
 {% if event.location %}
 <div class="location">{{ event.location }}</div>
 {% endif %}
