@@ -208,6 +208,7 @@ class SignupImportView(FormView):
         for app_name, site_name in renames:
             if app_name not in tg_dict:
                 tg_dict[app_name] = tg_dict[site_name]
+        return tg_dict
 
 
 class SignupListView(ListView):
