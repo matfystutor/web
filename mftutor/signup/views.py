@@ -10,8 +10,10 @@ from django.core.urlresolvers import reverse
 from django.db.models import Count
 
 from mftutor.signup.forms import SignupImportForm
-from mftutor.signup.models import TutorApplication, TutorApplicationGroup
+from mftutor.signup.models import (
+    TutorApplication, TutorApplicationGroup, AssignedGroupLeader)
 from mftutor.tutor.models import TutorProfile, TutorGroup, Rus, Tutor
+from mftutor.tutor.views import GroupLeaderViewBase
 
 
 def parse_study(study):
@@ -95,6 +97,8 @@ class SignupImportView(FormView):
             if a['comments']:
                 app.comments = '%s\n\n%s' % (app.comments, a['comments'])
             applications.append(app)
+            if a['buret']:
+                group_names.append((app, 'Buret', 0))
             for priority in range(1, 9):
                 group_name = a[str(priority)]
                 if group_name:
@@ -129,7 +133,8 @@ class SignupImportView(FormView):
             except StopIteration:
                 rus = Rus(year=0)
             app.rus_year = rus.year
-            app.previous_tutor_years = len(Tutor.objects.filter(profile=tp))
+            app.previous_tutor_years = len(
+                Tutor.objects.filter(profile=tp, year__lt=self.request.year))
 
         # 4. Retrieve all TutorGroups
         tg_dict = self.get_tutorgroup_dict()
@@ -217,12 +222,14 @@ class SignupImportView(FormView):
 
 class SignupListActionForm(forms.Form):
     action = forms.CharField()
-    argument = forms.CharField()
+    nargs = forms.CharField()
+    argument0 = forms.CharField(required=False)
+    argument1 = forms.CharField(required=False)
 
     def clean_action(self):
         action = self.cleaned_data['action']
         try:
-            m = getattr(SignupListView, 'action_' + action)
+            getattr(SignupListView, 'action_' + action)
         except AttributeError:
             raise forms.ValidationError(u'Invalid action')
         return action
@@ -239,6 +246,7 @@ class SignupListView(FormView):
             'tutorapplicationgroup_set',
             'tutorapplicationgroup_set__group',
             'assigned_groups',
+            'groups',
         )
 
         profiles = [app.profile for app in qs]
@@ -253,9 +261,20 @@ class SignupListView(FormView):
 
         applications = list(qs)
         for app in applications:
-            app.group_list = []
+            group_list = []
+            group_ids = set()
             for g in app.tutorapplicationgroup_set.all():
-                exp_key = (app.profile_id, g.group.handle)
+                if g.group_id not in group_ids:
+                    group_ids.add(g.group_id)
+                    group_list.append((g.group, g.priority))
+
+            for g in app.assigned_groups.all():
+                if g not in app.groups.all():
+                    group_list.append((g, None))
+
+            app.group_list = []
+            for group, priority in group_list:
+                exp_key = (app.profile_id, group.handle)
                 exp = all_experience.get(exp_key, [])
 
                 experience_detail = u'\n'.join(
@@ -264,16 +283,18 @@ class SignupListView(FormView):
                     for year, is_leader, group in exp)
 
                 o = {
-                    'name': g.group.name,
-                    'handle': g.group.handle,
-                    'priority': g.priority,
-                    'pk': g.pk,
+                    'name': group.name,
+                    'handle': group.handle,
+                    'priority': priority,
+                    'pk': group.pk,
                     'experience': len(exp),
                     'experience_detail': experience_detail,
                 }
 
-                if g.group in app.assigned_groups.all():
+                if group in app.assigned_groups.all():
                     o['assigned'] = True
+                else:
+                    o['assigned'] = False
                 app.group_list.append(o)
 
         sortform = self.get_sortform()
@@ -281,10 +302,14 @@ class SignupListView(FormView):
             group_handle = sortform.cleaned_data['group']
 
             def app_key(app):
+                a = 1
+                for g in app.assigned_groups.all():
+                    if g.handle == group_handle:
+                        a = 0
                 for i, g in enumerate(app.group_list):
                     if g['handle'] == group_handle:
-                        return i
-                return 100
+                        return a, i
+                return a, 100
 
             applications.sort(key=app_key)
 
@@ -293,7 +318,7 @@ class SignupListView(FormView):
     def get_sortform(self):
         form = forms.Form(data=self.request.GET)
         choices = []
-        qs = TutorGroup.objects.filter(year=self.request.year, visible=True)
+        qs = self.get_groups()
         qs = qs.annotate(num_assigned=Count('tutorapplication_assigned_set'))
         for g in qs:
             name = '(%s) %s' % (g.num_assigned or '--', g.name)
@@ -302,10 +327,53 @@ class SignupListView(FormView):
             label=u'Sortér efter', choices=choices)
         return form
 
+    def get_groups(self):
+        qs = TutorGroup.objects.filter(year=self.request.year, visible=True)
+        return qs
+
+    def get_stats(self, applications):
+        buret = 0
+        accepted = 0
+        not_accepted = 0
+        num_groups = [0, 0, 0, 0]
+        for app in applications:
+            if app.accepted:
+                accepted += 1
+            else:
+                not_accepted += 1
+
+            assigned_count = 0
+            b = False
+            for g in app.group_list:
+                if g['assigned']:
+                    assigned_count += 1
+                    if g['handle'] == 'buret':
+                        b = True
+
+            if assigned_count >= len(num_groups):
+                assigned_count = len(num_groups) - 1
+
+            if b:
+                buret += 1
+            else:
+                num_groups[assigned_count] += 1
+
+        stats = {
+            'accepted': accepted,
+            'not_accepted': not_accepted,
+            'buret': buret,
+        }
+        for i, count in enumerate(num_groups):
+            stats[str(i)] = count
+        return stats
+
     def get_context_data(self, **kwargs):
         context_data = super(SignupListView, self).get_context_data(**kwargs)
-        context_data['application_list'] = self.get_queryset()
+        applications = self.get_queryset()
+        context_data['application_list'] = applications
+        context_data['groups'] = self.get_groups()
         context_data['sortform'] = self.get_sortform()
+        context_data['stats'] = self.get_stats(applications)
         return context_data
 
     def get_success_url(self):
@@ -313,18 +381,26 @@ class SignupListView(FormView):
 
     def form_valid(self, form):
         action = form.cleaned_data['action']
-        argument = form.cleaned_data['argument']
-        getattr(self, 'action_' + action)(argument)
+        nargs = int(form.cleaned_data['nargs'])
+        args = [form.cleaned_data['argument%s' % i] for i in range(nargs)]
+        getattr(self, 'action_' + action)(*args)
         return self.render_to_response(self.get_context_data(form=form))
 
-    def action_assign_group(self, argument):
-        pk = int(argument)
-        tag = TutorApplicationGroup.objects.get(pk=pk)
-        ta = tag.application
-        if tag.group in ta.assigned_groups.all():
-            ta.assigned_groups.remove(tag.group)
+    def action_assign_group(self, app_id, group_id):
+        app_id = int(app_id)
+        group_id = int(group_id)
+        ta = TutorApplication.objects.get(id=app_id)
+        group = TutorGroup.objects.get(id=group_id)
+        if group in ta.assigned_groups.all():
+            ta.assigned_groups.remove(group)
         else:
-            ta.assigned_groups.add(tag.group)
+            ta.assigned_groups.add(group)
+
+    def action_accepted(self, argument):
+        pk = int(argument)
+        ta = TutorApplication.objects.get(pk=pk)
+        ta.accepted = not ta.accepted
+        ta.save()
 
 
 class TutorGroupForm(forms.Form):
@@ -413,3 +489,44 @@ class TutorGroupView(FormView):
             g.save()
 
         return super(TutorGroupView, self).form_valid(form)
+
+
+class GroupLeaderView(GroupLeaderViewBase):
+    def get_groups(self):
+        qs = TutorGroup.objects.filter(
+            visible=True, year=self.request.year)
+        qs = qs.prefetch_related('tutorapplication_assigned_set__profile')
+        qs = qs.select_related('assignedgroupleader')
+        groups = []
+        for g in qs:
+            app_qs = g.tutorapplication_assigned_set.all()
+            tutors = [(app.pk, app.profile.name) for app in app_qs]
+            try:
+                leader = g.assignedgroupleader.application_id
+            except AssignedGroupLeader.DoesNotExist:
+                leader = None
+            groups.append({
+                'pk': g.pk,
+                'name': g.name,
+                'tutors': tutors,
+                'leader': leader,
+            })
+        return groups
+
+    def change_leaders(self, changes):
+        for group, new_leader in changes:
+            existing = AssignedGroupLeader.objects.filter(
+                group_id=group['pk'])
+
+            # Delete existing (if any)
+            existing.delete()
+
+            # Create new (if needed)
+            if new_leader:
+                n = AssignedGroupLeader(
+                    group_id=group['pk'], application_id=new_leader)
+                n.save()
+
+
+class TutorCreateView(TemplateView):
+    template_name = 'signup/create.html'
