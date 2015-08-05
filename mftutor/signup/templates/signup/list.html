@@ -1,7 +1,78 @@
 {% extends "base.html" %}
 {% block title %}Tutoransøgninger{% endblock %}
+{% block head %}
+<style>
+.name, .study {
+	overflow: hidden;
+	white-space: nowrap;
+	max-width: 12em;
+	text-overflow: ellipsis;
+}
+
+.experience {
+	top: 0px;
+	right: 0px;
+	height: 100%;
+	position: absolute;
+	width: .8em;
+	background-color: #999;
+	text-align: center;
+	color: #eee;
+}
+
+.study {
+	max-width: 4em;
+}
+
+.group_list {
+	display: flex;
+}
+
+.appgroup {
+	position: relative;
+	padding: 0 1px;
+	border: 1px solid #888;
+	border-width: 1px 3px;
+	cursor: pointer;
+	overflow: hidden;
+	white-space: nowrap;
+	width: 6em;
+	margin: 0 2px;
+}
+
+.appgroup.assigned {
+	background-color: #9e9;
+}
+</style>
+<script>
+function post_action(action, argument) {
+	console.log([action, argument]);
+	var f = document.getElementById('action_form');
+	f.action.value = action;
+	f.argument.value = argument;
+	f.submit();
+}
+
+function group_onchange() {
+	var f = document.getElementById('id_group');
+	if (f) f.onchange = function () { f.form.submit(); };
+}
+
+window.addEventListener('load', group_onchange, false);
+</script>
+{% endblock %}
 {% block content %}
+<form method="post" id="action_form">{% csrf_token %}
+<input type="hidden" name="action" />
+<input type="hidden" name="argument" />
+</form>
 <h1>Tutoransøgninger</h1>
+<form method="get">
+<p>
+{{ sortform.group.label_tag }}
+{{ sortform.group }}
+</p>
+</form>
 <table>
 <thead>
 <tr>
@@ -16,15 +87,24 @@
 <tbody>
 {% for app in application_list %}
 <tr>
-<td>{{ app.profile.name }}</td>
-<td>{{ app.study }}</td>
+<td class="name" title="{{ app.profile.name }}">{{ app.profile.name }}</td>
+<td class="study" title="{{ app.study }}">{{ app.study }}</td>
 <td>{{ app.previous_tutor_years }}</td>
 <td>{{ app.rus_year }}</td>
 <td>{{ app.accepted }}</td>
 <td>
-{% for groupapp in app.tutorapplicationgroup_set.all %}
-{{ groupapp.priority }}: {{ groupapp.group.name }}
+<div class="group_list">
+{% for group in app.group_list %}
+<div class="appgroup {{ group.assigned|yesno:"assigned," }}"
+onclick="post_action('assign_group', {{ group.pk }})"
+title="{{ group.name }}">
+{{ group.priority }}: {{ group.name }}
+{% if group.experience %}
+<div class="experience" title="{{ group.experience_detail }}">{{ group.experience }}</div>
+{% endif %}
+</div>
 {% endfor %}
+</div>
 </td>
 </tr>
 {% endfor %}

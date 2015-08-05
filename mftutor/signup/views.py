@@ -4,6 +4,10 @@ from __future__ import unicode_literals
 import json
 
 from django.views.generic import UpdateView, TemplateView, FormView, ListView
+from django.views.generic.list import MultipleObjectMixin
+from django import forms
+from django.core.urlresolvers import reverse
+from django.db.models import Count
 
 from mftutor.signup.forms import SignupImportForm
 from mftutor.signup.models import TutorApplication, TutorApplicationGroup
@@ -173,7 +177,7 @@ class SignupImportView(FormView):
                 result=json.dumps(result, indent=0, sort_keys=True)))
 
     def get_tutorgroup_dict(self):
-        tutorgroups = TutorGroup.objects.filter(visible=True)
+        tutorgroups = TutorGroup.objects.filter(visible=True, year=self.request.year)
         tg_dict = {
             tg.name: tg
             for tg in tutorgroups
@@ -211,14 +215,201 @@ class SignupImportView(FormView):
         return tg_dict
 
 
-class SignupListView(ListView):
+class SignupListActionForm(forms.Form):
+    action = forms.CharField()
+    argument = forms.CharField()
+
+    def clean_action(self):
+        action = self.cleaned_data['action']
+        try:
+            m = getattr(SignupListView, 'action_' + action)
+        except AttributeError:
+            raise forms.ValidationError(u'Invalid action')
+        return action
+
+
+class SignupListView(FormView):
+    form_class = SignupListActionForm
     model = TutorApplication
     template_name = 'signup/list.html'
-    context_object_name = 'application_list'
 
     def get_queryset(self):
         qs = TutorApplication.objects.filter(year=self.request.year)
-        return qs.select_related('profile').prefetch_related(
+        qs = qs.select_related('profile').prefetch_related(
             'tutorapplicationgroup_set',
             'tutorapplicationgroup_set__group',
+            'assigned_groups',
         )
+
+        profiles = [app.profile for app in qs]
+        group_memberships = Tutor.groups.through.objects.filter(
+            tutor__profile__in=profiles).select_related('tutor', 'tutorgroup')
+        all_experience = {}
+        for o in group_memberships:
+            key = (o.tutor.profile_id, o.tutorgroup.handle)
+            is_leader = o.tutorgroup.leader_id == o.tutor_id
+            exp = all_experience.setdefault(key, [])
+            exp.append((o.tutor.year, is_leader, o.tutorgroup))
+
+        applications = list(qs)
+        for app in applications:
+            app.group_list = []
+            for g in app.tutorapplicationgroup_set.all():
+                exp_key = (app.profile_id, g.group.handle)
+                exp = all_experience.get(exp_key, [])
+
+                experience_detail = u'\n'.join(
+                    '%s %s%s' %
+                    (year, group.name, ' (ansv.)' if is_leader else '')
+                    for year, is_leader, group in exp)
+
+                o = {
+                    'name': g.group.name,
+                    'handle': g.group.handle,
+                    'priority': g.priority,
+                    'pk': g.pk,
+                    'experience': len(exp),
+                    'experience_detail': experience_detail,
+                }
+
+                if g.group in app.assigned_groups.all():
+                    o['assigned'] = True
+                app.group_list.append(o)
+
+        sortform = self.get_sortform()
+        if sortform.is_valid():
+            group_handle = sortform.cleaned_data['group']
+
+            def app_key(app):
+                for i, g in enumerate(app.group_list):
+                    if g['handle'] == group_handle:
+                        return i
+                return 100
+
+            applications.sort(key=app_key)
+
+        return applications
+
+    def get_sortform(self):
+        form = forms.Form(data=self.request.GET)
+        choices = []
+        qs = TutorGroup.objects.filter(year=self.request.year, visible=True)
+        qs = qs.annotate(num_assigned=Count('tutorapplication_assigned_set'))
+        for g in qs:
+            name = '(%s) %s' % (g.num_assigned or '--', g.name)
+            choices.append((g.handle, name))
+        form.fields['group'] = forms.ChoiceField(
+            label=u'Sortér efter', choices=choices)
+        return form
+
+    def get_context_data(self, **kwargs):
+        context_data = super(SignupListView, self).get_context_data(**kwargs)
+        context_data['application_list'] = self.get_queryset()
+        context_data['sortform'] = self.get_sortform()
+        return context_data
+
+    def get_success_url(self):
+        return reverse('signup_list')
+
+    def form_valid(self, form):
+        action = form.cleaned_data['action']
+        argument = form.cleaned_data['argument']
+        getattr(self, 'action_' + action)(argument)
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def action_assign_group(self, argument):
+        pk = int(argument)
+        tag = TutorApplicationGroup.objects.get(pk=pk)
+        ta = tag.application
+        if tag.group in ta.assigned_groups.all():
+            ta.assigned_groups.remove(tag.group)
+        else:
+            ta.assigned_groups.add(tag.group)
+
+
+class TutorGroupForm(forms.Form):
+    def __init__(self, groups, year, **kwargs):
+        super(TutorGroupForm, self).__init__(**kwargs)
+        for group in groups:
+            if group.year != year:
+                name = self.get_group_field_name(group)
+                self.fields[name] = forms.BooleanField(
+                    label=group.name, required=False)
+
+    @staticmethod
+    def get_group_field_name(group):
+        return 'field_%s' % group.pk
+
+    def get_group_bound_field(self, group):
+        return self[self.get_group_field_name(group)]
+
+    def clean(self):
+        cleaned_data = super(TutorGroupForm, self).clean()
+        if not any(cleaned_data.values()):
+            raise forms.ValidationError(u'Ingen grupper valgt')
+        return cleaned_data
+
+
+class TutorGroupView(FormView):
+    template_name = 'signup/tutorgroups.html'
+    form_class = TutorGroupForm
+
+    def dispatch(self, request, *args, **kwargs):
+        # Used in get_form_kwargs and get_context_data
+        self.groups = self.get_groups()
+        return super(TutorGroupView, self).dispatch(request, *args, **kwargs)
+
+    def get_groups(self):
+        by_handle = {}
+        all_groups = TutorGroup.objects.all().order_by('year')
+        for g in all_groups:
+            # Overwrite older groups
+            if g.year:
+                by_handle[g.handle] = g
+        groups = list(by_handle.values())
+        groups.sort(key=lambda g: g.name)
+        return groups
+
+    def get_form_kwargs(self):
+        kwargs = super(TutorGroupView, self).get_form_kwargs()
+        kwargs['groups'] = self.groups
+        kwargs['year'] = self.request.year
+        return kwargs
+
+    def get_initial(self):
+        return {
+            self.form_class.get_group_field_name(g):
+            (g.year == self.request.year - 1)
+            for g in self.groups
+        }
+
+    def get_context_data(self, **kwargs):
+        context_data = super(TutorGroupView, self).get_context_data(**kwargs)
+
+        form = context_data['form']
+        for g in self.groups:
+            if g.year != self.request.year:
+                g.field = form.get_group_bound_field(g)
+
+        context_data['groups'] = self.groups
+        context_data['year'] = self.request.year
+        return context_data
+
+    def get_success_url(self):
+        return reverse('signup_groups')
+
+    def form_valid(self, form):
+        data = form.cleaned_data
+        new_groups = []
+        for g in self.groups:
+            if data.get(form.get_group_field_name(g)):
+                tg = TutorGroup(
+                    handle=g.handle,
+                    name=g.name,
+                    visible=g.visible,
+                    year=self.request.year)
+                new_groups.append(tg)
+        for g in new_groups:
+            g.save()
+
+        return super(TutorGroupView, self).form_valid(form)
