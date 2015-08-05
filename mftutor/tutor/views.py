@@ -114,7 +114,19 @@ tutors_view = TutorListView.as_view()
 
 
 class TutorDumpView(TutorListView):
-    template_name = 'tutors.csv'
+    template_name = 'contacts.csv'
+
+    def get_context_data(self, **kwargs):
+        context_data = super(TutorDumpView, self).get_context_data(**kwargs)
+        context_data['person_list'] = [
+            {
+                'name': p['full_name'],
+                'email': p['email'],
+                'phone': p['phone'],
+            }
+            for p in context_data['tutor_list']
+        ]
+        return context_data
 
     def render_to_response(self, context, **response_kwargs):
         response_kwargs['content_type'] = 'text/csv'
