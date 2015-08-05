@@ -155,21 +155,14 @@ class FrontView(TemplateView):
 
 
 class GroupLeaderForm(forms.Form):
-    def __init__(self, year, groups, *args, **kwargs):
+    def __init__(self, groups, *args, **kwargs):
         super(GroupLeaderForm, self).__init__(*args, **kwargs)
-        self.tutor_year = year
-
         for i, group in enumerate(groups):
-            choices = [
-                (tu.pk, tu.profile.name)
-                for tu in Tutor.objects.filter(year=year, groups=group)
-            ]
+            choices = list(group['tutors'])  # make copy
             choices[0:0] = [('', '')]
-
-            current_leader = group.leader.pk if group.leader else ''
-
-            self.fields['group_%s' % group.pk] = forms.ChoiceField(
-                label=group.name,
+            current_leader = group['leader'] or ''
+            self.fields['group_%s' % group['pk']] = forms.ChoiceField(
+                label=group['name'],
                 required=False,
                 choices=choices,
                 initial=current_leader)
@@ -181,30 +174,43 @@ class GroupLeaderView(FormView):
 
     def get_form_kwargs(self):
         kwargs = super(GroupLeaderView, self).get_form_kwargs()
-        kwargs['year'] = self.request.year
-        kwargs['groups'] = TutorGroup.objects.filter(
-            visible=True, year=self.request.year)
+        kwargs['groups'] = self.get_groups()
         return kwargs
 
+    def get_groups(self):
+        qs = TutorGroup.objects.filter(
+            visible=True, year=self.request.year)
+        qs = qs.prefetch_related('tutor_set__profile')
+        groups = []
+        for g in qs:
+            tutor_qs = g.tutor_set.all()
+            tutors = [(tu.pk, tu.profile.name) for tu in tutor_qs]
+            groups.append({
+                'pk': g.pk,
+                'name': g.name,
+                'tutors': tutors,
+                'leader': g.leader_id,
+            })
+        return groups
+
     def form_valid(self, form):
-        for field in form:
-            if not field.name.startswith('group_'):
-                continue
-
-            pk = field.name[6:]
-            gr = TutorGroup.objects.get(pk=pk)
-
-            if field.data:
-                new_leader = Tutor.objects.get(pk=field.data)
-            else:
-                new_leader = None
-
-            if gr.leader != new_leader:
-                gr.leader = new_leader
-                gr.save()
+        groups = self.get_groups()
+        changes = []
+        for group in groups:
+            new_leader = form.cleaned_data['group_%s' % group['pk']]
+            new_leader = int(new_leader) if new_leader else None
+            if group['leader'] != new_leader:
+                changes.append((group, new_leader))
+        self.change_leaders(changes)
 
         return self.render_to_response(
             self.get_context_data(form=form, success=True))
+
+    def change_leaders(self, changes):
+        for group, new_leader in changes:
+            gr = TutorGroup.objects.get(pk=group['pk'])
+            gr.leader_id = new_leader or None
+            gr.save()
 
 
 class ResetPasswordForm(forms.Form):
