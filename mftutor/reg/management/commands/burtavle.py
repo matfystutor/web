@@ -1,4 +1,6 @@
 import logging
+import textwrap
+
 from optparse import make_option
 from django.core.management.base import BaseCommand
 from ....settings import YEAR
@@ -58,11 +60,14 @@ class Command(BaseCommand):
             rows_printed = '\n'.join(''.join(typeset(cell) for cell in row)
                                      for row in rows)
 
+            note = u''.join(
+                u'%s\n' % u'\n'.join(textwrap.wrap(line, note_width))
+                for line in note.splitlines())
             note_lines = list(note.splitlines()) + 4*['']
             note_lines = [line.ljust(note_width) for line in note_lines]
             for i, frog_line in enumerate(frog):
                 note_lines[i] += '\033[%s;1m%s\033[0m' % (colors.get(color), frog_line)
-            note_with_frog = '\n'.join(note_lines).strip('\n ')
+            note_with_frog = '\n'.join(note_lines).rstrip('\n ')
             display = '%s%s\n%s\n\n%s' % (init, header, note_with_frog, rows_printed)
             if display != prev_display:
                 print(display)
