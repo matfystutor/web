@@ -6,7 +6,7 @@ from .views import ChooseSessionView, NewSessionView, EditSessionView
 from .views import RusListView, RusCreateView, RusListRPC, RusChangesView
 from .views import HandoutListView, HandoutNewView, HandoutSummaryView, \
         HandoutResponseView, HandoutResponseDeleteView
-from .views import RusInfoListView, RusInfoView
+from .views import RusInfoListView, RusInfoView, RusInfoDumpView
 from .views import LightboxAdminView
 from .views import ArrivedStatsView
 from .views import StudentnumberListView, StudentnumberView
@@ -46,6 +46,8 @@ urlpatterns = patterns('',
         RusInfoListView.as_view(), name='rusinfo_list'),
     url(r'^info/(?P<handle>[a-z0-9]+)/$',
         RusInfoView.as_view(), name='rusinfo'),
+    url(r'^info/(?P<handle>[a-z0-9]+)/dump/$',
+        RusInfoDumpView.as_view(), name='rusinfodump'),
 
     url(r'^burtavle/$',
         tutorbur_required(LightboxAdminView.as_view()), name='burtavle_admin'),

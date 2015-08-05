@@ -60,6 +60,10 @@ og russer der logger ind på rushjemmesiden.</p>
 <p>Hvis navn eller årskortnummer er forkert eller mangler,
 skal du kontakte den webansvarlige i tutorbestyrelsen.</p>
 
+<p><a href="{% url "rusinfodump" handle=rusclass.handle %}">
+Eksporter til Google Contacts
+</a></p>
+
 {% if form_errors %}
 <p>Formularen er ikke udfyldt korrekt.</p>
 {% endif %}

@@ -1158,6 +1158,38 @@ class RusInfoView(FormView):
             self.get_context_data(form=form, form_errors=True))
 
 
+class RusInfoDumpView(TemplateView):
+    template_name = 'contacts.csv'
+
+    def dispatch(self, request, handle):
+        if not request.tutor:
+            return tutor_required_error(request)
+
+        self.rusclass = get_object_or_404(
+            RusClass, handle__exact=handle, year__exact=request.year)
+        if not request.tutor.can_manage_rusclass(self.rusclass):
+            return tutorbest_required_error(request)
+
+        self.rus_list = self.get_rus_list()
+
+        return super(RusInfoDumpView, self).dispatch(request)
+
+    def get_rus_list(self):
+        return (self.rusclass.get_russes()
+                .order_by('profile__studentnumber')
+                .select_related('profile'))
+
+    def get_context_data(self, **kwargs):
+        context_data = super(RusInfoDumpView, self).get_context_data(**kwargs)
+        context_data['person_list'] = [r.profile for r in self.rus_list]
+        return context_data
+
+    def render_to_response(self, context, **response_kwargs):
+        response_kwargs['content_type'] = 'text/csv'
+        return super(RusInfoDumpView, self).render_to_response(
+            context, **response_kwargs)
+
+
 # =============================================================================
 
 def get_lightbox_state_by_study(year):
