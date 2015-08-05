@@ -168,15 +168,30 @@ class GroupLeaderForm(forms.Form):
                 initial=current_leader)
 
 
-class GroupLeaderView(FormView):
+class GroupLeaderViewBase(FormView):
     form_class = GroupLeaderForm
     template_name = 'groupleaderadmin.html'
 
     def get_form_kwargs(self):
-        kwargs = super(GroupLeaderView, self).get_form_kwargs()
+        kwargs = super(GroupLeaderViewBase, self).get_form_kwargs()
         kwargs['groups'] = self.get_groups()
         return kwargs
 
+    def form_valid(self, form):
+        groups = self.get_groups()
+        changes = []
+        for group in groups:
+            new_leader = form.cleaned_data['group_%s' % group['pk']]
+            new_leader = int(new_leader) if new_leader else None
+            if group['leader'] != new_leader:
+                changes.append((group, new_leader))
+        self.change_leaders(changes)
+
+        return self.render_to_response(
+            self.get_context_data(form=form, success=True))
+
+
+class GroupLeaderView(GroupLeaderViewBase):
     def get_groups(self):
         qs = TutorGroup.objects.filter(
             visible=True, year=self.request.year)
@@ -192,19 +207,6 @@ class GroupLeaderView(FormView):
                 'leader': g.leader_id,
             })
         return groups
-
-    def form_valid(self, form):
-        groups = self.get_groups()
-        changes = []
-        for group in groups:
-            new_leader = form.cleaned_data['group_%s' % group['pk']]
-            new_leader = int(new_leader) if new_leader else None
-            if group['leader'] != new_leader:
-                changes.append((group, new_leader))
-        self.change_leaders(changes)
-
-        return self.render_to_response(
-            self.get_context_data(form=form, success=True))
 
     def change_leaders(self, changes):
         for group, new_leader in changes:
