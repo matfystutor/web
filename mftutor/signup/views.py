@@ -528,5 +528,26 @@ class GroupLeaderView(GroupLeaderViewBase):
                 n.save()
 
 
-class TutorCreateView(TemplateView):
+class TutorCreateForm(forms.Form):
+    def __init__(self, applications, **kwargs):
+        super(TutorCreateForm, self).__init__(**kwargs)
+        for app in applications:
+            pass
+
+
+class TutorCreateView(FormView):
     template_name = 'signup/create.html'
+
+    def get_applications(self):
+        qs = TutorApplication.objects.filter(year=self.request.year)
+        qs = qs.select_related('profile').prefetch_related(
+            'tutorapplicationgroup_set',
+            'tutorapplicationgroup_set__group',
+            'assigned_groups',
+            'groups',
+        )
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context_data = super(TutorCreateView, self).get_context_data(**kwargs)
+        context_data['application_list'] = self.get_applications()

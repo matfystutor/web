@@ -83,64 +83,28 @@ window.addEventListener('load', group_onchange, false);
 <input type="hidden" name="argument1" />
 </form>
 <h1>Tutoransøgninger</h1>
-<p><a href="{% url "signup_groupleader" %}">Vælg gruppeansvarlige</a></p>
-<p>
-Optaget: {{ stats.accepted }}, Afvist: {{ stats.not_accepted }}
-<br />
-0 grupper: {{ stats.0 }}, 1 gruppe: {{ stats.1 }}, 2 grupper: {{ stats.2 }},
-3+ grupper: {{ stats.3 }}, Buret: {{ stats.buret }}
-</p>
-<p>
-<a href="{% url "signup_create" %}">Send mails om optagelse</a>
-</p>
-<form method="get">
-<p>
-{{ sortform.group.label_tag }}
-{{ sortform.group }}
-</p>
-</form>
+<form method="post">{% csrf_token %}
 <table cellspacing="0" cellpadding="2" class="applications">
 <thead>
 <tr>
 <th>Navn</th>
-<th>Studie</th>
-<th>Tutorår</th>
-<th>Rusår</th>
-<th>Optaget</th>
 <th>Grupper</th>
+<th>Emailskabelon</th>
 </tr>
 </thead>
 <tbody>
 {% for app in application_list %}
 <tr>
 <td class="name" title="{{ app.profile.name }}">{{ app.profile.name }}</td>
-<td class="study" title="{{ app.study }}">{{ app.study }}</td>
-<td>{{ app.previous_tutor_years }}</td>
-<td>{{ app.rus_year }}</td>
 <td>
-<input type="checkbox"
-{{ app.accepted|yesno:"checked," }}
-onclick="post_action('accepted', {{ app.pk }})" />
+{% if app.accepted %}
+{{ app.groups }}
+{% else %}
+(afvist)
+{% endif %}
 </td>
 <td>
-<div class="group_list">
-{% for group in app.group_list %}
-<div class="appgroup {{ group.assigned|yesno:"assigned," }}"
-onclick="post_action('assign_group', {{ app.pk }}, {{ group.pk }})"
-title="{{ group.name }}">
-{{ group.priority|default_if_none:"--" }}: {{ group.name }}
-{% if group.experience %}
-<div class="experience" title="{{ group.experience_detail }}">{{ group.experience }}</div>
-{% endif %}
-</div>
-{% endfor %}
-<select onchange="post_action('assign_group', {{ app.pk }}, this.value)">
-<option>+</option>
-{% for group in groups %}
-<option value="{{ group.pk }}">{{ group.name }}</option>
-{% endfor %}
-</select>
-</div>
+{{ app.email_field }}
 </td>
 </tr>
 {% endfor %}
