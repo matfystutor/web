@@ -118,7 +118,9 @@ class TutorGroup(models.Model):
         help_text="Vises på hjemmesiden")
     visible = models.BooleanField(default=False)
     year = models.IntegerField(verbose_name="Tutorår", null=True)
-    leader = models.ForeignKey('Tutor', verbose_name='Gruppeansvarlig', null=True)
+    leader = models.ForeignKey(
+        'Tutor', verbose_name='Gruppeansvarlig', null=True,
+        on_delete=models.SET_NULL)
 
     def __str__(self):
         return '%s %s' % (self.handle, self.year)
@@ -183,7 +185,7 @@ class Tutor(models.Model):
     early_termination_reason = models.TextField(
         null=True, blank=True, verbose_name="Eksklusionsårsag",
         help_text="Årsag til at tutoren stopper")
-    rusclass = models.ForeignKey(RusClass, null=True, blank=True)
+    rusclass = models.ForeignKey(RusClass, on_delete=models.SET_NULL, null=True, blank=True)
 
     @classmethod
     def members(cls, year=None):
@@ -286,11 +288,11 @@ class Rus(models.Model):
     id = models.AutoField(primary_key=True)
     profile = models.ForeignKey(TutorProfile)
     year = models.IntegerField(verbose_name="Tutorår")
-    rusclass = models.ForeignKey(RusClass, null=True)
+    rusclass = models.ForeignKey(RusClass, null=True, on_delete=models.SET_NULL)
 
     arrived = models.BooleanField(verbose_name="Ankommet", default=False)
     initial_rusclass = models.ForeignKey(
-        RusClass, null=True, related_name='initial_rus_set')
+        RusClass, null=True, on_delete=models.SET_NULL, related_name='initial_rus_set')
 
     class Meta:
         verbose_name = 'rus'
