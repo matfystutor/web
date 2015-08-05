@@ -7,7 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('tutor', '0003_remove_birthday_gender'),
+        ('tutor', '0029_tutorprofile_user_null'),
     ]
 
     operations = [
