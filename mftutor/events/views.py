@@ -151,14 +151,15 @@ class EventParticipantListView(DetailView):
         context_data = (super(EventParticipantListView, self)
                         .get_context_data(**kwargs))
         event = context_data['event']
-        rsvps = {p.tutor.pk: p for p in event.participants.all()}
+        participants = {p.tutor_id: p for p in event.participants.all()}
         names = {}
+        tutors = {}
         for tutor in Tutor.members(self.request.year):
             names[tutor.pk] = tutor.profile.name
-            rsvps.setdefault(tutor.pk,
-                             EventParticipant(event=event, tutor=tutor))
-        rsvps = sorted(rsvps.values(), key=lambda o: names[o.tutor.pk])
-        context_data['tutors'] = rsvps
+            tutors[tutor.pk] = participants.setdefault(
+                tutor.pk, EventParticipant(event=event, tutor=tutor))
+        tutors = sorted(tutors.values(), key=lambda o: names[o.tutor.pk])
+        context_data['tutors'] = tutors
         return context_data
 
 
