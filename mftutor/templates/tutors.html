@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load thumbnail %}
 {% load staticfiles %}
 {% block title %}Adresseliste{% endblock %}
 {% block head %}
@@ -40,7 +41,9 @@ Gruppeansvarlig:
  <div class="pic">
   {% if tutor.picture %}
   <a target="_blank" href="{{ tutor.picture }}">
-<img class="tutorpicture" src="{{ tutor.picture }}" /></a>
+{% thumbnail tutor.picture "130x130" crop="center" as im %}
+<img class="tutorpicture" src="{{ im.url }}" /></a>
+{% endthumbnail %}
 {% endif %}
  </div> <!-- /pic -->
  <div class="detailscontainer">

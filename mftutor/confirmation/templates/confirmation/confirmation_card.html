@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load thumbnail %}
 {% block title %}Tutorbekræftelse{% endblock %}
 {% block head %}
 <style>
@@ -52,11 +53,11 @@
 
 {% for confirmation in confirmation_list %}<div class="confirmation">
     <div class="picture">
-        {% if confirmation.tutor.profile.picture %}
-        <img src="{{ confirmation.tutor.profile.picture.url }}">
-        {% else %}
+	{% thumbnail confirmation.tutor.profile.picture "100x180" as im %}
+        <img src="{{ im.url }}">
+	{% empty %}
         Intet billede
-        {% endif %}
+	{% endthumbnail %}
     </div>
     <div class="study">{{ confirmation.study_short }}</div>
     <div class="tutor">{{ confirmation.tutor.profile.get_full_name }}</div>
