@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django import forms
 from django.views.generic import UpdateView, TemplateView, View
 from django.views.generic.edit import FormMixin
+from django.http import HttpResponseRedirect
 
 from ..tutor.auth import tutorbest_required_error, tutor_required_error
 from mftutor.tutor.models import Tutor, TutorProfile
@@ -129,7 +130,8 @@ class EditNoteView(View, FormMixin):
             c = Confirmation(tutor=Tutor.objects.get(pk__exact=form.cleaned_data['tutor']))
         c.internal_notes = form.cleaned_data['internal_notes']
         c.save()
-        return super(EditNoteView, self).form_valid(form)
+        url = '%s#confirmation_%s' % (self.get_success_url(), c.pk)
+        return HttpResponseRedirect(url)
 
     def dispatch(self, request, *args, **kwargs):
         if not request.tutor:
