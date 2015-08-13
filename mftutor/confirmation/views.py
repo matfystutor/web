@@ -1,4 +1,6 @@
 # vim: set fileencoding=utf8:
+from __future__ import unicode_literals
+
 from django.core.urlresolvers import reverse
 from django import forms
 from django.views.generic import UpdateView, TemplateView, View
@@ -9,6 +11,51 @@ from mftutor.tutor.models import Tutor, TutorProfile
 from mftutor.tutormail.views import EmailFormView
 from .models import Confirmation
 from .forms import OwnConfirmationForm, EditNoteForm
+
+
+def parse_study(study):
+    """
+    >>> parse_study('Plantefysiker')
+    fys
+    >>> parse_study('Astro')
+    fys
+    >>> parse_study(' Mat/fys')
+    mat
+    >>> parse_study('Fys/mat')
+    fys
+    >>> parse_study('Fys med mat sidefag')
+    fys
+    """
+
+    study = study.lower().strip()
+    if study.startswith('mat'):
+        if 'øk' in study or 'ok' in study:
+            return 'mok'
+        else:
+            return 'mat'
+    elif study.startswith('fys'):
+        return 'fys'
+    elif study.startswith('it'):
+        return 'it'
+    elif study.startswith('dat'):
+        return 'dat'
+    elif study.startswith('nano'):
+        return 'nano'
+    elif 'øk' in study or 'ok' in study:
+        return 'mok'
+    elif 'fys' in study or 'astro' in study:
+        return 'fys'
+    elif 'dat' in study or 'web' in study:
+        return 'dat'
+    elif 'mat' in study:
+        return 'mat'
+    elif 'nano' in study:
+        return 'nano'
+    elif 'it' in study:
+        return 'it'
+    else:
+        return None
+
 
 class OwnConfirmationView(UpdateView):
     form_class = OwnConfirmationForm
@@ -39,11 +86,18 @@ class OwnConfirmationView(UpdateView):
 class ConfirmationListView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(ConfirmationListView, self).get_context_data(**kwargs)
+        members = Tutor.members(self.request.year)
+        members = members.select_related('confirmation')
+        confirmations = []
+        for t in members:
+            try:
+                c = t.confirmation
+                c.study_short = parse_study(c.study)
+                confirmations.append(c)
+            except Confirmation.DoesNotExist:
+                confirmations.append(Confirmation(tutor=t))
         context['confirmation_list'] = sorted(
-            list(Confirmation.objects.all()) +
-            list(Confirmation(tutor=t)
-                 for t in Tutor.members(self.request.year).filter(
-                     confirmation__isnull=True)),
+            confirmations,
             key=lambda c: c.tutor.profile.get_full_name())
         return context
 

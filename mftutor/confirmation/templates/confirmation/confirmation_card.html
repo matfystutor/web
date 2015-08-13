@@ -31,11 +31,12 @@
     .confirmation .resits,
     .confirmation .rusfriends,
     .confirmation .comment {
-        height: 5em;
+        min-height: 5em;
     }
     .confirmation .tutor, .confirmation .study {
         font-weight: bold;
     }
+    .confirmation .studylong,
     .confirmation .tutor, .confirmation .experience,
     .confirmation .resits, .confirmation .priorities, .confirmation .firstaid,
     .confirmation .rusfriends, .confirmation .comment,
@@ -57,8 +58,9 @@
         Intet billede
         {% endif %}
     </div>
-    <div class="study">{{ confirmation.study }}</div>
+    <div class="study">{{ confirmation.study_short }}</div>
     <div class="tutor">{{ confirmation.tutor.profile.get_full_name }}</div>
+    <div class="studylong">{{ confirmation.study }}</div>
     <div class="priorities">Ønsker: {{ confirmation.priorities }}</div>
     <div class="experience">Erfaring: {{ confirmation.experience }}</div>
     <div class="firstaid">Førstehjælp: {{ confirmation.firstaid }}</div>
