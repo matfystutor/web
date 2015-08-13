@@ -26,9 +26,16 @@ def parse_study(study):
     fys
     >>> parse_study('Fys med mat sidefag')
     fys
+    >>> parse_study('Mat med tilvalg i møk')
+    mat
     """
 
     study = study.lower().strip()
+    try:
+        tilvalg = study.index('tilvalg')
+        study = study[:tilvalg]
+    except ValueError:
+        pass
     if study.startswith('mat'):
         if 'øk' in study or 'ok' in study:
             return 'mok'
