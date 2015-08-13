@@ -62,6 +62,15 @@
     <div class="study">{{ confirmation.study_short }}</div>
     <div class="tutor">{{ confirmation.tutor.profile.get_full_name }}</div>
     <div class="studylong">{{ confirmation.study }}</div>
+    {% for rc in confirmation.rusclass %}
+    <div class="rusclass">
+        Rus: {{ rc.internal_name }}, {{ rc.year }}
+    </div>
+    {% empty %}
+    <div class="rusclass">
+        Gammel
+    </div>
+    {% endfor %}
     <div class="priorities">Ønsker: {{ confirmation.priorities }}</div>
     <div class="experience">Erfaring: {{ confirmation.experience }}</div>
     <div class="firstaid">Førstehjælp: {{ confirmation.firstaid }}</div>

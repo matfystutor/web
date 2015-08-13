@@ -95,12 +95,16 @@ class ConfirmationListView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(ConfirmationListView, self).get_context_data(**kwargs)
         members = Tutor.members(self.request.year)
-        members = members.select_related('confirmation')
+        # TODO does this ensure O(1) database lookups?
+        members = members.select_related('confirmation', 'profile')
+        members = members.prefetch_related(
+            'profile__rus_set', 'profile__rus_set__rusclass')
         confirmations = []
         for t in members:
             try:
                 c = t.confirmation
                 c.study_short = parse_study(c.study)
+                c.rusclass = [r.rusclass for r in t.profile.rus_set.all()]
                 confirmations.append(c)
             except Confirmation.DoesNotExist:
                 study = t.profile.study
