@@ -103,7 +103,10 @@ class ConfirmationListView(TemplateView):
                 c.study_short = parse_study(c.study)
                 confirmations.append(c)
             except Confirmation.DoesNotExist:
-                confirmations.append(Confirmation(tutor=t))
+                study = t.profile.study
+                c = Confirmation(tutor=t, study=study)
+                c.study_short = study
+                confirmations.append(c)
         context['confirmation_list'] = sorted(
             confirmations,
             key=lambda c: c.tutor.profile.get_full_name())
