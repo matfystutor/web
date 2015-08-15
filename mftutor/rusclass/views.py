@@ -3,6 +3,8 @@
 import re
 import json
 
+from django.utils import six
+
 from django.template.response import TemplateResponse
 from django import forms
 from django.views.generic import FormView
@@ -18,16 +20,42 @@ class TutorListForm(forms.Form):
     def clean_text(self):
         text = self.cleaned_data['text']
 
-        regex = r'"([0-9 ]+)"\.split\(\)'
+        regex = r'("[0-9 ]+")\.split\(\)'
 
         def repl(mo):
-            return '[%s]' % ', '.join('"%s"' % s for s in mo.group(1).split())
+            ss = json.loads(mo.group(1))
+            return json.dumps(ss.split())
 
         text = re.sub(regex, repl, text)
         try:
             o = json.loads(text.strip())
         except ValueError as e:
-            raise forms.ValidationError("Invalid JSON: %s %r" % (e, text))
+            raise forms.ValidationError("Invalid JSON: %s" % (e,))
+
+        if not isinstance(o, list):
+            raise forms.ValidationError("Input is not a list")
+
+        keys = frozenset('tutors handle'.split())
+        for i, e in enumerate(o):
+            if not isinstance(e, dict):
+                raise forms.ValidationError("Input entry %d is not a dict" % i)
+            k = frozenset(e.keys())
+            if not keys.issubset(k):
+                raise forms.ValidationError(
+                    "Input entry %d is missing keys: %s" % (i, keys - k))
+            if not k.issubset(keys):
+                raise forms.ValidationError(
+                    "Input entry %d has unknown keys: %s" % (i, k - keys))
+            tutors = e['tutors']
+            handle = e['handle']
+            if not isinstance(tutors, list):
+                raise forms.ValidationError("%d.tutors is not a list" % i)
+            if not isinstance(handle, six.string_types):
+                raise forms.ValidationError("%d.handle is not a string" % i)
+            for j, a in enumerate(tutors):
+                if not isinstance(a, six.string_types):
+                    raise forms.ValidationError(
+                        "%d.tutors.%d is not a string" % (i, j))
         return o
 
     def clean(self):
