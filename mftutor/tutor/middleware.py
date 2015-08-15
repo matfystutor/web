@@ -17,7 +17,8 @@ def get_tutor(request):
     if not request.tutorprofile:
         return None
     try:
-        return Tutor.objects.get(year=request.year, profile=request.tutorprofile)
+        return Tutor.objects.get(
+            year=request.year, profile=request.tutorprofile)
     except Tutor.DoesNotExist:
         return None
 
@@ -33,8 +34,10 @@ def get_rus(request):
 class TutorMiddleware(object):
     def process_request(self, request):
         request.year = request.session.get('year', settings.YEAR)
-        request.rusyear = request.session.get('rusyear', settings.RUSMAIL_YEAR)
-        request.tutorprofile = SimpleLazyObject(lambda: get_tutorprofile(request))
+        request.rusyear = request.session.get('rusyear',
+                                              settings.RUSMAIL_YEAR)
+        request.tutorprofile = SimpleLazyObject(
+            lambda: get_tutorprofile(request))
         request.tutor = SimpleLazyObject(lambda: get_tutor(request))
         request.rus = SimpleLazyObject(lambda: get_rus(request))
 
