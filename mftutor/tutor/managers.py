@@ -40,3 +40,17 @@ class RusClassManager(models.Manager):
         internal_name = '%s %s' % (internal_name, number)
         return self.model(year=year, official_name=official_name,
                           handle=handle, internal_name=internal_name)
+
+    def create_from_handle(self, year, handle):
+        """Translate (2015, "mat1") into a fresh RusClass object."""
+        study = handle.rstrip('0123456789')
+        number = handle[len(study):]
+        official_name, internal_name = next(
+            (official, internal)
+            for official, handle_, internal in settings.RUSCLASS_BASE
+            if handle_ == study
+        )
+        official = '%s%s' % (official_name, number)
+        internal = '%s %s' % (internal_name, number)
+        return self.model(year=year, official_name=official,
+                          handle=handle, internal_name=internal)
