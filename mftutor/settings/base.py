@@ -156,6 +156,7 @@ INSTALLED_APPS = (
     'mftutor.rus',
     'mftutor.reg',
     'mftutor.dump',
+    'mftutor.rusclass',
 )
 
 # A sample logging configuration. The only tangible logging

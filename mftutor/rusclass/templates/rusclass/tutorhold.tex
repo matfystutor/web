@@ -1,0 +1,39 @@
+\documentclass[10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[danish]{babel}
+\usepackage{tabularx,geometry,multicol,array}
+\setlength{\parindent}{0pt}
+\pagestyle{myheadings}
+
+\geometry{
+  a4paper,
+  dvips,
+  nofoot,
+  top=2cm,
+  bottom=1cm,
+  left=2cm,
+  right=2cm
+}
+
+\parindent=0pt
+\parskip=\baselineskip
+\extrarowheight=0pt
+\newcommand{\tutorgruppen}{Mat/Fys-Tutorgruppen}
+\markright{\tutorgruppen\ \the\year}
+\setlength{\parskip}{0pt}
+\newenvironment{tutorhold}[1]{%
+  \subsubsection*{#1}\begin{itemize}}
+  {\end{itemize}}
+\begin{document}
+
+
+\section*{Tutorhold 2015}
+\label{sec:tutorhold}
+\begin{multicols}{2}
+  {% for rusclass in rusclass_list %}\begin{tutorhold}{% templatetag openbrace %}{{ rusclass.name }}}
+  {% for tutor in rusclass.tutors %}\item {{ tutor.name }} ({{ tutor.phone }})
+  {% endfor %}\end{tutorhold}
+  {% endfor %}\vfill\ 
+\end{multicols}
+\end{document}

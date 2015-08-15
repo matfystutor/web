@@ -28,4 +28,5 @@ urlpatterns = patterns('',
     url(r'^burtavle/$', 'mftutor.reg.views.burtavle_frameset', name="burtavle_frameset"),
     url(r'^dump/', include('mftutor.dump.urls')),
     url(r'^browser/', include('mftutor.browser.urls')),
+    url(r'^tutorhold/', include('mftutor.rusclass.urls')),
 )
