@@ -61,6 +61,7 @@
     </div>
     <div class="study">{{ confirmation.study_short }}</div>
     <div class="tutor">{{ confirmation.tutor.profile.get_full_name }}</div>
+    <div class="studentnumber">{{ confirmation.tutor.profile.studentnumber }}</div>
     <div class="studylong">{{ confirmation.study }}</div>
     {% for rc in confirmation.rusclass %}
     <div class="rusclass">
