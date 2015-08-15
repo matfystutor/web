@@ -25,7 +25,8 @@ def get_rus(request):
     if not request.tutorprofile:
         return None
     try:
-        return Rus.objects.get(year=request.year, profile=request.tutorprofile)
+        return Rus.objects.get(
+            year=request.rusyear, profile=request.tutorprofile)
     except Rus.DoesNotExist:
         return None
 
