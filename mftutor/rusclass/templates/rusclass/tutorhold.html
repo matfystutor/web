@@ -4,9 +4,18 @@
 {% block content %}
 <h1>Tutorhold</h1>
 
+<p>Indtast en JSON-liste med dictionaries
+<tt>{"handle": "mat2", "tutors": ["201400001", "201300002", "NN41223", "20110234"]}</tt>.
+</p>
+
 <form method="post">{% csrf_token %}
-{{ form.as_p }}
-<input type="submit" value="Generer PDF" />
+    {{ form.non_field_errors }}
+    <p>{{ form.text }}</p>
+    {{ form.text_errors }}
+<p>
+<input type="submit" value="Generer PDF" name="pdf" />
+<input type="submit" value="Generer modtagerlister" name="recipients" />
+</p>
 </form>
 
 {% endblock %}
