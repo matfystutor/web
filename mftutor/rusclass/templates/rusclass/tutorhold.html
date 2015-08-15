@@ -10,8 +10,8 @@
 
 <form method="post">{% csrf_token %}
     {{ form.non_field_errors }}
+    {{ form.text.errors }}
     <p>{{ form.text }}</p>
-    {{ form.text_errors }}
 <p>
 <input type="submit" value="Generer PDF" name="pdf" />
 <input type="submit" value="Generer modtagerlister" name="recipients" />
