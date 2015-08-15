@@ -8,6 +8,7 @@ import re
 from django.utils.encoding import python_2_unicode_compatible
 from django.db import models, IntegrityError
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from mftutor import settings
 from mftutor.tutor.managers import TutorProfileManager, TutorManager, \
     VisibleTutorGroups, RusManager, RusClassManager
@@ -102,6 +103,12 @@ class TutorProfile(models.Model):
 
     def set_user_name(self, user=None):
         self.set_instance_user_name(self, user)
+
+    def clean(self):
+        pattern = r'\+?[0-9 ]+$'
+        if not re.match(pattern, self.phone):
+            raise ValidationError('Telefonnummer må kun indeholde tal')
+        self.phone = self.phone.replace(' ', '')
 
 
 # "Arbejdsgruppe"
