@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load thumbnail %}
 {% block title %}Bestyrelsen{% endblock %}
 {% block bodyclass %}board{% endblock %}
 {% block content %}
@@ -8,7 +9,9 @@
  <div class="pic">
   {% if tutor.tutor.profile.picture %}
   <a target="_blank" href="{{ tutor.tutor.profile.picture.url }}">
-<img class="tutorpicture" src="{{ tutor.tutor.profile.picture.url }}" /></a>
+{% thumbnail tutor.tutor.profile.picture "130x130" crop="center" as im %}
+<img class="tutorpicture" src="{{ im.url }}" /></a>
+{% endthumbnail %}
   {% endif %}
  </div> <!-- /pic -->
  <div class="detailscontainer">
