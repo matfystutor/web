@@ -45,11 +45,14 @@ class RusClassManager(models.Manager):
         """Translate (2015, "mat1") into a fresh RusClass object."""
         study = handle.rstrip('0123456789')
         number = handle[len(study):]
-        official_name, internal_name = next(
-            (official, internal)
-            for official, handle_, internal in settings.RUSCLASS_BASE
-            if handle_ == study
-        )
+        try:
+            official_name, internal_name = next(
+                (official, internal)
+                for official, handle_, internal in settings.RUSCLASS_BASE
+                if handle_ == study
+            )
+        except StopIteration:
+            raise ValueError("Invalid study %r" % study)
         official = '%s%s' % (official_name, number)
         internal = '%s %s' % (internal_name, number)
         return self.model(year=year, official_name=official,
