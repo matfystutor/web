@@ -6,10 +6,6 @@ html,body {
 	background-color: #eee;
 }
 
-a:focus {
-	-moz-outline: none;
-}
-
 img {
 	border: 0;
 }
@@ -17,7 +13,11 @@ img {
 a {
 	text-decoration: none;
 	color: #117900;
+}
+
+#menu a, #menu .link_button:focus {
 	outline: none;
+	-moz-outline: none;
 }
 
 a:hover {
