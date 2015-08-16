@@ -3,12 +3,13 @@ from __future__ import unicode_literals
 
 from django.core.urlresolvers import reverse
 from django import forms
+from django.db.models import Q
 from django.views.generic import UpdateView, TemplateView, View
 from django.views.generic.edit import FormMixin
 from django.http import HttpResponseRedirect
 
 from ..tutor.auth import tutorbest_required_error, tutor_required_error
-from mftutor.tutor.models import Tutor, TutorProfile
+from mftutor.tutor.models import Tutor
 from mftutor.tutormail.views import EmailFormView
 from .models import Confirmation
 from .forms import OwnConfirmationForm, EditNoteForm
@@ -161,13 +162,17 @@ class ReminderEmailView(EmailFormView):
         return u'Send reminder om tutorbekræftelsen'
 
     def get_recipients(self, form, year):
-        profiles = TutorProfile.objects.filter(
-            tutor__year__exact=year,
-            tutor__early_termination__isnull=True)
-        profiles = profiles.exclude(
-            tutor__year__exact=year,
-            tutor__confirmation__pk__gt=0)
-        return sorted([profile.email for profile in profiles])
+        # All members
+        tutors = Tutor.members(year)
+
+        # Exclude non-blank confirmations
+        # A blank confirmation is one where only internal_notes is nonempty
+        tutors = tutors.exclude(
+            Q(confirmation__pk__gt=0)
+            & ~Q(confirmation__priorities=''))
+
+        tutors = tutors.select_related('profile')
+        return sorted([tu.profile.email for tu in tutors])
 
     def get_initial(self):
         initial_data = super(ReminderEmailView, self).get_initial()
