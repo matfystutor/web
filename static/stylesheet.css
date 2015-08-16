@@ -472,10 +472,6 @@ body.board .tutorlist .tutoraddress {
 	cursor: auto;
 }
 
-.tutortable {
-	font-size: 12px;
-}
-
 .tutortable .pic {
 	display: none;
 }
@@ -494,19 +490,19 @@ body.board .tutorlist .tutoraddress {
 
 .tutortable .name, .tutortable li {
 	float: left;
-	width: 150px;
+	width: 12.6em;
 	overflow: hidden;
 	white-space: nowrap;
-	margin-right: 10px;
+	margin-right: 0.8em;
 }
 
-.tutortable .name { width: 160px; }
-.tutortable .street { width: 160px; }
-.tutortable .city { width: 100px; }
-.tutortable .phone { width: 63px; }
-.tutortable .email { width: 150px; }
-.tutortable .study { width: 40px; }
-.tutortable .studentnumber { width: 70px; margin-right: 0; }
+.tutortable .name { width: 14em; }
+.tutortable .street { width: 14em; }
+.tutortable .city { width: 8em; }
+.tutortable .phone { width: 5em; }
+.tutortable .email { width: 13em; }
+.tutortable .study { width: 5em; }
+.tutortable .studentnumber { width: 6em; margin-right: 0; }
 
 /* */
 table.uploadform, table.uploadform td {
