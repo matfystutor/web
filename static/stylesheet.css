@@ -561,6 +561,7 @@ td.altTabBg1 {
 
 .newsBy {
 	font-size: 90%;
+	display: flex;
 }
 
 .newsBy .dato {
