@@ -3,19 +3,42 @@
 {% block head %}
 <style>
     .confirmationtable {
-        border-top: 1px solid black;
     }
     .confirmationtable th, .confirmationtable td {
         padding-left:  0.5em;
         padding-right: 0.5em;
-        border-bottom: 1px solid black;
         vertical-align: top;
+    }
+    .confirmationtable tbody tr:nth-child(odd) {
+        background-color: #eee;
+    }
+    .confirmationtable .name {
+        max-width: 200px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
     }
 </style>
 <script>
     function edit_note(a) {
         a.previousSibling.style.display = 'inline';
+        var f = a.previousSibling.internal_notes;
+        if (f) {
+            f.focus();
+            f.select();
+            f.onkeypress = text_keypress;
+        }
         a.style.display = 'none';
+    }
+    function text_keypress(ev) {
+        if (ev.keyCode == 27) {
+            // Hide note without saving
+            var f = this.form;
+            f.reset();
+            f.style.display = 'none';
+            f.nextSibling.style.display = '';
+            f.nextSibling.focus();
+        }
     }
 </script>
 {% endblock %}
@@ -27,6 +50,7 @@
 <p><a href="{% url 'confirmation_reminder' %}">Send reminder</a></p>
 
 <table class="confirmationtable" cellspacing="0">
+<thead>
 <tr>
     <th>Navn</th>
     <th>Studium</th>
@@ -38,9 +62,12 @@
     <th>Kommentar</th>
     <th>Notat</th>
 </tr>
+</thead>
+<tbody>
 {% for confirmation in confirmation_list %}
 <tr id="confirmation_{{ confirmation.pk }}">
-    <td>{{ confirmation.tutor.profile.get_full_name }}</td>
+    <td class="name" title="{{ confirmation.tutor.profile.name }}">
+        {{ confirmation.tutor.profile.name }}</td>
     <td>{{ confirmation.study }}</td>
     <td>{{ confirmation.experience }}</td>
     <td>{{ confirmation.resits }}</td>
@@ -51,10 +78,10 @@
     <td><form method="post" style="display: none" action="{% url 'confirmation_edit_note' %}">{% csrf_token %}
             <input type="hidden" name="tutor" value="{{ confirmation.tutor.pk }}">
             <input name="internal_notes" value="{{ confirmation.internal_notes }}">
-            <input type="submit" value="Gem">
     </form><a href="#" onclick="edit_note(this); return false">{{ confirmation.internal_notes|default:"(ingen)" }}</td>
 </tr>
 {% endfor %}
+</tbody>
 </table>
 
 {% endblock %}
