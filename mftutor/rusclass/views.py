@@ -74,7 +74,7 @@ class TutorListView(FormView):
     def form_valid(self, form):
         rusclass_list = []
         special_list = []
-        y = self.request.year
+        year = self.request.year
 
         studentnumbers = []
         for c in form.cleaned_data['text']:
@@ -94,7 +94,7 @@ class TutorListView(FormView):
         for c in form.cleaned_data['text']:
             tutors = [tutor_dict[sn] for sn in c['tutors']]
             try:
-                rc = RusClass.objects.create_from_handle(y, c['handle'])
+                rc = RusClass.objects.create_from_handle(year, c['handle'])
                 rusclass_list.append({
                     'name': rc,
                     'tutors': tutors,
