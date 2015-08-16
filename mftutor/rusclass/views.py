@@ -114,6 +114,7 @@ class TutorListView(FormView):
             return self.form_invalid(form)
 
     def generate_tex(self, rusclass_list):
+        year = self.request.year
         rusclass_list = sorted(rusclass_list, key=lambda x: x['name'].handle)
         for rc in rusclass_list:
             rc['tutors'] = sorted(rc['tutors'], key=lambda x: x.name)
@@ -121,6 +122,7 @@ class TutorListView(FormView):
 
         context = {
             'rusclass_list': rusclass_list,
+            'year': year,
         }
 
         return TemplateResponse(
