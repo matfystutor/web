@@ -1,7 +1,10 @@
 from django.conf.urls import patterns, url
 from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
-from .views import RusNewsView, RusStartView, RusClassView, RusClassDetailView, RusClassDetailsPrintView, ProfileView, RusPasswordChangeView
+from mftutor.rus.views import (
+    RusNewsView, RusStartView, RusClassView, RusClassDetailView,
+    RusClassDetailsPrintView, ProfileView, RusPasswordChangeView,
+)
 
 static_pages = [url('^'+x+'/', TemplateView.as_view(template_name='rus/'+x+'.html'), name='rus_'+x) for x in (
         'gallery',
