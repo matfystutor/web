@@ -74,7 +74,7 @@ class TutorListView(TemplateView):
             tutors = Tutor.group_members(tg)
             leader = tg.leader
 
-        leader_pk = leader.pk if leader else -1
+        leader_pk = leader.pk if leader else 0
 
         tutors = [{
             'pk': t.pk,
@@ -107,6 +107,12 @@ class TutorListView(TemplateView):
         context_data['tutor_list'] = tutors
         context_data['groups'] = groups
         context_data['tutor_count'] = len(tutors)
+        context_data['leader_pk'] = leader_pk
+        if leader_pk:
+            context_data['leader'] = next(
+                t for t in tutors
+                if t['pk'] == leader_pk
+            )
         return context_data
 
 

@@ -338,6 +338,10 @@ html ul.topnav li ul.subnav li a:hover { /*--Hover effect for subnav links--*/
 	text-align: right;
 }
 
+.tutorlist {
+	clear: both;
+}
+
 .tutorlist .tutoraddress {
 	float: left;
 	width: 360px;
@@ -361,16 +365,6 @@ body.board .tutorlist .tutoraddress {
 .tutorlist .tutoraddress {
 	font-size: 90%;
 	position: relative;
-}
-
-.tutorlist .tutoraddress:first-child {
-	margin-bottom: 45px;
-}
-.tutorlist .tutoraddress:first-child + * {
-	clear: left;
-}
-.tutorlist .searchresults .tutoraddress:first-child + * {
-	clear: none;
 }
 
 /* Tutor pictures.

@@ -32,39 +32,25 @@ name="tutorcontainer" type="radio" value="tutortable"> Tabel</label>
 <p>
 Antal tutorer: {{ tutor_count }}
 </p>
+{% if leader_pk %}
 <p>
+{% if group == "gruppeansvarlige" %}
+Gruppeansvarlig-ansvarlige:
+{% elif group %}
 Gruppeansvarlig:
+{% else %}
+Tutorformand:
+{% endif %}
 </p>
 <div class="tutorcontainer tutorlist">
-{% for tutor in tutor_list %}
-<div class="tutoraddress tutor{{ tutor.studentnumber }}">
- <div class="pic">
-  {% if tutor.picture %}
-  <a target="_blank" href="{{ tutor.picture }}">
-{% thumbnail tutor.picture "130x130" crop="center" as im %}
-<img class="tutorpicture" src="{{ im.url }}" /></a>
-{% endthumbnail %}
+{% include "tutoraddress.html" with tutor=leader %}
+</div>
 {% endif %}
- </div> <!-- /pic -->
- <div class="detailscontainer">
-  <div class="detailsmagic"></div><div class="details">
-   <div class="name">
-    {{ tutor.full_name }}
-   </div> <!-- /name -->
-   <ul>
-    <li title="Adresse" class="street">{{ tutor.street }}</li>
-    <li title="By" class="city">{{ tutor.city }}</li>
-    <li title="Telefon" class="phone">
-    <a href="tel:{{ tutor.phone }}">{{ tutor.phone }}</a></li>
-    <li title="Email" class="email"><a href="mailto:{{ tutor.email }}">{{ tutor.email }}</a></li>
-    <li title="Studium" class="study">{{ tutor.study }}</li>
-    <li title="Årskort" class="studentnumber">{{ tutor.studentnumber }}</li>
-   </ul>
-  </div> <!-- /details -->
-  <div class="detailsoverflow"></div>
- </div> <!-- /detailscontainer -->
-</div> <!-- /tutoraddress -->
-
+<div class="tutorcontainer tutorlist">
+{% for tutor in tutor_list %}
+{% if not tutor.pk == leader_pk %}
+{% include "tutoraddress.html" %}
+{% endif %}
 {% endfor %}
 </div>
 {% endblock %}
