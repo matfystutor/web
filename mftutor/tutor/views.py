@@ -160,10 +160,14 @@ class GroupLeaderForm(forms.Form):
         self.tutor_year = year
 
         for i, group in enumerate(groups):
+            tutors = list(Tutor.members(year).filter(groups=group))
             choices = [
                 (tu.pk, tu.profile.name)
-                for tu in Tutor.objects.filter(year=year, groups=group)
+                for tu in tutors
             ]
+            if group.leader and group.leader not in tutors:
+                name = '%s (ej medlem)' % group.leader.profile.name
+                choices.append((group.leader.pk, name))
             choices[0:0] = [('', '')]
 
             current_leader = group.leader.pk if group.leader else ''
