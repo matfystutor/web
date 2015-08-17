@@ -16,6 +16,7 @@ class TutorListForm(forms.Form):
     text = forms.CharField(widget=forms.Textarea)
     pdf = forms.BooleanField(required=False)
     recipients = forms.BooleanField(required=False)
+    contact = forms.BooleanField(required=False)
 
     def clean_text(self):
         text = self.cleaned_data['text']
@@ -60,7 +61,7 @@ class TutorListForm(forms.Form):
 
     def clean(self):
         cleaned_data = self.cleaned_data
-        options = 'pdf recipients'.split()
+        options = 'pdf recipients contact'.split()
         choices = [cleaned_data[o] for o in options]
         if sum(choices) != 1:
             raise forms.ValidationError(
@@ -109,6 +110,8 @@ class TutorListView(FormView):
             return self.generate_tex(rusclass_list)
         elif form.cleaned_data['recipients']:
             return self.generate_recipients(rusclass_list, special_list)
+        elif form.cleaned_data['contact']:
+            return self.generate_contact(rusclass_list)
         else:
             form.add_error(None, u'No choice')
             return self.form_invalid(form)
@@ -130,6 +133,25 @@ class TutorListView(FormView):
             template=template_name,
             context=context,
             content_type='text/plain; charset=utf-8',
+        )
+
+    def generate_contact(self, rusclass_list):
+        year = self.request.year
+        rusclass_list = sorted(rusclass_list, key=lambda x: x['name'].handle)
+        for rc in rusclass_list:
+            rc['tutors'] = sorted(rc['tutors'], key=lambda x: x.name)
+        template_name = "rusclass/tutorhold_contact.html"
+
+        context = {
+            'rusclass_list': rusclass_list,
+            'year': year,
+        }
+
+        return TemplateResponse(
+            request=self.request,
+            template=template_name,
+            context=context,
+            content_type='text/html; charset=utf-8',
         )
 
     def generate_recipients(self, rusclass_list, special_list):
