@@ -1194,6 +1194,10 @@ class RusInfoDumpView(TemplateView):
 
 def get_lightbox_state_by_study(year):
     states = LightboxRusClassState.objects.get_for_year(year)
+    if not states:
+        states = LightboxRusClassState.objects.get_for_year(year - 1)
+        for s in states:
+            s.color = random.choice(s.COLORS)[0]
 
     study_dict = {}
     for state in states:
