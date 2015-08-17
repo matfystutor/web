@@ -5,6 +5,7 @@ import json
 
 from django.utils import six
 
+from django.http.response import HttpResponse
 from django.template.response import TemplateResponse
 from django import forms
 from django.views.generic import FormView
@@ -17,6 +18,7 @@ class TutorListForm(forms.Form):
     pdf = forms.BooleanField(required=False)
     recipients = forms.BooleanField(required=False)
     contact = forms.BooleanField(required=False)
+    assign_tutors = forms.BooleanField(required=False)
 
     def clean_text(self):
         text = self.cleaned_data['text']
@@ -61,7 +63,7 @@ class TutorListForm(forms.Form):
 
     def clean(self):
         cleaned_data = self.cleaned_data
-        options = 'pdf recipients contact'.split()
+        options = 'pdf recipients contact assign_tutors'.split()
         choices = [cleaned_data[o] for o in options]
         if sum(choices) != 1:
             raise forms.ValidationError(
@@ -112,6 +114,8 @@ class TutorListView(FormView):
             return self.generate_recipients(rusclass_list, special_list)
         elif form.cleaned_data['contact']:
             return self.generate_contact(rusclass_list)
+        elif form.cleaned_data['assign_tutors']:
+            return self.assign_tutors(rusclass_list)
         else:
             form.add_error(None, u'No choice')
             return self.form_invalid(form)
@@ -173,3 +177,21 @@ class TutorListView(FormView):
             context=context,
             content_type='text/plain; charset=utf-8',
         )
+
+    def assign_tutors(self, rusclass_list):
+        for o in rusclass_list:
+            rc = o['name']
+            if not rc.pk:
+                try:
+                    rc = RusClass.objects.get(
+                        year=rc.year, handle=rc.handle)
+                except RusClass.DoesNotExist:
+                    rc.save()
+            profiles = o['tutors']
+            tutors = [tp.tutor_set.get(year=self.request.year)
+                      for tp in profiles]
+            for t in tutors:
+                t.rusclass = rc
+                t.save()
+
+        return HttpResponse("Succes!")
