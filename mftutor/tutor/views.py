@@ -161,6 +161,9 @@ class FrontView(TemplateView):
 
 
 class GroupLeaderForm(forms.Form):
+    update_leader_group = forms.BooleanField(
+        required=False, label="Opdater gruppeansvarlig-gruppen")
+
     def __init__(self, year, groups, *args, **kwargs):
         super(GroupLeaderForm, self).__init__(*args, **kwargs)
         self.tutor_year = year
@@ -197,6 +200,17 @@ class GroupLeaderView(FormView):
         return kwargs
 
     def form_valid(self, form):
+        if form.cleaned_data['update_leader_group']:
+            try:
+                leader_group = TutorGroup.objects.get(
+                    handle='gruppeansvarlige', year=self.request.year)
+            except TutorGroup.DoesNotExist:
+                form.add_error(
+                    'update_leader_group',
+                    'Ingen gruppe hedder "gruppeansvarlige"')
+                return self.form_invalid(form)
+
+        leaders = []
         for field in form:
             if not field.name.startswith('group_'):
                 continue
@@ -206,12 +220,16 @@ class GroupLeaderView(FormView):
 
             if field.data:
                 new_leader = Tutor.objects.get(pk=field.data)
+                leaders.append(new_leader)
             else:
                 new_leader = None
 
             if gr.leader != new_leader:
                 gr.leader = new_leader
                 gr.save()
+
+        if form.cleaned_data['update_leader_group']:
+            leader_group.groups = leaders
 
         return self.render_to_response(
             self.get_context_data(form=form, success=True))
