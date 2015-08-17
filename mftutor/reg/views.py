@@ -7,6 +7,7 @@ import datetime
 import subprocess
 
 from django.db import transaction
+from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
@@ -1170,18 +1171,22 @@ class RusInfoDumpView(TemplateView):
         if not request.tutor.can_manage_rusclass(self.rusclass):
             return tutorbest_required_error(request)
 
-        self.rus_list = self.get_rus_list()
+        self.person_list = self.get_person_list()
 
         return super(RusInfoDumpView, self).dispatch(request)
 
-    def get_rus_list(self):
-        return (self.rusclass.get_russes()
-                .order_by('profile__studentnumber')
-                .select_related('profile'))
+    def get_person_list(self):
+        rus_list = self.rusclass.get_russes()
+        tutor_list = self.rusclass.get_tutors()
+        person_list = TutorProfile.objects.filter(
+            Q(rus__in=rus_list) |
+            Q(tutor__in=tutor_list)).distinct()
+        person_list = person_list.order_by('studentnumber')
+        return person_list
 
     def get_context_data(self, **kwargs):
         context_data = super(RusInfoDumpView, self).get_context_data(**kwargs)
-        context_data['person_list'] = [r.profile for r in self.rus_list]
+        context_data['person_list'] = self.person_list
         return context_data
 
     def render_to_response(self, context, **response_kwargs):
