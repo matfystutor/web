@@ -10,6 +10,7 @@ from django.http import HttpResponseRedirect
 import django.core.urlresolvers
 import django.core.mail
 from django.core.mail import EmailMessage
+from django.db.models import Q
 
 from mftutor.tutormail.models import Email
 from mftutor.tutormail.forms import EmailForm
@@ -96,9 +97,17 @@ class EmailFormView(FormView):
         return TUTORMAIL_YEAR
 
     def get_recipients(self, form, year):
-        profiles = TutorProfile.objects.filter(
-            tutor__year__exact=year,
-            tutor__early_termination__isnull=True)
+        if self.kwargs['recipients'] == 'hold':
+            profiles = TutorProfile.objects.filter(
+                Q(tutor__year=year,
+                  tutor__rusclass_id__gt=0) |
+                Q(tutor__year=year,
+                  tutor__groups__handle='buret'))
+        else:
+            profiles = TutorProfile.objects.filter(
+                tutor__year__exact=year,
+                tutor__early_termination__isnull=True)
+        profiles = profiles.distinct()
 
         return sorted([profile.email for profile in profiles])
 
