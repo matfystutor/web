@@ -68,6 +68,8 @@ class EditSessionForm(forms.ModelForm):
     name = forms.CharField()
     lines = forms.CharField(widget=forms.Textarea)
 
+    empty_initial_rusclass = forms.BooleanField(required=False)
+
     def clean_regex(self):
         """Check if regex is valid by compiling it.
 
@@ -306,9 +308,13 @@ class EditSessionView(UpdateView):
                             tp.get_or_create_user()
                             tp.set_default_email()
 
+                        if form.cleaned_data['empty_initial_rusclass']:
+                            initial_rusclass = None
+                        else:
+                            initial_rusclass = rusclass
                         Rus.objects.create(
                             profile=tp, year=year, rusclass=rusclass,
-                            initial_rusclass=rusclass)
+                            initial_rusclass=initial_rusclass)
 
                     importsession.imported = datetime.datetime.now()
                     importsession.save()
