@@ -7,14 +7,19 @@ from mftutor.events.models import EventParticipant
 
 
 class DumpView(View):
-    @staticmethod
-    def access_field(o, field):
+    def access_field(self, o, field):
         parts = field.split('__')
         for i, p in enumerate(parts):
             o = getattr(o, p)
             if type(o).__name__ in ("RelatedManager", "ManyRelatedManager"):
                 return ','.join(DumpView.access_field(oo, '__'.join(parts[i+1:]))
                                 for oo in o.all())
+        try:
+            m = getattr(self, 'display_%s' % field)
+        except AttributeError:
+            pass
+        else:
+            o = m(o)
         return o
 
     def usage(self, s=None):
@@ -100,12 +105,12 @@ class DumpView(View):
         return objects
 
     def format_tsv(self, rows, **kwargs):
-        return ''.join('%s\n' % '\t'.join(map(unicode, r)) for r in rows)
+        return u''.join(u'%s\n' % u'\t'.join(map(unicode, r)) for r in rows)
 
     def format_tex(self, rows, tex_name, **kwargs):
-        return ''.join(
-            '\\%s%s\n' % (tex_name,
-                        ''.join('{%s}' % x for x in r))
+        return u''.join(
+            u'\\%s%s\n' % (tex_name,
+                        u''.join(u'{%s}' % x for x in r))
             for r in rows)
 
 
@@ -119,6 +124,8 @@ class TutorDumpView(DumpView):
         'phone': 'profile__phone',
         'email': 'profile__email',
         'studentnumber': 'profile__studentnumber',
+        'street': 'profile__street',
+        'city': 'profile__city',
         'groups': 'groups__handle',
     }
     tex_name = 'tutor'
@@ -143,8 +150,14 @@ class RusDumpView(DumpView):
         'phone': 'profile__phone',
         'email': 'profile__email',
         'studentnumber': 'profile__studentnumber',
+        'arrived': 'arrived',
+        'street': 'profile__street',
+        'city': 'profile__city',
     }
     tex_name = 'rus'
+
+    def display_arrived(self, v):
+        return 'Ank' if v else ''
 
 
 class EventsDumpView(DumpView):
