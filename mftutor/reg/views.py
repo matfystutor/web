@@ -1,5 +1,6 @@
 # vim: set fileencoding=utf8:
 import re
+import copy
 import json
 import random
 import string
@@ -409,14 +410,15 @@ class RusCreateForm(forms.Form):
     note = forms.CharField(required=False, label='Note')
 
     def __init__(self, **kwargs):
-        year = kwargs.pop('year')
+        self.year = kwargs.pop('year')
         super(RusCreateForm, self).__init__(**kwargs)
         f = self.fields['rusclass']
-        f.queryset = f.queryset.filter(year=year)
+        f.queryset = f.queryset.filter(year=self.year)
 
     def clean_studentnumber(self):
         studentnumber = self.cleaned_data['studentnumber']
         existing = TutorProfile.objects.filter(studentnumber=studentnumber)
+        existing = existing.filter(rus__year=self.year)
         if studentnumber:
             if existing.exists():
                 raise forms.ValidationError(
@@ -457,14 +459,40 @@ class RusCreateView(FormView):
 
     def form_valid(self, form):
         data = form.cleaned_data
+        studentnumber = data['studentnumber']
+
+        tutorprofile = None
+        if studentnumber:
+            existing = TutorProfile.objects.filter(studentnumber=studentnumber)
+            if existing.exists():
+                tutorprofile = existing.get()
+                d1 = (data['name'], data['email'])
+                d2 = (tutorprofile.name, tutorprofile.email)
+                if d1 != d2:
+                    # Redisplay form
+                    data = copy.deepcopy(data)
+                    data['name'] = tutorprofile.name
+                    data['email'] = tutorprofile.email
+                    # data['rusclass'] = data['rusclass'].pk
+                    form = RusCreateForm(data=data, year=self.request.year)
+                    form.add_error(
+                        None,
+                        u'Årskortnummeret findes allerede. ' +
+                        u'Tryk "Opret" igen for at oprette russen. ' +
+                        u'%r' % (data['rusclass'],))
+                    context_data = self.get_context_data(
+                        form=form)
+                    return self.render_to_response(context_data)
+
         with transaction.atomic():
-            tutorprofile = TutorProfile.objects.create(
-                studentnumber=data['studentnumber'],
-                name=data['name'],
-                email=data['email'])
-            if data['studentnumber'] is not None:
-                tutorprofile.get_or_create_user()
-            tutorprofile.save()
+            if tutorprofile is None:
+                tutorprofile = TutorProfile.objects.create(
+                    studentnumber=data['studentnumber'],
+                    name=data['name'],
+                    email=data['email'])
+                if data['studentnumber'] is not None:
+                    tutorprofile.get_or_create_user()
+                tutorprofile.save()
             rus = Rus.objects.create(
                 profile=tutorprofile,
                 year=self.request.year,
@@ -695,10 +723,14 @@ class HandoutListView(TemplateView):
         return context_data
 
 
-class HandoutForm(forms.Form):
+class HandoutForm(forms.ModelForm):
     kind = forms.ChoiceField(choices=Handout.KINDS)
     name = forms.CharField()
     note = forms.CharField(required=False, widget=forms.Textarea)
+
+    class Meta:
+        model = Handout
+        fields = ('kind', 'name', 'note')
 
 
 class HandoutNewView(FormView):
@@ -748,6 +780,27 @@ class HandoutNewView(FormView):
 
     def get_success_url(self):
         return reverse('handout_list')
+
+
+class HandoutEditView(UpdateView):
+    form_class = HandoutForm
+    template_name = 'reg/handout_form.html'
+    model = Handout
+
+    def get_success_url(self):
+        return reverse('handout_list')
+
+    def get_context_data(self, **kwargs):
+        context_data = super(HandoutEditView, self).get_context_data(**kwargs)
+        context_data['delete'] = True
+        return context_data
+
+    def form_valid(self, form):
+        if self.request.POST.get('delete'):
+            form.instance.delete()
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            return super(HandoutEditView, self).form_valid(form)
 
 
 class HandoutSummaryView(TemplateView):
