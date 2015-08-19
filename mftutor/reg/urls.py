@@ -4,8 +4,10 @@ from ..tutor.auth import tutorbur_required
 from .views import BurStartView
 from .views import ChooseSessionView, NewSessionView, EditSessionView
 from .views import RusListView, RusCreateView, RusListRPC, RusChangesView
-from .views import HandoutListView, HandoutNewView, HandoutSummaryView, \
-        HandoutResponseView, HandoutResponseDeleteView
+from .views import (
+    HandoutListView, HandoutNewView, HandoutSummaryView,
+    HandoutResponseView, HandoutResponseDeleteView,
+)
 from .views import RusInfoListView, RusInfoView, RusInfoDumpView
 from .views import LightboxAdminView
 from .views import ArrivedStatsView
