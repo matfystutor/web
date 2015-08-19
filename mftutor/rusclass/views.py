@@ -8,7 +8,7 @@ from django.utils import six
 from django.http.response import HttpResponse
 from django.template.response import TemplateResponse
 from django import forms
-from django.views.generic import FormView
+from django.views.generic import FormView, TemplateView
 
 from mftutor.tutor.models import RusClass, TutorProfile
 
@@ -195,3 +195,16 @@ class TutorListView(FormView):
                 t.save()
 
         return HttpResponse("Succes!")
+
+
+class RusClassTexView(TemplateView):
+    template_name = 'rusclass/rusclass.tex'
+
+    def get_context_data(self, **kwargs):
+        context_data = super(RusClassTexView, self).get_context_data(**kwargs)
+
+        rusclass_list = RusClass.objects.filter(year=self.request.year)
+        rusclass_list = rusclass_list.prefetch_related('rus_set__profile')
+        context_data['rusclass_list'] = rusclass_list
+
+        return context_data

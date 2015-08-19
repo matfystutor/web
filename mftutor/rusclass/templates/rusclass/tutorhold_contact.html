@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Tutorhold{% endblock %}
+{% block bodyclass %}fullwidth{% endblock %}
+
+{% block content %}
+<h1>Tutorhold {{ year }}</h1>
+
+<div style="-moz-column-width: 280px; -webkit-column-width: 280px">
+{% for rusclass in rusclass_list %}
+<div style="display: inline-block">
+    <b>{{ rusclass.name }}</b>
+    <ul>
+        {% for tutor in rusclass.tutors %}
+        <li>{{ tutor.name }} ({{ tutor.phone }})</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endfor %}
+</div>
+
+{% endblock %}
