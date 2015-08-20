@@ -1076,7 +1076,9 @@ class RusInfoForm(forms.Form):
         super(RusInfoForm, self).__init__(*args, **kwargs)
         self.rus_list = rus_list
 
-        field_ctors = {'reset_password': forms.BooleanField}
+        field_ctors = {
+            'reset_password': forms.BooleanField,
+        }
         widget_ctors = {'reset_password': forms.CheckboxInput}
         sizes = {'street': 20, 'city': 15, 'email': 25, 'phone': 10}
 
