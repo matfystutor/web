@@ -1078,6 +1078,7 @@ class RusInfoForm(forms.Form):
 
         field_ctors = {
             'reset_password': forms.BooleanField,
+            'email': forms.EmailField,
         }
         widget_ctors = {'reset_password': forms.CheckboxInput}
         sizes = {'street': 20, 'city': 15, 'email': 25, 'phone': 10}
@@ -1216,8 +1217,14 @@ class RusInfoView(FormView):
                     changes += 1
 
         send_messages(messages)
+
+        # Redisplay form
+        kwargs = self.get_form_kwargs()
+        kwargs['data'] = self.get_initial()
+        form = RusInfoForm(**kwargs)
         return self.render_to_response(
-            self.get_context_data(form=form, form_saved=True, changes=changes))
+            self.get_context_data(form=form, form_saved=True, changes=changes,
+                                  emails=len(messages)))
 
     def form_invalid(self, form):
         return self.render_to_response(

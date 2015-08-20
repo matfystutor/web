@@ -74,6 +74,9 @@ Eksporter til Google Contacts
 {% else %}
 <p>Ingen ændringer.</p>
 {% endif %}
+{% if emails %}
+<p>{{ emails }} email{{ emails|pluralize }} er sendt med kodeord.</p>
+{% endif %}
 {% endif %}
 {{ form.non_field_errors }}
 <form method="post">{% csrf_token %}
