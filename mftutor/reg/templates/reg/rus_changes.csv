@@ -1,2 +1,3 @@
+Navn	Årskortnummer	Oprindeligt hold	Nyt hold
 {% for rus in rus_list %}{{ rus.profile.name }}	{{ rus.profile.studentnumber|default:"ukendt" }}	{% if rus.initial_rusclass %}{{ rus.initial_rusclass.official_name}}{% else %}oprettet{% endif %}	{{ rus.rusclass.official_name }}
 {% endfor %}
