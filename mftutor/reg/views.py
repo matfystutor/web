@@ -688,21 +688,8 @@ class RusChangesView(TemplateView):
         return rus_list
 
 
-class RusChangesTableView(TemplateView):
+class RusChangesTableView(RusChangesView):
     template_name = 'reg/rus_changes.csv'
-
-    def get_context_data(self, **kwargs):
-        context_data = super(RusChangesView, self).get_context_data(**kwargs)
-        context_data['rus_list'] = self.get_rus_list()
-        return context_data
-
-    def get_rus_list(self):
-        from django.db.models import F
-        rus_year = Rus.objects.filter(year=self.request.year)
-        rus_list = (
-            list(rus_year.exclude(rusclass=F('initial_rusclass'))) +
-            list(rus_year.filter(initial_rusclass__isnull=True)))
-        return rus_list
 
 
 # =============================================================================
