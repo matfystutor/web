@@ -105,7 +105,7 @@ class TutorProfile(models.Model):
         self.set_instance_user_name(self, user)
 
     def clean(self):
-        pattern = r'\+?[0-9 ]+$'
+        pattern = r'\+?[0-9 ]*$'
         if not re.match(pattern, self.phone):
             raise ValidationError('Telefonnummer må kun indeholde tal')
         self.phone = self.phone.replace(' ', '')
