@@ -5,6 +5,7 @@ from .views import BurStartView
 from .views import ChooseSessionView, NewSessionView, EditSessionView
 from .views import (
     RusListView, RusCreateView, RusListRPC, RusChangesView,
+    RusChangesTableView,
 )
 from .views import (
     HandoutListView, HandoutNewView, HandoutSummaryView,
@@ -35,6 +36,8 @@ urlpatterns = patterns('',
         name='reg_rpc'),
     url(r'^ruslist/changes/$', tutorbur_required(RusChangesView.as_view()),
         name='reg_changes'),
+    url(r'^ruslist/changes/csv/$', tutorbur_required(RusChangesTableView.as_view()),
+        name='reg_changes_csv'),
 
     url(r'^handout/$', tutorbur_required(HandoutListView.as_view()),
         name='handout_list'),
