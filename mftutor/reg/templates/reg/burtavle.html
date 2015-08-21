@@ -17,8 +17,12 @@ a {
     color: #7684c3;
     text-decoration: none;
 }
+#note {
+    display: inline-block;
+    white-space: nowrap;
+}
 #note p {
-    margin: 0 200px 0 0;
+    margin: 0;
 }
 #picture > img{
     height: 200px;
@@ -51,13 +55,19 @@ a {
 function set_height() {
     var note = document.getElementById('note');
     var noteHeight = note.clientHeight;
+    var noteWidth = note.clientWidth;
     var noteTop = note.offsetTop;
     if (note.offsetParent == note.parentNode.offsetParent) {
         noteTop -= note.parentNode.offsetTop;
     }
     var availableHeight = 220 - noteTop - 16;
-    var scale = availableHeight/noteHeight;
-    note.style.fontSize = parseFloat(note.style.fontSize) * Math.min(4, scale) + 'px';
+    var availableWidth = document.body.clientWidth - 200;
+    var scaleHeight = availableHeight/noteHeight;
+    var scaleWidth = availableWidth/noteWidth;
+    var scale = Math.min(scaleHeight, scaleWidth);
+    scale = Math.min(scale, 4);
+    var origSize = parseFloat(note.style.fontSize);
+    note.style.fontSize = origSize * scale + 'px';
 }
 </script>
 </head>
