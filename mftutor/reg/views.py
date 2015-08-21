@@ -1335,7 +1335,7 @@ class LightboxAdminForm(forms.Form):
     )
 
     rusclass = forms.CharField(required=False)
-    color = forms.ChoiceField(choices=COLORS)
+    color = forms.ChoiceField(choices=COLORS, widget=forms.RadioSelect)
     note = forms.CharField(required=False, widget=forms.Textarea())
 
 
