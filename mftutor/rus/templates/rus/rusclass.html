@@ -48,7 +48,7 @@ Så snart vi har dem, lægger vi dem op på denne side.
 </tr>
 {% for tutor in tutor_list %}
 <tr>
-<td><a href="http://skema.knakke.dk/{{ tutor.profile.studentnumber|default_if_none:'' }}">{{ tutor.profile.studentnumber|default_if_none:"(ukendt)" }}</a></td>
+<td><a href="http://skema.knakke.dk/{{ tutor.profile.studentnumber }}">{{ tutor.profile.studentnumber }}</a></td>
 <td>{{ tutor.profile.get_full_name }}</td>
 <td>{{ tutor.profile.street }}</td>
 <td>{{ tutor.profile.city }}</td>
