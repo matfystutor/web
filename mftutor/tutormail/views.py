@@ -103,11 +103,22 @@ class EmailFormView(FormView):
                   tutor__rusclass_id__gt=0) |
                 Q(tutor__year=year,
                   tutor__groups__handle='buret'))
-        else:
+        elif self.kwargs['recipients'] == 'rus':
+            profiles = TutorProfile.objects.filter(
+                Q(tutor__year=year,
+                  tutor__rusclass_id__gt=0) |
+                Q(tutor__year=year,
+                  tutor__groups__handle='buret') |
+                Q(rus__year=year))
+        elif self.kwargs['recipients'] == 'tutor':
             profiles = TutorProfile.objects.filter(
                 tutor__year__exact=year,
                 tutor__early_termination__isnull=True)
+        else:
+            raise ValueError(self.kwargs['recipients'])
         profiles = profiles.distinct()
+        for profile in profiles:
+            profile.set_default_email()
 
         return sorted([profile.email for profile in profiles])
 
