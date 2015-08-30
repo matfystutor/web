@@ -1099,11 +1099,18 @@ class RusInfoForm(forms.Form):
         for rus in self.rus_list:
             password_field = 'rus_%s_reset_password' % rus.pk
             email_field = 'rus_%s_email' % rus.pk
+            phone_field = 'rus_%s_phone' % rus.pk
             if (cleaned_data[password_field]
                     and not cleaned_data[email_field]):
                 msg = (u'Du skal indtaste en emailadresse ' +
                        u'for at nulstille kodeordet.')
                 self.add_error(email_field, msg)
+
+            try:
+                phone = cleaned_data[phone_field]
+                cleaned_data[phone_field] = TutorProfile.clean_phone(phone)
+            except forms.ValidationError as e:
+                self.add_error(phone_field, e)
 
         return cleaned_data
 

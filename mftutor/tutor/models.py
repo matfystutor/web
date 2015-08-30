@@ -104,11 +104,15 @@ class TutorProfile(models.Model):
     def set_user_name(self, user=None):
         self.set_instance_user_name(self, user)
 
-    def clean(self):
+    @staticmethod
+    def clean_phone(phone):
         pattern = r'\+?[0-9 ]*$'
-        if not re.match(pattern, self.phone):
+        if not re.match(pattern, phone):
             raise ValidationError('Telefonnummer må kun indeholde tal')
-        self.phone = self.phone.replace(' ', '')
+        return phone.replace(' ', '')
+
+    def clean(self):
+        self.phone = self.clean_phone(self.phone)
 
 
 # "Arbejdsgruppe"
