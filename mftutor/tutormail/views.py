@@ -110,6 +110,13 @@ class EmailFormView(FormView):
                 Q(tutor__year=year,
                   tutor__groups__handle='buret') |
                 Q(rus__year=year))
+        elif self.kwargs['recipients'] == 'rusarrived':
+            profiles = TutorProfile.objects.filter(
+                Q(tutor__year=year,
+                  tutor__rusclass_id__gt=0) |
+                Q(tutor__year=year,
+                  tutor__groups__handle='buret') |
+                Q(rus__year=year, rus__arrived=True))
         elif self.kwargs['recipients'] == 'tutor':
             profiles = TutorProfile.objects.filter(
                 tutor__year__exact=year,

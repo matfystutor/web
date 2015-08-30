@@ -5,7 +5,7 @@ from mftutor.tutormail.views import EmailFormView
 urlpatterns = patterns('',
     url(r'^$', tutorbest_required(EmailFormView.as_view()), name='email_form',
         kwargs={'recipients': 'tutor'}),
-    url(r'^(?P<recipients>hold|rus)/$',
+    url(r'^(?P<recipients>hold|rus|rusarrived)/$',
         tutorbest_required(EmailFormView.as_view()),
         name='email_form_recipients'),
     # url(r'^list/$', tutorbest_required(EmailListView.as_view()), name='emails'),
