@@ -1225,7 +1225,8 @@ class RusInfoView(FormView):
 
         # Redisplay form
         kwargs = self.get_form_kwargs()
-        kwargs['data'] = self.get_initial()
+        kwargs.pop('data', None)
+        kwargs.pop('files', None)
         form = RusInfoForm(**kwargs)
         return self.render_to_response(
             self.get_context_data(form=form, form_saved=True, changes=changes,
