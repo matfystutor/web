@@ -1153,7 +1153,7 @@ class RusInfoView(FormView):
 
     def get_rus_list(self):
         return (self.rusclass.get_russes()
-                .order_by('profile__studentnumber')
+                .order_by('profile__name')
                 .select_related('profile'))
 
     def get_context_data(self, **kwargs):
