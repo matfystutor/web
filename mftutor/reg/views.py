@@ -1103,9 +1103,7 @@ class RusInfoForm(forms.Form):
                     and not cleaned_data[email_field]):
                 msg = (u'Du skal indtaste en emailadresse ' +
                        u'for at nulstille kodeordet.')
-                self._errors[email_field] = self.error_class([msg])
-                del cleaned_data[email_field]
-                del cleaned_data[password_field]
+                self.add_error(email_field, msg)
 
         return cleaned_data
 
