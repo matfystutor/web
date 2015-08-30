@@ -156,7 +156,10 @@ class EmailFormView(FormView):
                 'X-Tutor-Recipient': recipient,
                 'X-Tutor-Sender': self.request.tutorprofile.name,
             }
-            if cc_emails:
+            if self.kwargs['recipients'].startswith('rus'):
+                headers['To'] = '"Alle russer" <webfar@matfystutor.dk>'
+                headers['Cc'] = '"Alle holdtutorer og Buret" <buret@matfystutor.dk>'
+            elif cc_emails:
                 headers['Cc'] = from_email
             msg = EmailMessage(
                 subject=subject,
