@@ -1091,9 +1091,33 @@ class HandoutCrossReference(FormView):
         mos = ro.finditer(text_input)
         studentnumbers = []
         match_dict = {}
+        unknown = []
         for mo in mos:
-            match_dict[mo.group(1)] = mo.group(0)
-            studentnumbers.append(mo.group(1))
+            sn = mo.group('studentnumber').strip()
+            if sn:
+                match_dict[sn] = mo.group(0)
+                studentnumbers.append(sn)
+            else:
+                tp = None
+                tried = []
+                for k, v in mo.groupdict().items():
+                    if k == 'studentnumber':
+                        continue
+                    if not v:
+                        continue
+                    try:
+                        f = {k + '__iexact': v}
+                        tp = TutorProfile.objects.get(**f)
+                    except (TutorProfile.DoesNotExist, TutorProfile.MultipleObjectsReturned):
+                        tried.append('%s=%s' % (k, v))
+                        pass
+                if tp:
+                    sn = tp.studentnumber
+                    match_dict[sn] = mo.group(0)
+                    studentnumbers.append(sn)
+                else:
+                    unknown.append(
+                        '%s (ikke fundet: %s)' % (mo.group(0), ', '.join(tried)))
 
         # Lookup studentnumbers in input
         tp_qs = TutorProfile.objects.filter(
@@ -1111,7 +1135,7 @@ class HandoutCrossReference(FormView):
             rus_dict[sn] = {'rus': rus, 'line': match_dict[sn]}
         unknown_sns = sorted(set(studentnumbers) - set(rus_dict.keys()))
         # known = set(studentnumbers) & set(rus_dict.keys())
-        unknown = [match_dict[sn] for sn in unknown_sns]
+        unknown.extend([match_dict[sn] for sn in unknown_sns])
 
         handout = self.get_object()
 
@@ -1126,10 +1150,19 @@ class HandoutCrossReference(FormView):
                 handout=handout, rus=rus_dict[sn]['rus'],
                 note='Holdet er ikke fyldt ud')
 
+        def sn_by_rusclass_name(sn):
+            try:
+                return (rus_dict[sn]['rus'].rusclass.internal_name,
+                        rus_dict[sn]['rus'].profile.name)
+            except KeyError:
+                return ('', '')
         # Studentnumbers not in the input
-        missing_input_sns = sorted(set(rr_dict.keys()) - set(studentnumbers))
+        missing_input_sns = sorted(
+            set(rr_dict.keys()) - set(studentnumbers),
+            key=sn_by_rusclass_name)
         # Studentnumbers both in database and in input
-        common_sns = sorted(set(studentnumbers) & set(rr_dict.keys()))
+        common_sns = sorted(set(studentnumbers) & set(rr_dict.keys()),
+                            key=sn_by_rusclass_name)
 
         missing_checked = []
         missing_unchecked = []
