@@ -11,6 +11,7 @@ from .views import (
     HandoutListView, HandoutNewView, HandoutSummaryView,
     HandoutResponseView, HandoutResponseDeleteView,
     HandoutEditView,
+    HandoutCrossReference,
 )
 from .views import RusInfoListView, RusInfoView, RusInfoDumpView
 from .views import LightboxAdminView
@@ -45,6 +46,8 @@ urlpatterns = patterns('',
         name='handout_new'),
     url(r'^handout/(?P<handout>\d+)/$', tutorbur_required(HandoutSummaryView.as_view()),
         name='handout_summary'),
+    url(r'^handout/(?P<pk>\d+)/crossref/$', tutorbur_required(HandoutCrossReference.as_view()),
+        name='handout_crossref'),
     url(r'^handout/(?P<pk>\d+)/edit/$', tutorbur_required(HandoutEditView.as_view()),
         name='handout_edit'),
     url(r'^handout/(?P<handout>\d+)/(?P<rusclass>[a-z0-9]+)/$', tutorbur_required(HandoutResponseView.as_view()),

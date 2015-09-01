@@ -1047,6 +1047,118 @@ class HandoutResponseDeleteView(TemplateView):
         return HttpResponseRedirect(reverse('handout_list'))
 
 
+class HandoutCrossReferenceForm(forms.Form):
+    regex = forms.CharField(initial=r'(\S+)')
+    studentnumbers = forms.CharField(widget=forms.Textarea)
+
+    def clean_regex(self):
+        regex = self.cleaned_data['regex']
+        try:
+            ro = re.compile(regex)
+        except Exception as e:
+            self.add_error('regex', str(e))
+        return ro
+
+    def clean(self):
+        cleaned_data = super(HandoutCrossReferenceForm, self).clean()
+        mo = cleaned_data['regex'].search(cleaned_data['studentnumbers'])
+        if not mo:
+            self.add_error('regex', 'Regex matcher intet i input')
+        return cleaned_data
+
+
+class HandoutCrossReference(FormView):
+    form_class = HandoutCrossReferenceForm
+    template_name = 'reg/handout_crossref.html'
+
+    def get_object(self):
+        h = Handout.objects.filter(pk=self.kwargs['pk'])
+        h = h.prefetch_related(
+            'handoutclassresponse_set',
+            'handoutrusresponse_set',
+            'handoutrusresponse_set__rus',
+            'handoutrusresponse_set__rus__profile',
+        )
+        try:
+            return h.get()
+        except Handout.DoesNotExist:
+            raise Http404()
+
+    def form_valid(self, form):
+        # Parse input text to find studentnumbers
+        ro = form.cleaned_data['regex']
+        text_input = form.cleaned_data['studentnumbers']
+        mos = ro.finditer(text_input)
+        studentnumbers = []
+        match_dict = {}
+        for mo in mos:
+            match_dict[mo.group(1)] = mo.group(0)
+            studentnumbers.append(mo.group(1))
+
+        # Lookup studentnumbers in input
+        tp_qs = TutorProfile.objects.filter(
+            studentnumber__in=studentnumbers)
+        tp_qs = tp_qs.prefetch_related('rus_set')
+        year = self.request.year
+        tp_dict = {tp.studentnumber: tp for tp in tp_qs}
+        # Translate studentnumbers in input to Rus objects
+        rus_dict = {}
+        for sn, tp in tp_dict.items():
+            try:
+                rus = tp.rus_set.get(year=year)
+            except Rus.DoesNotExist:
+                rus = None
+            rus_dict[sn] = {'rus': rus, 'line': match_dict[sn]}
+        unknown_sns = sorted(set(studentnumbers) - set(rus_dict.keys()))
+        # known = set(studentnumbers) & set(rus_dict.keys())
+        unknown = [match_dict[sn] for sn in unknown_sns]
+
+        handout = self.get_object()
+
+        rr_qs = handout.handoutrusresponse_set.all()
+        rr_dict = {rr.rus.profile.studentnumber: rr
+                   for rr in rr_qs}
+
+        # No HandoutRusResponse exists - assume unchecked
+        missing_rr_sns = sorted(set(rus_dict.keys()) - set(rr_dict.keys()))
+        for sn in missing_rr_sns:
+            rr_dict[sn] = HandoutRusResponse(
+                handout=handout, rus=rus_dict[sn]['rus'],
+                note='Holdet er ikke fyldt ud')
+
+        # Studentnumbers not in the input
+        missing_input_sns = sorted(set(rr_dict.keys()) - set(studentnumbers))
+        # Studentnumbers both in database and in input
+        common_sns = sorted(set(studentnumbers) & set(rr_dict.keys()))
+
+        missing_checked = []
+        missing_unchecked = []
+        for sn in missing_input_sns:
+            rr = rr_dict[sn]
+            if rr.checkmark:
+                missing_checked.append(rr)
+            else:
+                missing_unchecked.append(rr)
+
+        common_checked = []
+        common_unchecked = []
+        for sn in common_sns:
+            rr = rr_dict[sn]
+            if rr.checkmark:
+                common_checked.append(rr)
+            else:
+                common_unchecked.append(rr)
+
+        context_data = self.get_context_data(
+            form=form, results=True,
+            missing_checked=missing_checked,
+            missing_unchecked=missing_unchecked,
+            common_checked=common_checked,
+            common_unchecked=common_unchecked,
+            unknown=unknown)
+        return self.render_to_response(context_data)
+
+
 # =============================================================================
 
 class RusInfoListView(ListView):
