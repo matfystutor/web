@@ -1644,8 +1644,12 @@ class StudentnumberView(FormView):
         return get_object_or_404(
             Rus,
             profile__pk=self.kwargs['pk'],
-            year=self.request.year,
-            profile__studentnumber__isnull=True)
+            year=self.request.year)
+
+    def get_initial(self):
+        initial = super(StudentnumberView, self).get_initial()
+        initial['studentnumber'] = self.get_rus().profile.studentnumber or ''
+        return initial
 
     def get_context_data(self, **kwargs):
         context_data = super(StudentnumberView, self).get_context_data(

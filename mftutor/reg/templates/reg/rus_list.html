@@ -212,9 +212,14 @@ TextColumn.prototype.get_value = function (rus) {
 }
 
 TextColumn.prototype.render = function (rus, cell) {
-    if (this.field_name === 'studentnumber' && !rus.studentnumber) {
+    if (this.field_name === 'studentnumber') {
+        var text = rus.studentnumber || 'Ukendt';
         var url = reverse('studentnumber_list') + rus.pk + '/';
-        cell.innerHTML = '<a href="' + url + '">Ukendt</a>';
+        cell.innerHTML = '';
+        var a = document.createElement('a');
+        a.href = url;
+        a.textContent = text;
+        cell.appendChild(a);
     } else {
         cell.textContent = this.get_value(rus);
     }
