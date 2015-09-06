@@ -102,6 +102,9 @@ class EventListView(ListView):
 class RSVPFormView(FormView):
     form_class = RSVPFormAjax
 
+    def get(self, request, *args, **kwargs):
+        return HttpResponseRedirect(self.get_success_url())
+
     def get_success_url(self):
         return reverse('events')
 
