@@ -1204,8 +1204,8 @@ class RusInfoListView(ListView):
 
     def get(self, request):
         tutor = request.tutor
-        if not tutor.is_tutorbur():
-            if tutor.rusclass:
+        if not tutor or not tutor.is_tutorbur():
+            if tutor and tutor.rusclass:
                 kwargs = {'handle': tutor.rusclass.handle}
                 return HttpResponseRedirect(
                     reverse('rusinfo', kwargs=kwargs))
