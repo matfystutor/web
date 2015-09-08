@@ -1092,7 +1092,17 @@ class HandoutCrossReference(FormView):
         studentnumbers = []
         match_dict = {}
         unknown = []
+
+        i = 0
+        skipped = []
+        matches = 0
+
         for mo in mos:
+            j = mo.start()
+            skipped.append(text_input[i:j])
+            i = mo.end()
+            matches += 1
+
             sn = mo.group('studentnumber').strip()
             if sn:
                 match_dict[sn] = mo.group(0)
@@ -1118,6 +1128,8 @@ class HandoutCrossReference(FormView):
                 else:
                     unknown.append(
                         '%s (ikke fundet: %s)' % (mo.group(0), ', '.join(tried)))
+        skipped.append(text_input[i:])
+        skipped = [s for s in skipped if s.strip()]
 
         # Lookup studentnumbers in input
         tp_qs = TutorProfile.objects.filter(
@@ -1135,7 +1147,7 @@ class HandoutCrossReference(FormView):
             rus_dict[sn] = {'rus': rus, 'line': match_dict[sn]}
         unknown_sns = sorted(set(studentnumbers) - set(rus_dict.keys()))
         # known = set(studentnumbers) & set(rus_dict.keys())
-        unknown.extend([match_dict[sn] for sn in unknown_sns])
+        unknown += [match_dict[sn] for sn in unknown_sns]
 
         handout = self.get_object()
 
@@ -1183,12 +1195,12 @@ class HandoutCrossReference(FormView):
                 common_unchecked.append(rr)
 
         context_data = self.get_context_data(
-            form=form, results=True,
+            form=form, results=True, matches=matches,
             missing_checked=missing_checked,
             missing_unchecked=missing_unchecked,
             common_checked=common_checked,
             common_unchecked=common_unchecked,
-            unknown=unknown)
+            unknown=unknown, skipped=skipped)
         return self.render_to_response(context_data)
 
 

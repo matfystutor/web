@@ -6,6 +6,12 @@
     <input type="submit" value="Krydstjek" />
 </form>
 {% if results %}
+<p>{{ matches }} regex matches.</p>
+<ul>
+	{% for s in skipped %}
+	<li>{{ s }}</li>
+	{% endfor %}
+</ul>
 <h2>Mangler</h2>
 <p>
 {{ missing_checked|length }}
