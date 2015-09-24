@@ -1187,12 +1187,19 @@ class HandoutCrossReference(FormView):
 
         common_checked = []
         common_unchecked = []
+        by_rusclass = {}
         for sn in common_sns:
             rr = rr_dict[sn]
             if rr.checkmark:
+                by_rusclass.setdefault(rr.rus.rusclass.handle, []).append(rr)
                 common_checked.append(rr)
             else:
                 common_unchecked.append(rr)
+        by_rusclass = [
+            {'rusclass': by_rusclass[k][0].rus.rusclass,
+             'rus_list': by_rusclass[k]}
+            for k in by_rusclass.keys()
+        ]
 
         context_data = self.get_context_data(
             form=form, results=True, matches=matches,
@@ -1200,7 +1207,8 @@ class HandoutCrossReference(FormView):
             missing_unchecked=missing_unchecked,
             common_checked=common_checked,
             common_unchecked=common_unchecked,
-            unknown=unknown, skipped=skipped)
+            unknown=unknown, skipped=skipped,
+            by_rusclass=by_rusclass)
         return self.render_to_response(context_data)
 
 

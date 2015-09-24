@@ -47,7 +47,15 @@ ukendte årskortnumre i teksten.
 {% endfor %}
 </ul>
 <h2>OK</h2>
+<p>
 {{ common_checked|length }} med kryds er i orden;
 {{ missing_unchecked|length }} uden kryds er i orden.
+</p>
+<ul>
+    {% for r in by_rusclass %}
+    <li>{{ r.rusclass.internal_name }}:
+        {{ r.rus_list|length }}</li>
+    {% endfor %}
+</ul>
 {% endif %}
 {% endblock %}
