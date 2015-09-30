@@ -37,7 +37,14 @@ class EmailFormView(FormView):
         return django.core.urlresolvers.reverse('email_form')
 
     def get_page_title(self):
-        return 'Send email til alle tutorer'
+        if self.kwargs['recipients'] == 'hold':
+            return 'Send email til alle holdtutorer'
+        elif self.kwargs['recipients'] == 'rus':
+            return 'Send email til alle russer'
+        elif self.kwargs['recipients'] == 'rusarrived':
+            return 'Send email til alle ankomne russer'
+        elif self.kwargs['recipients'] == 'tutor':
+            return 'Send email til alle tutorer'
 
     def get_context_data(self, **kwargs):
         data = super(EmailFormView, self).get_context_data(**kwargs)
@@ -109,6 +116,8 @@ class EmailFormView(FormView):
                   tutor__rusclass_id__gt=0) |
                 Q(tutor__year=year,
                   tutor__groups__handle='buret') |
+                Q(tutor__year=year,
+                  tutor__groups__handle='best') |
                 Q(rus__year=year))
         elif self.kwargs['recipients'] == 'rusarrived':
             profiles = TutorProfile.objects.filter(
@@ -116,6 +125,8 @@ class EmailFormView(FormView):
                   tutor__rusclass_id__gt=0) |
                 Q(tutor__year=year,
                   tutor__groups__handle='buret') |
+                Q(tutor__year=year,
+                  tutor__groups__handle='best') |
                 Q(rus__year=year, rus__arrived=True))
         elif self.kwargs['recipients'] == 'tutor':
             profiles = TutorProfile.objects.filter(
@@ -163,7 +174,7 @@ class EmailFormView(FormView):
                 'X-Tutor-Recipient': recipient,
                 'X-Tutor-Sender': self.request.tutorprofile.name,
             }
-            if self.kwargs['recipients'].startswith('rus'):
+            if self.kwargs.get('recipients', '').startswith('rus'):
                 headers['To'] = '"Alle russer" <webfar@matfystutor.dk>'
                 headers['Cc'] = '"Alle holdtutorer og Buret" <buret@matfystutor.dk>'
             elif cc_emails:
