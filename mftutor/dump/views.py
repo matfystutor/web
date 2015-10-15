@@ -1,4 +1,6 @@
 # vim: set fileencoding=utf8:
+from __future__ import unicode_literals
+
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.generic import View
 
@@ -7,19 +9,25 @@ from mftutor.events.models import EventParticipant
 
 
 class DumpView(View):
-    def access_field(self, o, field):
-        parts = field.split('__')
+    def access_field(self, base, current, name, path):
+        parts = path.split('__') if path else ()
+        o = current
         for i, p in enumerate(parts):
             o = getattr(o, p)
             if type(o).__name__ in ("RelatedManager", "ManyRelatedManager"):
-                return ','.join(DumpView.access_field(oo, '__'.join(parts[i+1:]))
-                                for oo in o.all())
+                return ','.join(
+                    self.access_field(
+                        base,
+                        oo,
+                        name + '__' + p,
+                        '__'.join(parts[i+1:]))
+                    for oo in o.all())
         try:
-            m = getattr(self, 'display_%s' % field)
+            m = getattr(self, 'display_%s' % name)
         except AttributeError:
             pass
         else:
-            o = m(o)
+            o = m(o, base=base)
         return o
 
     def usage(self, s=None):
@@ -38,7 +46,7 @@ class DumpView(View):
         params = dict(request.GET.items())
         try:
             display_fields = params.pop('display_fields').split(',')
-        except KeyError as e:
+        except KeyError:
             return self.usage('Missing param display_fields')
         available_display_fields = set(available_fields.keys())
         available_display_fields.add('n')
@@ -64,7 +72,7 @@ class DumpView(View):
         objects = self.handle_order_by(objects, order_by)
 
         rows = [
-            [i+1 if k == 'n' else self.access_field(o, available_fields[k])
+            [i+1 if k == 'n' else self.access_field(o, o, k, available_fields[k])
              for k in display_fields]
             for i, o in enumerate(objects)
         ]
@@ -109,8 +117,8 @@ class DumpView(View):
 
     def format_tex(self, rows, tex_name, **kwargs):
         return u''.join(
-            u'\\%s%s\n' % (tex_name,
-                        u''.join(u'{%s}' % x for x in r))
+            u'\\%s%s\n' %
+            (tex_name, u''.join(u'{%s}' % x for x in r))
             for r in rows)
 
 
@@ -126,9 +134,15 @@ class TutorDumpView(DumpView):
         'studentnumber': 'profile__studentnumber',
         'street': 'profile__street',
         'city': 'profile__city',
-        'groups': 'groups__handle',
+        'groups': 'groups',
     }
     tex_name = 'tutor'
+
+    def display_groups__groups(self, group, base, **kwargs):
+        if group.leader == base:
+            return '*%s' % group.handle
+        else:
+            return group.handle
 
     def get_queryset_base(self):
         return Tutor.members(self.request.year)
@@ -156,7 +170,7 @@ class RusDumpView(DumpView):
     }
     tex_name = 'rus'
 
-    def display_arrived(self, v):
+    def display_arrived(self, v, **kwargs):
         return 'Ank' if v else ''
 
 
