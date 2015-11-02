@@ -2,9 +2,10 @@
 
 from __future__ import unicode_literals
 
+import io
 import subprocess
 
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
@@ -138,6 +139,33 @@ class TutorDumpView(TutorListView):
         response_kwargs['content_type'] = 'text/csv'
         return super(TutorDumpView, self).render_to_response(
             context, **response_kwargs)
+
+
+class TutorDumpLDIFView(TutorDumpView):
+    def get(self, request, *args, **kwargs):
+        context_data = self.get_context_data(**kwargs)
+
+        try:
+            import ldif3
+        except ImportError:
+            s = 'No ldif3 module\n'
+            return HttpResponse(s, content_type='text/plain; charset=utf8')
+
+        buf = io.BytesIO()
+        ldif_writer = ldif3.LDIFWriter(buf)
+        person_list = context_data['person_list']
+        for person in person_list:
+            dn = 'cn=%s' % person['name']
+            entry = {
+                'cn': [person['name']],
+                'mail': [person['email']],
+                'phone': [person['phone']],
+            }
+            ldif_writer.unparse(dn, entry)
+
+        return HttpResponse(
+            buf.getvalue(),
+            content_type='text/plain; charset=utf8')
 
 
 def switch_user(request, new_user):
