@@ -77,17 +77,20 @@ class TutorListView(TemplateView):
 
         leader_pk = leader.pk if leader else 0
 
-        tutors = [{
-            'pk': t.pk,
-            'studentnumber': t.profile.studentnumber,
-            'picture': t.profile.picture.url if t.profile.picture else '',
-            'full_name': t.profile.get_full_name(),
-            'street': t.profile.street,
-            'city': t.profile.city,
-            'phone': t.profile.phone,
-            'email': t.profile.email,
-            'study': t.profile.study,
-            } for t in tutors]
+        def make_tutor_dict(t):
+            return {
+                'pk': t.pk,
+                'studentnumber': t.profile.studentnumber,
+                'picture': t.profile.picture.url if t.profile.picture else '',
+                'full_name': t.profile.get_full_name(),
+                'street': t.profile.street,
+                'city': t.profile.city,
+                'phone': t.profile.phone,
+                'email': t.profile.email,
+                'study': t.profile.study,
+            }
+
+        tutors = [make_tutor_dict(t) for t in tutors]
         if group == 'tutorsmiley' and self.request.year in [2015]:
             tutors.append({
                 'pk': ':)',
