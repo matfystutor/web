@@ -113,10 +113,15 @@ class TutorListView(TemplateView):
         context_data['tutor_count'] = len(tutors)
         context_data['leader_pk'] = leader_pk
         if leader_pk:
-            context_data['leader'] = next(
-                t for t in tutors
-                if t['pk'] == leader_pk
-            )
+            try:
+                context_data['leader'] = next(
+                    t for t in tutors
+                    if t['pk'] == leader_pk
+                )
+            except StopIteration:
+                # leader is not in tutors
+                context_data['leader'] = make_tutor_dict(
+                    Tutor.objects.get(pk=leader_pk))
         return context_data
 
 
