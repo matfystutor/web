@@ -225,15 +225,15 @@ class Tutor(models.Model):
         if year is None:
             year = settings.YEAR
 
-        if self.is_tutorbest(year=year):
-            return True
-
         if self.year != year:
             r = False
         elif self.early_termination is not None:
             r = False
         else:
             r = True
+
+        if not r and self.is_old_tutorbest(year):
+            return True
 
         return r
     is_member.boolean = True
@@ -243,19 +243,25 @@ class Tutor(models.Model):
             if self.groups.filter(handle__exact='best').exists():
                 return True
 
+        if self.is_old_tutorbest(year):
+            return True
+        return False
+
+    is_tutorbest.boolean = True
+
+    def is_old_tutorbest(self, year=None):
         email_year = settings.TUTORMAIL_YEAR
         if year is None:
             year = settings.YEAR
         if year == settings.YEAR and email_year != year:
             try:
-                prev_tutor = Tutor.objects.get(year=email_year)
+                prev_tutor = Tutor.objects.get(
+                    profile=self.profile, year=email_year)
                 if prev_tutor.is_tutorbest(email_year):
                     return True
             except Tutor.DoesNotExist:
                 pass
         return False
-
-    is_tutorbest.boolean = True
 
     def is_tutorbur(self):
         if not self.is_member():

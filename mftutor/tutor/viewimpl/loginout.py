@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.views.generic import TemplateView, View
 from django.http import HttpResponseRedirect
 
+from mftutor import settings
 from mftutor.tutor.models import TutorProfile, Tutor, Rus
 
 
@@ -75,6 +76,13 @@ class LoginView(TemplateView):
             tutor = profile.tutor_set.get(year=request.year)
         except Tutor.DoesNotExist:
             tutor = None
+
+        email_year = settings.TUTORMAIL_YEAR
+        if request.year == settings.YEAR and email_year != request.year:
+            try:
+                tutor = profile.tutor_set.get(year=email_year)
+            except Tutor.DoesNotExist:
+                tutor = None
 
         try:
             rus = profile.rus_set.get(year=request.rusyear)

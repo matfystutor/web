@@ -20,6 +20,13 @@ def get_tutor(request):
         return Tutor.objects.get(
             year=request.year, profile=request.tutorprofile)
     except Tutor.DoesNotExist:
+        email_year = settings.TUTORMAIL_YEAR
+        if request.year == settings.YEAR and request.year != email_year:
+            try:
+                return Tutor.objects.get(
+                    year=email_year, profile=request.tutorprofile)
+            except Tutor.DoesNotExist:
+                pass
         return None
 
 def get_rus(request):
