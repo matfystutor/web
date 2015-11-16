@@ -19,6 +19,7 @@ class GroupModelMultipleChoiceField(forms.ModelMultipleChoiceField):
 class TutorForm(forms.Form):
     pk = forms.IntegerField(widget=forms.HiddenInput, required=False, label='')
     profile_pk = forms.IntegerField(widget=forms.HiddenInput, required=False, label='')
+    user_pk = forms.IntegerField(widget=forms.HiddenInput, required=False, label='')
     name = forms.CharField(label='Navn', required=False, widget=classy('name'))
     studentnumber = forms.CharField(label='Årskort', widget=classy('studentnumber', 7))
     study = forms.CharField(label='Studium', widget=classy('study', 7))
@@ -76,6 +77,7 @@ class TutorAdminView(FormView):
         return {
             'pk': tutor.pk,
             'profile_pk': profile.pk,
+            'user_pk': profile.user.pk,
             'name': name,
             'studentnumber': studentnumber,
             'study': study,
