@@ -76,7 +76,7 @@ class CalendarFeedView(ListView):
         return d
 
     def get_queryset(self):
-        qs = Event.objects.filter(start_date__year=self.request.year)
+        qs = Event.objects.all()
         return qs.order_by('start_date')
 
 class EventListView(ListView):
