@@ -6,3 +6,6 @@
 *.aux
 *.log
 *~
+
+.idea/
+.venv/
