@@ -192,20 +192,20 @@ class TutorAdminView(FormView):
                     % (unicode(tutor), unicode(tutor.rusclass), unicode(in_rusclass)))
                 tutor.rusclass = in_rusclass
 
-            in_groupset = frozenset(g.handle for g in in_data['groups'])
-            prev_groupset = frozenset(g.handle for g in prev_data['groups'])
+            in_groupset = frozenset(in_data['groups'])
+            prev_groupset = frozenset(prev_data['groups'])
             groups_insert = in_groupset - prev_groupset
             groups_remove = prev_groupset - in_groupset
             if data['pk'] is None:
                 groups_remove = []  # don't remove existing groups if entry is new
 
-            for handle in groups_insert:
-                changes.append(u"%s tilføj gruppe %s" % (unicode(tutor), handle))
-                tutor.groups.add(TutorGroup.objects.get(handle=handle))
+            for g in groups_insert:
+                changes.append(u"%s tilføj gruppe %s" % (unicode(tutor), g))
+                tutor.groups.add(g)
 
-            for handle in groups_remove:
-                changes.append(u"%s fjern gruppe %s" % (unicode(tutor), handle))
-                tutor.groups.remove(TutorGroup.objects.get(handle=handle))
+            for g in groups_remove:
+                changes.append(u"%s fjern gruppe %s" % (unicode(tutor), g))
+                tutor.groups.remove(g)
 
             profile.save()
             tutor.save()
