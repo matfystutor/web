@@ -265,7 +265,7 @@ class GroupLeaderView(FormView):
                 gr.save()
 
         if form.cleaned_data['update_leader_group']:
-            leader_group.groups = leaders
+            leader_group.tutor_set = leaders
 
         return self.render_to_response(
             self.get_context_data(form=form, success=True))
