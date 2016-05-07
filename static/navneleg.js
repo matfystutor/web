@@ -75,9 +75,10 @@ function navneleg() {
     //"Mette Bjerre":                     "",
     //"Signe Greve":                      "",
     //"Simon Aagaard Enni":               "",
-    "Burmor":                             ["morten", "morten kaj", "morten kaj degnebolig"],
+    "Burmor":                             ["morten", "morten kaj", "morten kaj degnebolig", "burfar"],
     "Esben Bo Mahler":                    ["humanist esben"],
-    "Nikolai Houlberg Øllegaard":         ["webfar"]
+    "Nikolai Houlberg Øllegaard":         ["webfar"],
+    "Nguyen Thien Anh Ly":                ["an", "anh", "ann"]
   };
 
   var tutorelements = document.getElementsByClassName('tutoraddress');
