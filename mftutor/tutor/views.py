@@ -203,7 +203,7 @@ class GroupLeaderForm(forms.Form):
     def __init__(self, year, groups, *args, **kwargs):
         super(GroupLeaderForm, self).__init__(*args, **kwargs)
         self.tutor_year = year
-        print(groups)
+
         for i, group_dict in enumerate(groups):
             group = TutorGroup.objects.get(pk=group_dict["pk"])
 
