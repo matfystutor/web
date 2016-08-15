@@ -118,10 +118,11 @@ function add_note_delete_form(note, el) {
 ///////////////////////////////////////////////////////////////////////////////
 // Rus object containing an interpretation of a rus DOM node.
 ///////////////////////////////////////////////////////////////////////////////
-function Rus(pk, rusclass, arrived, studentnumber, name, street, city, phone, email) {
+function Rus(pk, rusclass, initial_rusclass, arrived, studentnumber, name, street, city, phone, email) {
     this.row = null;
     this.pk = pk;
     this.rusclass = rusclass;
+    this.initial_rusclass = initial_rusclass;
     this.arrived = arrived;
     this.studentnumber = studentnumber;
     this.name = name;
@@ -139,8 +140,8 @@ Rus.objects.all = [];
 Rus.objects.studentnumber_dict = {};
 Rus.objects.pk_dict = {};
 
-Rus.objects.create = function (pk, rusclass, arrived, studentnumber, name, street, city, phone, email) {
-    var rus = new Rus(pk, rusclass, arrived, studentnumber, name, street, city, phone, email);
+Rus.objects.create = function (pk, rusclass, initial_rusclass, arrived, studentnumber, name, street, city, phone, email) {
+    var rus = new Rus(pk, rusclass, initial_rusclass, arrived, studentnumber, name, street, city, phone, email);
     rus.objects.all.push(rus);
     return rus;
 };
@@ -157,6 +158,9 @@ ChangeClassColumn.prototype.render = function (rus, cell) {
         var opt = document.createElement('option');
         opt.value = handle;
         opt.textContent = rusclass.internal_name;
+        if (rusclass === rus.initial_rusclass) {
+            opt.textContent += '°';
+        }
         select.appendChild(opt);
         if (rus.rusclass == rusclass) {
             select.selectedIndex = idx;
@@ -208,9 +212,14 @@ TextColumn.prototype.get_value = function (rus) {
 }
 
 TextColumn.prototype.render = function (rus, cell) {
-    if (this.field_name === 'studentnumber' && !rus.studentnumber) {
+    if (this.field_name === 'studentnumber') {
+        var text = rus.studentnumber || 'Ukendt';
         var url = reverse('studentnumber_list') + rus.pk + '/';
-        cell.innerHTML = '<a href="' + url + '">Ukendt</a>';
+        cell.innerHTML = '';
+        var a = document.createElement('a');
+        a.href = url;
+        a.textContent = text;
+        cell.appendChild(a);
     } else {
         cell.textContent = this.get_value(rus);
     }
@@ -348,9 +357,13 @@ Rus.objects.create_from_initial = function (dict) {
         throw oops("Rus.create_from_initial: !pk");
     if (Rus.objects.pk_dict[pk])
         throw oops("Rus.create_from_initial: Duplicate pk ["+pk+"]");
+    var initial_rusclass = (
+        dict['initial_rusclass'] === null
+        ? null : RusClass.objects.get_by_handle(dict['initial_rusclass']));
     var rus = new Rus(
         dict['pk'],
         RusClass.objects.get_by_handle(dict['rusclass']),
+        initial_rusclass,
         dict['arrived'],
         dict['studentnumber'],
         dict['name'],
@@ -717,6 +730,9 @@ function show_notes(id) {
 function update_rus(rpc_rus, version) {
     var rus = Rus.objects.get_by_pk(rpc_rus['pk']);
     var rusclass = RusClass.objects.get_by_handle(rpc_rus['rusclass']);
+    var initial_rusclass = (
+        (rpc_rus['initial_rusclass'] === null) ?
+        null : RusClass.objects.get_by_handle(rpc_rus['initial_rusclass']));
     if (!rus) throw oops("update_rus: No such rus ["+rpc_rus['pk']+"]");
     if (!rusclass) throw oops("update_rus: No such rusclass ["+rpc_rus['rusclass']+"]");
     if (rus.version && rus.version >= version) return;
@@ -727,6 +743,7 @@ function update_rus(rpc_rus, version) {
     rus.city = rpc_rus['city'];
     rus.phone = rpc_rus['phone'];
     rus.email = rpc_rus['email'];
+    rus.initial_rusclass = initial_rusclass;
     if (rus.studentnumber !== rpc_rus['studentnumber']) {
         if (rus.studentnumber !== null) {
             delete Rus.objects.studentnumber_dict[rus.studentnumber];
@@ -736,7 +753,7 @@ function update_rus(rpc_rus, version) {
             Rus.objects.studentnumber_dict[rus.studentnumber] = rus;
         }
     }
-    if (rusclass != rus.rusclass) {
+    if (rusclass !== rus.rusclass) {
         rus.rusclass.remove_rus(rus);
         rus.rusclass.rerender();
         rus.rusclass = rusclass;

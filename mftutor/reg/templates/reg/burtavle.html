@@ -13,6 +13,14 @@ body {
 h1 {
     font-family: "Comic Sans", "Comic Sans MS";
 }
+a {
+    color: #7684c3;
+    text-decoration: none;
+}
+#note {
+    display: inline-block;
+    white-space: nowrap;
+}
 #note p {
     margin: 0;
 }
@@ -21,7 +29,7 @@ h1 {
 }
 #clock{
     position: absolute;
-    right: 200px;
+    right: 216px;
 }
 .column {
     float: left;
@@ -37,7 +45,7 @@ h1 {
     background-color: rgb(30, 210, 0);
 }
 .yellow {
-    background-color: rgb(240, 164, 1);
+    background-color: #FFD800;
 }
 .red {
     background-color: rgb(244, 80, 0);
@@ -47,13 +55,19 @@ h1 {
 function set_height() {
     var note = document.getElementById('note');
     var noteHeight = note.clientHeight;
+    var noteWidth = note.clientWidth;
     var noteTop = note.offsetTop;
     if (note.offsetParent == note.parentNode.offsetParent) {
         noteTop -= note.parentNode.offsetTop;
     }
     var availableHeight = 220 - noteTop - 16;
-    var scale = availableHeight/noteHeight;
-    note.style.fontSize = parseFloat(note.style.fontSize) * Math.min(4, scale) + 'px';
+    var availableWidth = document.body.clientWidth - 200;
+    var scaleHeight = availableHeight/noteHeight;
+    var scaleWidth = availableWidth/noteWidth;
+    var scale = Math.min(scaleHeight, scaleWidth);
+    scale = Math.min(scale, 4);
+    var origSize = parseFloat(note.style.fontSize);
+    note.style.fontSize = origSize * scale + 'px';
 }
 </script>
 </head>
@@ -66,13 +80,13 @@ function set_height() {
         </div>
     </div>
     <div style="clear: right; float: right; z-index:-1" id='picture'>
-        <img src="{{STATIC_URL}}bur/{{ note.color }}.png" />
+        <img src="{{STATIC_URL}}bur/{{ note.color }}15.png" />
     </div>
 </div>
 <div style="min-height: 220px">
 <h1 style="margin-top:0">{{ BURET }}</h1>
 <div id="note" style="font-size: 16px">
-{{ note.note|linebreaks }}
+{{ note.note|urlize|linebreaks }}
 </div>
 </div>
 <div style="clear: both">

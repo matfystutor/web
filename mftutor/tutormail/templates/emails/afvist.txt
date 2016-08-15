@@ -1,7 +1,8 @@
 Kære {{ navn }},
 
 Årets tutorer for {{ year }} er nu udtaget, men vi må beklageligvis meddele,
-at du ikke er blandt dem.
+at du ikke er blandt dem. I år har vi modtaget rigtig mange ansøgninger og vi kan
+desværre ikke optage alle.
 
 Vi i bestyrelsen håber, at du ikke er afskrækket fra at ansøge om at
 blive tutor til næste år, da vi altid gerne vil have velmotiverede

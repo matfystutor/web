@@ -95,9 +95,8 @@ gerne <a href="{% url 'rus_kontakt' %}">have besked om det</a>.</p>
 <p>
 På denne hjemmeside kan du blandt andet finde en <a href="{% url 'rus_kalender' %}">kalender</a>
 med de vigtigste datoer for studiestarten
-(f.eks. hvorn&aring;r du skal starte og hvorn&aring;r du skal p&aring; rustur),
-en onlineudgave af <a href="{% url 'rus_rusbrev' %}">rusbrevet</a>
-og ikke mindst <a href="{% url 'rus_program' %}">studiestartsprogrammet</a>,
+(f.eks. hvorn&aring;r du skal starte og hvorn&aring;r du skal p&aring; rustur) og ikke
+mindst <a href="{% url 'rus_program' %}">studiestartsprogrammet</a>,
 s&aring; du kan se, hvad du skal lave de f&oslash;rste dage p&aring; universitetet.
 </p>
 
@@ -128,4 +127,11 @@ et par interviews. Hvis du har lyst til at være med, så skriv til Frederik på
 <p><iframe width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=ny+munkegade+118,+8000+%C3%A5rhus,+denmark&amp;aq=&amp;sll=56.16617,10.199861&amp;sspn=0.009271,0.033023&amp;g=ny+munkegade+116,+8000+%C3%A5rhus,+denmark&amp;ie=UTF8&amp;hq=&amp;hnear=Ny+Munkegade+118,+8000+Aarhus,+Aarhus+C,+Denmark&amp;ll=56.166164,10.199862&amp;spn=0.001159,0.004128&amp;t=m&amp;z=14&amp;output=embed"></iframe><br /><small><a href="https://maps.google.com/maps?f=q&amp;source=embed&amp;hl=en&amp;geocode=&amp;q=ny+munkegade+118,+8000+%C3%A5rhus,+denmark&amp;aq=&amp;sll=56.16617,10.199861&amp;sspn=0.009271,0.033023&amp;g=ny+munkegade+116,+8000+%C3%A5rhus,+denmark&amp;ie=UTF8&amp;hq=&amp;hnear=Ny+Munkegade+118,+8000+Aarhus,+Aarhus+C,+Denmark&amp;ll=56.166164,10.199862&amp;spn=0.001159,0.004128&amp;t=m&amp;z=14" style="color:#0000FF;text-align:left">Vis st&oslash;rre kort</a></small></p>
 </p>
 
+{% endblock %}
+{% block bottom %}
+<div style="margin-top: 1em; text-align: center">
+<a href="{{ STATIC_URL }}matfys2015.jpg">
+<img src="{{ STATIC_URL }}matfys2015-800px.jpg" style="width: 800px; height: 533px" />
+</a>
+</div>
 {% endblock %}

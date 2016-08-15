@@ -40,6 +40,9 @@
     <p>Slags: {{ form.kind }} {{ form.kind.errors }}</p>
     <p>Note: {{ form.note }} {{ form.note.errors }}</p>
     <input type="submit" value="Gem" />
+    {% if delete %}
+    <input type="submit" value="Slet" name="delete" />
+    {% endif %}
 </form>
 
 {% endblock %}

@@ -35,27 +35,55 @@ til {{ event.end_date|date:"l j. F"|lower }}
 
 {% if accept %}
 <h2>Kommer</h2>
-<ol>
-{% for tu in accept %}
-<li>{{ tu.profile.name }}</li>
+<table>
+    <tr>
+        <th>Nummer</th>
+        <th>Navn</th>
+        <th>Studie</th>
+    </tr>
+    {% for tu in accept %}
+    <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ tu.profile.name }}</td>
+        <td>{{ tu.profile.study }}</td>
+    </tr>
 {% endfor %}
-</ol>
+</table>
+
 {% endif %}
 {% if decline %}
 <h2>Kommer ikke</h2>
-<ol>
-{% for tu in decline %}
-<li>{{ tu.profile.name }}</li>
+<table>
+    <tr>
+        <th>Nummer</th>
+        <th>Navn</th>
+        <th>Studie</th>
+    </tr>
+    {% for tu in decline %}
+    <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ tu.profile.name }}</td>
+        <td>{{ tu.profile.study }}</td>
+    </tr>
 {% endfor %}
-</ol>
+</table>
 {% endif %}
 {% if no_answer %}
 <h2>Intet svar</h2>
-<ol>
-{% for tu in no_answer %}
-<li>{{ tu.profile.name }}</li>
+<table>
+    <tr>
+        <th>Nummer</th>
+        <th>Navn</th>
+        <th>Studie</th>
+    </tr>
+    {% for tu in no_answer %}
+    <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ tu.profile.name }}</td>
+        <td>{{ tu.profile.study }}</td>
+    </tr>
 {% endfor %}
-</ol>
+</table>
 {% endif %}
 {% endif %}
 

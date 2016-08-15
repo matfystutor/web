@@ -48,7 +48,7 @@ Så snart vi har dem, lægger vi dem op på denne side.
 </tr>
 {% for tutor in tutor_list %}
 <tr>
-<td>{{ tutor.profile.studentnumber }}</td>
+<td><a href="http://skema.knakke.dk/{{ tutor.profile.studentnumber }}">{{ tutor.profile.studentnumber }}</a></td>
 <td>{{ tutor.profile.get_full_name }}</td>
 <td>{{ tutor.profile.street }}</td>
 <td>{{ tutor.profile.city }}</td>
@@ -67,7 +67,13 @@ Så snart vi har dem, lægger vi dem op på denne side.
 </tr>
 {% for rus in rus_list %}
 <tr>
-<td>{{ rus.profile.studentnumber }}</td>
+<td>
+{% if rus.profile.studentnumber %}
+<a href="http://skema.knakke.dk/{{ rus.profile.studentnumber }}">{{ rus.profile.studentnumber }}</a>
+{% else %}
+(ukendt)
+{% endif %}
+</td>
 <td>{{ rus.profile.get_full_name }}</td>
 <td>{{ rus.profile.street }}</td>
 <td>{{ rus.profile.city }}</td>

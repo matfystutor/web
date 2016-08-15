@@ -1,5 +1,6 @@
 # vim: set fileencoding=utf8:
 import re
+import copy
 import json
 import random
 import string
@@ -7,6 +8,7 @@ import datetime
 import subprocess
 
 from django.db import transaction
+from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
@@ -66,6 +68,8 @@ class EditSessionForm(forms.ModelForm):
     regex = forms.CharField()
     name = forms.CharField()
     lines = forms.CharField(widget=forms.Textarea)
+
+    empty_initial_rusclass = forms.BooleanField(required=False)
 
     def clean_regex(self):
         """Check if regex is valid by compiling it.
@@ -305,9 +309,13 @@ class EditSessionView(UpdateView):
                             tp.get_or_create_user()
                             tp.set_default_email()
 
+                        if form.cleaned_data['empty_initial_rusclass']:
+                            initial_rusclass = None
+                        else:
+                            initial_rusclass = rusclass
                         Rus.objects.create(
                             profile=tp, year=year, rusclass=rusclass,
-                            initial_rusclass=rusclass)
+                            initial_rusclass=initial_rusclass)
 
                     importsession.imported = datetime.datetime.now()
                     importsession.save()
@@ -402,14 +410,15 @@ class RusCreateForm(forms.Form):
     note = forms.CharField(required=False, label='Note')
 
     def __init__(self, **kwargs):
-        year = kwargs.pop('year')
+        self.year = kwargs.pop('year')
         super(RusCreateForm, self).__init__(**kwargs)
         f = self.fields['rusclass']
-        f.queryset = f.queryset.filter(year=year)
+        f.queryset = f.queryset.filter(year=self.year)
 
     def clean_studentnumber(self):
         studentnumber = self.cleaned_data['studentnumber']
         existing = TutorProfile.objects.filter(studentnumber=studentnumber)
+        existing = existing.filter(rus__year=self.year)
         if studentnumber:
             if existing.exists():
                 raise forms.ValidationError(
@@ -450,14 +459,40 @@ class RusCreateView(FormView):
 
     def form_valid(self, form):
         data = form.cleaned_data
+        studentnumber = data['studentnumber']
+
+        tutorprofile = None
+        if studentnumber:
+            existing = TutorProfile.objects.filter(studentnumber=studentnumber)
+            if existing.exists():
+                tutorprofile = existing.get()
+                d1 = (data['name'], data['email'])
+                d2 = (tutorprofile.name, tutorprofile.email)
+                if d1 != d2:
+                    # Redisplay form
+                    data = copy.deepcopy(data)
+                    data['name'] = tutorprofile.name
+                    data['email'] = tutorprofile.email
+                    # data['rusclass'] = data['rusclass'].pk
+                    form = RusCreateForm(data=data, year=self.request.year)
+                    form.add_error(
+                        None,
+                        u'Årskortnummeret findes allerede. ' +
+                        u'Tryk "Opret" igen for at oprette russen. ' +
+                        u'%r' % (data['rusclass'],))
+                    context_data = self.get_context_data(
+                        form=form)
+                    return self.render_to_response(context_data)
+
         with transaction.atomic():
-            tutorprofile = TutorProfile.objects.create(
-                studentnumber=data['studentnumber'],
-                name=data['name'],
-                email=data['email'])
-            if data['studentnumber'] is not None:
-                tutorprofile.get_or_create_user()
-            tutorprofile.save()
+            if tutorprofile is None:
+                tutorprofile = TutorProfile.objects.create(
+                    studentnumber=data['studentnumber'],
+                    name=data['name'],
+                    email=data['email'])
+                if data['studentnumber'] is not None:
+                    tutorprofile.get_or_create_user()
+                tutorprofile.save()
             rus = Rus.objects.create(
                 profile=tutorprofile,
                 year=self.request.year,
@@ -653,6 +688,10 @@ class RusChangesView(TemplateView):
         return rus_list
 
 
+class RusChangesTableView(RusChangesView):
+    template_name = 'reg/rus_changes.csv'
+
+
 # =============================================================================
 
 class HandoutListView(TemplateView):
@@ -688,10 +727,14 @@ class HandoutListView(TemplateView):
         return context_data
 
 
-class HandoutForm(forms.Form):
+class HandoutForm(forms.ModelForm):
     kind = forms.ChoiceField(choices=Handout.KINDS)
     name = forms.CharField()
     note = forms.CharField(required=False, widget=forms.Textarea)
+
+    class Meta:
+        model = Handout
+        fields = ('kind', 'name', 'note')
 
 
 class HandoutNewView(FormView):
@@ -741,6 +784,27 @@ class HandoutNewView(FormView):
 
     def get_success_url(self):
         return reverse('handout_list')
+
+
+class HandoutEditView(UpdateView):
+    form_class = HandoutForm
+    template_name = 'reg/handout_form.html'
+    model = Handout
+
+    def get_success_url(self):
+        return reverse('handout_list')
+
+    def get_context_data(self, **kwargs):
+        context_data = super(HandoutEditView, self).get_context_data(**kwargs)
+        context_data['delete'] = True
+        return context_data
+
+    def form_valid(self, form):
+        if self.request.POST.get('delete'):
+            form.instance.delete()
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            return super(HandoutEditView, self).form_valid(form)
 
 
 class HandoutSummaryView(TemplateView):
@@ -820,7 +884,7 @@ class HandoutSummaryView(TemplateView):
 class HandoutResponseForm(forms.Form):
     note = forms.CharField(required=False, widget=forms.Textarea)
     color = forms.ChoiceField(choices=HandoutClassResponse.COLORS,
-                              label='Farve')
+                              label='Farve', widget=forms.RadioSelect)
 
     def __init__(self, *args, **kwargs):
         rus_list = kwargs.pop('rus_list')
@@ -983,6 +1047,171 @@ class HandoutResponseDeleteView(TemplateView):
         return HttpResponseRedirect(reverse('handout_list'))
 
 
+class HandoutCrossReferenceForm(forms.Form):
+    regex = forms.CharField(initial=r'(\S+)')
+    studentnumbers = forms.CharField(widget=forms.Textarea)
+
+    def clean_regex(self):
+        regex = self.cleaned_data['regex']
+        try:
+            ro = re.compile(regex)
+        except Exception as e:
+            self.add_error('regex', str(e))
+        return ro
+
+    def clean(self):
+        cleaned_data = super(HandoutCrossReferenceForm, self).clean()
+        mo = cleaned_data['regex'].search(cleaned_data['studentnumbers'])
+        if not mo:
+            self.add_error('regex', 'Regex matcher intet i input')
+        return cleaned_data
+
+
+class HandoutCrossReference(FormView):
+    form_class = HandoutCrossReferenceForm
+    template_name = 'reg/handout_crossref.html'
+
+    def get_object(self):
+        h = Handout.objects.filter(pk=self.kwargs['pk'])
+        h = h.prefetch_related(
+            'handoutclassresponse_set',
+            'handoutrusresponse_set',
+            'handoutrusresponse_set__rus',
+            'handoutrusresponse_set__rus__profile',
+        )
+        try:
+            return h.get()
+        except Handout.DoesNotExist:
+            raise Http404()
+
+    def form_valid(self, form):
+        # Parse input text to find studentnumbers
+        ro = form.cleaned_data['regex']
+        text_input = form.cleaned_data['studentnumbers']
+        mos = ro.finditer(text_input)
+        studentnumbers = []
+        match_dict = {}
+        unknown = []
+
+        i = 0
+        skipped = []
+        matches = 0
+
+        for mo in mos:
+            j = mo.start()
+            skipped.append(text_input[i:j])
+            i = mo.end()
+            matches += 1
+
+            sn = mo.group('studentnumber').strip()
+            if sn:
+                match_dict[sn] = mo.group(0)
+                studentnumbers.append(sn)
+            else:
+                tp = None
+                tried = []
+                for k, v in mo.groupdict().items():
+                    if k == 'studentnumber':
+                        continue
+                    if not v:
+                        continue
+                    try:
+                        f = {k + '__iexact': v}
+                        tp = TutorProfile.objects.get(**f)
+                    except (TutorProfile.DoesNotExist, TutorProfile.MultipleObjectsReturned):
+                        tried.append('%s=%s' % (k, v))
+                        pass
+                if tp:
+                    sn = tp.studentnumber
+                    match_dict[sn] = mo.group(0)
+                    studentnumbers.append(sn)
+                else:
+                    unknown.append(
+                        '%s (ikke fundet: %s)' % (mo.group(0), ', '.join(tried)))
+        skipped.append(text_input[i:])
+        skipped = [s for s in skipped if s.strip()]
+
+        # Lookup studentnumbers in input
+        tp_qs = TutorProfile.objects.filter(
+            studentnumber__in=studentnumbers)
+        tp_qs = tp_qs.prefetch_related('rus_set')
+        year = self.request.year
+        tp_dict = {tp.studentnumber: tp for tp in tp_qs}
+        # Translate studentnumbers in input to Rus objects
+        rus_dict = {}
+        for sn, tp in tp_dict.items():
+            try:
+                rus = tp.rus_set.get(year=year)
+            except Rus.DoesNotExist:
+                rus = None
+            rus_dict[sn] = {'rus': rus, 'line': match_dict[sn]}
+        unknown_sns = sorted(set(studentnumbers) - set(rus_dict.keys()))
+        # known = set(studentnumbers) & set(rus_dict.keys())
+        unknown += [match_dict[sn] for sn in unknown_sns]
+
+        handout = self.get_object()
+
+        rr_qs = handout.handoutrusresponse_set.all()
+        rr_dict = {rr.rus.profile.studentnumber: rr
+                   for rr in rr_qs}
+
+        # No HandoutRusResponse exists - assume unchecked
+        missing_rr_sns = sorted(set(rus_dict.keys()) - set(rr_dict.keys()))
+        for sn in missing_rr_sns:
+            rr_dict[sn] = HandoutRusResponse(
+                handout=handout, rus=rus_dict[sn]['rus'],
+                note='Holdet er ikke fyldt ud')
+
+        def sn_by_rusclass_name(sn):
+            try:
+                return (rus_dict[sn]['rus'].rusclass.internal_name,
+                        rus_dict[sn]['rus'].profile.name)
+            except KeyError:
+                return ('', '')
+        # Studentnumbers not in the input
+        missing_input_sns = sorted(
+            set(rr_dict.keys()) - set(studentnumbers),
+            key=sn_by_rusclass_name)
+        # Studentnumbers both in database and in input
+        common_sns = sorted(set(studentnumbers) & set(rr_dict.keys()),
+                            key=sn_by_rusclass_name)
+
+        missing_checked = []
+        missing_unchecked = []
+        for sn in missing_input_sns:
+            rr = rr_dict[sn]
+            if rr.checkmark:
+                missing_checked.append(rr)
+            else:
+                missing_unchecked.append(rr)
+
+        common_checked = []
+        common_unchecked = []
+        by_rusclass = {}
+        for sn in common_sns:
+            rr = rr_dict[sn]
+            if rr.checkmark:
+                by_rusclass.setdefault(rr.rus.rusclass.handle, []).append(rr)
+                common_checked.append(rr)
+            else:
+                common_unchecked.append(rr)
+        by_rusclass = [
+            {'rusclass': by_rusclass[k][0].rus.rusclass,
+             'rus_list': by_rusclass[k]}
+            for k in by_rusclass.keys()
+        ]
+
+        context_data = self.get_context_data(
+            form=form, results=True, matches=matches,
+            missing_checked=missing_checked,
+            missing_unchecked=missing_unchecked,
+            common_checked=common_checked,
+            common_unchecked=common_unchecked,
+            unknown=unknown, skipped=skipped,
+            by_rusclass=by_rusclass)
+        return self.render_to_response(context_data)
+
+
 # =============================================================================
 
 class RusInfoListView(ListView):
@@ -995,8 +1224,8 @@ class RusInfoListView(ListView):
 
     def get(self, request):
         tutor = request.tutor
-        if not tutor.is_tutorbur():
-            if tutor.rusclass:
+        if not tutor or not tutor.is_tutorbur():
+            if tutor and tutor.rusclass:
                 kwargs = {'handle': tutor.rusclass.handle}
                 return HttpResponseRedirect(
                     reverse('rusinfo', kwargs=kwargs))
@@ -1012,7 +1241,10 @@ class RusInfoForm(forms.Form):
         super(RusInfoForm, self).__init__(*args, **kwargs)
         self.rus_list = rus_list
 
-        field_ctors = {'reset_password': forms.BooleanField}
+        field_ctors = {
+            'reset_password': forms.BooleanField,
+            'email': forms.EmailField,
+        }
         widget_ctors = {'reset_password': forms.CheckboxInput}
         sizes = {'street': 20, 'city': 15, 'email': 25, 'phone': 10}
 
@@ -1032,13 +1264,18 @@ class RusInfoForm(forms.Form):
         for rus in self.rus_list:
             password_field = 'rus_%s_reset_password' % rus.pk
             email_field = 'rus_%s_email' % rus.pk
+            phone_field = 'rus_%s_phone' % rus.pk
             if (cleaned_data[password_field]
                     and not cleaned_data[email_field]):
                 msg = (u'Du skal indtaste en emailadresse ' +
                        u'for at nulstille kodeordet.')
-                self._errors[email_field] = self.error_class([msg])
-                del cleaned_data[email_field]
-                del cleaned_data[password_field]
+                self.add_error(email_field, msg)
+
+            try:
+                phone = cleaned_data[phone_field]
+                cleaned_data[phone_field] = TutorProfile.clean_phone(phone)
+            except forms.ValidationError as e:
+                self.add_error(phone_field, e)
 
         return cleaned_data
 
@@ -1081,7 +1318,7 @@ class RusInfoView(FormView):
 
     def get_rus_list(self):
         return (self.rusclass.get_russes()
-                .order_by('profile__studentnumber')
+                .order_by('profile__name')
                 .select_related('profile'))
 
     def get_context_data(self, **kwargs):
@@ -1150,8 +1387,15 @@ class RusInfoView(FormView):
                     changes += 1
 
         send_messages(messages)
+
+        # Redisplay form
+        kwargs = self.get_form_kwargs()
+        kwargs.pop('data', None)
+        kwargs.pop('files', None)
+        form = RusInfoForm(**kwargs)
         return self.render_to_response(
-            self.get_context_data(form=form, form_saved=True, changes=changes))
+            self.get_context_data(form=form, form_saved=True, changes=changes,
+                                  emails=len(messages)))
 
     def form_invalid(self, form):
         return self.render_to_response(
@@ -1170,18 +1414,22 @@ class RusInfoDumpView(TemplateView):
         if not request.tutor.can_manage_rusclass(self.rusclass):
             return tutorbest_required_error(request)
 
-        self.rus_list = self.get_rus_list()
+        self.person_list = self.get_person_list()
 
         return super(RusInfoDumpView, self).dispatch(request)
 
-    def get_rus_list(self):
-        return (self.rusclass.get_russes()
-                .order_by('profile__studentnumber')
-                .select_related('profile'))
+    def get_person_list(self):
+        rus_list = self.rusclass.get_russes()
+        tutor_list = self.rusclass.get_tutors()
+        person_list = TutorProfile.objects.filter(
+            Q(rus__in=rus_list) |
+            Q(tutor__in=tutor_list)).distinct()
+        person_list = person_list.order_by('studentnumber')
+        return person_list
 
     def get_context_data(self, **kwargs):
         context_data = super(RusInfoDumpView, self).get_context_data(**kwargs)
-        context_data['person_list'] = [r.profile for r in self.rus_list]
+        context_data['person_list'] = self.person_list
         return context_data
 
     def render_to_response(self, context, **response_kwargs):
@@ -1194,6 +1442,10 @@ class RusInfoDumpView(TemplateView):
 
 def get_lightbox_state_by_study(year):
     states = LightboxRusClassState.objects.get_for_year(year)
+    if not states:
+        states = LightboxRusClassState.objects.get_for_year(year - 1)
+        for s in states:
+            s.color = random.choice(s.COLORS)[0]
 
     study_dict = {}
     for state in states:
@@ -1254,7 +1506,7 @@ class LightboxAdminForm(forms.Form):
     )
 
     rusclass = forms.CharField(required=False)
-    color = forms.ChoiceField(choices=COLORS)
+    color = forms.ChoiceField(choices=COLORS, widget=forms.RadioSelect)
     note = forms.CharField(required=False, widget=forms.Textarea())
 
 
@@ -1412,8 +1664,12 @@ class StudentnumberView(FormView):
         return get_object_or_404(
             Rus,
             profile__pk=self.kwargs['pk'],
-            year=self.request.year,
-            profile__studentnumber__isnull=True)
+            year=self.request.year)
+
+    def get_initial(self):
+        initial = super(StudentnumberView, self).get_initial()
+        initial['studentnumber'] = self.get_rus().profile.studentnumber or ''
+        return initial
 
     def get_context_data(self, **kwargs):
         context_data = super(StudentnumberView, self).get_context_data(

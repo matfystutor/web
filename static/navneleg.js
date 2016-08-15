@@ -66,8 +66,8 @@ function navneleg() {
     "Philip Tchernavskij":                ["tchernavskij", "mini-sean", "mini sean", "minisean", "gefuit"],
     "Sabrina Tang Christensen":           [P(11, "cerm")],
     "Sandra Bleuenn Picard S Pedersen":   ["fubs"],
-    "Sofie Filskov Hermansen":            ['ælling 1']
-    "Emma Hillgaard":                     ['ælling 2']
+    "Sofie Filskov Hermansen":            ['ælling 1'],
+    "Emma Hillgaard":                     ['ælling 2'],
     //"Alexandra Fogtmann-Schulz":        ["tform"],
     //"Anne Nielsen":                     "",
     //"Diana Christensen":                "",
@@ -75,6 +75,10 @@ function navneleg() {
     //"Mette Bjerre":                     "",
     //"Signe Greve":                      "",
     //"Simon Aagaard Enni":               "",
+    "Burmor":                             ["morten", "morten kaj", "morten kaj degnebolig", "burfar"],
+    "Esben Bo Mahler":                    ["humanist esben", "humanist", "esben humaniora"],
+    "Nikolai Houlberg Øllegaard":         ["webfar"],
+    "Nguyen Thien Anh Ly":                ["an", "anh", "ann"]
   };
 
   var tutorelements = document.getElementsByClassName('tutoraddress');
