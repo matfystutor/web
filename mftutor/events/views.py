@@ -3,7 +3,7 @@ from django.views.generic import DetailView, ListView, FormView, View
 from django.shortcuts import render_to_response, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from .. import settings
 from mftutor.tutor.models import Tutor, TutorProfile
 from .models import Event, EventParticipant
@@ -76,12 +76,18 @@ class CalendarFeedView(ListView):
         return d
 
     def get_queryset(self):
-        qs = Event.objects.filter(start_date__year=self.request.year)
+        qs = Event.objects.all()
         return qs.order_by('start_date')
 
 class EventListView(ListView):
+    def get_year(self):
+        if 'year' in self.kwargs:
+            return int(self.kwargs['year'])
+        else:
+            return self.request.year
+
     def get_queryset(self):
-        qs = Event.objects.filter(start_date__year=self.request.year)
+        qs = Event.objects.filter(start_date__year=self.get_year())
         return qs.order_by('start_date')
 
     def get_context_data(self, **kwargs):
@@ -94,6 +100,13 @@ class EventListView(ListView):
                         event=e, tutor=self.request.tutor).status
                 except EventParticipant.DoesNotExist:
                     pass
+        d['specific_year'] = self.kwargs.get('year')
+        if d['specific_year'] and not d['event_list']:
+            raise Http404()
+        d['year'] = self.get_year()
+        d['years'] = [
+            dt.year for dt in Event.objects.all().dates('start_date', 'year')
+        ]
         return d
 
     template_name = "events.html"
@@ -101,6 +114,9 @@ class EventListView(ListView):
 
 class RSVPFormView(FormView):
     form_class = RSVPFormAjax
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
         return reverse('events')
@@ -151,14 +167,15 @@ class EventParticipantListView(DetailView):
         context_data = (super(EventParticipantListView, self)
                         .get_context_data(**kwargs))
         event = context_data['event']
-        rsvps = {p.tutor.pk: p for p in event.participants.all()}
+        participants = {p.tutor_id: p for p in event.participants.all()}
         names = {}
+        tutors = {}
         for tutor in Tutor.members(self.request.year):
             names[tutor.pk] = tutor.profile.name
-            rsvps.setdefault(tutor.pk,
-                             EventParticipant(event=event, tutor=tutor))
-        rsvps = sorted(rsvps.values(), key=lambda o: names[o.tutor.pk])
-        context_data['tutors'] = rsvps
+            tutors[tutor.pk] = participants.setdefault(
+                tutor.pk, EventParticipant(event=event, tutor=tutor))
+        tutors = sorted(tutors.values(), key=lambda o: names[o.tutor.pk])
+        context_data['tutors'] = tutors
         return context_data
 
 

@@ -6,11 +6,11 @@ from django.conf import global_settings
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-here = lambda * x: os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
 
-PROJECT_ROOT = here("../..")
-root = lambda * x: os.path.join(os.path.abspath(PROJECT_ROOT), *x)
+BASE_DIR = os.path.dirname(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -74,11 +74,11 @@ MEDIA_URL = STATIC_URL+'upload/'
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = root('static/upload/')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/upload/')
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    root('static'),
+    os.path.join(BASE_DIR, 'static'),
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -120,7 +120,7 @@ ROOT_URLCONF = 'mftutor.urls'
 WSGI_APPLICATION = 'mftutor.wsgi.application'
 
 TEMPLATE_DIRS = (
-    root("mftutor/templates"),
+    os.path.join(BASE_DIR, "mftutor/templates"),
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -140,6 +140,7 @@ INSTALLED_APPS = (
 
     'django_wysiwyg',
     'debug_toolbar',
+    'sorl.thumbnail',
 
     'mftutor.tutor',
     'mftutor.news',
@@ -155,6 +156,7 @@ INSTALLED_APPS = (
     'mftutor.rus',
     'mftutor.reg',
     'mftutor.dump',
+    'mftutor.rusclass',
     'mftutor.signup',
 )
 
@@ -244,3 +246,6 @@ PERSONAL_EMAIL_SENDER = 'Mat/Fys-Tutorgruppen <webfar@matfystutor.dk>'
 
 # Email aliases that change with the GF in November
 GF_GROUPS = ('best', 'koor', 'webfar', 'oekonomi', 'gris')
+
+THUMBNAIL_KVSTORE = 'sorl.thumbnail.kvstores.dbm_kvstore.KVStore'
+THUMBNAIL_DBM_FILE = '/home/mftutor/web/thumbnails/thumbnail_kvstore'

@@ -9,17 +9,41 @@
     border-bottom: 1px solid black;
     padding: 3px;
 }
+.response_summary td {
+	vertical-align: top;
+}
 </style>
 {% endblock %}
 
 {% block content %}
 <h1>{{ handout }}</h1>
 
+<p><a href="{% url 'handout_edit' pk=handout.pk %}">Rediger</a></p>
+
 <p><a href="{% url 'handout_list' %}">Tilmeldinger</a>
 &rarr; <strong>{{ handout }}</strong></p>
 
 <p>Besvarelser: {{ class_response_count }}/{{ class_total_count }}</p>
 <p>Valgt i alt: {{ rus_checked_count }}/{{ rus_total_count }}</p>
+
+<table class="response_summary">
+<tbody>
+{% for rusclass in classes %}
+<tr>
+	<td>{{ rusclass.internal_name }}</td>
+	<td>{{ rusclass.rus_checked_count }}</td>
+	<td>{{ rusclass.rus_total_count }}</td>
+	<td>{{ rusclass.response.note|linebreaksbr }}</td>
+</tr>
+{% endfor %}
+<tr>
+	<td>Total</td>
+	<td>{{ rus_checked_count }}</td>
+	<td>{{ rus_total_count }}</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
 
 <table class="response_table" cellspacing="0">
 <col span="4" />

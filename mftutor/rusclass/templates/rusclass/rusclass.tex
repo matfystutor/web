@@ -1,0 +1,27 @@
+\documentclass[12pt,a4paper,article,oneside]{memoir}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\setsecnumdepth{part}
+\pagestyle{empty}
+
+\begin{document}
+
+{% for rusclass in rusclass_list %}
+
+
+\centering
+{\Large \bfseries {{ rusclass.internal_name }} } \\[1em]%
+\begin{tabular}{lll}
+\toprule
+& Årskort & Navn \\
+\midrule
+{% for rus in rusclass.rus_set.all|dictsort:"profile.name" %}{{ rus.arrived|yesno:"Ank," }} & {{ rus.profile.studentnumber|default_if_none:"(ukendt)" }} & {{ rus.profile.name }} \\
+{% endfor %}\bottomrule
+\end{tabular}
+\clearpage
+
+{% endfor %}
+
+\end{document}

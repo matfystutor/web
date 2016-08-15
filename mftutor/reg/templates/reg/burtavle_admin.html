@@ -110,7 +110,7 @@ window.addEventListener('load', reset_clicked_data, false);
     <div class="label">Besked:</div>
     <div class="field">{{ form.note }}</div>
     <div class="label">Overordnet farve:</div>
-    <div class="field">{{ form.color }}</div>
+    <div class="field">{% for choice in form.color %}{{ choice }}{% endfor %}</div>
     <div class="field"><input type="submit" value="Gem" /></div>
 </form>
 
@@ -138,7 +138,7 @@ onclick="state_click(this)">
 <p>Sidst ændret af: <span id="author" data-me="{{ user.get_full_name }}"
     data-default="Vælg et hold ovenfor"></span></p>
 <p>Hold: <input name="rusclass" type="hidden" /><span id="rusclass"></span></p>
-<p><textarea name="note"></textarea></p>
+<p><textarea name="note" cols="40" rows="10"></textarea></p>
 <p>Farve:
 <label class="radiolabel green"><input type="radio" name="color" value="green"></label>
 <label class="radiolabel yellow"><input type="radio" name="color" value="yellow"></label>

@@ -2,9 +2,10 @@
 
 from __future__ import unicode_literals
 
+import io
 import subprocess
 
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
@@ -74,19 +75,22 @@ class TutorListView(TemplateView):
             tutors = Tutor.group_members(tg)
             leader = tg.leader
 
-        leader_pk = leader.pk if leader else -1
+        leader_pk = leader.pk if leader else 0
 
-        tutors = [{
-            'pk': t.pk,
-            'studentnumber': t.profile.studentnumber,
-            'picture': t.profile.picture.url if t.profile.picture else '',
-            'full_name': t.profile.get_full_name(),
-            'street': t.profile.street,
-            'city': t.profile.city,
-            'phone': t.profile.phone,
-            'email': t.profile.email,
-            'study': t.profile.study,
-            } for t in tutors]
+        def make_tutor_dict(t):
+            return {
+                'pk': t.pk,
+                'studentnumber': t.profile.studentnumber,
+                'picture': t.profile.picture.url if t.profile.picture else '',
+                'full_name': t.profile.get_full_name(),
+                'street': t.profile.street,
+                'city': t.profile.city,
+                'phone': t.profile.phone,
+                'email': t.profile.email,
+                'study': t.profile.study,
+            }
+
+        tutors = [make_tutor_dict(t) for t in tutors]
         if group == 'tutorsmiley' and self.request.year in [2015]:
             tutors.append({
                 'pk': ':)',
@@ -107,6 +111,17 @@ class TutorListView(TemplateView):
         context_data['tutor_list'] = tutors
         context_data['groups'] = groups
         context_data['tutor_count'] = len(tutors)
+        context_data['leader_pk'] = leader_pk
+        if leader_pk:
+            try:
+                context_data['leader'] = next(
+                    t for t in tutors
+                    if t['pk'] == leader_pk
+                )
+            except StopIteration:
+                # leader is not in tutors
+                context_data['leader'] = make_tutor_dict(
+                    Tutor.objects.get(pk=leader_pk))
         return context_data
 
 
@@ -134,6 +149,33 @@ class TutorDumpView(TutorListView):
             context, **response_kwargs)
 
 
+class TutorDumpLDIFView(TutorDumpView):
+    def get(self, request, *args, **kwargs):
+        context_data = self.get_context_data(**kwargs)
+
+        try:
+            import ldif3
+        except ImportError:
+            s = 'No ldif3 module\n'
+            return HttpResponse(s, content_type='text/plain; charset=utf8')
+
+        buf = io.BytesIO()
+        ldif_writer = ldif3.LDIFWriter(buf)
+        person_list = context_data['person_list']
+        for person in person_list:
+            dn = 'cn=%s' % person['name']
+            entry = {
+                'cn': [person['name']],
+                'mail': [person['email']],
+                'phone': [person['phone']],
+            }
+            ldif_writer.unparse(dn, entry)
+
+        return HttpResponse(
+            buf.getvalue(),
+            content_type='text/plain; charset=utf8')
+
+
 def switch_user(request, new_user):
     from django.contrib.auth import authenticate, login
     user = authenticate(username=new_user, current_user=request.user)
@@ -155,14 +197,30 @@ class FrontView(TemplateView):
 
 
 class GroupLeaderForm(forms.Form):
-    def __init__(self, groups, *args, **kwargs):
+    update_leader_group = forms.BooleanField(
+        required=False, label="Opdater gruppeansvarlig-gruppen")
+
+    def __init__(self, year, groups, *args, **kwargs):
         super(GroupLeaderForm, self).__init__(*args, **kwargs)
-        for i, group in enumerate(groups):
-            choices = list(group['tutors'])  # make copy
+        self.tutor_year = year
+
+        for i, group_dict in enumerate(groups):
+            group = TutorGroup.objects.get(pk=group_dict["pk"])
+
+            tutors = list(Tutor.members(year).filter(groups=group))
+            choices = [
+                (tu.pk, tu.profile.name)
+                for tu in tutors
+            ]
+            if group.leader and group.leader not in tutors:
+                name = '%s (ej medlem)' % group.leader.profile.name
+                choices.append((group.leader.pk, name))
             choices[0:0] = [('', '')]
-            current_leader = group['leader'] or ''
-            self.fields['group_%s' % group['pk']] = forms.ChoiceField(
-                label=group['name'],
+
+            current_leader = group.leader.pk if group.leader else ''
+
+            self.fields['group_%s' % group.pk] = forms.ChoiceField(
+                label=group.name,
                 required=False,
                 choices=choices,
                 initial=current_leader)
@@ -174,6 +232,7 @@ class GroupLeaderViewBase(FormView):
 
     def get_form_kwargs(self):
         kwargs = super(GroupLeaderViewBase, self).get_form_kwargs()
+        kwargs['year'] = self.request.year
         kwargs['groups'] = self.get_groups()
         return kwargs
 
@@ -181,8 +240,8 @@ class GroupLeaderViewBase(FormView):
         groups = self.get_groups()
         changes = []
         for group in groups:
-            new_leader = form.cleaned_data['group_%s' % group['pk']]
-            new_leader = int(new_leader) if new_leader else None
+            new_leader_pk = form.cleaned_data['group_%s' % group['pk']]
+            new_leader = int(new_leader_pk) if new_leader_pk else None
             if group['leader'] != new_leader:
                 changes.append((group, new_leader))
         self.change_leaders(changes)
@@ -190,8 +249,17 @@ class GroupLeaderViewBase(FormView):
         return self.render_to_response(
             self.get_context_data(form=form, success=True))
 
+    def get_groups(self):
+        raise NotImplementedError
+
+    def change_leaders(self, changes):
+        raise NotImplementedError
+
 
 class GroupLeaderView(GroupLeaderViewBase):
+    form_class = GroupLeaderForm
+    template_name = 'groupleaderadmin.html'
+
     def get_groups(self):
         qs = TutorGroup.objects.filter(
             visible=True, year=self.request.year)
@@ -208,11 +276,34 @@ class GroupLeaderView(GroupLeaderViewBase):
             })
         return groups
 
+    # Only called if leader group exists in form_valid, so no try/catch is ok
     def change_leaders(self, changes):
         for group, new_leader in changes:
             gr = TutorGroup.objects.get(pk=group['pk'])
             gr.leader_id = new_leader or None
             gr.save()
+
+        # additionally, update leader_group
+        leader_group = TutorGroup.objects.get(
+            handle='gruppeansvarlige', year=self.request.year)
+
+        group_leader_tuple_index = 1
+        leader_group.tutor_set = [change[group_leader_tuple_index] for change in changes]
+
+    def form_valid(self, form):
+        # Make sure group named 'grouppeansvarlige' exists
+        # because we add every grouppeansvarlig to that group
+        if form.cleaned_data['update_leader_group']:
+            try:
+                leader_group = TutorGroup.objects.get(
+                    handle='gruppeansvarlige', year=self.request.year)
+            except TutorGroup.DoesNotExist:
+                form.add_error(
+                    'update_leader_group',
+                    'Ingen gruppe hedder "gruppeansvarlige"')
+                return self.form_invalid(form)
+
+        return super(GroupLeaderView, self).form_valid(form)
 
 
 class ResetPasswordForm(forms.Form):

@@ -10,6 +10,7 @@ from django.http import HttpResponseRedirect
 import django.core.urlresolvers
 import django.core.mail
 from django.core.mail import EmailMessage
+from django.db.models import Q
 
 from mftutor.tutormail.models import Email
 from mftutor.tutormail.forms import EmailForm
@@ -36,7 +37,14 @@ class EmailFormView(FormView):
         return django.core.urlresolvers.reverse('email_form')
 
     def get_page_title(self):
-        return 'Send email til alle tutorer'
+        if self.kwargs['recipients'] == 'hold':
+            return 'Send email til alle holdtutorer'
+        elif self.kwargs['recipients'] == 'rus':
+            return 'Send email til alle russer'
+        elif self.kwargs['recipients'] == 'rusarrived':
+            return 'Send email til alle ankomne russer'
+        elif self.kwargs['recipients'] == 'tutor':
+            return 'Send email til alle tutorer'
 
     def get_context_data(self, **kwargs):
         data = super(EmailFormView, self).get_context_data(**kwargs)
@@ -96,9 +104,39 @@ class EmailFormView(FormView):
         return TUTORMAIL_YEAR
 
     def get_recipients(self, form, year):
-        profiles = TutorProfile.objects.filter(
-            tutor__year__exact=year,
-            tutor__early_termination__isnull=True)
+        if self.kwargs['recipients'] == 'hold':
+            profiles = TutorProfile.objects.filter(
+                Q(tutor__year=year,
+                  tutor__rusclass_id__gt=0) |
+                Q(tutor__year=year,
+                  tutor__groups__handle='buret'))
+        elif self.kwargs['recipients'] == 'rus':
+            profiles = TutorProfile.objects.filter(
+                Q(tutor__year=year,
+                  tutor__rusclass_id__gt=0) |
+                Q(tutor__year=year,
+                  tutor__groups__handle='buret') |
+                Q(tutor__year=year,
+                  tutor__groups__handle='best') |
+                Q(rus__year=year))
+        elif self.kwargs['recipients'] == 'rusarrived':
+            profiles = TutorProfile.objects.filter(
+                Q(tutor__year=year,
+                  tutor__rusclass_id__gt=0) |
+                Q(tutor__year=year,
+                  tutor__groups__handle='buret') |
+                Q(tutor__year=year,
+                  tutor__groups__handle='best') |
+                Q(rus__year=year, rus__arrived=True))
+        elif self.kwargs['recipients'] == 'tutor':
+            profiles = TutorProfile.objects.filter(
+                tutor__year__exact=year,
+                tutor__early_termination__isnull=True)
+        else:
+            raise ValueError(self.kwargs['recipients'])
+        profiles = profiles.distinct()
+        for profile in profiles:
+            profile.set_default_email()
 
         return sorted([profile.email for profile in profiles])
 
@@ -136,7 +174,10 @@ class EmailFormView(FormView):
                 'X-Tutor-Recipient': recipient,
                 'X-Tutor-Sender': self.request.tutorprofile.name,
             }
-            if cc_emails:
+            if self.kwargs.get('recipients', '').startswith('rus'):
+                headers['To'] = '"Alle russer" <webfar@matfystutor.dk>'
+                headers['Cc'] = '"Alle holdtutorer og Buret" <buret@matfystutor.dk>'
+            elif cc_emails:
                 headers['Cc'] = from_email
             msg = EmailMessage(
                 subject=subject,

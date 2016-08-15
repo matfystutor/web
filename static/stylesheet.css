@@ -6,10 +6,6 @@ html,body {
 	background-color: #eee;
 }
 
-a:focus {
-	-moz-outline: none;
-}
-
 img {
 	border: 0;
 }
@@ -17,7 +13,11 @@ img {
 a {
 	text-decoration: none;
 	color: #117900;
+}
+
+#menu a, #menu .link_button:focus {
 	outline: none;
+	-moz-outline: none;
 }
 
 a:hover {
@@ -98,8 +98,8 @@ body.fullwidth #main {
 
 #rusheader {
 	background-color: #fff;
-	width: 696px;
-	height: 311px;
+	width: 900px;
+	height: 278px;
 	border-radius: 7px;
 	box-shadow: rgba(0, 0, 0, 0.3) 0 1px 2px;
 	-moz-box-shadow: rgba(0, 0, 0, 0.3) 0 1px 2px;
@@ -338,6 +338,10 @@ html ul.topnav li ul.subnav li a:hover { /*--Hover effect for subnav links--*/
 	text-align: right;
 }
 
+.tutorlist {
+	clear: both;
+}
+
 .tutorlist .tutoraddress {
 	float: left;
 	width: 360px;
@@ -361,16 +365,6 @@ body.board .tutorlist .tutoraddress {
 .tutorlist .tutoraddress {
 	font-size: 90%;
 	position: relative;
-}
-
-.tutorlist .tutoraddress:first-child {
-	margin-bottom: 45px;
-}
-.tutorlist .tutoraddress:first-child + * {
-	clear: left;
-}
-.tutorlist .searchresults .tutoraddress:first-child + * {
-	clear: none;
 }
 
 /* Tutor pictures.
@@ -472,10 +466,6 @@ body.board .tutorlist .tutoraddress {
 	cursor: auto;
 }
 
-.tutortable {
-	font-size: 12px;
-}
-
 .tutortable .pic {
 	display: none;
 }
@@ -494,19 +484,19 @@ body.board .tutorlist .tutoraddress {
 
 .tutortable .name, .tutortable li {
 	float: left;
-	width: 150px;
+	width: 12.6em;
 	overflow: hidden;
 	white-space: nowrap;
-	margin-right: 10px;
+	margin-right: 0.8em;
 }
 
-.tutortable .name { width: 160px; }
-.tutortable .street { width: 160px; }
-.tutortable .city { width: 100px; }
-.tutortable .phone { width: 63px; }
-.tutortable .email { width: 150px; }
-.tutortable .study { width: 40px; }
-.tutortable .studentnumber { width: 70px; margin-right: 0; }
+.tutortable .name { width: 14em; }
+.tutortable .street { width: 14em; }
+.tutortable .city { width: 8em; }
+.tutortable .phone { width: 5em; }
+.tutortable .email { width: 13em; }
+.tutortable .study { width: 5em; }
+.tutortable .studentnumber { width: 6em; margin-right: 0; }
 
 /* */
 table.uploadform, table.uploadform td {
@@ -565,6 +555,7 @@ td.altTabBg1 {
 
 .newsBy {
 	font-size: 90%;
+	display: flex;
 }
 
 .newsBy .dato {

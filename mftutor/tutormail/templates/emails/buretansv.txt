@@ -35,11 +35,16 @@ lavet en guide til næste års gruppe.
 Dit ansvar som gruppeansvarlig er at koordinere og fordele arbejdet -
 ikke at lave det hele selv :)
 
-Hvis du er blevet ansvarlig for SOL, sangbog eller tutorbog,
+Hvis du er blevet ansvarlig for SOL, sangbog, legebog, rus2tursguide eller tutorbog,
 så er en fra din gruppe også i LaTeX-gruppen.
 
 Hvis der er en grund til, at du ikke ønsker at være gruppeansvarlig,
 skal bestyrelsen godkende et eventuelt bytte.
+
+Vi glæder os til at ses til RusKursusForberende Lang Lørdag d. 27. februar 2016 i Fysisk Auditorie.
+Husk deadline på tilmelding til mad mandag d. 15. februar på hjemmesiden under "Personligt" --> "Tilmeldinger".
+Vær opmærksom på at en afmedling kun er til maden, og hvis du er forhindret i at møde op skal du sende et
+begrundet afbud til koor@matfystutor.dk
 
 På vegne af tutorbestyrelsen,
 {{ webfar }}

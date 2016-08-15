@@ -1,29 +1,24 @@
 import functools
 
-from django.http import HttpResponse
-from django.template import RequestContext, loader
+from django.template.response import TemplateResponse
 import django.contrib.auth.backends
-
-from mftutor.settings import YEAR, TUTORMAIL_YEAR
-from mftutor.tutor.models import TutorProfile, Tutor, Rus
+from django.views.generic import TemplateView
 
 
-def rusclass_required_error(request):
-    t = loader.get_template('rusclass_required.html')
-    c = RequestContext(request)
-    return HttpResponse(t.render(c), status=403)
+class TemplateResponseForbidden(TemplateResponse):
+    status_code = 403
 
+rusclass_required_error = TemplateView.as_view(
+    response_class=TemplateResponseForbidden,
+    template_name='rusclass_required.html')
 
-def tutorbest_required_error(request):
-    t = loader.get_template('tutorbest_required.html')
-    c = RequestContext(request)
-    return HttpResponse(t.render(c), status=403)
+tutorbest_required_error = TemplateView.as_view(
+    response_class=TemplateResponseForbidden,
+    template_name='tutorbest_required.html')
 
-
-def tutor_required_error(request):
-    t = loader.get_template('tutor_required.html')
-    c = RequestContext(request)
-    return HttpResponse(t.render(c), status=403)
+tutor_required_error = TemplateView.as_view(
+    response_class=TemplateResponseForbidden,
+    template_name='tutor_required.html')
 
 
 # Decorator

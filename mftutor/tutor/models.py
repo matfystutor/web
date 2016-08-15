@@ -8,6 +8,7 @@ import re
 from django.utils.encoding import python_2_unicode_compatible
 from django.db import models, IntegrityError
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from mftutor import settings
 from mftutor.tutor.managers import TutorProfileManager, TutorManager, \
     VisibleTutorGroups, RusManager, RusClassManager
@@ -20,7 +21,8 @@ class TutorProfile(models.Model):
     objects = TutorProfileManager()
 
     id = models.AutoField(primary_key=True)
-    user = models.OneToOneField(User, null=True, blank=True, on_delete=models.SET_NULL)
+    user = models.OneToOneField(
+        User, null=True, blank=True, on_delete=models.SET_NULL)
 
     name = models.CharField(
         max_length=60, verbose_name="Fulde navn")
@@ -103,6 +105,16 @@ class TutorProfile(models.Model):
     def set_user_name(self, user=None):
         self.set_instance_user_name(self, user)
 
+    @staticmethod
+    def clean_phone(phone):
+        pattern = r'\+?[0-9 ]*$'
+        if not re.match(pattern, phone):
+            raise ValidationError('Telefonnummer må kun indeholde tal')
+        return phone.replace(' ', '')
+
+    def clean(self):
+        self.phone = self.clean_phone(self.phone)
+
 
 # "Arbejdsgruppe"
 @python_2_unicode_compatible
@@ -119,8 +131,8 @@ class TutorGroup(models.Model):
     visible = models.BooleanField(default=False)
     year = models.IntegerField(verbose_name="Tutorår", null=True)
     leader = models.ForeignKey(
-        'Tutor', verbose_name='Gruppeansvarlig', null=True,
-        on_delete=models.SET_NULL)
+        'Tutor', verbose_name='Gruppeansvarlig',
+        null=True, blank=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return '%s %s' % (self.handle, self.year)
@@ -214,21 +226,42 @@ class Tutor(models.Model):
             year = settings.YEAR
 
         if self.year != year:
-            return False
+            r = False
         elif self.early_termination is not None:
-            return False
+            r = False
         else:
+            r = True
+
+        if not r and self.is_old_tutorbest(year):
             return True
+
+        return r
     is_member.boolean = True
 
     def is_tutorbest(self, year=None):
-        if not self.is_member(year=year):
-            return False
-        elif self.groups.filter(handle__exact='best').exists():
+        if self.is_member(year=year):
+            if self.groups.filter(handle__exact='best').exists():
+                return True
+
+        if self.is_old_tutorbest(year):
             return True
-        else:
-            return False
+        return False
+
     is_tutorbest.boolean = True
+
+    def is_old_tutorbest(self, year=None):
+        email_year = settings.TUTORMAIL_YEAR
+        if year is None:
+            year = settings.YEAR
+        if year == settings.YEAR and email_year != year:
+            try:
+                prev_tutor = Tutor.objects.get(
+                    profile=self.profile, year=email_year)
+                if prev_tutor.is_tutorbest(email_year):
+                    return True
+            except Tutor.DoesNotExist:
+                pass
+        return False
 
     def is_tutorbur(self):
         if not self.is_member():

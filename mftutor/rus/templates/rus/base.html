@@ -1,8 +1,6 @@
 {% extends "base.html" %}
 {% block header %}
-<div id="rusheader" style="position: relative"><a href="/"><img src="{{ STATIC_URL }}tutor2014-header-2.jpg" /></a>
-<img src="{{ STATIC_URL }}IDA_basic_grey_RGB.png"
-style="position: absolute; right: 14px; top: 11px; width: 100px; height: 46px;" />
+<div id="rusheader" style="position: relative"><a href="/"><img src="{{ STATIC_URL }}matfyslogo2015.jpg" /></a>
 </div>
 {% endblock %}
 {% block menu %}
@@ -22,9 +20,6 @@ style="position: absolute; right: 14px; top: 11px; width: 100px; height: 46px;" 
 <ul class="subnav">
   <li><a href="{% url 'rus_kalender' %}">Kalender</a></li>
 </ul>
-</li>
-<li class="trigger">
-<a href="{% url 'rus_rusbrev' %}">Rusbrev</a>
 </li>
 <li class="trigger">
 <a href="{% url 'rus_holdlister' %}">Holdlister</a>

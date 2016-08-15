@@ -67,7 +67,8 @@ class RusClassView(TemplateView):
         from django.db.models import Count
         return (RusClass.objects
                 .filter(year=self.request.rusyear)
-                .annotate(num_russes=Count('rus'), num_tutors=Count('tutor')))
+                .annotate(num_russes=Count('rus'), num_tutors=Count('tutor'))
+                .filter(num_russes__gt=0))
 
     def get_context_data(self, **kwargs):
         context_data = super(RusClassView, self).get_context_data(**kwargs)
@@ -182,3 +183,23 @@ class RusPasswordChangeView(FormView):
         kwargs = super(RusPasswordChangeView, self).get_form_kwargs()
         kwargs['user'] = self.request.user
         return kwargs
+
+
+class TutorListView(TemplateView):
+    template_name = 'rus/tutor_list_view.html'
+
+    def get_context_data(self, **kwargs):
+        context_data = super(TutorListView, self).get_context_data(**kwargs)
+
+        year = self.request.year
+        qs = RusClass.objects.filter(year=year)
+        qs = qs.prefetch_related('tutor_set__profile')
+
+        rusclass_list = []
+        for rc in qs:
+            rc.tutors = [tu.profile for tu in rc.tutor_set.all()]
+            rusclass_list.append(rc)
+
+        context_data['rusclass_list'] = rusclass_list
+        context_data['year'] = year
+        return context_data

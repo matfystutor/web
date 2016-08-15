@@ -4,7 +4,7 @@
     <span class="day">{{ event.start_date|date:"j" }}</span>
 </div>
 <div class="eventtitle"><a href="{% url 'event' event.pk %}">{{ event.title }}</a>
-{% if event.location %}- <span class="eventlocation">{{ event.location }}</span>{% endif %}
+{% if event.location %}&ndash; <span class="eventlocation">{{ event.location }}</span>{% endif %}
 </div>
 <div class="eventtime">{{ event.start_date|date:"l j. F"|lower|capfirst }}
 {% if event.start_date != event.end_date %}

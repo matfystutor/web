@@ -3,9 +3,16 @@ from ..tutor.auth import tutorbur_required
 
 from .views import BurStartView
 from .views import ChooseSessionView, NewSessionView, EditSessionView
-from .views import RusListView, RusCreateView, RusListRPC, RusChangesView
-from .views import HandoutListView, HandoutNewView, HandoutSummaryView, \
-        HandoutResponseView, HandoutResponseDeleteView
+from .views import (
+    RusListView, RusCreateView, RusListRPC, RusChangesView,
+    RusChangesTableView,
+)
+from .views import (
+    HandoutListView, HandoutNewView, HandoutSummaryView,
+    HandoutResponseView, HandoutResponseDeleteView,
+    HandoutEditView,
+    HandoutCrossReference,
+)
 from .views import RusInfoListView, RusInfoView, RusInfoDumpView
 from .views import LightboxAdminView
 from .views import ArrivedStatsView
@@ -30,6 +37,8 @@ urlpatterns = patterns('',
         name='reg_rpc'),
     url(r'^ruslist/changes/$', tutorbur_required(RusChangesView.as_view()),
         name='reg_changes'),
+    url(r'^ruslist/changes/csv/$', tutorbur_required(RusChangesTableView.as_view()),
+        name='reg_changes_csv'),
 
     url(r'^handout/$', tutorbur_required(HandoutListView.as_view()),
         name='handout_list'),
@@ -37,6 +46,10 @@ urlpatterns = patterns('',
         name='handout_new'),
     url(r'^handout/(?P<handout>\d+)/$', tutorbur_required(HandoutSummaryView.as_view()),
         name='handout_summary'),
+    url(r'^handout/(?P<pk>\d+)/crossref/$', tutorbur_required(HandoutCrossReference.as_view()),
+        name='handout_crossref'),
+    url(r'^handout/(?P<pk>\d+)/edit/$', tutorbur_required(HandoutEditView.as_view()),
+        name='handout_edit'),
     url(r'^handout/(?P<handout>\d+)/(?P<rusclass>[a-z0-9]+)/$', tutorbur_required(HandoutResponseView.as_view()),
         name='handout_response'),
     url(r'^handout/(?P<handout>\d+)/(?P<rusclass>[a-z0-9]+)/delete/$',

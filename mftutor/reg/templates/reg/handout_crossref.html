@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Krydstjek</h1>
+<form method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Krydstjek" />
+</form>
+{% if results %}
+<p>{{ matches }} regex matches.</p>
+<ul>
+	{% for s in skipped %}
+	<li>{{ s }}</li>
+	{% endfor %}
+</ul>
+<h2>Mangler</h2>
+<p>
+{{ missing_checked|length }}
+har kryds i Bursystemet, men mangler i teksten.
+</p>
+<ul>
+{% for rr in missing_checked %}
+<li>{{ rr.rus.rusclass }} {{ rr.rus.profile.studentnumber }} {{ rr.rus.profile.name }}
+{{ rr.note }}
+</li>
+{% endfor %}
+</ul>
+<h2>Ej afkrydset</h2>
+<p>
+{{ common_unchecked|length }}
+findes i teksten, men har ikke kryds i Bursystemet.
+</p>
+<ul>
+{% for rr in common_unchecked %}
+<li>{{ rr.rus.rusclass }} {{ rr.rus.profile.studentnumber }} {{ rr.rus.profile.name }}
+{{ rr.note }}
+</li>
+{% endfor %}
+</ul>
+<h2>Ukendte årskortnumre</h2>
+<p>
+{{ unknown|length }}
+ukendte årskortnumre i teksten.
+</p>
+<ul>
+{% for line in unknown %}
+<li>{{ line }}</li>
+{% endfor %}
+</ul>
+<h2>OK</h2>
+<p>
+{{ common_checked|length }} med kryds er i orden;
+{{ missing_unchecked|length }} uden kryds er i orden.
+</p>
+<ul>
+    {% for r in by_rusclass %}
+    <li>{{ r.rusclass.internal_name }}:
+        {{ r.rus_list|length }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}

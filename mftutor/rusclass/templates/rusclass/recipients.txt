@@ -1,0 +1,4 @@
+{% for o in list %}{{ o.name }}
+{% for t in o.tutors %}"{{ t.name }}" <{{ t.email }}>, {% endfor %}
+
+{% endfor %}
