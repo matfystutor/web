@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import json
 
+from django.http import HttpResponseRedirect
 from django.views.generic import UpdateView, TemplateView, FormView, ListView
 from django.views.generic.list import MultipleObjectMixin
 from django import forms
@@ -175,11 +176,7 @@ class SignupImportView(FormView):
             appgroup.application = app
             appgroup.save()
 
-        return self.render_to_response(
-            self.get_context_data(
-                form=form,
-                study=json.dumps(sorted(set((a['study'].lower(), parse_study(a['study'])) for a in result))),
-                result=json.dumps(result, indent=0, sort_keys=True)))
+        return HttpResponseRedirect(reverse("signup_list"))
 
     def get_tutorgroup_dict(self):
         tutorgroups = TutorGroup.objects.filter(visible=True, year=self.request.year)
