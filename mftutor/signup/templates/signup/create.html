@@ -74,7 +74,6 @@ function group_onchange() {
 
 window.addEventListener('load', group_onchange, false);
 </script>
-
 {% endblock %}
 {% block content %}
     <form method="post" id="action_form">{% csrf_token %}
@@ -99,7 +98,9 @@ window.addEventListener('load', group_onchange, false);
                 <td class="name" title="{{ app.profile.name }}">{{ app.profile.name }}</td>
                 <td>
                     {% if app.accepted %}
-                        {{ app.groups }}
+                        {% for group in app.assigned_groups.all %}
+    {{ group.name }}{% if not forloop.last %},{% endif %}
+{% endfor %}
                     {% else %}
                         (afvist)
                     {% endif %}

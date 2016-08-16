@@ -554,3 +554,4 @@ class TutorCreateView(FormView):
     def get_context_data(self, **kwargs):
         context_data = super(TutorCreateView, self).get_context_data(**kwargs)
         context_data['application_list'] = self.get_applications()
+        return context_data
