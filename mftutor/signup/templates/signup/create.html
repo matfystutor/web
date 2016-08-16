@@ -74,40 +74,42 @@ function group_onchange() {
 
 window.addEventListener('load', group_onchange, false);
 </script>
+
 {% endblock %}
 {% block content %}
-<form method="post" id="action_form">{% csrf_token %}
-<input type="hidden" name="action" />
-<input type="hidden" name="nargs" />
-<input type="hidden" name="argument0" />
-<input type="hidden" name="argument1" />
-</form>
-<h1>Tutoransøgninger</h1>
-<form method="post">{% csrf_token %}
-<table cellspacing="0" cellpadding="2" class="applications">
-<thead>
-<tr>
-<th>Navn</th>
-<th>Grupper</th>
-<th>Emailskabelon</th>
-</tr>
-</thead>
-<tbody>
-{% for app in application_list %}
-<tr>
-<td class="name" title="{{ app.profile.name }}">{{ app.profile.name }}</td>
-<td>
-{% if app.accepted %}
-{{ app.groups }}
-{% else %}
-(afvist)
-{% endif %}
-</td>
-<td>
-{{ app.email_field }}
-</td>
-</tr>
-{% endfor %}
-</tbody>
-</table>
+    <form method="post" id="action_form">{% csrf_token %}
+        <input type="hidden" name="action" />
+        <input type="hidden" name="nargs" />
+        <input type="hidden" name="argument0" />
+        <input type="hidden" name="argument1" />
+    </form>
+    <h1>Tutoransøgninger</h1>
+    <form method="post">{% csrf_token %}
+    <table cellspacing="0" cellpadding="2" class="applications">
+        <thead>
+        <tr>
+            <th>Navn</th>
+            <th>Grupper</th>
+            <th>Emailskabelon</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for app in application_list %}
+            <tr>
+                <td class="name" title="{{ app.profile.name }}">{{ app.profile.name }}</td>
+                <td>
+                    {% if app.accepted %}
+                        {{ app.groups }}
+                    {% else %}
+                        (afvist)
+                    {% endif %}
+                </td>
+                <td>
+                    {{ app.email_field }}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </form>
 {% endblock %}
