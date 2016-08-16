@@ -562,21 +562,63 @@ class TutorCreateView(FormView):
         return reverse('signup_create')
 
     def form_valid(self, form):
-        tutor_objects = [self.application_to_tutor(application) for application in self.get_applications()]
+        applications = self.get_applications()
 
-        # TODO add once done
-        #for tutor in tutor_objects:
-        #    tutor.save()
+        # divide into groups that match email templates
+        grouped_tutors = self.divide_into_groups(applications)
+
+        # save tutor objects
+        all_accepted_tutors = []
+        all_accepted_tutors += grouped_tutors["accepted"]
+        all_accepted_tutors += grouped_tutors["responsable"]
+        all_accepted_tutors += grouped_tutors["buret"]
+        all_accepted_tutors += grouped_tutors["buret_responsable"]
+        self.save_tutor_from_applications(all_accepted_tutors, dry_run=True)
+
+        # send emails
+        # TODO
 
         return super(TutorCreateView, self).form_valid(form)
 
     @staticmethod
-    def application_to_tutor(application):
-        if application.accepted:
-            tutor = Tutor(
-                profile=application.profile,
-                year=application.year,
-            )
-            # TODO add groups
-            return tutor
-        return None
+    def divide_into_groups(applications):
+        status = {
+            "rejected": [],
+            "accepted": [],
+            "responsable": [],
+            "buret": [],
+            "buret_responsable": []
+        }
+        for application in applications:
+            if not application.accepted:
+                status["rejected"].append(application)
+                continue
+            tutor_groups = application.assigned_groups.all()
+
+            # TODO add tutors that are responsible for a group
+
+            if 'buret' in tutor_groups:
+                status['buret'].append(application)
+            else:
+                status['accepted'].append(application)
+
+        return status
+
+    @staticmethod
+    def save_tutor_from_applications(applications, dry_run=False):
+        for application in applications:
+            try:
+                tutor = Tutor.objects.get(
+                    profile=application.profile,
+                    year=application.year,
+                )
+            except Tutor.DoesNotExist:
+                tutor = Tutor(
+                    profile=application.profile,
+                    year=application.year,
+                )
+                if not dry_run:
+                    tutor.save()
+            if not dry_run:
+                tutor.groups = application.assigned_groups.all()
+                tutor.save()
