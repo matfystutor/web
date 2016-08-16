@@ -534,6 +534,12 @@ class TutorCreateForm(forms.Form):
 
 class TutorCreateView(FormView):
     template_name = 'signup/create.html'
+    form_class = TutorCreateForm
+
+    def get_form_kwargs(self):
+        kwargs = super(TutorCreateView, self).get_form_kwargs()
+        kwargs["applications"] = self.get_applications()
+        return kwargs
 
     def get_applications(self):
         qs = TutorApplication.objects.filter(year=self.request.year)
