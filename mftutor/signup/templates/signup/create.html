@@ -99,8 +99,8 @@ window.addEventListener('load', group_onchange, false);
                 <td>
                     {% if app.accepted %}
                         {% for group in app.assigned_groups.all %}
-    {{ group.name }}{% if not forloop.last %},{% endif %}
-{% endfor %}
+                            {{ group.name }}{% if not forloop.last %},{% endif %}
+                        {% endfor %}
                     {% else %}
                         (afvist)
                     {% endif %}

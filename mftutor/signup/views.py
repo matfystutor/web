@@ -138,7 +138,10 @@ class SignupImportView(FormView):
                 Tutor.objects.filter(profile=tp, year__lt=self.request.year))
 
         # 4. Retrieve all TutorGroups
-        tg_dict = self.get_tutorgroup_dict()
+        try:
+            tg_dict = self.get_tutorgroup_dict()
+        except KeyError:
+            tg_dict = {}
 
         # 5. Generate TutorApplicationGroup objects
         application_groups = []
