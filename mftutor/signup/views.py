@@ -187,22 +187,25 @@ class SignupImportView(FormView):
             tg.name: tg
             for tg in tutorgroups
         }
-        tg_dict['TØ i rusdagene'] = {
-            'dat': tg_dict.get('TØ i rusdagene - datalogi'),
-            'it': tg_dict.get('TØ i rusdagene - IT'),
-            'mat': tg_dict.get('TØ i rusdagene - matematik'),
-            'mok': tg_dict.get('TØ i rusdagene - mat/øk'),
-            'nano': tg_dict.get('TØ i rusdagene - nano'),
-            'fys': tg_dict.get('TØ i rusdagene - fysik'),
-        }
-        tg_dict['Dias'] = {
-            'dat': tg_dict.get('Dias - CS'),
-            'it': tg_dict.get('Dias - CS'),
-            'mat': tg_dict.get('Dias - IMF'),
-            'mok': tg_dict.get('Dias - IMF'),
-            'nano': tg_dict.get('Dias - IFA'),
-            'fys': tg_dict.get('Dias - IFA'),
-        }
+        try:
+            tg_dict['TØ i rusdagene'] = {
+                'dat': tg_dict.get('TØ i rusdagene - datalogi'),
+                'it': tg_dict.get('TØ i rusdagene - IT'),
+                'mat': tg_dict.get('TØ i rusdagene - matematik'),
+                'mok': tg_dict.get('TØ i rusdagene - mat/øk'),
+                'nano': tg_dict.get('TØ i rusdagene - nano'),
+                'fys': tg_dict.get('TØ i rusdagene - fysik'),
+            }
+            tg_dict['Dias'] = {
+                'dat': tg_dict.get('Dias - CS'),
+                'it': tg_dict.get('Dias - CS'),
+                'mat': tg_dict.get('Dias - IMF'),
+                'mok': tg_dict.get('Dias - IMF'),
+                'nano': tg_dict.get('Dias - IFA'),
+                'fys': tg_dict.get('Dias - IFA'),
+            }
+        except KeyError:
+            pass
         renames = [
             ('iNano-lab', 'iNANO-labrundvisning'),
             ('IFA-lab', 'IFA-Labrundvisning'),
@@ -216,7 +219,10 @@ class SignupImportView(FormView):
         ]
         for app_name, site_name in renames:
             if app_name not in tg_dict:
-                tg_dict[app_name] = tg_dict[site_name]
+                try:
+                    tg_dict[app_name] = tg_dict[site_name]
+                except KeyError:
+                    pass
         return tg_dict
 
 
