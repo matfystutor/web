@@ -531,8 +531,7 @@ class GroupLeaderView(GroupLeaderViewBase):
 class TutorCreateForm(forms.Form):
     def __init__(self, applications, **kwargs):
         super(TutorCreateForm, self).__init__(**kwargs)
-        for app in applications:
-            pass
+
 
 
 class TutorCreateView(FormView):
@@ -558,3 +557,26 @@ class TutorCreateView(FormView):
         context_data = super(TutorCreateView, self).get_context_data(**kwargs)
         context_data['application_list'] = self.get_applications()
         return context_data
+
+    def get_success_url(self):
+        return reverse('signup_create')
+
+    def form_valid(self, form):
+        tutor_objects = [self.application_to_tutor(application) for application in self.get_applications()]
+
+        # TODO add once done
+        #for tutor in tutor_objects:
+        #    tutor.save()
+
+        return super(TutorCreateView, self).form_valid(form)
+
+    @staticmethod
+    def application_to_tutor(application):
+        if application.accepted:
+            tutor = Tutor(
+                profile=application.profile,
+                year=application.year,
+            )
+            # TODO add groups
+            return tutor
+        return None
