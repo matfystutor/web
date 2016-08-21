@@ -14,6 +14,7 @@ static_pages = [url('^'+x+'/', TemplateView.as_view(template_name='rus/'+x+'.htm
         'kalender',
         'rusbrev',
         'rse',
+        'bogliste',
         )]
 urlpatterns = patterns('',
     url(r'^$', RusStartView.as_view(), name='rus_start'),
