@@ -98,8 +98,8 @@ Eksporter til Google Contacts
     <td>{{ rus.profile.name }}</td>
     <td>{{ rus.phone_field }} {{ rus.phone_field.errors }}</td>
     <td>{{ rus.street_field }} {{ rus.street_field.errors }}</td>
-    <td>{{ rus.city_field }} {{ rus.city_field.errors }}</td>
     <td>{{ rus.profile.studentnumber|default_if_none:"" }}</td>
+    <td>{{ rus.city_field }} {{ rus.city_field.errors }}</td>
     <td>{{ rus.email_field }} {{ rus.email_field.errors }}</td>
     <td>{% if rus.profile.studentnumber %}{{ rus.reset_password_field }}
         {% endif %}
