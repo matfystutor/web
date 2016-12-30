@@ -15,7 +15,8 @@ Clone the repository:
 You should run the Django project in a virtualenv. For a local non-root virtualenv installation:
 
     virtualenv web-venv
-    source web-venv/bin/activate
+    source web-venv/bin/activate (not windows)
+    ./web-venv/scripts/activate (windows)
     pip install -r requirements.txt
 
 You need to create a mftutor/settings/local.py based on local.py.example in the
