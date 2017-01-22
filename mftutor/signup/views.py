@@ -150,14 +150,17 @@ class SignupImportView(FormView):
             try:
                 group = tg_dict[group_name]
             except KeyError:
-                unknown_names.append(group_name)
-                continue
-            if isinstance(group, dict):
-                study = parse_study(app.study)
-                if study is None:
-                    group = next(iter(group.values()))
+                trans_group = self.get_real_tutorgroup_name(group_name, app.study)
+                if trans_group is not None:
+                    try:
+                        group = tg_dict[trans_group]
+                    except KeyError:
+                        unknown_names.append(trans_group)
+                        unknown_names.append(group_name)
+                        continue
                 else:
-                    group = group[study]
+                    unknown_names.append(group_name)
+                    continue
             ag = TutorApplicationGroup(group=group, priority=priority)
             application_groups.append((app, ag))
 
@@ -187,25 +190,29 @@ class SignupImportView(FormView):
             tg.name: tg
             for tg in tutorgroups
         }
-        try:
-            tg_dict['TØ i rusdagene'] = {
-                'dat': tg_dict.get('TØ i rusdagene - datalogi'),
-                'it': tg_dict.get('TØ i rusdagene - IT'),
-                'mat': tg_dict.get('TØ i rusdagene - matematik'),
-                'mok': tg_dict.get('TØ i rusdagene - mat/øk'),
-                'nano': tg_dict.get('TØ i rusdagene - nano'),
-                'fys': tg_dict.get('TØ i rusdagene - fysik'),
-            }
-            tg_dict['Dias'] = {
-                'dat': tg_dict.get('Dias - CS'),
-                'it': tg_dict.get('Dias - CS'),
-                'mat': tg_dict.get('Dias - IMF'),
-                'mok': tg_dict.get('Dias - IMF'),
-                'nano': tg_dict.get('Dias - IFA'),
-                'fys': tg_dict.get('Dias - IFA'),
-            }
-        except KeyError:
-            pass
+        return tg_dict
+
+    def get_real_tutorgroup_name(self, group_name, study):
+        tg_dict = {}
+        tg_dict['TØ i rusdagene'] = {
+            'dat': 'TØ i rusdagene - datalogi',
+            'it': 'TØ i rusdagene - IT',
+            'mat': 'TØ i rusdagene - matematik',
+            'mok': 'TØ i rusdagene - mat/øk',
+            'nano': 'TØ i rusdagene - nano',
+            'fys': 'TØ i rusdagene - fysik',
+        }
+        tg_dict['Dias'] = {
+            'dat': 'Dias - CS',
+            'it': 'Dias - CS',
+            'mat': 'Dias - IMF',
+            'mok': 'Dias - IMF',
+            'nano': 'Dias - IFA',
+            'fys': 'Dias - IFA',
+        }
+        if group_name in tg_dict:
+            s = parse_study(study)
+            return tg_dict[group_name][s]
         renames = [
             ('iNano-lab', 'iNANO-labrundvisning'),
             ('IFA-lab', 'IFA-Labrundvisning'),
@@ -218,12 +225,8 @@ class SignupImportView(FormView):
             ('Sportsdagsgruppen', 'Sportsdag'),
         ]
         for app_name, site_name in renames:
-            if app_name not in tg_dict:
-                try:
-                    tg_dict[app_name] = tg_dict[site_name]
-                except KeyError:
-                    pass
-        return tg_dict
+            if app_name == group_name:
+                return site_name
 
 
 class SignupListActionForm(forms.Form):
