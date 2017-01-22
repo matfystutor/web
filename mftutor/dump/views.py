@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.generic import View
 
-from mftutor.tutor.models import Tutor, Rus
+from mftutor.tutor.models import Tutor, Rus, TutorGroup
 from mftutor.events.models import EventParticipant
 
 
@@ -145,7 +145,7 @@ class TutorDumpView(DumpView):
             return group.handle
 
     def get_queryset_base(self):
-        return Tutor.members(self.request.year)
+        return Tutor.objects.all()
 
     def get_filter_kwargs(self, params):
         gr = params.pop('group', None)
@@ -183,3 +183,14 @@ class EventsDumpView(DumpView):
         'notes': 'notes',
     }
     tex_name = 'tutor'
+
+
+class GroupsDumpView(DumpView):
+    model = TutorGroup
+    available_fields = {
+        'name': 'name',
+        'year': 'year',
+        'leader': 'leader__profile__name',
+        'handle': 'handle',
+    }
+    tex_name = 'group'
