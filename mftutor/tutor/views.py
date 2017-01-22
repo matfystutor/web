@@ -204,7 +204,9 @@ class GroupLeaderForm(forms.Form):
         super(GroupLeaderForm, self).__init__(*args, **kwargs)
         self.tutor_year = year
 
-        for i, group in enumerate(groups):
+        for i, group_dict in enumerate(groups):
+            group = TutorGroup.objects.get(pk=group_dict["pk"])
+
             tutors = list(Tutor.members(year).filter(groups=group))
             choices = [
                 (tu.pk, tu.profile.name)
@@ -224,18 +226,73 @@ class GroupLeaderForm(forms.Form):
                 initial=current_leader)
 
 
-class GroupLeaderView(FormView):
+class GroupLeaderViewBase(FormView):
     form_class = GroupLeaderForm
     template_name = 'groupleaderadmin.html'
 
     def get_form_kwargs(self):
-        kwargs = super(GroupLeaderView, self).get_form_kwargs()
+        kwargs = super(GroupLeaderViewBase, self).get_form_kwargs()
         kwargs['year'] = self.request.year
-        kwargs['groups'] = TutorGroup.objects.filter(
-            visible=True, year=self.request.year)
+        kwargs['groups'] = self.get_groups()
         return kwargs
 
     def form_valid(self, form):
+        groups = self.get_groups()
+        changes = []
+        for group in groups:
+            new_leader_pk = form.cleaned_data['group_%s' % group['pk']]
+            new_leader = int(new_leader_pk) if new_leader_pk else None
+            if group['leader'] != new_leader:
+                changes.append((group, new_leader))
+        self.change_leaders(changes)
+
+        return self.render_to_response(
+            self.get_context_data(form=form, success=True))
+
+    def get_groups(self):
+        raise NotImplementedError
+
+    def change_leaders(self, changes):
+        raise NotImplementedError
+
+
+class GroupLeaderView(GroupLeaderViewBase):
+    form_class = GroupLeaderForm
+    template_name = 'groupleaderadmin.html'
+
+    def get_groups(self):
+        qs = TutorGroup.objects.filter(
+            visible=True, year=self.request.year)
+        qs = qs.prefetch_related('tutor_set__profile')
+        groups = []
+        for g in qs:
+            tutor_qs = g.tutor_set.all()
+            tutors = [(tu.pk, tu.profile.name) for tu in tutor_qs]
+            groups.append({
+                'pk': g.pk,
+                'name': g.name,
+                'tutors': tutors,
+                'leader': g.leader_id,
+            })
+        return groups
+
+    # Only called if leader group exists in form_valid, so no try/catch is ok
+    def change_leaders(self, changes):
+        for group, new_leader in changes:
+            gr = TutorGroup.objects.get(pk=group['pk'])
+            gr.leader_id = new_leader or None
+            gr.save()
+
+        # additionally, update leader_group
+        leader_group = TutorGroup.objects.get(
+            handle='gruppeansvarlige', year=self.request.year)
+
+        group_leader_tuple_index = 1
+        leader_group.tutor_set = [change[group_leader_tuple_index] for change in changes]
+
+    def form_valid(self, form):
+        # Make sure group named 'grouppeansvarlige' exists
+        # because we add every grouppeansvarlig to that group
         if form.cleaned_data['update_leader_group']:
             try:
                 leader_group = TutorGroup.objects.get(
@@ -246,29 +303,7 @@ class GroupLeaderView(FormView):
                     'Ingen gruppe hedder "gruppeansvarlige"')
                 return self.form_invalid(form)
 
-        leaders = []
-        for field in form:
-            if not field.name.startswith('group_'):
-                continue
-
-            pk = field.name[6:]
-            gr = TutorGroup.objects.get(pk=pk)
-
-            if field.data:
-                new_leader = Tutor.objects.get(pk=field.data)
-                leaders.append(new_leader)
-            else:
-                new_leader = None
-
-            if gr.leader != new_leader:
-                gr.leader = new_leader
-                gr.save()
-
-        if form.cleaned_data['update_leader_group']:
-            leader_group.tutor_set = leaders
-
-        return self.render_to_response(
-            self.get_context_data(form=form, success=True))
+        return super(GroupLeaderView, self).form_valid(form)
 
 
 class ResetPasswordForm(forms.Form):

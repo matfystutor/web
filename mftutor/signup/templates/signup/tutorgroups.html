@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Opret arbejdsgrupper til {{ year }}{% endblock %}
+{% block content %}
+<h1>Opret arbejdsgrupper til {{ year }}</h1>
+
+{{ form.non_field_errors }}
+
+<form method="post">{% csrf_token %}
+<table>
+<tr>
+<th></th>
+<th>Sidst set</th>
+<th>Navn</th>
+</tr>
+{% for group in groups %}
+<tr>
+<td>
+{{ group.field }}
+{{ group.field.errors }}
+</td>
+<td>
+<label for="{{ group.field.id_for_label }}">{{ group.year }}</label>
+</td>
+<td>
+<label for="{{ group.field.id_for_label }}">{{ group.name }}</label>
+</td>
+</tr>
+{% endfor %}
+</table>
+<input type="submit" value="Opret valgte" />
+</form>
+{% endblock %}

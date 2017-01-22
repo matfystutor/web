@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Importer ansøgninger{% endblock %}
+{% block content %}
+<h1>Importer ansøgninger</h1>
+<form method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" />
+</form>
+<p>{{ study }}</p>
+<pre>{{ result }}</pre>
+{% endblock %}

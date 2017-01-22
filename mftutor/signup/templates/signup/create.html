@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}Tutoransøgninger{% endblock %}
+{% block head %}
+<style>
+.applications tr:nth-child(odd) td {
+	background-color: #eee;
+}
+
+.name, .study {
+	overflow: hidden;
+	white-space: nowrap;
+	max-width: 12em;
+	text-overflow: ellipsis;
+}
+
+.experience {
+	top: 0px;
+	right: 0px;
+	height: 100%;
+	position: absolute;
+	width: .7em;
+	background-color: #999;
+	text-align: center;
+	color: #eee;
+}
+
+.study {
+	max-width: 4em;
+}
+
+.group_list {
+	display: flex;
+}
+
+.appgroup {
+	position: relative;
+	padding: 0 1px;
+	border: 1px solid #888;
+	border-width: 1px 3px;
+	cursor: pointer;
+	overflow: hidden;
+	white-space: nowrap;
+	background-color: #fafafa;
+}
+
+.appgroup, .group_list select {
+	width: 90px;
+	box-sizing: border-box;
+	margin: 0 2px;
+}
+
+.appgroup.assigned {
+	background-color: #9e9;
+}
+</style>
+<script>
+function post_action(action) {
+	args = [].slice.call(arguments);
+	args.shift();  // remove action
+	console.log([action, args]);
+	var f = document.getElementById('action_form');
+	f.action.value = action;
+	f.nargs.value = args.length;
+	for (var i = 0; i < args.length; ++i) {
+		f['argument' + i].value = args[i];
+	}
+	f.submit();
+}
+
+function group_onchange() {
+	var f = document.getElementById('id_group');
+	if (f) f.onchange = function () { f.form.submit(); };
+}
+
+window.addEventListener('load', group_onchange, false);
+</script>
+{% endblock %}
+{% block content %}
+    <form method="post" id="action_form">{% csrf_token %}
+        <input type="hidden" name="action" />
+        <input type="hidden" name="nargs" />
+        <input type="hidden" name="argument0" />
+        <input type="hidden" name="argument1" />
+    </form>
+    <h1>Tutoransøgninger</h1>
+    <form method="post">{% csrf_token %}
+    <input type="submit" />
+    <table cellspacing="0" cellpadding="2" class="applications">
+        <thead>
+        <tr>
+            <th>Navn</th>
+            <th>Grupper</th>
+            <th>Emailskabelon</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for app in application_list %}
+            <tr>
+                <td class="name" title="{{ app.profile.name }}">{{ app.profile.name }}</td>
+                <td>
+                    {% if app.accepted %}
+                        {% for group in app.assigned_groups.all %}
+                            {{ group.name }}{% if not forloop.last %},{% endif %}
+                        {% endfor %}
+                    {% else %}
+                        (afvist)
+                    {% endif %}
+                </td>
+                <td>
+                    {{ app.email_field }}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </form>
+{% endblock %}
