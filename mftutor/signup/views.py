@@ -138,10 +138,7 @@ class SignupImportView(FormView):
                 Tutor.objects.filter(profile=tp, year__lt=self.request.year))
 
         # 4. Retrieve all TutorGroups
-        try:
-            tg_dict = self.get_tutorgroup_dict()
-        except KeyError:
-            tg_dict = {}
+        tg_dict = self.get_tutorgroup_dict()
 
         # 5. Generate TutorApplicationGroup objects
         application_groups = []
@@ -157,6 +154,7 @@ class SignupImportView(FormView):
                     except KeyError:
                         unknown_names.append(trans_group)
                         unknown_names.append(group_name)
+                        raise Exception((trans_group, group_name))
                         continue
                 else:
                     unknown_names.append(group_name)
@@ -220,7 +218,8 @@ class SignupImportView(FormView):
             ('Evaluering', 'Evalueringer'),
             ('Hytte', 'Hytter'),
             ('Indkøb', 'Metro'),
-            ('Lokalegruppen', 'Lokaler'),
+            ('Lokalegruppen', 'Lokale'),
+            ('Lokaler', 'Lokale'),
             ('Rusguide', 'Rushåndbog'),
             ('Sportsdagsgruppen', 'Sportsdag'),
         ]
