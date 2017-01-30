@@ -154,7 +154,6 @@ class SignupImportView(FormView):
                     except KeyError:
                         unknown_names.append(trans_group)
                         unknown_names.append(group_name)
-                        raise Exception((trans_group, group_name))
                         continue
                 else:
                     unknown_names.append(group_name)
