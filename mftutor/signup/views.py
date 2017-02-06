@@ -93,13 +93,15 @@ class SignupImportView(FormView):
             app.previous_tutor_years = 0
             app.rus_year = 0
             app.new_password = False  # TODO -- should be part of application
-            app.buret = bool(a['buret'])
+            app.tutortype = a['tutortype']
             app.comments = 'Kendskab til LaTeX: %s' % a['latex']
             if a['comments']:
                 app.comments = '%s\n\n%s' % (app.comments, a['comments'])
             applications.append(app)
-            if a['buret']:
+            if a['tutortype'] == "Buret (kr\u00e6ver tutorerfaring)":
                 group_names.append((app, 'Buret', 0))
+            if a['tutortype'] == "Arbejdstutor (kr\u00e6ver tutorerfaring)":
+                group_names.append((app, 'Arbejdstutor', 0))
             for priority in range(1, 9):
                 group_name = a[str(priority)]
                 if group_name:
@@ -340,6 +342,7 @@ class SignupListView(FormView):
 
     def get_stats(self, applications):
         buret = 0
+        arbejdstutor = 0
         accepted = 0
         not_accepted = 0
         num_groups = [0, 0, 0, 0]
@@ -351,17 +354,22 @@ class SignupListView(FormView):
 
             assigned_count = 0
             b = False
+            at = False
             for g in app.group_list:
                 if g['assigned']:
                     assigned_count += 1
                     if g['handle'] == 'buret':
                         b = True
+                    if g['handle'] == 'arbejdstutor':
+                        at = True
 
             if assigned_count >= len(num_groups):
                 assigned_count = len(num_groups) - 1
 
             if b:
                 buret += 1
+            if at:
+                arbejdstutor += 1
             else:
                 num_groups[assigned_count] += 1
 
@@ -369,6 +377,7 @@ class SignupListView(FormView):
             'accepted': accepted,
             'not_accepted': not_accepted,
             'buret': buret,
+            'arbejdstutor': arbejdstutor,
         }
         for i, count in enumerate(num_groups):
             stats[str(i)] = count

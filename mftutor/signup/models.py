@@ -25,7 +25,7 @@ class TutorApplication(models.Model):
     rus_year = models.IntegerField()
     new_password = models.BooleanField()
     accepted = models.BooleanField(default=True)
-    buret = models.BooleanField()
+    tutortype = models.CharField(max_length=20)
 
     email_template = models.ForeignKey(
         EmailTemplate, null=True, blank=True, on_delete=models.SET_NULL)

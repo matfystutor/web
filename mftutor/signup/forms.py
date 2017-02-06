@@ -32,7 +32,7 @@ class SignupImportForm(forms.Form):
             "E-mail-adresse": "email",
             "\u00c5rskortnummer": "studentnumber",
             "Studieretning": "study",
-            "Buret": "buret",
+            "Tutor type": "tutortype",
             "1": "1",
             "2": "2",
             "3": "3",
@@ -42,11 +42,13 @@ class SignupImportForm(forms.Form):
             "7": "7",
             "8": "8",
             "Kendskab til LaTeX": "latex",
-            "Bem\u00e6rkninger": "comments",
+            "Kommentarer": "comments",
         }
         expected_header = set(header_fields.keys())
         ignored_fields = set([
             '', 'Tidspunkt', 'Timestamp',
+            'Tidsstempel', 'Sidefag',
+            "Der m\u00e5 l\u00e6gges sobre billeder af mig p\u00e5 Mat/Fys-tutorgruppens facebook side",
             "Antal \u00e5r som tutor",
             "Hvorn\u00e5r var du rus p\u00e5 mat/fys?"])
 
