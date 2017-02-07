@@ -14,9 +14,6 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'mftutor.settings'
 from mftutor.tutor.models import TutorGroup
 
 input_string = """arbejdstutor Arbejdstutor
-best	Bestyrelse
-buret	Buret
-burmor	Burmor
 cslab	CS-labrundvisning
 csdias	Dias - CS
 ifadias	Dias - IFA
@@ -31,14 +28,12 @@ hoestfest	Høstfest
 ifalab	IFA-Labrundvisning
 nanolab	iNANO-labrundvisning
 inko	Indkøb
-koor	Koordineringsgruppen
 korrektur	Korrektur
 latex	LaTeX
 legebog	Legebog
 lokale	Lokale
 parxafari	ParXafari
 grise	Praktiske Grise
-gris	Praktiske Grise-ansvarlig
 rkfl3	RKFL^3
 rkfw	RKFW
 rus2turguide	Rus2Turs-guide
@@ -58,9 +53,7 @@ toematoek	TØ i rusdagene - mat/øk
 toemat	TØ i rusdagene - matematik
 toenano	TØ i rusdagene - nano
 web	Web
-webfar	Webfar
-hacker	Wiki
-oekonomi	Økonomiansvarlig"""
+hacker	Wiki"""
 year = 2017
 qs = TutorGroup.objects.filter(year=year)
 existing_handles = set(g.handle for g in qs)
