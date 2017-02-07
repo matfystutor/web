@@ -589,7 +589,7 @@ class TutorCreateView(FormView):
         all_accepted_tutors += grouped_tutors["responsable"]
         all_accepted_tutors += grouped_tutors["buret"]
         all_accepted_tutors += grouped_tutors["buret_responsable"]
-        self.save_tutor_from_applications(all_accepted_tutors, dry_run=True)
+        self.save_tutor_from_applications(all_accepted_tutors)
 
         # send emails
         # TODO
