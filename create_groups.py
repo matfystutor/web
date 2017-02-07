@@ -13,7 +13,7 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'mftutor.settings'
 
 from mftutor.tutor.models import TutorGroup
 
-input_string = """arbejdstutor Arbejdstutor
+input_string = """arbejdstutor	Arbejdstutor
 cslab	CS-labrundvisning
 csdias	Dias - CS
 ifadias	Dias - IFA
