@@ -87,6 +87,7 @@ class TutorProfile(models.Model):
         u.save()
         self.user = u
         self.save()
+        return u
 
     @classmethod
     def set_instance_user_name(cls, tp, user=None):
