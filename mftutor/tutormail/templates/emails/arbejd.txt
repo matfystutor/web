@@ -2,8 +2,7 @@ Kære {{ navn }}
 	
 Tillykke TILLYKKE tillykke :-D
 
-Du er blevet tutor for tutoråret {{ year }}. Da vi ikke kender antallet af kommende russer endnu,
-kan vi dog ikke garantere, at du bliver holdtutor.
+Du er blevet tutor for tutoråret {{ year }}.
 
 Vi har oprettet en konto til dig inde på tutorhjemmesiden: www.matfystutor.dk,
 hvor du logger ind med dit årskortnummer: {{ studentnumber }}.

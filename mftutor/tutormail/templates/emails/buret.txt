@@ -14,10 +14,7 @@ På siden skal du under "Personligt" --> "Profil" udfylde de manglende
 oplysningerne om dig selv. Derudover skal du også under "Personligt" -->
 "Upload Billede" uploade et vellignende billede.
 
-Vi glæder os til at ses til RusKursusForberende Lang Lørdag d. 27. februar 2016 i Fysisk Auditorie.
-Husk deadline på tilmelding til mad mandag d. 15. februar på hjemmesiden under "Personligt" --> "Tilmeldinger".
-Vær opmærksom på at en afmedling kun er til maden, og hvis du er forhindret i at møde op skal du sende et
-begrundet afbud til koor@matfystutor.dk
+Vi glæder os til at ses til RusKursusForberende Lang Lørdag d. 4. marts
 
 På vegne af tutorbestyrelsen,
 {{ webfar }}

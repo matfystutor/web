@@ -1,25 +1,28 @@
-Kære {{ navn }},
+Kære {{ navn }}
+	
+Tillykke TILLYKKE tillykke :-D
 
-Du er blevet udtaget til at assistere den fabelagtige
-Mat/Fys-Tutorgruppe med at drive dette års udgave af Buret™.
-Du kan føle dig stolt. Buret™ er en særligt sej gruppe.
-{% if groups %}
-Udover buret er du også kommet i {{ groups }}
-{% endif %}
+Du er blevet tutor for tutoråret {{ year }}.
+
 Vi har oprettet en konto til dig inde på tutorhjemmesiden: www.matfystutor.dk,
 hvor du logger ind med dit årskortnummer: {{ studentnumber }}.
 {% if password %}Dit kodeord er {{ password }} -- men dette kan du ændre på hjemmesiden.{% else %}Dit kodeord er det samme, som du tidligere har brugt til tutor-/rushjemmesiden.{% endif %}
 
-På siden skal du under "Personligt" --> "Profil" udfylde de manglende
-oplysningerne om dig selv. Derudover skal du også under "Personligt" -->
-"Upload Billede" uploade et vellignende billede.
+Du skal også gå ind under "Personligt" --> "Profil" og
+udfylde oplysningerne om dig selv. Desuden skal du
+uploade et vellignende og sobert billede af dig selv under
+"Personligt" --> "Upload Billede".
+
+Vi har fordelt folk i grupper og har forsøgt at opfylde alles ønsker så vidt
+muligt. Du er kommet i {{ groups }}. Den gruppeansvarlige for
+hver gruppe indkalder snarest til et gruppemøde. 
 
 Vi har desuden vurderet, at du er ansvarlig og pålidelig, og derfor har vi
 gjort dig til gruppeansvarlig for {{ group }} :)
 
 Som ansvarlig har du til opgave at:
 - indkalde til gruppemøder; heriblandt første gruppemøde, hvor der
-udarbejdes en arbejdsplan (deadline d. 26. februar 2015), det kan være en god
+udarbejdes en arbejdsplan (deadline d. 26. februar 2016), det kan være en god
 ide at finde inspiration til denne i guiden fra sidste år (den
 kan findes på tutorhjemmesiden).
 - tjekke, at gruppens medlemmer deltager aktivt i arbejdet. Hvis en
@@ -41,6 +44,7 @@ så er en fra din gruppe også i LaTeX-gruppen.
 Hvis der er en grund til, at du ikke ønsker at være gruppeansvarlig,
 skal bestyrelsen godkende et eventuelt bytte.
 
-Vi glæder os til at ses til RusKursusForberende Lang Lørdag d. 4. marts 2017
+Vi glæder os til at ses til RusKursusForberende Lang Lørdag d. 4. marts 2017.
+
 På vegne af tutorbestyrelsen,
 {{ webfar }}
