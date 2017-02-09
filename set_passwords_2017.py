@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 import os
 import json
 import codecs
+import subprocess
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'mftutor.settings'
 
