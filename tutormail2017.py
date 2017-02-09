@@ -1,6 +1,12 @@
 # encoding: utf8
 from __future__ import unicode_literals
 
+'''
+1. Læs email2017.txt igennem for fejl (og datoer osv.) - og fiks dem
+2. Fjern udkommentering af "u.save()" i set_passwords_2017.py og kør den
+3. Fjern udkommentering af send_messages i denne fil og kør den
+'''
+
 import os
 import json
 import codecs
