@@ -29,6 +29,9 @@ def send_messages(messages, backend_type):
     return email_backend.send_messages(messages)
 
 
+YEAR = 2017
+
+
 def main():
     with open('passwords_2017.json') as fp:
         passwords = json.load(fp)
@@ -45,7 +48,7 @@ def main():
         ansv_names = [g.name for g in normal_groups if g.leader == tutor]
         context = dict(
             navn=tp.name.strip(),
-            year=2016,
+            year=YEAR,
             studentnumber=tp.studentnumber,
             groups=' og '.join(group_names),
             webfar='Alexandra Hou',
