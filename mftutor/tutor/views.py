@@ -239,15 +239,18 @@ class GroupLeaderViewBase(FormView):
     def form_valid(self, form):
         groups = self.get_groups()
         changes = []
+        debug = {'current': [group['leader'] for group in groups],
+                 'new': [form.cleaned_data['group_%s' % group['pk']] for group in groups]}
         for group in groups:
             new_leader_pk = form.cleaned_data['group_%s' % group['pk']]
             new_leader = int(new_leader_pk) if new_leader_pk else None
             if group['leader'] != new_leader:
                 changes.append((group, new_leader))
+        debug['changes'] = changes
         self.change_leaders(changes)
 
         return self.render_to_response(
-            self.get_context_data(form=form, success=True, changes=repr(changes)))
+            self.get_context_data(form=form, success=True, changes=repr(debug)))
 
     def get_groups(self):
         raise NotImplementedError
