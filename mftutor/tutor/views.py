@@ -247,7 +247,7 @@ class GroupLeaderViewBase(FormView):
         self.change_leaders(changes)
 
         return self.render_to_response(
-            self.get_context_data(form=form, success=True))
+            self.get_context_data(form=form, success=True, changes=repr(changes)))
 
     def get_groups(self):
         raise NotImplementedError

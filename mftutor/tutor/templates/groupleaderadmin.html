@@ -22,6 +22,8 @@ Her kan du vælge gruppeansvarlige!
 
 {% if success %}Succes!{% endif %}
 
+<!-- {{ changes }} -->
+
 {{ form.non_field_errors }}
 <form method="post" action="" class="twocol">{% csrf_token %}
 {% for field in form %}
