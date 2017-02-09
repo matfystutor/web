@@ -14,8 +14,8 @@ uploade et vellignende og sobert billede af dig selv under
 "Personligt" --> "Upload Billede".
 
 Vi har fordelt folk i grupper og har forsøgt at opfylde alles ønsker så vidt
-muligt. Du er kommet i {{ groups }}. Den gruppeansvarlige for
-hver gruppe indkalder snarest til et gruppemøde. 
+muligt. Du er kommet i {{ groups }}.
+Den gruppeansvarlige for hver gruppe indkalder snarest til et gruppemøde.
 
 Vi har desuden vurderet, at du er ansvarlig og pålidelig, og derfor har vi
 gjort dig til gruppeansvarlig for {{ group }} :)
