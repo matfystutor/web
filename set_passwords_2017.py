@@ -35,7 +35,7 @@ def main():
             print("Skip Alexandra")
             output[studentnumber] = 'bla'
             continue
-        user = tutor.profile.user
+        user = tutor.profile.get_or_create_user()
         output[studentnumber] = password
         user.set_password(password)
         users.append(user)
