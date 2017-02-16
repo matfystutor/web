@@ -3,7 +3,7 @@ var YEAR = 2014;
 function P(year, name) {
   var age = (YEAR - 2000) - year;
   var prefix = ['', 'g', 'b', 'o', 'to'];
-  if (age < prefix.length) return prefix[rel] + name;
+  if (age < prefix.length) return prefix[age] + name;
   else return 't' + (age - 3) + 'o' + name;
 }
 function navneleg() {
