@@ -78,8 +78,9 @@ function navneleg() {
     "Burmor":                             ["morten", "morten kaj", "morten kaj degnebolig", "burfar"],
     "Esben Bo Mahler":                    ["humanist esben", "humanist", "esben humaniora"],
     "Nikolai Houlberg Øllegaard":         ["webfar"],
-    "Nguyen Thien Anh Ly":                ["an", "anh", "ann"]
-  };
+    "Nguyen Thien Anh Ly":                ["an", "anh", "ann"],
+    "Tómas Bragi Reynisson":		  ["tomas"] 
+ };
 
   var tutorelements = document.getElementsByClassName('tutoraddress');
   var tutors = [];
