@@ -1,5 +1,5 @@
 var navneleg_activated = false;
-var YEAR = 2014;
+var YEAR = 2016;
 function P(year, name) {
   var age = (YEAR - 2000) - year;
   var prefix = ['', 'g', 'b', 'o', 'to'];
@@ -23,6 +23,7 @@ function navneleg() {
     "Camilla Ulbæk Pedersen":             ['fuul', P(14, 'sekr')],
     "Casper Grønne Christensen":          ["grønne"],
     "Christian Bonar Zeuthen":            ["fuzu", "zeuthen"],
+    "Christian Engelbrecht Larsen":       ["gris", "grisen"],
     "Christina Gøttsche":                 ["gøttsche", "mullemus", "gotye"],
     "Christina Moeslund Madsen":          ["fuhr"],
     "Daniel Holst Hviid":                 ["hviid", "minihahn", "mini-hahn", "mini hahn"],
@@ -30,6 +31,7 @@ function navneleg() {
     "Esben Bo Mahler":                    ["humanist esben", "humanist", "esben humaniora"],
     "Frederik Brinck Truelsen":           ["ålen"],
     "Frederik Jerløv":                    ["furi"],
+    "Freja Frederikke Pinderup":          ["fupi"],
     "Hans Christian Tankred":             ["hc"],
     "Hans-Martin Hannibal Lauridsen":     ["hannibal"],
     "Henrik Knakkegaard Christensen":     ["knakke", "kendrik", "kenrik"],
@@ -38,12 +40,15 @@ function navneleg() {
     "Jakob Grünewald Hjørringgaard":      ["gotye"],
     "Jakob Rørsted Mosumgaard":           [P(12, "sekr"), "fuan", "lokalemus"],
     "Jakob Ørhøj":                        ["ørhøj"],
+    "Janne Højmark Mønster":              [P(15, "sekr")],
     "Jens Ager Sørensen":                 ["printer jens"],
     "Johan Johannes Johannessen":         ["3j", "triple j", "triple-j", "jjj"],
     "Jonas Termansen":                    ["sortie", "sortiecat", "sortie@cs.au.dk", "sortie@maxsi.org"],
+    "Julie Thiim Gadeberg":               ["fuji"],
     "Kasper Lynderup Jensen":             ["jomfru jensen"],
     "Katrin Debes Kristensen":            ["solmor"],
     "Kenneth Lund Kjærgaard":             ["smør", 'gris',],
+    "Klaus Skovgaard Olesen":             ["kalus"],
     "Knud Valdemar Trøllund Lassen":      ["kv", 'knude', 'knude vertex'],
     "Kristoffer Winge":                   [P(10, "pr"), "fuan", "winge", "vinge"],
     "Lasse Ellegaard Jørgensen":          ["nano-peter"],
@@ -51,10 +56,11 @@ function navneleg() {
     "Laura Patricia Kaplan":              ["lokalemis","lokalemiss"],
     "Mads Fabricius":                     [P(12, "cerm"), "trefuan"],
     "Mai Olsen":                          ['3. mai'],
+    "Maija Bindzus":                      ['øko'],
     "Maiken Haahr Hansen":                [P(11, "vc"), "fuma", "mølle"],
     "Malene Machon Pedersen":             ["machon"],
     "Marianne Ostenfeldt Mortensen":      ["fumo"],
-    "Marie Louisa Tølbøll Berthelsen":    ["marie louisa"],
+    "Marie Louisa Tølbøll Berthelsen":    ["marie louisa", "burmor"],
     "Marie Ulsø":                         ["øko", "økomor", "kromutter", "ulsø"],
     "Martin Sand":                        ["furt", P(14, 'form')],
     "Mathias Dannesbo":                   ["fuhi", P(13, 'vc')],
@@ -63,18 +69,22 @@ function navneleg() {
     "Mette Lysgaard Schulz":              [P(13, "pr"), "metten", "koorbaby"],
     "Mette Galsgaard Malle":              ['biomalle', 'malle','øko the outlaw malle - crusher of lions'],
     "Morten Henriksen Birk":              ["birk", 'brik'],
-    "Morten Stockmarr Liljegren":         ["blomsterpenis","kone-laura"],
+    "Morten Stockmarr Liljegren":         ["blomsterpenis","kone-laura", "tform", "tutorform", "formand", "form"],
     "Nguyen Thien Anh Ly":                ["an", "anh", "ann"],
     "Nick Bakkegaard":                    ["justin", "bieber", "justin bieber", "web", "webfar"],
     "Niclas Spas Sørensen":               ["spas"],
     "Nikolai Houlberg Øllegaard":         ["webfar"],
+    "Nikolaj Voetmann Bruun":             ["bruun"],
     "Oliver Emil Harritslev Christensen": ["fuet", 'efuit'],
+    "Per Næsby Høgfeldt":                 [P(15, "fuan")],
     "Peter Lystlund Matzen":              ["matzen", "grisefar"],
     "Philip Tchernavskij":                ["tchernavskij", "mini-sean", "mini sean", "minisean", "gefuit"],
+    "Rune Terp":                          ['sten', 'runesten'],
     "Sabrina Tang Christensen":           [P(11, "cerm")],
     "Sandra Bleuenn Picard S Pedersen":   ["fubs"],
     "Sofie Filskov Hermansen":            ['ælling 1'],
     "Thomas Skovlund Hansen":             ['fuve'],
+    "Tobias Svangtun Nowak":              ['toby', 'fucktoby', '#fucktoby'],
     "Tómas Bragi Reynisson":		      ["tomas"] 
  };
 
