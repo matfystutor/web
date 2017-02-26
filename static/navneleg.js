@@ -11,6 +11,7 @@ function navneleg() {
   navneleg_activated = true;
 
   var aliases = {
+    "Alexandra Aldershaab Hou Olsen":     ["webfar"],  
     "Amalie Louise Stokholm":             ["fust"],
     "Anders Grøn Stensgaard":             ["grøn"],
     "Andreas Bendix Nuppenau":            ["funu"],
@@ -18,12 +19,15 @@ function navneleg() {
     "Asger Holm Agergaard":               ["fugr"],
     "Astrid Christiansen":                ["fuis"],
     "Benedikte Sofie Werk":               ["fubi"],
+    "Burmor":                             ["morten", "morten kaj", "morten kaj degnebolig", "burfar"],
     "Camilla Ulbæk Pedersen":             ['fuul', P(14, 'sekr')],
     "Casper Grønne Christensen":          ["grønne"],
     "Christian Bonar Zeuthen":            ["fuzu", "zeuthen"],
     "Christina Gøttsche":                 ["gøttsche", "mullemus", "gotye"],
     "Christina Moeslund Madsen":          ["fuhr"],
     "Daniel Holst Hviid":                 ["hviid", "minihahn", "mini-hahn", "mini hahn"],
+    "Emma Hillgaard":                     ['ælling 2'],
+    "Esben Bo Mahler":                    ["humanist esben", "humanist", "esben humaniora"],
     "Frederik Brinck Truelsen":           ["ålen"],
     "Frederik Jerløv":                    ["furi"],
     "Hans Christian Tankred":             ["hc"],
@@ -50,6 +54,7 @@ function navneleg() {
     "Maiken Haahr Hansen":                [P(11, "vc"), "fuma", "mølle"],
     "Malene Machon Pedersen":             ["machon"],
     "Marianne Ostenfeldt Mortensen":      ["fumo"],
+    "Marie Louisa Tølbøll Berthelsen":    ["marie louisa"],
     "Marie Ulsø":                         ["øko", "økomor", "kromutter", "ulsø"],
     "Martin Sand":                        ["furt", P(14, 'form')],
     "Mathias Dannesbo":                   ["fuhi", P(13, 'vc')],
@@ -59,27 +64,18 @@ function navneleg() {
     "Mette Galsgaard Malle":              ['biomalle', 'malle','øko the outlaw malle - crusher of lions'],
     "Morten Henriksen Birk":              ["birk", 'brik'],
     "Morten Stockmarr Liljegren":         ["blomsterpenis","kone-laura"],
+    "Nguyen Thien Anh Ly":                ["an", "anh", "ann"],
     "Nick Bakkegaard":                    ["justin", "bieber", "justin bieber", "web", "webfar"],
     "Niclas Spas Sørensen":               ["spas"],
+    "Nikolai Houlberg Øllegaard":         ["webfar"],
     "Oliver Emil Harritslev Christensen": ["fuet", 'efuit'],
     "Peter Lystlund Matzen":              ["matzen", "grisefar"],
     "Philip Tchernavskij":                ["tchernavskij", "mini-sean", "mini sean", "minisean", "gefuit"],
     "Sabrina Tang Christensen":           [P(11, "cerm")],
     "Sandra Bleuenn Picard S Pedersen":   ["fubs"],
     "Sofie Filskov Hermansen":            ['ælling 1'],
-    "Emma Hillgaard":                     ['ælling 2'],
-    //"Alexandra Fogtmann-Schulz":        ["tform"],
-    //"Anne Nielsen":                     "",
-    //"Diana Christensen":                "",
-    //"Maja Harborg Slot":                "",
-    //"Mette Bjerre":                     "",
-    //"Signe Greve":                      "",
-    //"Simon Aagaard Enni":               "",
-    "Burmor":                             ["morten", "morten kaj", "morten kaj degnebolig", "burfar"],
-    "Esben Bo Mahler":                    ["humanist esben", "humanist", "esben humaniora"],
-    "Nikolai Houlberg Øllegaard":         ["webfar"],
-    "Nguyen Thien Anh Ly":                ["an", "anh", "ann"],
-    "Tómas Bragi Reynisson":		  ["tomas"] 
+    "Thomas Skovlund Hansen":             ['fuve'],
+    "Tómas Bragi Reynisson":		      ["tomas"] 
  };
 
   var tutorelements = document.getElementsByClassName('tutoraddress');
