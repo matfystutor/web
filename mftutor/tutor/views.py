@@ -350,7 +350,7 @@ class ResetPasswordView(FormView):
         data = form.cleaned_data
         if 'confirm' in self.request.POST:
             subject = 'Nyt kodeord til tutorhjemmesiden'
-            sender = '"Mathias Rav" <webfar@matfystutor.dk>'
+            sender = '"Mat/Fys-Tutorgruppen" <webfar@matfystutor.dk>'
             body = get_template('emails/new_password.txt')
 
             tps = data['studentnumbers']
