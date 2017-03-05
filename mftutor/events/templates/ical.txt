@@ -4,8 +4,8 @@ X-WR-TIMEZONE:Europe/Copenhagen
 X-WR-CALDESC:{{ CALENDAR_DESCRIPTION|ical_escape }}
 {% for event in event_list %}BEGIN:VEVENT
 UID:event-{{ event.pk }}@{{ SITE_URL }}
-{% if event.start_time %}DTSTART:{{ event.start_date|date:"Ymd"}}T{{ event.start_time|date:"His"}}
-DTEND:{{ event.end_date|date:"Ymd"}}T{{ event.end_time|date:"His"}}
+{% if event.start_time %}DTSTART;VALUE=DATE-TIME:{{ event.start_date|date:"Ymd"}}T{{ event.start_time|date:"His"}}
+DTEND;VALUE=DATE-TIME:{{ event.end_date|date:"Ymd"}}T{{ event.end_time|date:"His"}}
 {% else %}DTSTART;VALUE=DATE:{{ event.start_date|date:"Ymd"}}
 DTEND;VALUE=DATE:{{ event.end_date|add_day|date:"Ymd"}}
 {% endif %}SUMMARY:{{ event.title|ical_escape }}
