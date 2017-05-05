@@ -12,7 +12,7 @@ class OwnConfirmationForm(forms.ModelForm):
     experience = forms.CharField(widget=full_width_text_field, required=False,
             label='I hvor mange år har du været holdtutor før i år?')
     priorities = forms.CharField(widget=full_width_text_field, required=False,
-            label='Prioriteret rækkefølge af de seks studieretninger, du ønsker at være holdtutor for: mat, møk, fys, nano, dat')
+            label='Prioriteret rækkefølge af de fem studieretninger, du ønsker at være holdtutor for: mat, møk, fys, nano, dat')
     firstaid = forms.CharField(widget=forms.Textarea, required=False,
             label='Har du førstehjælpsbevis eller førstehjælpskursus? Hvis ja, hvilket, og hvor gammelt er det?')
     resits = forms.CharField(widget=forms.Textarea, required=False,
