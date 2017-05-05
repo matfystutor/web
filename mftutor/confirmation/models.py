@@ -10,6 +10,8 @@ class Confirmation(models.Model):
 
     study = models.CharField(max_length=500, blank=True,
             verbose_name='Studium samt sidefag/tilvalg')
+    tutortype = models.CharField(max_length=60, blank=True,
+            verbose_name='Tutor type')
     experience = models.CharField(max_length=60, blank=True,
             verbose_name='Tidligere erfaring som holdtutor')
     resits = models.CharField(max_length=500, blank=True,

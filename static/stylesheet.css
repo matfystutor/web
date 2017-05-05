@@ -710,3 +710,7 @@ table.eventtable{
 .profile_nottutor {
 	color: #666;
 }
+
+.hidden {
+	display: none;
+}

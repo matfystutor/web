@@ -7,11 +7,13 @@ class OwnConfirmationForm(forms.ModelForm):
 
     study = forms.CharField(widget=full_width_text_field, required=True,
             label='Studium samt sidefag/tilvalg')
-    experience = forms.CharField(widget=full_width_text_field, required=True,
+    tutortype = forms.ChoiceField(choices=(('ARB', 'Arbejdstutor'), ('BUR', 'Burtutor'), ('HOLD', 'Holdtutor'),), required=True,
+            label='Tutor type')
+    experience = forms.CharField(widget=full_width_text_field, required=False,
             label='I hvor mange år har du været holdtutor før i år?')
-    priorities = forms.CharField(widget=full_width_text_field, required=True,
-            label='Prioriteret rækkefølge af de seks studieretninger, du ønsker at være holdtutor for: Mat, møk, fys, nano, dat, it')
-    firstaid = forms.CharField(widget=forms.Textarea, required=True,
+    priorities = forms.CharField(widget=full_width_text_field, required=False,
+            label='Prioriteret rækkefølge af de seks studieretninger, du ønsker at være holdtutor for: mat, møk, fys, nano, dat, it')
+    firstaid = forms.CharField(widget=forms.Textarea, required=False,
             label='Har du førstehjælpsbevis eller førstehjælpskursus? Hvis ja, hvilket, og hvor gammelt er det?')
     resits = forms.CharField(widget=forms.Textarea, required=False,
             label='Har du reeksamener i rusugen? Hvis ja, hvilke og hvornår?')
@@ -19,11 +21,11 @@ class OwnConfirmationForm(forms.ModelForm):
             label='Kender du nogen studerende, der skal til at starte på mat/fys? Hvis ja, anfør navn og fag')
     comment = forms.CharField(widget=forms.Textarea, required=False,
             label='Kommentar')
-    previous_tutor = forms.CharField(widget=forms.Textarea, required=True,
+    previous_tutor = forms.CharField(widget=forms.Textarea, required=False,
             label='Har du tidligere søgt om at blive holdtutor og er ikke blevet det?')
 
     class Meta:
-        fields = ('study', 'experience', 'priorities', 'firstaid', 'resits', 'rusfriends', 'previous_tutor',  '' 'comment')
+        fields = ('study', 'tutortype', 'experience', 'priorities', 'firstaid', 'resits', 'rusfriends', 'previous_tutor',  '' 'comment')
         exclude = ('tutor', 'internal_notes')
         model = Confirmation
 
