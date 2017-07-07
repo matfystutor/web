@@ -68,6 +68,14 @@ class CalendarFeedView(ListView):
     model = Event
     template_name = 'ical.txt'
 
+    def render_to_response(self, context_data):
+        response = (
+            super(CalendarFeedView, self).render_to_response(context_data))
+        response.render()
+        content = response.content
+        content = content.replace(b"\n", b"\r\n")
+        return HttpResponse(content)
+
     def get_context_data(self, **kwargs):
         d = super(CalendarFeedView, self).get_context_data(**kwargs)
         d['CALENDAR_NAME'] = settings.CALENDAR_NAME
