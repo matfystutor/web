@@ -76,7 +76,7 @@ class CalendarFeedView(ListView):
         response.render()
         content = response.content.decode("utf-8")
         # Break long lines
-        content = re.sub(r'(.{74})', r'\1\n ', content)
+        content = re.sub(r'(.{74})(?=.)', r'\1\n ', content)
         # iCal requires CRLF line endings
         content = content.replace("\n", "\r\n")
         return HttpResponse(content, content_type='text/calendar')
