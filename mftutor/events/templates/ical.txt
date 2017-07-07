@@ -1,9 +1,27 @@
 {% load ical %}{% load add_day %}BEGIN:VCALENDAR
+PRODID:Tutorweb
+VERSION:2.0
 X-WR-CALNAME:{{ CALENDAR_NAME|ical_escape }}
 X-WR-TIMEZONE:Europe/Copenhagen
 X-WR-CALDESC:{{ CALENDAR_DESCRIPTION|ical_escape }}
+BEGIN:VTIMEZONE
+TZID:Europe/Copenhagen
+BEGIN:STANDARD
+DTSTART:16010101T030000
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+RRULE:FREQ=YEARLY;INTERVAL=1;BYDAY=-1SU;BYMONTH=10
+END:STANDARD
+BEGIN:DAYLIGHT
+DTSTART:16010101T020000
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+RRULE:FREQ=YEARLY;INTERVAL=1;BYDAY=-1SU;BYMONTH=3
+END:DAYLIGHT
+END:VTIMEZONE
 {% for event in event_list %}BEGIN:VEVENT
 UID:event-{{ event.pk }}@{{ SITE_URL }}
+DTSTAMP:{% now "Ymd\THis" %}
 {% if event.start_time %}DTSTART;VALUE=DATE-TIME;TZID=Europe/Copenhagen:{{ event.start_date|date:"Ymd"}}T{{ event.start_time|date:"His"}}
 DTEND;VALUE=DATE-TIME;TZID=Europe/Copenhagen:{{ event.end_date|date:"Ymd"}}T{{ event.end_time|date:"His"}}
 {% else %}DTSTART;VALUE=DATE;TZID=Europe/Copenhagen:{{ event.start_date|date:"Ymd"}}

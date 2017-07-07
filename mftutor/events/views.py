@@ -1,4 +1,6 @@
 # vim:set fileencoding=utf-8:
+import re
+
 from django.views.generic import DetailView, ListView, FormView, View
 from django.shortcuts import render_to_response, get_object_or_404
 from django.core.urlresolvers import reverse
@@ -72,9 +74,12 @@ class CalendarFeedView(ListView):
         response = (
             super(CalendarFeedView, self).render_to_response(context_data))
         response.render()
-        content = response.content
-        content = content.replace(b"\n", b"\r\n")
-        return HttpResponse(content)
+        content = response.content.decode("utf-8")
+        # Break long lines
+        content = re.sub(r'(.{74})', r'\1\n ', content)
+        # iCal requires CRLF line endings
+        content = content.replace("\n", "\r\n")
+        return HttpResponse(content, content_type='text/calendar')
 
     def get_context_data(self, **kwargs):
         d = super(CalendarFeedView, self).get_context_data(**kwargs)
