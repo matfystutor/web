@@ -2,6 +2,7 @@
 from django.db import models
 from ..tutor.models import Tutor
 from datetime import date, datetime
+from django.core.exceptions import ValidationError
 
 
 class Event(models.Model):
@@ -13,6 +14,11 @@ class Event(models.Model):
     start_time = models.TimeField(blank=True, null=True)
     end_time = models.TimeField(blank=True, null=True)
     rsvp = models.DateTimeField(blank=True, null=True, verbose_name="Tilmeldingsfrist")
+
+    def clean(self):
+        if self.start_time or self.end_time:
+            if not (self.start_time and self.end_time):
+                raise ValidationError("Du skal angive både start- og sluttidspunkt")
 
     def category(self):
         if u'stormøde' in self.title:
