@@ -18,7 +18,7 @@ class Confirmation(models.Model):
             verbose_name='Reeksamener i rusugen')
     priorities = models.CharField(max_length=60, blank=True,
             verbose_name='Ønskede studieretninger')
-    firstaid = models.CharField(max_length=60, blank=True,
+    firstaid = models.CharField(max_length=500, blank=True,
             verbose_name='Førstehjælpskursus')
     rusfriends = models.CharField(max_length=500, blank=True,
             verbose_name='Bekendte nye studerende')
