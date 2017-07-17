@@ -81,6 +81,10 @@ class OwnConfirmationView(UpdateView):
         except Confirmation.DoesNotExist:
             return Confirmation(tutor=self.request.tutor, study=self.request.tutorprofile.study)
 
+    def form_invalid(self, form):
+        error = form.errors
+        return self.render_to_response(self.get_context_data(object=self.object, form=form, success=False, error=error))
+
     def form_valid(self, form):
         if self.object.tutor != self.request.tutor:
             errors = form._errors.setdefault(forms.forms.NON_FIELD_ERRORS, forms.util.ErrorList())

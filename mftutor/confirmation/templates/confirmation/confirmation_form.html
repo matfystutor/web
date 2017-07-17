@@ -35,6 +35,10 @@
 <p class="success_message">Din tutorbekræftelse er modtaget!</p>
 {% endif %}
 
+{% if error %}
+<p>{{ error }}</p>
+{% endif %}
+
 <form method="post">{% csrf_token %}
 {% if form.non_field_errors %}
 {{ form.non_field_errors }}
