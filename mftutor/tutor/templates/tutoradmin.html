@@ -171,9 +171,11 @@ Følgende ændringer er gemt.
     {% endifchanged %}
     <tr id="tutor{{ row.pk.value }}">
         <td>
+            {% if row.pk.value %}
             <a href="{% url 'admin:auth_user_change' row.user_pk.value %}" title="Django admin: User">U</a>
             <a href="{% url 'admin:tutor_tutor_change' row.pk.value %}" title="Django admin: Tutor">T</a>
             <a href="{% url 'admin:tutor_tutorprofile_change' row.profile_pk.value %}" title="Django admin: TutorProfile">P</a>
+            {% endif %}
         </td>
         {% for field in row %}
         <td>{% if field.errors %}
