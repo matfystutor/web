@@ -173,7 +173,7 @@ class ReminderEmailView(EmailFormView):
         # A blank confirmation is one where only internal_notes is nonempty
         tutors = tutors.exclude(
             Q(confirmation__pk__gt=0)
-            & ~Q(confirmation__priorities=''))
+            & ~Q(confirmation__tutortype=''))
 
         tutors = tutors.select_related('profile')
         return sorted([tu.profile.email for tu in tutors])
