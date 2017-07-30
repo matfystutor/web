@@ -4,11 +4,15 @@
 {% block content %}
 <h1>Vælg t-shirt</h1>
 
-<form method="post">{% csrf_token %}
+<form method="post" action="?">{% csrf_token %}
 {{ form.as_p }}
 <p>
 <input type="submit" value="Opdater">
 </p>
 </form>
+
+{% if success %}
+<p>Dit valg er gemt!</p>
+{% endif %}
 
 {% endblock %}

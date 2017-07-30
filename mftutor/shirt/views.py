@@ -64,8 +64,13 @@ class ShirtPreferenceView(UpdateView):
     model = ShirtPreference
     form_class = ShirtPreferenceForm
 
+    def get_context_data(self, **kwargs):
+        context_data = super(ShirtPreferenceView, self).get_context_data(**kwargs)
+        context_data['success'] = bool(self.request.GET.get('s'))
+        return context_data
+
     def get_success_url(self):
-        return reverse('shirt_preference')
+        return reverse('shirt_preference') + '?s=1'
 
     def get_object(self):
         try:
