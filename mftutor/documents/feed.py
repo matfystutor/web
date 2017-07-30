@@ -12,7 +12,7 @@ class MinutesFeed(Feed):
         return qs.order_by('-published')[:5]
 
     def item_title(self, item):
-        return item.published.strftime(u'%Y-%m-%d')+u' '+item.title
+        return item.published.strftime('%Y-%m-%d')+' '+item.title
 
     def item_description(self, item):
         return self.item_title(item)

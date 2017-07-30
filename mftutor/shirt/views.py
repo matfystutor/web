@@ -18,7 +18,7 @@ class ShirtOptionView(FormView):
         for so in ShirtOption.objects.all():
             choices.append(so.choice)
         return {'choices':
-                u'\n'.join(choices)}
+                '\n'.join(choices)}
 
     def get_success_url(self):
         return reverse('shirt_options')
@@ -47,7 +47,7 @@ class ShirtPreferenceForm(forms.ModelForm):
     def clean_choice_generic(self, field):
         data = self.cleaned_data[field]
         if ShirtOption.objects.filter(choice__exact=data).count() == 0:
-            raise forms.ValidationError(u'Ugyldig størrelse')
+            raise forms.ValidationError('Ugyldig størrelse')
         return data
 
     def clean_choice1(self):

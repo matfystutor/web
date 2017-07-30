@@ -10,13 +10,13 @@ def random_priorities(study):
         studies.add(study)
     for x in range(int(random.randint(0,6))):
         studies.add(random_study())
-    return u', '.join(studies)
+    return ', '.join(studies)
 
 def known_russes():
     russes = []
     for x in range(random.choice((0,0,0,0,0,0,0,1,1,2,3))):
-        russes.append(random_name()+u', '+random_study())
-    return u'\n'.join(russes)
+        russes.append(random_name()+', '+random_study())
+    return '\n'.join(russes)
 
 def fill_out_confirmation(tutor):
     if Confirmation.objects.filter(tutor=tutor).exists():
@@ -27,9 +27,9 @@ def fill_out_confirmation(tutor):
             experience=str(random.choice((0,)*15 + (1,) * 10 + (2,) * 5 + (3,3,3,4))),
             resits=random.choice(RESITS),
             priorities=random_priorities(tutor.profile.study),
-            firstaid=u'ja' if random.random() > 0.8 else u'nej',
+            firstaid='ja' if random.random() > 0.8 else 'nej',
             rusfriends=known_russes(),
-            comment=u'bla bla' if random.random() > 0.9 else u'',
+            comment='bla bla' if random.random() > 0.9 else '',
             )
     c.save()
 

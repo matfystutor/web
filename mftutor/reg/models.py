@@ -1,5 +1,5 @@
 # vim:fileencoding=utf-8:
-from __future__ import unicode_literals
+
 
 import time
 from django.utils import dateformat
@@ -10,16 +10,16 @@ from mftutor.tutor.models import Tutor, TutorProfile, Rus, RusClass
 
 class ChangeLogEntry(models.Model):
     KINDS = (
-        ('import', u'Import af ruslister'),
-        ('rus_profile', u'Rus: profil ændret'),
-        ('rus_rusclass', u'Rus: rushold ændret'),
-        ('rus_arrived', u'Rus: ankommet ændret'),
-        ('rus_password', u'Rus: kodeord ændret'),
-        ('note_add', u'Notat tilføjet'),
-        ('note_delete', u'Notat slettet'),
-        ('tutor_profile', u'Tutor: profil ændret'),
-        ('tutor_rusclass', u'Tutor: rushold ændret'),
-        ('tutor_password', u'Tutor: kodeord ændret'),
+        ('import', 'Import af ruslister'),
+        ('rus_profile', 'Rus: profil ændret'),
+        ('rus_rusclass', 'Rus: rushold ændret'),
+        ('rus_arrived', 'Rus: ankommet ændret'),
+        ('rus_password', 'Rus: kodeord ændret'),
+        ('note_add', 'Notat tilføjet'),
+        ('note_delete', 'Notat slettet'),
+        ('tutor_profile', 'Tutor: profil ændret'),
+        ('tutor_rusclass', 'Tutor: rushold ændret'),
+        ('tutor_password', 'Tutor: kodeord ændret'),
     )
     KIND_CHOICES = KINDS
 
@@ -89,7 +89,7 @@ class ImportLine(models.Model):
             for nonblank in ('rusclass', 'studentnumber', 'name'):
                 if self[nonblank] == '':
                     errors[nonblank] = (
-                        u'Dette felt må ikke være tomt når matched=True.')
+                        'Dette felt må ikke være tomt når matched=True.')
 
         if errors:
             raise ValidationError(errors)
@@ -129,23 +129,23 @@ class Note(models.Model):
 
 class Handout(models.Model):
     KINDS = (
-        ('note', u'Enkelt bemærkning'),
-        ('subset', u'Tilmelding'),
+        ('note', 'Enkelt bemærkning'),
+        ('subset', 'Tilmelding'),
     )
 
     PRESETS = (
-        (u'Holdets time', 'note'),
-        (u'Holdrepræsentant', 'note'),
-        (u'Hytteansvarlig', 'note'),
-        (u'Spis en rus-adresse', 'note'),
-        (u'TK-intro tid', 'note'),
-        (u'TØ-instruktor', 'note'),
-        (u'Læsegrupper', 'subset'),
-        (u'Rushyg', 'subset'),
-        (u'Rustur', 'subset'),
-        (u'Sportsdag', 'subset'),
-        (u'Sportsdagshold', 'subset'),
-        (u'Studenterhus', 'subset'),
+        ('Holdets time', 'note'),
+        ('Holdrepræsentant', 'note'),
+        ('Hytteansvarlig', 'note'),
+        ('Spis en rus-adresse', 'note'),
+        ('TK-intro tid', 'note'),
+        ('TØ-instruktor', 'note'),
+        ('Læsegrupper', 'subset'),
+        ('Rushyg', 'subset'),
+        ('Rustur', 'subset'),
+        ('Sportsdag', 'subset'),
+        ('Sportsdagshold', 'subset'),
+        ('Studenterhus', 'subset'),
     )
 
     year = models.IntegerField(verbose_name="Tutorår")
@@ -173,9 +173,9 @@ class Handout(models.Model):
 
 class HandoutClassResponse(models.Model):
     COLORS = (
-        ('green', u'Grøn'),
-        ('yellow', u'Gul'),
-        ('red', u'Rød'),
+        ('green', 'Grøn'),
+        ('yellow', 'Gul'),
+        ('red', 'Rød'),
     )
 
     handout = models.ForeignKey(Handout)
@@ -231,9 +231,9 @@ class LightboxRusClassState(models.Model):
     objects = LightboxRusClassStateManager()
 
     COLORS = (
-        ('green', u'Grøn'),
-        ('yellow', u'Gul'),
-        ('red', u'Rød'),
+        ('green', 'Grøn'),
+        ('yellow', 'Gul'),
+        ('red', 'Rød'),
     )
 
     rusclass = models.OneToOneField(RusClass)
@@ -260,9 +260,9 @@ class LightboxNoteManager(models.Manager):
 class LightboxNote(models.Model):
     objects = LightboxNoteManager()
     COLORS = (
-        (u'Grøn', 'green'),
-        (u'Gul', 'yellow'),
-        (u'Rød', 'red'),
+        ('Grøn', 'green'),
+        ('Gul', 'yellow'),
+        ('Rød', 'red'),
     )
 
     year = models.IntegerField(verbose_name="Tutorår", unique=True)

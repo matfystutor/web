@@ -1,5 +1,5 @@
 # coding: utf-8
-from __future__ import unicode_literals
+
 
 from django.db import models
 
@@ -12,7 +12,7 @@ class ReferaterManager(models.Manager):
 
 
 def Document_upload_to(doc, filename):
-    return u'docs/%s/%s/%s' % (doc.year, doc.type, filename)
+    return 'docs/%s/%s/%s' % (doc.year, doc.type, filename)
 
 
 class Document(models.Model):
@@ -46,8 +46,5 @@ class Document(models.Model):
     def __str__(self):
         return '[Document %s: %s]' % (self.type, self.title)
 
-    def __unicode__(self):
-        return u'[Document %s: %s]' % (self.type, self.title)
-
     def get_absolute_url(self):
-        return settings.MEDIA_URL + unicode(self.doc_file)
+        return settings.MEDIA_URL + str(self.doc_file)

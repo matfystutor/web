@@ -10,9 +10,9 @@ def translate_student_numbers(*args):
     def translate(number):
         try:
             prof = TutorProfile.objects.get(studentnumber=number)
-            return unicode(number)+u": "+prof.get_full_name()
+            return str(number)+": "+prof.get_full_name()
         except TutorProfile.DoesNotExist:
-            return unicode(number)+u" unknown"
+            return str(number)+" unknown"
     return [translate(number) for number in args]
 
 
@@ -48,7 +48,7 @@ def group_leader(handle, studentnumber):
         return 'Tutor group does not exist'
 
     if group.leader:
-        return u"Group already has leader "+unicode(group.leader)
+        return "Group already has leader "+str(group.leader)
 
     try:
         tutor = Tutor.objects.get(
@@ -58,7 +58,7 @@ def group_leader(handle, studentnumber):
 
     group.leader = tutor
     group.save()
-    return u"OK "+unicode(tutor)
+    return "OK "+str(tutor)
 
 
 # Enter a read-eval-print loop in which you may change the email addresses of
@@ -78,8 +78,8 @@ def read_emails_loop():
             print('Not found')
             continue
         print(prof)
-        print(u'Groups: %s' %
-              u', '.join(tg.name
+        print('Groups: %s' %
+              ', '.join(tg.name
                          for tg in TutorGroup.objects.filter(
                              tutor__profile=prof, tutor__year__exact=YEAR)
                          .order_by('-visible', 'name')))

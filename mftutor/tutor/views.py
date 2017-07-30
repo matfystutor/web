@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-from __future__ import unicode_literals
+
 
 import io
 import subprocess
@@ -100,7 +100,7 @@ class TutorListView(TemplateView):
                 'street': 'Skovbrynet 5',
                 'city': 'Smilets By',
                 'phone': '88888888',
-                'email': u'SMILEY@SMILEY.☺',
+                'email': 'SMILEY@SMILEY.☺',
                 'study': 'Smil',
             })
         tutors.sort(key=lambda t: (t['pk'] != leader_pk, t['full_name']))
@@ -321,7 +321,7 @@ class ResetPasswordForm(forms.Form):
         tp = dict((tp.studentnumber, tp) for tp in tps)
         for sn in studentnumbers.split():
             if sn not in tp:
-                raise ValidationError(u'Ukendt årskortnummer %r' % (sn,))
+                raise ValidationError('Ukendt årskortnummer %r' % (sn,))
         return tps
 
 

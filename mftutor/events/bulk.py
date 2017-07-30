@@ -9,7 +9,7 @@ def dump_date(d):
 def dump_event(event):
     d1, d2 = event.start_date, event.end_date
     if d1 != d2:
-        date = u'%s:%s' % (dump_date(d1), dump_date(d2))
+        date = '%s:%s' % (dump_date(d1), dump_date(d2))
     else:
         date = dump_date(d1)
 
@@ -22,11 +22,11 @@ def dump_event(event):
         time = '%02d:%02d-%02d:%02d' % (
             t1.hour, t1.minute, t2.hour, t2.minute)
 
-    return u'%s %s %s' % (date, time, event.title)
+    return '%s %s %s' % (date, time, event.title)
 
 
 def dumps(events):
-    return u'\n'.join(dump_event(event) for event in events)
+    return '\n'.join(dump_event(event) for event in events)
 
 
 def parse_date(d):
@@ -81,7 +81,7 @@ def parse(data):
             continue
         try:
             events.append(parse_event(line))
-        except ValueError, e:
+        except ValueError as e:
             raise ValueError("Could not parse line %d in input: %s"
                 % (i + 1, e))
     return events

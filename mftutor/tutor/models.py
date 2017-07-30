@@ -1,7 +1,7 @@
 # coding: utf-8
 # See https://docs.djangoproject.com/en/1.4/topics/auth/
 # for a discussion on user profiles and django.contrib.auth
-from __future__ import unicode_literals
+
 
 import re
 
@@ -152,13 +152,13 @@ class RusClass(models.Model):
     id = models.AutoField(primary_key=True)
     official_name = models.CharField(
         max_length=20, verbose_name="AU-navn",
-        help_text=u"DA1, MØ3, osv.")
+        help_text="DA1, MØ3, osv.")
     internal_name = models.CharField(
         max_length=20, verbose_name="Internt navn",
-        help_text=u"Dat1, Møk3, osv.")
+        help_text="Dat1, Møk3, osv.")
     handle = models.CharField(
         max_length=20, verbose_name="Email",
-        help_text=u"dat1, mok3, osv. Bruges i holdets emailadresse")
+        help_text="dat1, mok3, osv. Bruges i holdets emailadresse")
     year = models.IntegerField(verbose_name="Tutorår")
 
     def get_study(self):

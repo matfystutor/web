@@ -7,7 +7,7 @@ and for each group the set of tutors.
 Mathias Rav, February 2015.
 """
 
-from __future__ import print_function, unicode_literals
+
 
 import os
 import sys

@@ -4,8 +4,8 @@ from ..tutor.models import TutorProfile, Tutor
 from ..shirt.models import ShirtPreference, ShirtOption
 
 def make_tshirt_options():
-    c = frozenset((u'M small', u'M medium', u'M large',
-        u'F small', u'F medium', u'F large'))
+    c = frozenset(('M small', 'M medium', 'M large',
+        'F small', 'F medium', 'F large'))
 
     c = c - frozenset(so.choice for so in ShirtOption.objects.filter(
         choice__in=c))

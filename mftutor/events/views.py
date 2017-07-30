@@ -239,7 +239,7 @@ class ReminderEmailView(EmailFormView):
         return get_object_or_404(Event.objects.filter(pk=self.kwargs['pk']))
 
     def get_page_title(self):
-        return u'Send reminder: %s' % self.get_event().title
+        return 'Send reminder: %s' % self.get_event().title
 
     def get_recipients(self, form, year):
         event = self.get_event()
@@ -254,11 +254,11 @@ class ReminderEmailView(EmailFormView):
     def get_initial(self):
         initial_data = super(ReminderEmailView, self).get_initial()
         event = self.get_event()
-        initial_data['subject'] = u'Husk tilmelding til %s!' % event.title
+        initial_data['subject'] = 'Husk tilmelding til %s!' % event.title
         initial_data['text'] = (
-            u'Kære tutorer!\n\n' +
-            u'Husk at tilmelde jer %s ' % event.title +
-            u'på tutorhjemmesiden:\n' +
-            u'http://matfystutor.dk/events/%s/\n' % event.pk
+            'Kære tutorer!\n\n' +
+            'Husk at tilmelde jer %s ' % event.title +
+            'på tutorhjemmesiden:\n' +
+            'http://matfystutor.dk/events/%s/\n' % event.pk
         )
         return initial_data

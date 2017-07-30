@@ -24,7 +24,7 @@ class NewsPost(models.Model):
     def get_absolute_url(self):
         p = self.posted
         base_name = 'news'
-        if self.group_handle == u'rus':
+        if self.group_handle == 'rus':
             base_name = 'rus_nyheder'
         return reverse(base_name, kwargs={'year':p.year, 'month':p.month, 'day':p.day, 'pk':self.pk})
 

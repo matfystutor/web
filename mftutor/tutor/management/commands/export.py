@@ -36,13 +36,13 @@ class ProgressIndicator(object):
 
     def step(self, line):
         self.steps += 1
-        sys.stdout.write((u'\r\033[K[%4d/%4d] %s' %
+        sys.stdout.write(('\r\033[K[%4d/%4d] %s' %
                           (self.steps, self.total, line)).encode('utf8'))
         sys.stdout.flush()
 
     def done(self):
         elapsed = time.time() - self.t0
-        print(u'\r\033[K[%4d/%4d] In %s' % (self.total, self.total, elapsed))
+        print('\r\033[K[%4d/%4d] In %s' % (self.total, self.total, elapsed))
 
 
 class Command(BaseCommand):

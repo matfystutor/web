@@ -80,7 +80,7 @@ class EditSessionForm(forms.ModelForm):
         try:
             re.compile(data)
         except re.error as v:
-            e = forms.ValidationError(u"Fejl i regulært udtryk: %s" % (v,))
+            e = forms.ValidationError("Fejl i regulært udtryk: %s" % (v,))
             self.add_error('regex', e)
             return
 
@@ -115,7 +115,7 @@ class EditSessionForm(forms.ModelForm):
 
         # Named groups we expect in the input
         expected = frozenset(('rusclass', 'name', 'studentnumber'))
-        expected_string = u', '.join('(?P<'+k+'>...)' for k in expected) + u'.'
+        expected_string = ', '.join('(?P<'+k+'>...)' for k in expected) + '.'
 
         if regex and lines:
             r = re.compile(regex)
@@ -133,23 +133,23 @@ class EditSessionForm(forms.ModelForm):
                     # We only want named match groups.
                     if len(groups) != len(groupdict):
                         e = forms.ValidationError(
-                            (u"Det regulære udtryk matcher UNAVNGIVNE " +
-                             u"grupper. Brug kun navngivne grupper %s") %
+                            ("Det regulære udtryk matcher UNAVNGIVNE " +
+                             "grupper. Brug kun navngivne grupper %s") %
                             (expected_string,))
                         self.add_error('regex', e)
                         return
                     groupkeys = frozenset(groupdict.keys())
                     if not groupkeys.issubset(expected):
                         e = forms.ValidationError(
-                            (u"Det regulære udtryk matcher UKENDTE " +
-                             u"gruppenavne. Brug kun navngivne grupper %s") %
+                            ("Det regulære udtryk matcher UKENDTE " +
+                             "gruppenavne. Brug kun navngivne grupper %s") %
                             (expected_string,))
                         self.add_error('regex', e)
                         return
                     if not expected.issubset(groupkeys):
                         e = forms.ValidationError(
-                            (u"Det regulære udtryk matcher IKKE " +
-                             u"alle de navngivne grupper %s") %
+                            ("Det regulære udtryk matcher IKKE " +
+                             "alle de navngivne grupper %s") %
                             (expected_string,))
                         self.add_error('regex', e)
                         return
@@ -157,14 +157,14 @@ class EditSessionForm(forms.ModelForm):
                     for n, v in groupdict.items():
                         if v == '':
                             e = forms.ValidationError(
-                                (u"Det regulære udtryk matcher gruppen '%s' " +
-                                 u"som den tomme streng.") % (n,))
+                                ("Det regulære udtryk matcher gruppen '%s' " +
+                                 "som den tomme streng.") % (n,))
                             self.add_error('regex', e)
                             return
 
             if matches == 0:
                 e = forms.ValidationError(
-                    u"Det regulære udtryk matcher ingen strenge i input.")
+                    "Det regulære udtryk matcher ingen strenge i input.")
                 self.add_error('regex', e)
                 return
 
@@ -188,7 +188,7 @@ class EditSessionView(UpdateView):
         form = super(EditSessionView, self).get_form(form_class)
         if form.instance and form.instance.pk is not None:
             qs = ImportLine.objects.filter(session=form.instance)
-            lines = u'\n'.join(il.line for il in qs.order_by('position'))
+            lines = '\n'.join(il.line for il in qs.order_by('position'))
             form.fields['lines'].initial = lines
         return form
 
@@ -214,7 +214,7 @@ class EditSessionView(UpdateView):
         if form.instance.imported:
             context_data = super(EditSessionView, self).get_context_data(
                 form=form)
-            context_data['error'] = u'Denne rusliste er allerede importeret'
+            context_data['error'] = 'Denne rusliste er allerede importeret'
             return self.render_to_response(context_data)
 
         # Line objects
@@ -246,8 +246,8 @@ class EditSessionView(UpdateView):
             context_data = super(EditSessionView, self).get_context_data(
                 form=form)
             context_data['error'] = (
-                u'Årskortnummer/-numre er ikke unikke: %s' %
-                u', '.join(studentnumbers_duplicate))
+                'Årskortnummer/-numre er ikke unikke: %s' %
+                ', '.join(studentnumbers_duplicate))
             return self.render_to_response(context_data)
 
         # Save form and perform bulk delete/insert of lines
@@ -300,8 +300,8 @@ class EditSessionView(UpdateView):
                                 profile=tp, year=year)
                             if existing_rus.exists():
                                 raise RusError(
-                                    (u"Studienummer %s findes allerede i " +
-                                     u"ruslisterne") %
+                                    ("Studienummer %s findes allerede i " +
+                                     "ruslisterne") %
                                     (il.studentnumber,))
                         else:
                             tp = TutorProfile.objects.create(
@@ -322,7 +322,7 @@ class EditSessionView(UpdateView):
                     context_data['imported'] = importsession.imported
 
             except RusError as e:
-                context_data['create_error'] = unicode(e)
+                context_data['create_error'] = str(e)
 
         context_data['lines_saved'] = lines_saved
 
@@ -402,7 +402,7 @@ class RusListView(TemplateView):
 
 class RusCreateForm(forms.Form):
     name = forms.CharField(label='Navn')
-    studentnumber = forms.CharField(label=u'Årskortnummer', required=False)
+    studentnumber = forms.CharField(label='Årskortnummer', required=False)
     email = forms.CharField(required=False, label='Email')
     rusclass = forms.ModelChoiceField(
         queryset=RusClass.objects.all(), label='Hold')
@@ -422,7 +422,7 @@ class RusCreateForm(forms.Form):
         if studentnumber:
             if existing.exists():
                 raise forms.ValidationError(
-                    u"Årskortnummeret findes allerede på hjemmesiden.")
+                    "Årskortnummeret findes allerede på hjemmesiden.")
         else:
             studentnumber = None
         return studentnumber
@@ -477,9 +477,9 @@ class RusCreateView(FormView):
                     form = RusCreateForm(data=data, year=self.request.year)
                     form.add_error(
                         None,
-                        u'Årskortnummeret findes allerede. ' +
-                        u'Tryk "Opret" igen for at oprette russen. ' +
-                        u'%r' % (data['rusclass'],))
+                        'Årskortnummeret findes allerede. ' +
+                        'Tryk "Opret" igen for at oprette russen. ' +
+                        '%r' % (data['rusclass'],))
                     context_data = self.get_context_data(
                         form=form)
                     return self.render_to_response(context_data)
@@ -516,7 +516,7 @@ class RusListRPC(View):
         try:
             pk = int(self.get_param('pk'))
         except ValueError:
-            raise RPCError(u'Invalid pk')
+            raise RPCError('Invalid pk')
         queryset = ChangeLogEntry.objects.filter(pk__gt=pk).order_by('pk')
 
         sleep_each = 1
@@ -548,7 +548,7 @@ class RusListRPC(View):
         try:
             data = self.get_data(request)
         except RPCError as e:
-            data = {'error': unicode(e)}
+            data = {'error': str(e)}
         return HttpResponse(json.dumps(data))
 
     def get_param(self, param):
@@ -558,7 +558,7 @@ class RusListRPC(View):
             try:
                 return self.request.GET[param]
             except KeyError:
-                raise RPCError(u'Missing parameter %s' % param)
+                raise RPCError('Missing parameter %s' % param)
 
     ACTIONS = (
         'arrived',
@@ -642,20 +642,20 @@ class RusListRPC(View):
                     year=self.request.year,
                     profile__pk=self.get_param('rus'))
             except Rus.DoesNotExist:
-                raise RPCError(u'No such rus')
+                raise RPCError('No such rus')
 
         if 'rusclass' in args:
             try:
                 params['rusclass'] = RusClass.objects.get(
                     year=self.request.year, handle=self.get_param('rusclass'))
             except Rus.DoesNotExist:
-                raise RPCError(u'No such rusclass')
+                raise RPCError('No such rusclass')
 
         if 'note' in args:
             try:
                 params['note'] = Note.objects.get(pk=self.get_param('note'))
             except Note.DoesNotExist:
-                raise RPCError(u'No such note')
+                raise RPCError('No such note')
 
         if 'body' in args:
             params['body'] = self.get_param('body')
@@ -667,7 +667,7 @@ class RusListRPC(View):
         try:
             data = self.handle_post(request)
         except RPCError as e:
-            data = {'error': unicode(e)}
+            data = {'error': str(e)}
         return HttpResponse(json.dumps(data))
 
 
@@ -810,9 +810,9 @@ class HandoutEditView(UpdateView):
 class HandoutSummaryView(TemplateView):
     def get_template_names(self):
         kind = self.get_handout().kind
-        if kind == u'subset':
+        if kind == 'subset':
             return ['reg/handout_summary.html']
-        elif kind == u'note':
+        elif kind == 'note':
             return ['reg/handout_notes.html']
         else:
             raise AssertionError("Unknown handout kind")
@@ -982,7 +982,7 @@ class HandoutResponseView(FormView):
             rus.checkmark_field = form['rus_%s_checkmark' % rus.pk]
             rus.note_field = form['rus_%s_note' % rus.pk]
         context_data['rus_list'] = self.rus_list
-        context_data['display_rus_list'] = self.handout.kind == u'subset'
+        context_data['display_rus_list'] = self.handout.kind == 'subset'
 
         return context_data
 
@@ -1267,8 +1267,8 @@ class RusInfoForm(forms.Form):
             phone_field = 'rus_%s_phone' % rus.pk
             if (cleaned_data[password_field]
                     and not cleaned_data[email_field]):
-                msg = (u'Du skal indtaste en emailadresse ' +
-                       u'for at nulstille kodeordet.')
+                msg = ('Du skal indtaste en emailadresse ' +
+                       'for at nulstille kodeordet.')
                 self.add_error(email_field, msg)
 
             try:
@@ -1360,7 +1360,7 @@ class RusInfoView(FormView):
                 if in_password:
                     if not rus.profile.studentnumber:
                         e = forms.ValidationError(
-                            u'Rus har intet årskortnummer')
+                            'Rus har intet årskortnummer')
                         form.add_error('rus_%s_reset_password' % rus.pk, e)
                         continue
                     pwlength = 8
@@ -1500,9 +1500,9 @@ class LightboxAdminViewResponse(Exception):
 
 class LightboxAdminForm(forms.Form):
     COLORS = (
-        ('green', u'Grøn'),
-        ('yellow', u'Gul'),
-        ('red', u'Rød'),
+        ('green', 'Grøn'),
+        ('yellow', 'Gul'),
+        ('red', 'Rød'),
     )
 
     rusclass = forms.CharField(required=False)
@@ -1654,7 +1654,7 @@ class StudentnumberListView(ListView):
 
 
 class StudentnumberForm(forms.Form):
-    studentnumber = forms.CharField(label=u'Årskortnummer')
+    studentnumber = forms.CharField(label='Årskortnummer')
 
 
 class StudentnumberView(FormView):
@@ -1683,7 +1683,7 @@ class StudentnumberView(FormView):
         existing = Rus.objects.filter(profile__studentnumber=sn)
         if existing.exists():
             e = forms.ValidationError(
-                u'Årskortnummeret findes allerede')
+                'Årskortnummeret findes allerede')
             form.add_error('studentnumber', e)
             return self.render_to_response(
                 self.get_context_data(form=form))

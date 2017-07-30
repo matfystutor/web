@@ -1,5 +1,5 @@
 # vim: set fileencoding=utf8:
-from __future__ import unicode_literals
+
 
 import json
 
@@ -240,7 +240,7 @@ class SignupListActionForm(forms.Form):
         try:
             getattr(SignupListView, 'action_' + action)
         except AttributeError:
-            raise forms.ValidationError(u'Invalid action')
+            raise forms.ValidationError('Invalid action')
         return action
 
 
@@ -286,7 +286,7 @@ class SignupListView(FormView):
                 exp_key = (app.profile_id, group.handle)
                 exp = all_experience.get(exp_key, [])
 
-                experience_detail = u'\n'.join(
+                experience_detail = '\n'.join(
                     '%s %s%s' %
                     (year, group.name, ' (ansv.)' if is_leader else '')
                     for year, is_leader, group in exp)
@@ -333,7 +333,7 @@ class SignupListView(FormView):
             name = '(%s) %s' % (g.num_assigned or '--', g.name)
             choices.append((g.handle, name))
         form.fields['group'] = forms.ChoiceField(
-            label=u'Sortér efter', choices=choices)
+            label='Sortér efter', choices=choices)
         return form
 
     def get_groups(self):
@@ -438,7 +438,7 @@ class TutorGroupForm(forms.Form):
     def clean(self):
         cleaned_data = super(TutorGroupForm, self).clean()
         if not any(cleaned_data.values()):
-            raise forms.ValidationError(u'Ingen grupper valgt')
+            raise forms.ValidationError('Ingen grupper valgt')
         return cleaned_data
 
 
