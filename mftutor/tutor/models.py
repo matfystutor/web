@@ -115,6 +115,8 @@ class TutorProfile(models.Model):
 
     def clean(self):
         self.phone = self.clean_phone(self.phone)
+        if self.studentnumber == '':
+            self.studentnumber = None
 
 
 # "Arbejdsgruppe"
