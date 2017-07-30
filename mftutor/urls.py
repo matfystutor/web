@@ -1,4 +1,6 @@
 from django.conf.urls import patterns, include, url
+from django.conf import settings
+import django.views.static
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -31,3 +33,20 @@ urlpatterns = patterns('',
     url(r'^browser/', include('mftutor.browser.urls')),
     url(r'^tutorhold/', include('mftutor.rusclass.urls')),
 )
+
+try:
+    import debug_toolbar
+except ImportError:
+    pass
+else:
+    urlpatterns += [
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    ]
+
+if settings.DEBUG:
+    # Temporary media (user uploaded static files)
+    # serving from dev server
+    urlpatterns.append(
+        url(r'^media/(?P<path>.*)$',
+            django.views.static.serve,
+            {'document_root': settings.MEDIA_ROOT}))
