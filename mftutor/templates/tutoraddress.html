@@ -4,8 +4,9 @@
   {% if tutor.picture %}
   <a target="_blank" href="{{ tutor.picture }}">
 {% thumbnail tutor.picture "130x130" crop="center" as im %}
-<img class="tutorpicture" src="{{ im.url }}" /></a>
+<img class="tutorpicture" src="{{ im.url }}" />
 {% endthumbnail %}
+</a>
 {% endif %}
  </div> <!-- /pic -->
  <div class="detailscontainer">
