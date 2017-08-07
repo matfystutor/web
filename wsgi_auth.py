@@ -11,11 +11,15 @@ import os
 import sys
 
 
-def here(x):
-    return os.path.join(os.path.abspath(os.path.dirname(__file__)), x)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-sys.path.append(here('venv/lib/python2.7/site-packages'))
-sys.path.append(here('web'))
+
+def here(x):
+    return os.path.join(BASE_DIR, x)
+
+sys.path.append(os.path.join(
+    BASE_DIR, 'prodekanus/venv/lib/python3.5/site-packages'))
+sys.path.append(BASE_DIR)
 os.environ['DJANGO_SETTINGS_MODULE'] = 'mftutor.settings'
 
 import django
