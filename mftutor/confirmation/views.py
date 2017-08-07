@@ -1,5 +1,5 @@
 # vim: set fileencoding=utf8:
-from __future__ import unicode_literals
+
 
 from django.core.urlresolvers import reverse
 from django import forms
@@ -88,7 +88,7 @@ class OwnConfirmationView(UpdateView):
     def form_valid(self, form):
         if self.object.tutor != self.request.tutor:
             errors = form._errors.setdefault(forms.forms.NON_FIELD_ERRORS, forms.util.ErrorList())
-            errors.append(u"Ugyldig tutor")
+            errors.append("Ugyldig tutor")
             return self.form_invalid(form)
 
         self.object = form.save(commit=False)
@@ -163,7 +163,7 @@ class EditNoteView(View, FormMixin):
 
 class ReminderEmailView(EmailFormView):
     def get_page_title(self):
-        return u'Send reminder om tutorbekræftelsen'
+        return 'Send reminder om tutorbekræftelsen'
 
     def get_recipients(self, form, year):
         # All members
@@ -180,11 +180,11 @@ class ReminderEmailView(EmailFormView):
 
     def get_initial(self):
         initial_data = super(ReminderEmailView, self).get_initial()
-        initial_data['subject'] = u'Husk at udfylde tutorbekræftelsen!'
+        initial_data['subject'] = 'Husk at udfylde tutorbekræftelsen!'
         initial_data['text'] = (
-            u'Kære tutorer!\n\n' +
-            u'Husk at besvare tutorbekræftelsen ' +
-            u'på tutorhjemmesiden:\n' +
-            u'http://matfystutor.dk/confirmation/\n'
+            'Kære tutorer!\n\n' +
+            'Husk at besvare tutorbekræftelsen ' +
+            'på tutorhjemmesiden:\n' +
+            'http://matfystutor.dk/confirmation/\n'
         )
         return initial_data

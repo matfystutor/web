@@ -24,5 +24,5 @@ def tutor_data(request):
 def settings(request):
     return {
         'BODY_CLASS': BODY_CLASS,
-        'BURET': u'Buret™',
+        'BURET': 'Buret™',
     }

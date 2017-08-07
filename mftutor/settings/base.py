@@ -226,12 +226,12 @@ CALENDAR_DESCRIPTION = 'Calendar description'
 # handle is the lowercase ASCII prefix we use in the mail system.
 # internal_name is the prefix we use in internal communications.
 RUSCLASS_BASE = (
-    (u'MA', u'mat', u'Mat'),
-    (u'MØ', u'mok', u'Møk'),
-    (u'FY', u'fys', u'Fys'),
-    (u'NA', u'nano', u'Nano'),
-    (u'IT', u'it', u'It'),
-    (u'DA', u'dat', u'Dat'),
+    ('MA', 'mat', 'Mat'),
+    ('MØ', 'mok', 'Møk'),
+    ('FY', 'fys', 'Fys'),
+    ('NA', 'nano', 'Nano'),
+    ('IT', 'it', 'It'),
+    ('DA', 'dat', 'Dat'),
 )
 
 # Prefix of email addresses going to tutors of a certain rusclass

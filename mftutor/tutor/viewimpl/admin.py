@@ -159,8 +159,8 @@ class TutorAdminView(FormView):
 
             if in_name != prev_data['name']:
                 profile.name = in_name
-                changes.append(u"%s: Navn ændret fra %s til %s"
-                    % (unicode(tutor), unicode(prev_data['name']), unicode(in_name)))
+                changes.append("%s: Navn ændret fra %s til %s" %
+                               (tutor, prev_data['name'], in_name))
                 if ' ' in in_name:
                     first_name, last_name = in_name.split(' ', 1)
                     profile.user.first_name = first_name
@@ -172,24 +172,24 @@ class TutorAdminView(FormView):
 
             if in_email != prev_data['email']:
                 profile.email = in_email
-                changes.append(u"%s: Email ændret fra %s til %s"
-                    % (unicode(tutor), unicode(prev_data['email']), unicode(in_email)))
+                changes.append("%s: Email ændret fra %s til %s" %
+                               (tutor, prev_data['email'], in_email))
                 profile.user.email = in_email
                 profile.user.save()
 
             if in_studentnumber != profile.studentnumber:
-                changes.append(u"%s: Årskort ændret fra %s til %s"
-                    % (unicode(tutor), unicode(profile.studentnumber), unicode(in_studentnumber)))
+                changes.append("%s: Årskort ændret fra %s til %s" %
+                               (tutor, profile.studentnumber, in_studentnumber))
                 profile.studentnumber = in_studentnumber
 
             if in_study != profile.study:
-                changes.append(u"%s: Studium ændret fra %s til %s"
-                    % (unicode(tutor), unicode(profile.study), unicode(in_study)))
+                changes.append("%s: Studium ændret fra %s til %s" %
+                               (tutor, profile.study, in_study))
                 profile.study = in_study
 
             if in_rusclass != tutor.rusclass:
-                changes.append(u"%s: Rushold ændret fra %s til %s"
-                    % (unicode(tutor), unicode(tutor.rusclass), unicode(in_rusclass)))
+                changes.append("%s: Rushold ændret fra %s til %s" %
+                               (tutor, tutor.rusclass, in_rusclass))
                 tutor.rusclass = in_rusclass
 
             in_groupset = frozenset(in_data['groups'])
@@ -200,11 +200,11 @@ class TutorAdminView(FormView):
                 groups_remove = []  # don't remove existing groups if entry is new
 
             for g in groups_insert:
-                changes.append(u"%s tilføj gruppe %s" % (unicode(tutor), g))
+                changes.append("%s tilføj gruppe %s" % (tutor, g))
                 tutor.groups.add(g)
 
             for g in groups_remove:
-                changes.append(u"%s fjern gruppe %s" % (unicode(tutor), g))
+                changes.append("%s fjern gruppe %s" % (tutor, g))
                 tutor.groups.remove(g)
 
             profile.save()
@@ -243,9 +243,9 @@ class BoardAdminForm(django.forms.Form):
         for i, title in enumerate(BOARD_POSITIONS):
             board_member = {
                 'tutor': django.forms.IntegerField(
-                    required=True, label=u'Tutor'),
+                    required=True, label='Tutor'),
                 'title': django.forms.CharField(
-                    initial=title, required=True, label=u'Titel'),
+                    initial=title, required=True, label='Titel'),
             }
             self.board_members.append(board_member)
 
@@ -346,16 +346,16 @@ class BoardAdminView(FormView):
 
         context_data = self.get_context_data(form=form)
         changes = []
-        for pk, bm in deleted_dict.items():
-            changes.append(u"%s fjernet som %s"
+        for pk, bm in list(deleted_dict.items()):
+            changes.append("%s fjernet som %s"
                            % (bm.tutor.profile.name,
                               bm.title))
         for bm in changed:
-            changes.append(u"%s ændret til %s"
+            changes.append("%s ændret til %s"
                            % (bm.tutor.profile.name,
                               bm.title))
         for bm in inserted:
-            changes.append(u"%s tilføjet som %s"
+            changes.append("%s tilføjet som %s"
                            % (bm.tutor.profile.name,
                               bm.title))
         context_data['changes'] = changes

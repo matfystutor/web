@@ -1,5 +1,5 @@
 # vim: set fileencoding=utf8:
-from __future__ import unicode_literals
+
 
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.generic import View
@@ -113,12 +113,12 @@ class DumpView(View):
         return objects
 
     def format_tsv(self, rows, **kwargs):
-        return u''.join(u'%s\n' % u'\t'.join(map(unicode, r)) for r in rows)
+        return ''.join('%s\n' % '\t'.join(map(str, r)) for r in rows)
 
     def format_tex(self, rows, tex_name, **kwargs):
-        return u''.join(
-            u'\\%s%s\n' %
-            (tex_name, u''.join(u'{%s}' % x for x in r))
+        return ''.join(
+            '\\%s%s\n' %
+            (tex_name, ''.join('{%s}' % x for x in r))
             for r in rows)
 
 

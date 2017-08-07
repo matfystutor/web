@@ -4,6 +4,14 @@
 {% block content %}
 <h1>Vælg t-shirt-størrelser</h1>
 
+<p>Angiv valgmuligheder (dvs. størrelser), én pr. linje.
+</p>
+<p>
+Den første valgmulighed er valgt som standard,
+så den kan evt. være "(blank)" eller en anden standardværdi,
+så ingen kommer til at bestille XS ved en fejl.
+</p>
+
 <form method="post">{% csrf_token %}
 {{ form.as_p }}
 <p>

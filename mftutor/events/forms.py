@@ -37,7 +37,7 @@ class BulkImportForm(Form):
         try:
             return mftutor.events.bulk.parse(self.cleaned_data['events'])
         except ValueError as e:
-            raise ValidationError(u'Ugyldig data: %s' % e)
+            raise ValidationError('Ugyldig data: %s' % e)
 
 
 class EventParticipantForm(forms.Form):

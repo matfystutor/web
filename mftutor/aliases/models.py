@@ -9,9 +9,6 @@ class Alias(models.Model):
     def __str__(self):
         return "%s -> %s" % (self.source, self.destination)
 
-    def __unicode__(self):
-        return unicode(self.source)+' -> '+unicode(self.destination)
-
     class Meta:
         ordering = ['source', 'destination']
         verbose_name = 'alias'

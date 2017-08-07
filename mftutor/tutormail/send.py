@@ -63,7 +63,7 @@ def send_all(emails):
     from datetime import datetime
     send_messages([make_email_message(o) for o in emails], email_backend_type)
     emails.update(sent=datetime.now())
-    print(u'\n'.join(emails.all()))
+    print('\n'.join(emails.all()))
 
 def delayed_send_all():
     import time
@@ -172,7 +172,7 @@ def make_mails(not_tutor, joker_numbers, no_mail, passwords):
 
     print("Buret: %s\nHoldtutor: %s\nJoker: %s\nAnsvarlig: %s\nAfvist: %s" % (len(buret), len(tutors), len(jokers), len(group_leaders), len(not_tutor)))
     for t in buret:
-        groups = u', '.join([g.name for g in group_queryset(t).all()])
+        groups = ', '.join([g.name for g in group_queryset(t).all()])
         profile = t.profile
         c = Context({
             'webfar': webfar,
@@ -195,7 +195,7 @@ def make_mails(not_tutor, joker_numbers, no_mail, passwords):
         profile = t.profile
         groups = list(group_queryset(t).all())
         if len(groups) != 2:
-            print(u"Failed to create email for %s: tutor does not have two groups, but %s\n%s\n%s"
+            print("Failed to create email for %s: tutor does not have two groups, but %s\n%s\n%s"
                     % (profile.name, unicode(len(groups)), t, groups))
             continue
         group1 = groups[0].name
@@ -221,7 +221,7 @@ def make_mails(not_tutor, joker_numbers, no_mail, passwords):
     for t in jokers:
         groups = list(group_queryset(t).all())
         if len(groups) != 3:
-            print(profile.name+u' does not have three groups, but '+unicode(len(groups)))
+            print('%s does not have three groups, but %s' % (profile.name, len(groups)))
         group1 = groups[0].name
         group2 = groups[1].name
         group3 = groups[2].name

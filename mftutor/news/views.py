@@ -54,7 +54,7 @@ class NewsView(BaseNewsView, TemplateResponseMixin):
     template_name = 'news.html'
 
     def get_group_handle(self):
-        return u'alle'
+        return 'alle'
 
 
 class NewsPostFormMixin(TemplateResponseMixin, ModelFormMixin):
@@ -83,7 +83,7 @@ class NewsCreateView(CreateView, NewsPostFormMixin):
         initial = initial.copy()
         initial['author'] = self.request.user
         initial['posted'] = datetime.datetime.now()
-        initial['group_handle'] = u'alle'
+        initial['group_handle'] = 'alle'
         return initial
 
     def form_valid(self, form):

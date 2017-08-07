@@ -1,5 +1,5 @@
 # vim:set fileencoding=utf-8 :
-from __future__ import unicode_literals
+
 
 from django.db import models
 
@@ -25,6 +25,3 @@ class Email(models.Model):
             self.kind,
             self.subject,
         )
-
-    def __unicode__(self):
-        return u"Email to \"" + self.recipient + u"\" kind \"" + self.kind + u"\" subject \"" + self.subject + u"\""

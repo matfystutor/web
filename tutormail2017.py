@@ -1,5 +1,5 @@
 # encoding: utf8
-from __future__ import unicode_literals
+
 
 '''
 1. Læs email2017.txt igennem for fejl (og datoer osv.) - og fiks dem

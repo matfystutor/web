@@ -32,13 +32,13 @@ class ProgressIndicator(object):
 
     def step(self, line):
         self.steps += 1
-        sys.stdout.write((u'\r\033[K[%4d/%4d] %s' %
+        sys.stdout.write(('\r\033[K[%4d/%4d] %s' %
                           (self.steps, self.total, line)).encode('utf8'))
         sys.stdout.flush()
 
     def done(self):
         elapsed = time.time() - self.t0
-        print(u'\r\033[K[%4d/%4d] In %s' % (self.total, self.total, elapsed))
+        print('\r\033[K[%4d/%4d] In %s' % (self.total, self.total, elapsed))
 
 
 class Command(BaseCommand):
@@ -130,7 +130,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         fp = tarfile.open(kwargs.pop('filename'), 'r')
-        ti = fp.next()
+        ti = fp.next()  # TODO should this be next(fp) in Python 3?
         dirname = re.sub(r'/.*', '', ti.name)
         f = fp.extractfile('%s/tutorprofiles.json' % dirname)
         try:

@@ -60,8 +60,8 @@ class Command(BaseCommand):
             rows_printed = '\n'.join(''.join(typeset(cell) for cell in row)
                                      for row in rows)
 
-            note = u''.join(
-                u'%s\n' % u'\n'.join(textwrap.wrap(line, note_width))
+            note = ''.join(
+                '%s\n' % '\n'.join(textwrap.wrap(line, note_width))
                 for line in note.splitlines())
             note_lines = list(note.splitlines()) + 4*['']
             note_lines = [line.ljust(note_width) for line in note_lines]

@@ -12,7 +12,7 @@ class RusNewsView(BaseNewsView, TemplateResponseMixin):
     template_name = 'rus/nyheder.html'
 
     def get_group_handle(self):
-        return u'rus'
+        return 'rus'
 
 
 class MyInfoForm(forms.Form):
@@ -83,8 +83,8 @@ class RusClassDetailView(RusClassView):
         return self.render_to_response(self.get_context_data(is_logged_in=is_logged_in))
 
     def get_rusclass(self, handle):
-        if handle == u'tk1':
-            return RusClass(year=self.request.rusyear, handle=handle, internal_name=u'Teknokemi 1', official_name=u'TÅ1')
+        if handle == 'tk1':
+            return RusClass(year=self.request.rusyear, handle=handle, internal_name='Teknokemi 1', official_name='TÅ1')
         return get_object_or_404(RusClass, year=self.request.rusyear, handle=handle)
 
     def get_rus_list(self):
@@ -97,16 +97,16 @@ class RusClassDetailView(RusClassView):
         is_logged_in = kwargs.pop('is_logged_in')
         context_data = super(RusClassDetailView, self).get_context_data(**kwargs)
         context_data['rusclass'] = self.rusclass
-        if self.rusclass.handle == u'tk1':
+        if self.rusclass.handle == 'tk1':
             j = 'Jeppe'
             hj = 'Henrijeppe'
             context_data['rus_names'] = (j, j, hj, j, hj, j, j, hj, hj, j, hj,
                     hj, hj, 'JepPer', j, hj, j, j, j, j, j, hj, j, j, hj)
             context_data['tutor_names'] = (
-                    u'Jakob Schultz-Nielsen',
-                    u'Kenneth S. Bøgh',
-                    u'Mads Baggesen',
-                    u'Morten N. Pløger',
+                    'Jakob Schultz-Nielsen',
+                    'Kenneth S. Bøgh',
+                    'Mads Baggesen',
+                    'Morten N. Pløger',
                     )
             context_data['show_details'] = False
         elif is_logged_in:
@@ -137,7 +137,7 @@ class ProfileView(FormView):
 
     def dispatch(self, request, *args, **kwargs):
         if not request.rus:
-            return self.render_to_response(self.get_context_data(error=u'Du er ikke rus!', form=ProfileForm()))
+            return self.render_to_response(self.get_context_data(error='Du er ikke rus!', form=ProfileForm()))
         return super(ProfileView, self).dispatch(request, *args, **kwargs)
 
     def get_initial(self):

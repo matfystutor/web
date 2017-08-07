@@ -28,16 +28,16 @@ def random_first_name():
 def random_last_name():
     name = random.choice(LAST_NAME)
     if random.random() < 0.1:
-        name = name + u' ' + random.choice(LAST_NAME)
+        name = name + ' ' + random.choice(LAST_NAME)
     if random.random() < 0.01:
-        name = name + u' ' + random.choice(LAST_NAME)
+        name = name + ' ' + random.choice(LAST_NAME)
     return name
 
 def random_name():
-    return random_first_name()+u' '+random_last_name()
+    return random_first_name()+' '+random_last_name()
 
 def random_street():
-    return random.choice(STREET) + u' ' + str(1+int(random.expovariate(0.1)))
+    return random.choice(STREET) + ' ' + str(1+int(random.expovariate(0.1)))
 
 def random_city():
     return random.choice(CITY)
@@ -45,7 +45,7 @@ def random_city():
 def print_random_table():
     for x in range(100):
         sys.stdout.write(
-                (u"%-40s %-10s %-40s %-20s\n" % (random_name(),
+                ("%-40s %-10s %-40s %-20s\n" % (random_name(),
                     random_student_number(2013), random_street(), random_city()))
                 .encode('utf8'))
 
@@ -57,7 +57,7 @@ def random_email(sn):
         '@example.edu', '@matfystutor.local'))
 
 def random_study():
-    return random.choice((u'mat', u'fys', u'møk', u'nano', u'dat', u'it'))
+    return random.choice(('mat', 'fys', 'møk', 'nano', 'dat', 'it'))
 
 def new_random_profile(year):
     sn = random_student_number(year)

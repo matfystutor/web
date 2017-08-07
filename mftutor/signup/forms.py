@@ -1,5 +1,5 @@
 # vim: set fileencoding=utf8:
-from __future__ import unicode_literals
+
 
 import re
 import csv

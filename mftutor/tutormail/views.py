@@ -58,18 +58,18 @@ class EmailFormView(FormView):
         return (profile.name, 'best')
 
     def perform_wrapping(self, text, wrapping):
-        text = text.replace(u'\r', u'')
+        text = text.replace('\r', '')
 
-        if wrapping == u'paragraphs':
+        if wrapping == 'paragraphs':
             paragraphs = re.findall(r'(.*?)(\n\n+|\n*$)', text, re.S)
-            text = u''.join(
-                u'%s%s'
+            text = ''.join(
+                '%s%s'
                 % ('\n'.join(textwrap.wrap(par, 79)),
                    sep)
                 for par, sep in paragraphs)
         elif wrapping == 'lines':
-            text = u''.join(
-                u'%s\n' % u'\n'.join(textwrap.wrap(line, 79))
+            text = ''.join(
+                '%s\n' % '\n'.join(textwrap.wrap(line, 79))
                 for line in text.splitlines())
 
         return text
@@ -88,7 +88,7 @@ class EmailFormView(FormView):
             form = form_class(**kwargs)
 
             if text != text2:
-                raise ValueError(u'Line wrapping failed (no fixpoint)')
+                raise ValueError('Line wrapping failed (no fixpoint)')
 
             return self.render_to_response(self.get_context_data(form=form))
         elif request.POST.get('send') or request.POST.get('only_me'):
@@ -97,7 +97,7 @@ class EmailFormView(FormView):
             else:
                 return self.form_invalid(form)
         else:
-            form.add_error(None, u'Tryk på en knap')
+            form.add_error(None, 'Tryk på en knap')
             return self.render_to_response(self.get_context_data(form=form))
 
     def get_year(self):

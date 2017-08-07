@@ -67,7 +67,7 @@ class TutorListForm(forms.Form):
         choices = [cleaned_data[o] for o in options]
         if sum(choices) != 1:
             raise forms.ValidationError(
-                u'Du skal vælge noget')
+                'Du skal vælge noget')
 
 
 class TutorListView(FormView):
@@ -91,7 +91,7 @@ class TutorListView(FormView):
         missing = set(studentnumbers) - set(tutor_dict.keys())
         if missing:
             form.add_error(
-                None, u'Ukendte årskortnumre: %s' % ', '.join(missing))
+                None, 'Ukendte årskortnumre: %s' % ', '.join(missing))
             return self.form_invalid(form)
 
         for c in form.cleaned_data['text']:
@@ -117,7 +117,7 @@ class TutorListView(FormView):
         elif form.cleaned_data['assign_tutors']:
             return self.assign_tutors(rusclass_list)
         else:
-            form.add_error(None, u'No choice')
+            form.add_error(None, 'No choice')
             return self.form_invalid(form)
 
     def generate_tex(self, rusclass_list):

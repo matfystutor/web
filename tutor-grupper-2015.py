@@ -14,7 +14,7 @@ and an asterisk prefix means the person is the TutorGroupLeader.
 This script creates Tutor objects and sends out emails
 (found in TutorProfile objects).
 """
-from __future__ import print_function, unicode_literals
+
 
 import os
 import sys

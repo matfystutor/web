@@ -21,13 +21,13 @@ class Event(models.Model):
                 raise ValidationError("Du skal angive både start- og sluttidspunkt")
 
     def category(self):
-        if u'stormøde' in self.title:
+        if 'stormøde' in self.title:
             return 'stormoede'
-        if u'RKFL' in self.title:
+        if 'RKFL' in self.title:
             return 'rkfl'
-        if u'RKFW' in self.title:
+        if 'RKFW' in self.title:
             return 'rkfw'
-        if u'fest' in self.title:
+        if 'fest' in self.title:
             return 'fest'
 
     @property
