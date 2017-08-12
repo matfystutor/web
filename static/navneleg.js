@@ -111,14 +111,25 @@ function navneleg() {
 
   reset_tutors();
 
+  var arto = document.getElementById('arto');
+  if (arto) document.body.appendChild(arto);
   var content = document.getElementById('content');
   content.innerHTML = '<h1>Navneleg<\/h1>\n'+
   '<p id="navneleg_stats"><\/p>\n'+
   '<p id="navneleg_status"><\/p>\n'+
-  '<p style="height: 300px"><img style="max-width: 300px; max-height: 300px" id="navneleg_tutorpicture"><\/p>\n'+
+  '<p id="navneleg_container" style="position: relative; height: 130px"><img style="max-width: 130px; max-height: 130px" id="navneleg_tutorpicture"><\/p>\n'+
   '<p><input id="navneleg_input"><\/p>\n'+
   '<p><input type="button" id="navneleg_submit" value="Indsend gæt"><\/p>\n'
   ;
+
+  if (arto) {
+    var container = document.getElementById('navneleg_container');
+    arto.style.position = 'absolute';
+    arto.style.left = arto.style.bottom = '5px';
+    arto.style.opacity = '0.5';
+    arto.style.display = 'none';
+    container.appendChild(arto);
+  }
 
   var currentIdx;
   var wins = 0, losses = 0, streak = 0;
@@ -148,6 +159,9 @@ function navneleg() {
     }
     stats.innerHTML = statString;
     var levelText = (level == 1) ? "" : (" (level "+level+")");
+    if (arto) {
+      arto.style.display = (level == 1) ? "none" : "";
+    }
     document.title = "Navneleg"+levelText+"! "+wins+"/"+losses+" ("+streak+")";
     status.innerHTML = "Hvem er følgende tutor? Indtast fornavnet eller et kendt kaldenavn.";
     input.focus();
