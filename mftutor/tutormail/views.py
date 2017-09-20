@@ -22,6 +22,12 @@ from mftutor.aliases.models import resolve_alias
 email_backend_type = 'django.core.mail.backends.smtp.EmailBackend'
 
 
+def get_tutorprofile_email(tp):
+    if tp.email.endswith('@gmail.com') and re.match(r'^201\d+$', tp.studentnumber):
+        return '%s@post.au.dk' % tp.studentnumber
+    return tp.email
+
+
 class EmailFormView(FormView):
     template_name = 'email_form.html'
     form_class = EmailForm
@@ -138,7 +144,7 @@ class EmailFormView(FormView):
         for profile in profiles:
             profile.set_default_email()
 
-        return sorted([profile.email for profile in profiles])
+        return sorted([get_tutorprofile_email(profile) for profile in profiles])
 
     def form_valid(self, form):
         data = form.cleaned_data
@@ -157,13 +163,13 @@ class EmailFormView(FormView):
             tutor__year__exact=TUTORMAIL_YEAR,
             tutor__early_termination__isnull=True,
             tutor__groups__handle__in=group_handles)
-        cc_emails = [profile.email for profile in cc_recipients]
+        cc_emails = [get_tutorprofile_email(profile) for profile in cc_recipients]
         cc_emails = sorted(set(cc_emails) - set(recipients))
         recipients += cc_emails
 
         if data['only_me']:
             text += '\n' + repr(recipients)
-            recipients = [self.request.user.tutorprofile.email]
+            recipients = [get_tutorprofile_email(self.request.user.tutorprofile)]
 
         text = self.perform_wrapping(text, wrapping)
 
