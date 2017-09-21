@@ -23,8 +23,10 @@ email_backend_type = 'django.core.mail.backends.smtp.EmailBackend'
 
 
 def get_tutorprofile_email(tp):
-    if tp.email.endswith('@gmail.com') and re.match(r'^201\d+$', tp.studentnumber):
-        return '%s@post.au.dk' % tp.studentnumber
+    # Avoid blacklisting by relaying through @post.au.dk addresses.
+    # valid_studentnumber = re.match(r'^201\d+$', tp.studentnumber)
+    # if tp.email.endswith('@gmail.com') and valid_studentnumber:
+    #     return '%s@post.au.dk' % tp.studentnumber
     return tp.email
 
 
