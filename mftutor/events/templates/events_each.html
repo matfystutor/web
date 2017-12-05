@@ -7,8 +7,19 @@
 {% if event.location %}&ndash; <span class="eventlocation">{{ event.location }}</span>{% endif %}
 </div>
 <div class="eventtime">{{ event.start_date|date:"l j. F"|lower|capfirst }}
+{% if event.start_time != None %}
+{{ event.start_time }}
+{% endif %}
+{% if event.start_date == event.end_date %}
+    {% if event.end_time != None %}
+    - {{ event.end_time }}
+    {% endif %}
+{% endif %}
 {% if event.start_date != event.end_date %}
 til {{ event.end_date|date:"l j. F"|lower }}
+    {% if event.end_time != None %}
+    - {{ event.end_time }}
+    {% endif %}
 {% endif %}
 </div>
 {% if user.is_authenticated %}
