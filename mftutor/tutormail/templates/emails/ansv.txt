@@ -23,7 +23,7 @@ gjort dig til gruppeansvarlig for {{ group }} :)
 
 Som ansvarlig har du til opgave at:
 - indkalde til gruppemøder; heriblandt første gruppemøde, hvor der
-udarbejdes en arbejdsplan (deadline d. 26. februar 2016), det kan være en god
+udarbejdes en arbejdsplan, det kan være en god
 ide at finde inspiration til denne i guiden fra sidste år (den
 kan findes på tutorhjemmesiden).
 - tjekke, at gruppens medlemmer deltager aktivt i arbejdet. Hvis en
@@ -45,7 +45,7 @@ så er en fra din gruppe også i LaTeX-gruppen.
 Hvis der er en grund til, at du ikke ønsker at være gruppeansvarlig,
 skal bestyrelsen godkende et eventuelt bytte.
 
-Vi glæder os til at ses til RusKursusForberende Lang Lørdag d. 4. marts 2017.
+Vi glæder os til at ses til RusKursusForberende Lang Lørdag d. 10. marts 2018.
 
 På vegne af tutorbestyrelsen,
 {{ webfar }}

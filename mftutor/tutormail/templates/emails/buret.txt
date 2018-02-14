@@ -4,7 +4,7 @@ Du er blevet udtaget til at assistere den fabelagtige
 Mat/Fys-Tutorgruppe med at drive dette års udgave af Buret™.
 Du kan føle dig stolt. Buret™ er en særligt sej gruppe.
 {% if groups %}
-Udover buret er du også kommet i {{ groups }}
+Udover Buret er du også kommet i {{ groups }}
 {% endif %}
 Vi har oprettet en konto til dig inde på tutorhjemmesiden: www.matfystutor.dk,
 hvor du logger ind med dit årskortnummer: {{ studentnumber }}.
@@ -14,7 +14,7 @@ På siden skal du under "Personligt" --> "Profil" udfylde de manglende
 oplysningerne om dig selv. Derudover skal du også under "Personligt" -->
 "Upload Billede" uploade et vellignende billede.
 
-Vi glæder os til at ses til RusKursusForberende Lang Lørdag d. 4. marts
+Vi glæder os til at ses til RusKursusForberende Lang Lørdag d. 10. marts 2018
 
 På vegne af tutorbestyrelsen,
 {{ webfar }}
