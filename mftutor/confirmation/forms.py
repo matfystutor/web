@@ -7,7 +7,7 @@ class OwnConfirmationForm(forms.ModelForm):
 
     study = forms.CharField(widget=full_width_text_field, required=True,
             label='Studium samt sidefag/tilvalg')
-    tutortype = forms.ChoiceField(choices=(('ARB', 'Arbejdstutor'), ('BUR', 'Burtutor'), ('HOLD', 'Holdtutor'),), required=True,
+    tutortype = forms.ChoiceField(choices=(('BUR', 'Burtutor'), ('HOLD', 'Holdtutor'),), required=True,
             label='Tutor type')
     experience = forms.CharField(widget=full_width_text_field, required=False,
             label='I hvor mange år har du været holdtutor før i år?')
