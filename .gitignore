@@ -9,3 +9,6 @@
 
 .idea/
 .venv/
+
+db.sqlite3
+web-venv

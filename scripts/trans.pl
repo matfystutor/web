@@ -1,3 +1,5 @@
+# Used to transition old mysql db to new django app
+
 use warnings;
 use strict;
 
