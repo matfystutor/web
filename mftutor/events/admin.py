@@ -16,7 +16,7 @@ class RSVPInline(admin.TabularInline):
 class EventAdmin(admin.ModelAdmin):
     inlines = [RSVPInline]
     date_hierarchy = 'start_date'
-    fields = (('title', 'rsvp'), 'location', 'description', ('start_date', 'end_date'), ('start_time', 'end_time'))
+    fields = (('title', 'rsvp', 'rsvp_description'), 'location', 'description', ('start_date', 'end_date'), ('start_time', 'end_time'))
     list_display = ('title', 'location', 'start_date', 'end_date', 'start_time', 'end_time', 'rsvp')
     search_fields = ('title', 'location', 'description')
 

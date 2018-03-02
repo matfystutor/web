@@ -14,6 +14,7 @@ class Event(models.Model):
     start_time = models.TimeField(blank=True, null=True)
     end_time = models.TimeField(blank=True, null=True)
     rsvp = models.DateTimeField(blank=True, null=True, verbose_name="Tilmeldingsfrist")
+    rsvp_description = models.TextField(blank=True, verbose_name="Noter til tilmelding")
 
     def clean(self):
         if self.start_time or self.end_time:
@@ -53,9 +54,9 @@ class EventParticipant(models.Model):
     event = models.ForeignKey(Event, related_name="participants")
     tutor = models.ForeignKey(Tutor, related_name="events")
     status = models.CharField(
-        verbose_name='Tilbagemelding', max_length=10,
+        verbose_name='Svar', max_length=10,
         choices=(('yes', 'Kommer'), ('no', 'Kommer ikke')))
-    notes = models.TextField(blank=True)
+    notes = models.TextField(blank=True, verbose_name='Noter')
 
     def __unicode__(self):
         return '[RSVP %s %s %s]' % (self.event_id, self.tutor_id, self.status)
