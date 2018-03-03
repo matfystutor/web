@@ -14,21 +14,21 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='event',
             name='rsvp_title',
-            field=models.CharField(max_length=200, verbose_name=b'Titel p\xc3\xa5 tilmelding', blank=True),
+            field=models.CharField(verbose_name='Titel på tilmelding', max_length=200, blank=True),
         ),
         migrations.AlterField(
             model_name='event',
             name='rsvp_description',
-            field=models.TextField(verbose_name=b'Noter til tilmelding', blank=True),
+            field=models.TextField(verbose_name='Noter til tilmelding', blank=True),
         ),
         migrations.AlterField(
             model_name='eventparticipant',
-            name=b'notes',
-            field=models.TextField(verbose_name=b'Noter', blank=True),
+            name='notes',
+            field=models.TextField(verbose_name='Noter', blank=True),
         ),
         migrations.AlterField(
             model_name='eventparticipant',
-            name=b'status',
-            field=models.CharField(max_length=10, verbose_name=b'Svar', choices=[(b'yes', b'Kommer'), (b'no', b'Kommer ikke')]),
+            name='status',
+            field=models.CharField(verbose_name='Svar', max_length=10, choices=[('yes', 'Kommer'), ('no', 'Kommer ikke')]),
         ),
     ]
