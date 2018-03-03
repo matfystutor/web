@@ -11,10 +11,10 @@ function selectchange(element) {
     }
     eventUrl = div.firstChild.getAttribute("href");
 
-    $('span.saved').html("<img src=\"/static/images/loading.gif\"> Gemmer...");
+    $(element.form).find('span.saved').html("<img src=\"/static/images/loading.gif\"> Gemmer...");
     $.post(element.form.action, $(element.form).serialize())
-    .done(function() { $('span.saved').html("<img src=\"/static/images/ok.gif\"> Gemt! Husk at tilføje eventuelle noter til din tilmelding på <a href=\"" + eventUrl + "\">begivenhedssiden.</a>"); })
-        .fail(function() { $('span.saved').html("<img src=\"/static/images/error.gif\"> Fejl!"); })
+    .done(function() { $(element.form).find('span.saved').html("<img src=\"/static/images/ok.gif\"> Gemt! Husk at tilføje eventuelle noter til din tilmelding på <a href=\"" + eventUrl + "\">begivenhedssiden.</a>"); })
+        .fail(function() { $(element.form).find('span.saved').html("<img src=\"/static/images/error.gif\"> Fejl!"); })
     ;
 }
 </script>
