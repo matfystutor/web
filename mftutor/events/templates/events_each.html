@@ -27,7 +27,11 @@ til {{ event.end_date|date:"l j. F"|lower }}
 <div class="rsvp">
     <form method="post" action="/events/rsvp/{{ event.id }}/">
 	{% csrf_token %}
-	RSVP:
+    {% if event.rsvp_title %}
+    {{ event.rsvp_title }}:
+    {% else %}
+    RSVP:
+    {% endif %}
 	<select name="status" onchange="selectchange(this)">
 	    {% if event.rsvp_status = "none" %}<option value="">Vælg...</option>{% endif %}
 	    <option value="yes"{% if event.rsvp_status = "yes" %} selected{% endif %}>Kommer</option>
@@ -38,7 +42,13 @@ til {{ event.end_date|date:"l j. F"|lower }}
 </div>
 {% endif %}
 {% if not event.is_rsvp_possible %}
-{% if event.rsvp_status != 'none' %}RSVP: {% endif %}
+{% if event.rsvp_status != 'none' %}
+    {% if event.rsvp_title %}
+        {{ event.rsvp_title }}:
+    {% else %}
+        RSVP:
+    {% endif %}
+{% endif %}
 {% if event.rsvp_status = "yes" %}Kommer{% endif %}
 {% if event.rsvp_status = "no" %}Kommer ikke{% endif %}
 {% endif %}

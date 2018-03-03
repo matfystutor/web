@@ -14,6 +14,7 @@ class Event(models.Model):
     start_time = models.TimeField(blank=True, null=True)
     end_time = models.TimeField(blank=True, null=True)
     rsvp = models.DateTimeField(blank=True, null=True, verbose_name="Tilmeldingsfrist")
+    rsvp_title = models.CharField(max_length=200, blank=True, verbose_name="Titel på tilmelding")
     rsvp_description = models.TextField(blank=True, verbose_name="Noter til tilmelding")
 
     def clean(self):
