@@ -39,7 +39,7 @@ til {{ event.end_date|date:"l j. F"|lower }}
 
 {% if user.is_authenticated %}
 {% if event.is_rsvp_possible %}
-<h2>Tilbagemelding</h2>
+    <h2>{% if event.rsvp_title %} {{ event.rsvp_title }} {% else %} Tilbagemelding {% endif %}</h2>
 {% if event.rsvp_description %}<p> {{ event.rsvp_description }} </p> {% endif %}
 {% if rsvpform %}
 <form action="" method="post">{% csrf_token %}
