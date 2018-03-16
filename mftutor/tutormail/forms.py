@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 import django
-from django.forms import Form, CharField, Textarea, ValidationError, \
+from django.forms import Form, CharField, Textarea, TextInput, ValidationError, \
     ChoiceField, BooleanField
 
 
@@ -14,7 +14,7 @@ class EmailForm(Form):
     only_me = BooleanField(required=False)
 
     sender_name = CharField()
-    sender_email = CharField()
+    sender_email = CharField(widget=TextInput(attrs={'placeholder':'mailalias'}))
 
     subject = CharField()
 

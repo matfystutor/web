@@ -11,6 +11,15 @@
 {% block content %}
 <h1>{{ page_title }}</h1>
 
+<p>Fordi du er gruppeansvarlig eller i bestyrelsen har du rettigheder til at sende
+  emails til alle tutorer på én gang. Men husk: 
+  <blockquote><em>With great power comes great responsibility. </em></blockquote> 
+  Tutorer vil ikke spammes, så overvej, om din mail har relevans
+  for alle, før du sender den ud.
+</p>
+
+<hr>
+
 <form method="post">{% csrf_token %}
   {{ form.non_field_errors }}
   <p>Afsenders navn: {{ form.sender_name }}{{ form.sender_name.errors }}</p>

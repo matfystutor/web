@@ -63,7 +63,7 @@ class EmailFormView(FormView):
 
     def get_sender(self):
         profile = self.request.user.tutorprofile
-        return (profile.name, 'best')
+        return (profile.name, '')
 
     def perform_wrapping(self, text, wrapping):
         text = text.replace('\r', '')

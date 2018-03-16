@@ -91,6 +91,14 @@ Kildekoden er frit tilgængelig: https://github.com/matfystutor/web/
       </ul>
       </li>
       {% endif %}
+      {% if tutor.is_groupleader and not tutor.is_tutorbest %}
+      <li class="trigger">
+      <a href="#" style="cursor: default" onclick="return false">Gruppeansvarlig</a>
+      <ul class="subnav">
+        <li><a href="{% url 'email_form' %}">Email</a></li>
+      </ul>
+      </li>
+      {% endif %}
       {% if tutor.is_tutorbest %}
       <li class="trigger">
       <a href="{% url 'admin:index' %}">Administration</a>

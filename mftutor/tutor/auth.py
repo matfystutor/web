@@ -20,6 +20,9 @@ tutor_required_error = TemplateView.as_view(
     response_class=TemplateResponseForbidden,
     template_name='tutor_required.html')
 
+groupleader_required_error = TemplateView.as_view(
+    response_class=TemplateResponseForbidden,
+    template_name='groupleader_required.html')
 
 # Decorator
 def tutorbest_required(fn):
@@ -35,6 +38,21 @@ def tutorbest_required(fn):
 
     return wrapper
 
+# Decorator
+def groupleader_required(fn):
+    @functools.wraps(fn)
+    def wrapper(request, *args, **kwargs):
+        if request.user.is_superuser:
+            return fn(request, *args, **kwargs)
+        if not request.tutor:
+            return tutor_required_error(request)
+        if request.tutor.is_tutorbest(year=request.year):
+            return fn(request, *args, **kwargs)
+        if not request.tutor.is_groupleader(year=request.year):
+            return groupleader_required_error(request)
+        return fn(request, *args, **kwargs)
+
+    return wrapper
 
 # Decorator
 def tutor_required(fn):

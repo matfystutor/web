@@ -277,6 +277,18 @@ class Tutor(models.Model):
             return False
     is_tutorbur.boolean = True
 
+    def is_groupleader(self, year=None):
+        if not self.is_member(year=year):
+            return False
+        elif self.is_tutorbest():
+            return True
+        else:
+            for group in self.groups.all():
+                if group.leader == self:
+                    return True
+            return False
+    is_groupleader.boolean = True
+
     def can_manage_rusclass(self, rusclass):
         return (self.is_tutorbest() or
                 self.is_tutorbur() or
