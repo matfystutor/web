@@ -33,7 +33,11 @@ class ProfileView(FormView):
 
     def get_initial(self):
         tp = self.request.tutorprofile
-        sp = ShirtPreference.objects.get(profile=tp)
+        try:
+            sp = ShirtPreference.objects.get(profile=tp)
+        except ShirtPreference.DoesNotExist:
+            sp = ShirtPreference(profile=tp)
+            sp.save()
         return {
             'name': tp.name,
             'street': tp.street,
