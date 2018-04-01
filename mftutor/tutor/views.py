@@ -36,28 +36,6 @@ def tutor_password_change_view(request):
         request, 'registration/password_change_form.html', back)
 
 
-class UploadPictureForm(forms.ModelForm):
-    picture = forms.FileField(
-            required=True,
-            label='Billede')
-
-    class Meta:
-        model = TutorProfile
-        fields = ('picture',)
-
-
-class UploadPictureView(UpdateView):
-    model = TutorProfile
-    template_name = 'uploadpicture.html'
-    form_class = UploadPictureForm
-
-    def get_object(self):
-        return self.request.user.tutorprofile
-
-    def get_success_url(self):
-        return reverse('upload_picture_view')
-
-
 class TutorListView(TemplateView):
     template_name = 'tutors.html'
 

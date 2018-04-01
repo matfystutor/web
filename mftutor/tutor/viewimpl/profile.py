@@ -3,6 +3,9 @@ from django import forms
 from django.views.generic import FormView
 from django.core.exceptions import ValidationError
 
+from mftutor.shirt.models import ShirtPreference
+from mftutor.shirt.views import SelectShirt
+
 
 class ProfileForm(forms.Form):
     name = forms.CharField(label='Navn')
@@ -11,6 +14,11 @@ class ProfileForm(forms.Form):
     phone = forms.CharField(label='Telefon')
     email = forms.EmailField(label='Email')
     study = forms.CharField(label='Studium')
+    tshirt1 = forms.CharField(widget=SelectShirt, label='T-Shirt Størrelse 1')
+    tshirt2 = forms.CharField(widget=SelectShirt, label='T-Shirt Størrelse 2')
+    picture = forms.ImageField(
+        required=False,
+        label='Billede')
 
 
 class ProfileView(FormView):
@@ -20,10 +28,12 @@ class ProfileView(FormView):
     def get_context_data(self, **kwargs):
         context_data = super(ProfileView, self).get_context_data(**kwargs)
         context_data['studentnumber'] = self.request.tutorprofile.studentnumber
+        context_data['picture'] = self.request.tutorprofile.picture
         return context_data
 
     def get_initial(self):
         tp = self.request.tutorprofile
+        sp = ShirtPreference.objects.get(profile=tp)
         return {
             'name': tp.name,
             'street': tp.street,
@@ -31,10 +41,13 @@ class ProfileView(FormView):
             'phone': tp.phone,
             'email': tp.email,
             'study': tp.study,
+            'tshirt1': sp.choice1,
+            'tshirt2': sp.choice2
         }
 
     def form_valid(self, form):
         tp = self.request.tutorprofile
+        sp = ShirtPreference.objects.get(profile=tp)
         u = tp.user
         tp.name = form.cleaned_data['name']
         if ' ' in tp.name:
@@ -49,13 +62,22 @@ class ProfileView(FormView):
         tp.phone = form.cleaned_data['phone']
         u.email = tp.email = form.cleaned_data['email']
         tp.study = form.cleaned_data['study']
+        sp.choice1 = form.cleaned_data['tshirt1']
+        sp.choice2 = form.cleaned_data['tshirt2']
+
+        picture_data = form.cleaned_data['picture']
+        if picture_data is not None:
+            tp.picture = picture_data
+
         try:
             tp.full_clean()
+            sp.full_clean()
         except ValidationError as e:
             form.add_error(None, e)
             return self.form_invalid(form)
         u.save()
         tp.save()
+        sp.save()
 
         # Since TutorProfile cleaning may have changed tp.phone,
         # throw away the bound form and recreate it with the profile data

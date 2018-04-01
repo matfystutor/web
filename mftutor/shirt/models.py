@@ -1,4 +1,5 @@
 # vim: set fileencoding=utf8:
+from django.core.exceptions import ValidationError
 from django.db import models
 
 from ..tutor.models import TutorProfile
@@ -11,6 +12,13 @@ class ShirtPreference(models.Model):
 
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
+    def is_valid_option(self, value):
+        return ShirtOption.objects.filter(choice__exact=value).count() != 0
+
+    def clean(self):
+        if not self.is_valid_option(self.choice1) or not self.is_valid_option(self.choice2):
+            raise ValidationError('Ugyldig størrelse')
 
 class ShirtOption(models.Model):
     id = models.AutoField(primary_key=True)

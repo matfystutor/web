@@ -1,20 +1,28 @@
 {% extends "base.html" %}
 {% block title %}Mine oplysninger{% endblock %}
 {% block content %}
-{% if saved %}
-<p class="success_message">
-    Ændringer gemt.
-</p>
-{% endif %}
-<form class="twocol" action="{% url 'profile_view' %}" method="post">{% csrf_token %}
-{{ form.non_field_errors }}
-<div class="label"><label>Årskortnummer</label>:</div>
-<div class="field">{{ studentnumber }}</div>
-{% for field in form %}
-<div class="label">{{ field.label_tag }}</div>
-<div class="field">{{ field }}</div>
-{{ field.errors }}
-{% endfor %}
-<div class="field"><input type="submit" value="Gem oplysninger" /></div>
-</form>
+    {% if saved %}
+        <p class="success_message">
+            Ændringer gemt.
+        </p>
+    {% endif %}
+    <form class="twocol" action="{% url 'profile_view' %}" method="post" enctype="multipart/form-data">{% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="label">Profilbillede:</div>
+        <div class="field">
+            <img src="{{ MEDIA_URL }}{{ picture }}" style="max-width: 150px; max-height: 150px"/>
+            <div>Nyt billede: <input type="file" name="picture"/></div>
+        </div>
+        {{ form.picture.errors }}
+        <div class="label"><label>Årskortnummer</label>:</div>
+        <div class="field">{{ studentnumber }}</div>
+        {% for field in form %}
+            {% if field != form.picture %}
+                <div class="label">{{ field.label_tag }}</div>
+                <div class="field">{{ field }}</div>
+                {{ field.errors }}
+            {% endif %}
+        {% endfor %}
+        <div class="field"><input type="submit" value="Gem oplysninger"/></div>
+    </form>
 {% endblock %}
