@@ -29,7 +29,7 @@ Kildekoden er frit tilgængelig: https://github.com/matfystutor/web/
     <ul class="topnav">
       {% block menu %}
       <li class="trigger">
-      <a href="{% url 'news' %}">Info</a>
+      <a href="#" style="cursor: default" onclick="return false">Info</a>
       <ul class="subnav">
         <li><a href="{% url 'intro' %}">Introduktion</a></li>
         <li><a href="{% url 'news' %}">Nyheder</a></li>
@@ -44,7 +44,7 @@ Kildekoden er frit tilgængelig: https://github.com/matfystutor/web/
       </li>
       {% if tutor %}
       <li class="trigger">
-      <a href="{% url 'tutors' %}">Tutorer</a>
+      <a href="#" style="cursor: default" onclick="return false">Tutorer</a>
       <ul class="subnav">
         <li><a href="{% url 'gallery' %}">Billeder</a></li>
         <li><a href="{% url 'tutors' %}">Tutorer</a></li>
