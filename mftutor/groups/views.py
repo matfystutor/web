@@ -5,7 +5,7 @@ from ..tutor.models import TutorGroup, Tutor
 from ..aliases.models import resolve_alias_reversed
 
 class GroupsView(TemplateView):
-    template_name = 'groups/groups.html'
+    template_name = 'groups.html'
 
     def get_queryset(self, request):
         return TutorGroup.visible_groups.all()
@@ -39,7 +39,7 @@ class MyGroupsView(GroupsView):
         return request.tutor.groups
 
 class GroupView(TemplateView):
-    template_name = 'groups/group.html'
+    template_name = 'group.html'
 
     def get_context_data(self, **kwargs):
         context_data = super(GroupView, self).get_context_data(**kwargs)

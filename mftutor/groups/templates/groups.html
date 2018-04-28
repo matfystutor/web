@@ -2,7 +2,6 @@
 {% block title %}Groups{% endblock %}
 
 {% block content %}
-<h1>Grupper</h1>
 <table id="groupsTable">
 <tr>
 <th>Gruppe</th>
@@ -18,7 +17,8 @@
 <td>{{ g.leader.profile.name }}</td>
 <td><a href="mailto:{{ g.handle }}@matfystutor.dk">{{ g.handle }}@matfystutor.dk</a> </td>
 <td>{{ g.size}}</td>
-<td style="padding:0"><a href="{{g.handle}}" style="font-size: 2.5em; text-align:left; width:100%; display: block">🛈</a></td>
+<td style="padding:0"><a href="{{g.handle}}" style="font-size: 2em;
+            text-align:center; width:100%; display: block">&#9432;</a></td>
 </tr>
 {% endfor %}
 </table>
