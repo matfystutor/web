@@ -17,6 +17,7 @@
     <li><a href="mailto:{{ e }}">{{ e }}</a></li>
     {% endfor %}
 </ul>
+<h3>Gruppeansvarlig: {{ g.leader.profile.name }}</h3>
 <ul class="tutors">
 {% if g.handle == 'alle' %}
     <li>Se <a href="{% url 'tutors' %}">Adresser</a></li>

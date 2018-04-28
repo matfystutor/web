@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Group{% endblock %}
+
+{% block content %}
+
+<td style="padding:0"><a href="../" style="font-size: 2.5em; display: block">⏎</a></td>
+
+<h1>{{ group_name }}</h1>
+
+Antal tutorer: {{ tutor_count }}
+<br/>
+Aliases:
+<ul class="emails">
+    {% for e in aliases %}
+    <li><a href="mailto:{{ e }}">{{ e }}</a></li>
+    {% endfor %}
+</ul>
+
+</p>
+{% if leader_pk %}
+<p>
+{% if group == "gruppeansvarlige" %}
+Gruppeansvarlig-ansvarlige:
+{% elif group %}
+Gruppeansvarlig:
+{% else %}
+Tutorformand:
+{% endif %}
+</p>
+<div class="tutorcontainer tutorlist">
+{% include "tutoraddress.html" with tutor=leader %}
+</div>
+{% endif %}
+<div class="tutorcontainer tutorlist">
+{% for tutor in tutor_list %}
+{% if not tutor.pk == leader_pk %}
+{% include "tutoraddress.html" %}
+{% endif %}
+{% endfor %}
+</div>
+
+{% endblock %}

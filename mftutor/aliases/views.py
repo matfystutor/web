@@ -19,12 +19,14 @@ class AliasesView(TemplateView):
             if g.handle == 'alle':
                 continue
 
+            leader = g.leader
             tutors = sorted(t.profile.name
-                            for t in Tutor.members(request.year).filter(groups=g))
+                            for t in Tutor.members(request.year).filter(groups=g) if t != leader)
             aliases = [a + '@' + current_site.domain
                        for a in aliases_list[g.handle]]
             group = {
                 'name': g.name,
+                'leader': leader,
                 'handle': g.handle,
                 'tutors': tutors,
                 'aliases': aliases

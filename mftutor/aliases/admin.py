@@ -1,4 +1,4 @@
-from .models import *
+from models import Alias
 from django.contrib import admin
 
 class AliasAdmin(admin.ModelAdmin):
