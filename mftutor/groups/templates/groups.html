@@ -1,26 +1,31 @@
 {% extends "base.html" %}
-{% block title %}Groups{% endblock %}
+{% block title %}Gruppeoversigt{% endblock %}
 
 {% block content %}
+
+<h1>Gruppeoversigt</h1>
+<p> Klik på et gruppenavn for at se mere information </p>
+
 <table id="groupsTable">
-<tr>
-<th>Gruppe</th>
-<th>Ansvarlig</th>
-<th>Emailadresse</th>
-<th>Antal medlemmer</th>
-<th></th>
-</tr>
-{% for g in groups %}
-<tr>
-		
-<td>{{ g.name }}</td>
-<td>{{ g.leader.profile.name }}</td>
-<td><a href="mailto:{{ g.handle }}@matfystutor.dk">{{ g.handle }}@matfystutor.dk</a> </td>
-<td>{{ g.size}}</td>
-<td style="padding:0"><a href="{{g.handle}}" style="font-size: 2em;
+    <tr>
+        <th>Gruppe</th>
+        <th>Ansvarlig</th>
+        <th>Emailadresse</th>
+        <th>Antal medlemmer</th>
+        <!-- <th></th> -->
+    </tr>
+
+    {% for g in groups %}
+    <tr>
+        <td><a href="{{ g.handle }}">{{ g.name }}</a></td>
+        <td>{{ g.leader.profile.name }}</td>
+        <td><a href="mailto:{{ g.handle }}@matfystutor.dk">{{ g.handle }}@matfystutor.dk</a> </td>
+        <td>{{ g.size}}</td>
+        <!-- <td style="padding:0"><a href="{{g.handle}}" style="font-size: 2em;
             text-align:center; width:100%; display: block">&#9432;</a></td>
-</tr>
-{% endfor %}
+        -->
+    </tr>
+    {% endfor %}
 </table>
 
 {% endblock %}

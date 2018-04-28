@@ -736,7 +736,7 @@ table.eventtable{
 
 #groupsTable tr:nth-child(even){background-color: #f2f2f2;}
 
-#groupsTable tr:hover {background-color: #ddd;}
+#groupsTable tr:hover {background-color: #ddd}
 
 #groupsTable th {
     padding-top: 12px;
