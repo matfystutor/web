@@ -2,5 +2,8 @@ Django==1.8.18
 Pillow==2.8.1
 django-debug-toolbar==1.3.0
 django-wysiwyg==0.7.0
+django-sortedm2m==1.5.0
+django-photologue==3.6
+pytz==2018.4
 sqlparse==0.1.15
 sorl-thumbnail==12.3

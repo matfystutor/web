@@ -33,6 +33,9 @@ urlpatterns = patterns('',
     url(r'^dump/', include('mftutor.dump.urls')),
     url(r'^browser/', include('mftutor.browser.urls')),
     url(r'^tutorhold/', include('mftutor.rusclass.urls')),
+
+    url(r'^tutorgallery/', include('mftutor.gallery_custom.urls')),
+    url(r'^tutorgallery/', include('photologue.urls', namespace='photologue')),
 )
 
 try:
