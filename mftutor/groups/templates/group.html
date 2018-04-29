@@ -3,7 +3,13 @@
 
 {% block content %}
 
-<a href="../" style="font-size: 2.5em; display: block">⏎</a>
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
+
+<a href="#" onclick="goBack()" style="font-size: 2.5em; display: block">⏎</a>
 
 <h1>{{ group_name }}</h1>
 
