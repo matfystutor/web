@@ -119,13 +119,11 @@ ROOT_URLCONF = 'mftutor.urls'
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'mftutor.wsgi.application'
 
-from photologue import PHOTOLOGUE_APP_DIR
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, "mftutor/templates"),
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    PHOTOLOGUE_APP_DIR,
 )
 
 INSTALLED_APPS = (
@@ -144,11 +142,6 @@ INSTALLED_APPS = (
     'debug_toolbar',
     'sorl.thumbnail',
 
-    # Gallery
-    'photologue',
-    'sortedm2m',
-    'mftutor.gallery_custom',
-
     'mftutor.tutor',
     'mftutor.news',
     'mftutor.events',
@@ -165,7 +158,7 @@ INSTALLED_APPS = (
     'mftutor.dump',
     'mftutor.rusclass',
     'mftutor.signup',
-    'mftutor.groups',
+    'mftutor.groups'
 )
 
 # A sample logging configuration. The only tangible logging
@@ -257,7 +250,3 @@ GF_GROUPS = ('best', 'koor', 'webfar', 'oekonomi', 'gris')
 
 THUMBNAIL_KVSTORE = 'sorl.thumbnail.kvstores.dbm_kvstore.KVStore'
 THUMBNAIL_DBM_FILE = '/home/mftutor/web/thumbnails/thumbnail_kvstore'
-
-
-# GALLERY (Photologue v 1.6)
-PHOTOLOGUE_DIR = 'gallery'

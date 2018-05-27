@@ -745,16 +745,3 @@ table.eventtable{
     background-color: #444;
     color: white;
 }
-
-
-/* Gallery style */
-
-.gallery-image {
-	display:block;
-	margin-left: auto;
-	margin-right: auto;
-}
-
-.gallery-next {
-	align=right;
-}
