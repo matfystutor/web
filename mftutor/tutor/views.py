@@ -342,7 +342,7 @@ class ResetPasswordView(FormView):
                         navn=tp.name,
                         username=tp.studentnumber,
                         password=password,
-                        webfar='Mathias Rav'
+                        webfar='Thomas Skovlund Hansen'
                     ))),
                     to=['"%s" <%s>' % (tp.name, tp.email)],
                 ))
