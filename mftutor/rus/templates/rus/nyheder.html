@@ -2,6 +2,9 @@
 {% block title %}Nyheder{% endblock %}
 
 {% block content %}
+{% if tutor.is_tutorbest or tutor.is_tutorbur %}
+<div style="float: right"><a href="{% url 'news_add' %}">Ny</a></div>
+{% endif %}
 {% for news in news_list %}
 <div class="newsItem">
 <h2>{{ news.title }}</h2>
