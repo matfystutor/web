@@ -329,7 +329,7 @@ studenterstøttende fond.
 ### Stk. 1
 
 Disse vedtægter er vedtaget på foreningens
-ordinære generalforsamling tirsdag den 11. november 2014
+ordinære generalforsamling tirsdag den 14. november 2017
 med umiddelbar ikrafttræden
 og erstatter alle tidligere vedtægter.
 
