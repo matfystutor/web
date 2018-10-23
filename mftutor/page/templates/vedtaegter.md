@@ -27,6 +27,8 @@ studerende på bacheloruddannelserne under:
 - Institut for Datalogi
 - Interdiciplinary Nanoscience Center
 
+med undtagelse af bacheloruddannelsen i IT produktudvikling.
+
 ### Stk. 2
 
 Denne introduktion omfatter blandt andet:
