@@ -184,7 +184,7 @@ class EditSessionView(UpdateView):
     form_class = EditSessionForm
     template_name = 'reg/edit_session_form.html'
 
-    def get_form(self, form_class):
+    def get_form(self, form_class=None):
         form = super(EditSessionView, self).get_form(form_class)
         if form.instance and form.instance.pk is not None:
             qs = ImportLine.objects.filter(session=form.instance)
