@@ -4,7 +4,6 @@ from django.conf import global_settings
 # Django settings for mftutor project.
 
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
@@ -95,12 +94,34 @@ STATICFILES_FINDERS = (
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'not.so.secret.right.now'
 
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
-)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            os.path.join(BASE_DIR, 'mftutor/templates'),
+        ],
+        'OPTIONS': {
+            'context_processors': [
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+                'mftutor.rus.context_processors.rus_data',
+                'mftutor.tutor.context_processors.login_form',
+                'mftutor.tutor.context_processors.tutor_data',
+                'mftutor.tutor.context_processors.settings',
+                'mftutor.events.context_processors.site',
+            ],
+            'loaders': [
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+            ],
+        }
+    }
+]
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -118,13 +139,6 @@ ROOT_URLCONF = 'mftutor.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'mftutor.wsgi.application'
-
-TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR, "mftutor/templates"),
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-)
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -191,14 +205,6 @@ LOGGING = {
 }
 
 AUTH_PROFILE_MODULE = 'tutor.TutorProfile'
-
-TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
-    "mftutor.rus.context_processors.rus_data",
-    "mftutor.tutor.context_processors.login_form",
-    "mftutor.tutor.context_processors.tutor_data",
-    "mftutor.tutor.context_processors.settings",
-    "mftutor.events.context_processors.site",
-)
 
 LOGIN_REDIRECT_URL = "/"
 
