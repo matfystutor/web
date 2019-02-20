@@ -1,13 +1,14 @@
-from django.conf.urls import patterns, url
-from ..aliases.views import AliasesView, MyGroupsView
+from django.conf.urls import url
+
+from .auth import tutorbest_required, tutor_required
 from .views import (
     logout_view, login_view, profile_view, tutor_password_change_view,
     tutors_view, TutorAdminView, switch_user, FrontView,
     BoardAdminView, GroupLeaderView, ResetPasswordView, BoardMemberListView,
     TutorDumpView, TutorDumpLDIFView)
-from .auth import tutorbest_required, tutor_required
+from ..aliases.views import MyGroupsView
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^$', FrontView.as_view(), name='front'),
     url(r'^tutors/$', tutor_required(tutors_view), name='tutors'),
     url(r'^tutors/(?P<group>[^/?]+)/$', tutor_required(tutors_view), name='tutorgroup'),
@@ -27,4 +28,4 @@ urlpatterns = patterns('',
     url(r'^resetpassword/$', tutorbest_required(ResetPasswordView.as_view()), name='reset_password'),
     url(r'^boardadmin/(?P<year>\d+)/$', tutorbest_required(BoardAdminView.as_view()), name='board_admin'),
     url(r'^su/(?P<new_user>[^/]*)/$', switch_user),
-)
+]

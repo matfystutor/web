@@ -1,13 +1,11 @@
-from django.conf.urls import patterns, url
-from django.views.generic import DetailView, ListView, DeleteView
-from ..tutor.auth import tutorbest_required
+from django.conf.urls import url
+
+from .feed import MinutesFeed
 from .views import (
     GuidesView, MinutesView, PublicationsView, UploadDocumentView,
     EditDocumentView, DeleteDocumentView)
-from .models import Document
-from .feed import MinutesFeed
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^guides/(?:(?P<year>\d+)/)?$',
         GuidesView.as_view(), name='list_guides'),
     url(r'^referater/(?:(?P<year>\d+)/)?$',
@@ -21,4 +19,4 @@ urlpatterns = patterns('',
     url(r'^delete/(?P<pk>\d+)/$',
         DeleteDocumentView.as_view(),
         name='document_delete'),
-)
+]

@@ -1,24 +1,24 @@
-from django.conf.urls import patterns, url
-from ..tutor.auth import tutorbur_required
+from django.conf.urls import url
 
+from .views import ArrivedStatsView
 from .views import BurStartView
 from .views import ChooseSessionView, NewSessionView, EditSessionView
-from .views import (
-    RusListView, RusCreateView, RusListRPC, RusChangesView,
-    RusChangesTableView,
-)
 from .views import (
     HandoutListView, HandoutNewView, HandoutSummaryView,
     HandoutResponseView, HandoutResponseDeleteView,
     HandoutEditView,
     HandoutCrossReference,
 )
-from .views import RusInfoListView, RusInfoView, RusInfoDumpView
 from .views import LightboxAdminView
-from .views import ArrivedStatsView
+from .views import RusInfoListView, RusInfoView, RusInfoDumpView
+from .views import (
+    RusListView, RusCreateView, RusListRPC, RusChangesView,
+    RusChangesTableView,
+)
 from .views import StudentnumberListView, StudentnumberView
+from ..tutor.auth import tutorbur_required
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^$', tutorbur_required(BurStartView.as_view()),
         name='bur_start'),
 
@@ -73,4 +73,4 @@ urlpatterns = patterns('',
 
     url(r'^studentnumber/(?P<pk>\d+)/$',
         tutorbur_required(StudentnumberView.as_view()), name='studentnumber_set'),
-)
+]

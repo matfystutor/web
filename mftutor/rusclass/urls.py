@@ -1,11 +1,11 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
-from mftutor.tutor.auth import tutorbur_required
 from mftutor.rusclass.views import TutorListView, RusClassTexView
+from mftutor.tutor.auth import tutorbur_required
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^$', tutorbur_required(TutorListView.as_view()),
         name='tutor_list_pdf'),
     url(r'^bla/$', tutorbur_required(RusClassTexView.as_view()),
         name='rusclass_bla'),
-)
+]

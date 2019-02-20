@@ -1,10 +1,11 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
+
 from mftutor.tutor.auth import tutorbest_required
 from .views import event_detail_view, CalendarFeedView, EventListView, \
     RSVPFormView, BulkExportView, BulkImportView, EventParticipantListView, \
     EventParticipantEditView, ReminderEmailView
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^$',
         EventListView.as_view(),
         name="events"),
@@ -35,4 +36,4 @@ urlpatterns = patterns('',
     url(r'^(?P<pk>\d+)/reminder/$',
         tutorbest_required(ReminderEmailView.as_view()),
         name="events_reminder"),
-)
+]

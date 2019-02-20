@@ -1,9 +1,9 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 
 from .views import ProfileView, RusClassView, GroupView, SearchView
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^search/$', login_required(SearchView.as_view()),
         name='browser_search'),
     url(r'^profile/(?P<studentnumber>[0-9a-zA-Z]+)/$', login_required(ProfileView.as_view()),
@@ -12,4 +12,4 @@ urlpatterns = patterns('',
         name='browser_rusclass'),
     url(r'^group/(?P<year>\d+)/(?P<handle>[a-z0-9]+)/$', login_required(GroupView.as_view()),
         name='browser_group'),
-    )
+]
