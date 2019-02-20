@@ -4,6 +4,8 @@ from django.conf.urls import include, url
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 
+from mftutor.reg.views import burtavle_frameset, burtavle
+
 admin.autodiscover()
 
 urlpatterns = [
@@ -28,8 +30,8 @@ urlpatterns = [
     url(r'^confirmation/', include('mftutor.confirmation.urls')),
     url(r'^rus/', include('mftutor.rus.urls')),
     url(r'^reg/', include('mftutor.reg.urls')),
-    url(r'^burtavle/frame/$', 'mftutor.reg.views.burtavle', name="burtavle"),
-    url(r'^burtavle/$', 'mftutor.reg.views.burtavle_frameset', name="burtavle_frameset"),
+    url(r'^burtavle/frame/$', burtavle, name="burtavle"),
+    url(r'^burtavle/$', burtavle_frameset, name="burtavle_frameset"),
     url(r'^dump/', include('mftutor.dump.urls')),
     url(r'^browser/', include('mftutor.browser.urls')),
     url(r'^tutorhold/', include('mftutor.rusclass.urls')),
