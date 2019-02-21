@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
-
-from django.db import models, migrations
+from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
@@ -18,11 +18,10 @@ class Migration(migrations.Migration):
                 ('destination', models.CharField(max_length=50)),
             ],
             options={
-                'verbose_name': 'alias',
-                'verbose_name_plural': 'aliaser',
                 'ordering': ['source', 'destination'],
+                'verbose_name_plural': 'aliaser',
+                'verbose_name': 'alias',
             },
-            bases=(models.Model,),
         ),
         migrations.AlterUniqueTogether(
             name='alias',

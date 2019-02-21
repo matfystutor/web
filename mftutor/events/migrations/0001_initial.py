@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
-
-from django.db import models, migrations
+from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
@@ -14,37 +14,38 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Event',
             fields=[
-                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=200)),
+                ('location', models.CharField(max_length=200, blank=True)),
                 ('description', models.TextField(blank=True)),
                 ('start_date', models.DateField()),
                 ('end_date', models.DateField()),
-                ('start_time', models.TimeField(blank=True, null=True)),
-                ('end_time', models.TimeField(blank=True, null=True)),
-                ('rsvp', models.DateTimeField(blank=True, null=True, verbose_name='Tilmeldingsfrist')),
+                ('start_time', models.TimeField(null=True, blank=True)),
+                ('end_time', models.TimeField(null=True, blank=True)),
+                ('rsvp', models.DateTimeField(null=True, blank=True, verbose_name='Tilmeldingsfrist')),
+                ('rsvp_title', models.CharField(max_length=200, blank=True, verbose_name='Titel på tilmelding')),
+                ('rsvp_description', models.TextField(blank=True, verbose_name='Noter til tilmelding')),
             ],
             options={
                 'ordering': ['start_date', 'start_time'],
                 'verbose_name_plural': 'begivenheder',
                 'verbose_name': 'begivenhed',
             },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='EventParticipant',
             fields=[
-                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
-                ('status', models.CharField(choices=[('yes', 'Kommer'), ('no', 'Kommer ikke'), ('maybe', 'Har ikke taget stilling')], max_length=10, verbose_name='Tilbagemelding')),
-                ('notes', models.TextField(blank=True)),
-                ('event', models.ForeignKey(to='events.Event', related_name='participants')),
-                ('tutor', models.ForeignKey(to='tutor.Tutor', related_name='events')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('status', models.CharField(max_length=10, choices=[('yes', 'Kommer'), ('no', 'Kommer ikke')], verbose_name='Svar')),
+                ('notes', models.TextField(blank=True, verbose_name='Noter')),
+                ('event', models.ForeignKey(related_name='participants', to='events.Event')),
+                ('tutor', models.ForeignKey(related_name='events', to='tutor.Tutor')),
             ],
             options={
                 'ordering': ['event', 'status'],
                 'verbose_name_plural': 'tilbagemeldinger',
                 'verbose_name': 'tilbagemelding',
             },
-            bases=(models.Model,),
         ),
         migrations.AlterUniqueTogether(
             name='eventparticipant',
