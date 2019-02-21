@@ -33,9 +33,9 @@ til {{ event.end_date|date:"l j. F"|lower }}
     RSVP:
     {% endif %}
 	<select name="status" onchange="selectchange(this)">
-	    {% if event.rsvp_status = "none" %}<option value="">Vælg...</option>{% endif %}
-	    <option value="yes"{% if event.rsvp_status = "yes" %} selected{% endif %}>Kommer</option>
-	    <option value="no"{% if event.rsvp_status = "no" %} selected{% endif %}>Kommer ikke</option>
+	    {% if event.rsvp_status == "none" %}<option value="">Vælg...</option>{% endif %}
+	    <option value="yes"{% if event.rsvp_status == "yes" %} selected{% endif %}>Kommer</option>
+	    <option value="no"{% if event.rsvp_status == "no" %} selected{% endif %}>Kommer ikke</option>
 	</select>
 	<span class="saved"></span>
     </form>
@@ -49,8 +49,8 @@ til {{ event.end_date|date:"l j. F"|lower }}
         RSVP:
     {% endif %}
 {% endif %}
-{% if event.rsvp_status = "yes" %}Kommer{% endif %}
-{% if event.rsvp_status = "no" %}Kommer ikke{% endif %}
+{% if event.rsvp_status == "yes" %}Kommer{% endif %}
+{% if event.rsvp_status == "no" %}Kommer ikke{% endif %}
 {% endif %}
 {% endif %}
 </div>
