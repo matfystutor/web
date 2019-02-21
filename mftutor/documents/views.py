@@ -3,12 +3,12 @@ import copy
 import datetime
 
 from django import forms
-from django.forms.extras import SelectDateWidget
+from django.forms.widgets import SelectDateWidget
 from django.views.generic import UpdateView, TemplateView, CreateView, DeleteView
 from django.views.generic.base import TemplateResponseMixin
 from django.views.generic.edit import ModelFormMixin
 from django.utils.decorators import method_decorator
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from .models import Document
 from ..tutor.auth import tutorbest_required, tutor_required
 

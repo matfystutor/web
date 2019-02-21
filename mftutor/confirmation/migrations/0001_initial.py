@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
                 ('comment', models.CharField(max_length=500, blank=True, verbose_name='Kommentar')),
                 ('previous_tutor', models.CharField(max_length=500, blank=True, verbose_name='Har du tidligere været tutor?')),
                 ('internal_notes', models.CharField(max_length=500, blank=True, verbose_name='Notat')),
-                ('tutor', models.OneToOneField(to='tutor.Tutor')),
+                ('tutor', models.OneToOneField(to='tutor.Tutor', on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ('tutor',),

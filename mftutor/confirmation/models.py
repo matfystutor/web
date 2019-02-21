@@ -6,7 +6,7 @@ from django.db import models
 from ..tutor.models import Tutor
 
 class Confirmation(models.Model):
-    tutor = models.OneToOneField(Tutor)
+    tutor = models.OneToOneField(Tutor, models.CASCADE)
 
     study = models.CharField(max_length=500, blank=True,
             verbose_name='Studium samt sidefag/tilvalg')

@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 ('payload', models.TextField(blank=True, verbose_name='Beskedparameter')),
                 ('related_pk', models.IntegerField()),
                 ('serialized_data', models.TextField(blank=True)),
-                ('author', models.ForeignKey(to='tutor.TutorProfile', verbose_name='Forfatter')),
+                ('author', models.ForeignKey(to='tutor.TutorProfile', verbose_name='Forfatter', on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(
@@ -48,8 +48,8 @@ class Migration(migrations.Migration):
                 ('note', models.TextField(blank=True)),
                 ('created', models.DateTimeField(auto_now_add=True, verbose_name='Oprettet')),
                 ('updated', models.DateTimeField(auto_now=True, verbose_name='Sidst ændret')),
-                ('handout', models.ForeignKey(to='reg.Handout')),
-                ('rusclass', models.ForeignKey(to='tutor.RusClass')),
+                ('handout', models.ForeignKey(to='reg.Handout', on_delete=models.CASCADE)),
+                ('rusclass', models.ForeignKey(to='tutor.RusClass', on_delete=models.CASCADE)),
             ],
             options={
                 'verbose_name_plural': 'holdbesvarelser',
@@ -64,8 +64,8 @@ class Migration(migrations.Migration):
                 ('note', models.TextField(blank=True)),
                 ('created', models.DateTimeField(auto_now_add=True, verbose_name='Oprettet')),
                 ('updated', models.DateTimeField(auto_now=True, verbose_name='Sidst ændret')),
-                ('handout', models.ForeignKey(to='reg.Handout')),
-                ('rus', models.ForeignKey(to='tutor.Rus')),
+                ('handout', models.ForeignKey(to='reg.Handout', on_delete=models.CASCADE)),
+                ('rus', models.ForeignKey(to='tutor.Rus', on_delete=models.CASCADE)),
             ],
             options={
                 'verbose_name_plural': 'rusbesvarelser',
@@ -98,7 +98,7 @@ class Migration(migrations.Migration):
                 ('created', models.DateTimeField(auto_now_add=True, verbose_name='Oprettet')),
                 ('updated', models.DateTimeField(auto_now=True, verbose_name='Sidst ændret')),
                 ('imported', models.DateTimeField(null=True, blank=True, verbose_name='Importeret')),
-                ('author', models.ForeignKey(to='tutor.TutorProfile', verbose_name='Forfatter')),
+                ('author', models.ForeignKey(to='tutor.TutorProfile', verbose_name='Forfatter', on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(
@@ -109,7 +109,7 @@ class Migration(migrations.Migration):
                 ('note', models.TextField(blank=True)),
                 ('updated', models.DateTimeField(auto_now=True, verbose_name='Sidst ændret')),
                 ('color', models.CharField(max_length=10, choices=[('Grøn', 'green'), ('Gul', 'yellow'), ('Rød', 'red')], default='green')),
-                ('author', models.ForeignKey(to='tutor.TutorProfile', verbose_name='Forfatter', null=True)),
+                ('author', models.ForeignKey(to='tutor.TutorProfile', verbose_name='Forfatter', null=True, on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(
@@ -119,8 +119,8 @@ class Migration(migrations.Migration):
                 ('color', models.CharField(max_length=10, choices=[('green', 'Grøn'), ('yellow', 'Gul'), ('red', 'Rød')], default='green')),
                 ('note', models.TextField(blank=True)),
                 ('updated', models.DateTimeField(auto_now=True, verbose_name='Sidst ændret')),
-                ('author', models.ForeignKey(to='tutor.TutorProfile', verbose_name='Forfatter', null=True)),
-                ('rusclass', models.OneToOneField(to='tutor.RusClass')),
+                ('author', models.ForeignKey(to='tutor.TutorProfile', verbose_name='Forfatter', null=True, on_delete=models.CASCADE)),
+                ('rusclass', models.OneToOneField(to='tutor.RusClass', on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ['rusclass'],
@@ -137,13 +137,13 @@ class Migration(migrations.Migration):
                 ('body', models.TextField(verbose_name='Note')),
                 ('time', models.DateTimeField(auto_now_add=True, verbose_name='Tidspunkt')),
                 ('deleted', models.DateTimeField(null=True, blank=True, verbose_name='Slettet')),
-                ('author', models.ForeignKey(to='tutor.TutorProfile', verbose_name='Forfatter')),
+                ('author', models.ForeignKey(to='tutor.TutorProfile', verbose_name='Forfatter', on_delete=models.CASCADE)),
             ],
         ),
         migrations.AddField(
             model_name='importline',
             name='session',
-            field=models.ForeignKey(to='reg.ImportSession'),
+            field=models.ForeignKey(to='reg.ImportSession', on_delete=models.CASCADE),
         ),
         migrations.AlterUniqueTogether(
             name='handout',

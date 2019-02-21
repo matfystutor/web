@@ -1,13 +1,9 @@
-# encoding: utf-8
-
-
-
 import io
 import subprocess
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.core.exceptions import ValidationError
 from django.template import RequestContext
 from django.template import Context
@@ -15,7 +11,7 @@ from django.template.loader import get_template
 from django.core.mail import EmailMessage
 from django.core.mail import get_connection
 from django import forms
-from django.contrib.auth.views import password_change
+from django.contrib.auth.views import PasswordChangeView
 from django.views.generic import UpdateView, TemplateView, FormView, ListView
 
 from mftutor.tutor.models import TutorProfile, TutorGroup, \
@@ -27,13 +23,13 @@ from mftutor.tutor.viewimpl.profile import profile_view
 from mftutor.tutor.viewimpl.admin import TutorAdminView, BoardAdminView
 
 
-def tutor_password_change_view(request):
-    if 'back' in request.GET:
-        back = request.GET['back']
-    else:
-        back = reverse('news')
-    return password_change(
-        request, 'registration/password_change_form.html', back)
+# def tutor_password_change_view(request):
+#     if 'back' in request.GET:
+#         back = request.GET['back']
+#     else:
+#         back = reverse('news')
+#     return password_change(
+#         request, 'registration/password_change_form.html', back)
 
 
 class TutorListView(TemplateView):

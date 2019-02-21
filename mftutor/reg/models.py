@@ -23,7 +23,7 @@ class ChangeLogEntry(models.Model):
     )
     KIND_CHOICES = KINDS
 
-    author = models.ForeignKey(TutorProfile, verbose_name="Forfatter")
+    author = models.ForeignKey(TutorProfile, models.CASCADE, verbose_name="Forfatter")
     time = models.DateTimeField(auto_now_add=True, verbose_name="Tidspunkt")
     kind = models.CharField(
         max_length=20, choices=KIND_CHOICES, verbose_name='Slags')
@@ -60,7 +60,7 @@ class ImportSession(models.Model):
     year = models.IntegerField(verbose_name="Tutorår")
     name = models.CharField(max_length=200, verbose_name="Navn")
     regex = models.CharField(max_length=500, verbose_name="Regulært udtryk")
-    author = models.ForeignKey(TutorProfile, verbose_name="Forfatter")
+    author = models.ForeignKey(TutorProfile, models.CASCADE, verbose_name="Forfatter")
 
     created = models.DateTimeField(auto_now_add=True, verbose_name="Oprettet")
     updated = models.DateTimeField(auto_now=True, verbose_name="Sidst ændret")
@@ -69,7 +69,7 @@ class ImportSession(models.Model):
 
 
 class ImportLine(models.Model):
-    session = models.ForeignKey(ImportSession)
+    session = models.ForeignKey(ImportSession, models.CASCADE)
     line = models.CharField(max_length=500)
     position = models.IntegerField()
 
@@ -104,7 +104,7 @@ class Note(models.Model):
     subject_pk = models.IntegerField()
     body = models.TextField(verbose_name='Note')
 
-    author = models.ForeignKey(TutorProfile, verbose_name="Forfatter")
+    author = models.ForeignKey(TutorProfile, models.CASCADE, verbose_name="Forfatter")
     time = models.DateTimeField(auto_now_add=True, verbose_name="Tidspunkt")
 
     deleted = models.DateTimeField(
@@ -178,8 +178,8 @@ class HandoutClassResponse(models.Model):
         ('red', 'Rød'),
     )
 
-    handout = models.ForeignKey(Handout)
-    rusclass = models.ForeignKey(RusClass)
+    handout = models.ForeignKey(Handout, models.CASCADE)
+    rusclass = models.ForeignKey(RusClass, models.CASCADE)
     color = models.CharField(max_length=10, choices=COLORS, default='green')
     note = models.TextField(blank=True)
 
@@ -193,8 +193,8 @@ class HandoutClassResponse(models.Model):
 
 
 class HandoutRusResponse(models.Model):
-    handout = models.ForeignKey(Handout)
-    rus = models.ForeignKey(Rus)
+    handout = models.ForeignKey(Handout, models.CASCADE)
+    rus = models.ForeignKey(Rus, models.CASCADE)
     checkmark = models.BooleanField(default=False)
     note = models.TextField(blank=True)
 
@@ -236,11 +236,11 @@ class LightboxRusClassState(models.Model):
         ('red', 'Rød'),
     )
 
-    rusclass = models.OneToOneField(RusClass)
+    rusclass = models.OneToOneField(RusClass, models.CASCADE)
     color = models.CharField(max_length=10, choices=COLORS, default='green')
     note = models.TextField(blank=True)
     author = models.ForeignKey(
-        TutorProfile, null=True, verbose_name="Forfatter")
+        TutorProfile, models.CASCADE, null=True, verbose_name="Forfatter")
     updated = models.DateTimeField(auto_now=True, verbose_name="Sidst ændret")
 
     class Meta:
@@ -268,6 +268,6 @@ class LightboxNote(models.Model):
     year = models.IntegerField(verbose_name="Tutorår", unique=True)
     note = models.TextField(blank=True)
     author = models.ForeignKey(
-        TutorProfile, null=True, verbose_name="Forfatter")
+        TutorProfile, models.CASCADE, null=True, verbose_name="Forfatter")
     updated = models.DateTimeField(auto_now=True, verbose_name="Sidst ændret")
     color = models.CharField(max_length=10, choices=COLORS, default='green')

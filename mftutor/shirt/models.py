@@ -6,7 +6,7 @@ from ..tutor.models import TutorProfile
 
 class ShirtPreference(models.Model):
     id = models.AutoField(primary_key=True)
-    profile = models.ForeignKey(TutorProfile)
+    profile = models.ForeignKey(TutorProfile, models.CASCADE)
     choice1 = models.CharField(max_length=60)
     choice2 = models.CharField(max_length=60)
 

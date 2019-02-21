@@ -1,5 +1,5 @@
 from django import template
-from django.core.urlresolvers import reverse, NoReverseMatch
+from django.urls import reverse, NoReverseMatch
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 

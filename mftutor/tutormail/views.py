@@ -4,10 +4,10 @@ import re
 import textwrap
 
 import django
+from django.urls import reverse
 from django.views.generic import ListView, DetailView, FormView
 from django.views.generic.base import TemplateResponseMixin
 from django.http import HttpResponseRedirect
-import django.core.urlresolvers
 import django.core.mail
 from django.core.mail import EmailMessage
 from django.db.models import Q
@@ -42,7 +42,7 @@ class EmailFormView(FormView):
         return initial_data
 
     def get_success_url(self):
-        return django.core.urlresolvers.reverse('email_form')
+        return reverse('email_form')
 
     def get_page_title(self):
         if self.kwargs['recipients'] == 'hold':

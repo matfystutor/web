@@ -53,8 +53,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('priority', models.IntegerField()),
-                ('application', models.ForeignKey(to='signup.TutorApplication')),
-                ('group', models.ForeignKey(to='tutor.TutorGroup')),
+                ('application', models.ForeignKey(to='signup.TutorApplication', on_delete=models.CASCADE)),
+                ('group', models.ForeignKey(to='tutor.TutorGroup', on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ('priority',),
@@ -68,16 +68,16 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='tutorapplication',
             name='profile',
-            field=models.ForeignKey(to='tutor.TutorProfile', blank=True, null=True),
+            field=models.ForeignKey(to='tutor.TutorProfile', blank=True, null=True, on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='assignedgroupleader',
             name='application',
-            field=models.ForeignKey(to='signup.TutorApplication'),
+            field=models.ForeignKey(to='signup.TutorApplication', on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='assignedgroupleader',
             name='group',
-            field=models.OneToOneField(to='tutor.TutorGroup'),
+            field=models.OneToOneField(to='tutor.TutorGroup', on_delete=models.CASCADE),
         ),
     ]

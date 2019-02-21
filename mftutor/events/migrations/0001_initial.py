@@ -38,8 +38,8 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('status', models.CharField(max_length=10, choices=[('yes', 'Kommer'), ('no', 'Kommer ikke')], verbose_name='Svar')),
                 ('notes', models.TextField(blank=True, verbose_name='Noter')),
-                ('event', models.ForeignKey(related_name='participants', to='events.Event')),
-                ('tutor', models.ForeignKey(related_name='events', to='tutor.Tutor')),
+                ('event', models.ForeignKey(related_name='participants', to='events.Event', on_delete=models.CASCADE)),
+                ('tutor', models.ForeignKey(related_name='events', to='tutor.Tutor', on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ['event', 'status'],

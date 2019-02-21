@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
                 ('choice2', models.CharField(max_length=60)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
-                ('profile', models.ForeignKey(to='tutor.TutorProfile')),
+                ('profile', models.ForeignKey(to='tutor.TutorProfile', on_delete=models.CASCADE)),
             ],
         ),
     ]

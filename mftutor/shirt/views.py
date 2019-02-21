@@ -1,5 +1,5 @@
 # vim: set fileencoding=utf8:
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django import forms
 from django.views.generic import FormView, UpdateView, TemplateView
 
@@ -36,8 +36,7 @@ class ShirtOptionView(FormView):
 
 class SelectShirt(forms.Select):
     def render(self, *args, **kwargs):
-        choices = [(so.choice, so.choice) for so in ShirtOption.objects.all()]
-        kwargs.update({'choices': choices})
+        self.choices = [(so.choice, so.choice) for so in ShirtOption.objects.all()]
         return super(SelectShirt, self).render(*args, **kwargs)
 
 class ShirtPreferenceForm(forms.ModelForm):

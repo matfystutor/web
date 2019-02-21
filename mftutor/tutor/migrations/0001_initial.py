@@ -89,8 +89,8 @@ class Migration(migrations.Migration):
             name='TutorInTutorGroup',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('tutor', models.ForeignKey(to='tutor.Tutor')),
-                ('tutorgroup', models.ForeignKey(to='tutor.TutorGroup')),
+                ('tutor', models.ForeignKey(to='tutor.Tutor', on_delete=models.CASCADE)),
+                ('tutorgroup', models.ForeignKey(to='tutor.TutorGroup', on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(
@@ -120,7 +120,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='tutor',
             name='profile',
-            field=models.ForeignKey(to='tutor.TutorProfile'),
+            field=models.ForeignKey(to='tutor.TutorProfile', on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='tutor',
@@ -135,7 +135,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='rus',
             name='profile',
-            field=models.ForeignKey(to='tutor.TutorProfile'),
+            field=models.ForeignKey(to='tutor.TutorProfile', on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='rus',
@@ -145,7 +145,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='boardmember',
             name='tutor',
-            field=models.ForeignKey(to='tutor.Tutor'),
+            field=models.ForeignKey(to='tutor.Tutor', on_delete=models.CASCADE),
         ),
         migrations.AlterUniqueTogether(
             name='tutor',

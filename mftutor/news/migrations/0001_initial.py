@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 ('body', models.TextField(verbose_name='Indhold')),
                 ('group_handle', models.CharField(max_length=20)),
                 ('year', models.IntegerField(default=0)),
-                ('author', models.ForeignKey(to=settings.AUTH_USER_MODEL, verbose_name='Forfatter')),
+                ('author', models.ForeignKey(to=settings.AUTH_USER_MODEL, verbose_name='Forfatter', on_delete=models.CASCADE)),
             ],
             options={
                 'verbose_name_plural': 'nyheder',

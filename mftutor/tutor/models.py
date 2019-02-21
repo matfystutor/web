@@ -190,7 +190,7 @@ class Tutor(models.Model):
     objects = TutorManager()
 
     id = models.AutoField(primary_key=True)
-    profile = models.ForeignKey(TutorProfile)
+    profile = models.ForeignKey(TutorProfile, models.CASCADE)
     year = models.IntegerField(verbose_name="Tutorår")
     groups = models.ManyToManyField(
         TutorGroup, verbose_name="Arbejdsgrupper", blank=True)
@@ -309,14 +309,14 @@ class Tutor(models.Model):
 
 
 class TutorInTutorGroup(models.Model):
-    tutorgroup = models.ForeignKey(TutorGroup, to_field='id')
-    tutor = models.ForeignKey(Tutor)
+    tutorgroup = models.ForeignKey(TutorGroup, models.CASCADE, to_field='id')
+    tutor = models.ForeignKey(Tutor, models.CASCADE)
 
 
 @python_2_unicode_compatible
 class BoardMember(models.Model):
     id = models.AutoField(primary_key=True)
-    tutor = models.ForeignKey(Tutor)
+    tutor = models.ForeignKey(Tutor, models.CASCADE)
     position = models.IntegerField(verbose_name="Rækkefølge")
     title = models.CharField(max_length=50, verbose_name="Titel")
 
@@ -334,7 +334,7 @@ class Rus(models.Model):
     objects = RusManager()
 
     id = models.AutoField(primary_key=True)
-    profile = models.ForeignKey(TutorProfile)
+    profile = models.ForeignKey(TutorProfile, models.CASCADE)
     year = models.IntegerField(verbose_name="Tutorår")
     rusclass = models.ForeignKey(RusClass, null=True, on_delete=models.SET_NULL)
 

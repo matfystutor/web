@@ -11,7 +11,7 @@ from django.db import transaction
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django import forms
 from django.views.generic import (
     ListView, FormView, UpdateView, TemplateView, View)

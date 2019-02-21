@@ -7,7 +7,7 @@ from django.http import HttpResponseRedirect
 from django.views.generic import UpdateView, TemplateView, FormView, ListView
 from django.views.generic.list import MultipleObjectMixin
 from django import forms
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db.models import Count
 
 from mftutor.signup.forms import SignupImportForm

@@ -1,17 +1,16 @@
 import datetime
+
+from django.core.exceptions import ImproperlyConfigured
 from django.http import HttpResponseRedirect
-from django.views.generic import CreateView, UpdateView, DeleteView, TemplateView, View
+from django.urls import reverse
+from django.utils.decorators import method_decorator
+from django.views.generic import CreateView, UpdateView, View
 from django.views.generic.base import TemplateResponseMixin
 from django.views.generic.edit import ModelFormMixin
-from django.utils.decorators import method_decorator
-from django.shortcuts import get_object_or_404, render, redirect, render_to_response
-from django.template import RequestContext
-from django.core.urlresolvers import reverse
-from django.contrib.auth.models import User
-from django.core.exceptions import ImproperlyConfigured
-from ..tutor.auth import tutorbest_required
-from .forms import AuthorModelChoiceField, NewsPostForm
+
+from .forms import NewsPostForm
 from .models import NewsPost
+from ..tutor.auth import tutorbest_required
 
 
 class BaseNewsView(View):

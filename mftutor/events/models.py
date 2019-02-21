@@ -52,8 +52,8 @@ class Event(models.Model):
         verbose_name_plural = verbose_name + 'er'
 
 class EventParticipant(models.Model):
-    event = models.ForeignKey(Event, related_name="participants")
-    tutor = models.ForeignKey(Tutor, related_name="events")
+    event = models.ForeignKey(Event, models.CASCADE, related_name="participants")
+    tutor = models.ForeignKey(Tutor, models.CASCADE, related_name="events")
     status = models.CharField(
         verbose_name='Svar', max_length=10,
         choices=(('yes', 'Kommer'), ('no', 'Kommer ikke')))

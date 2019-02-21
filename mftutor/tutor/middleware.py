@@ -39,7 +39,10 @@ def get_rus(request):
         return None
 
 class TutorMiddleware(object):
-    def process_request(self, request):
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
         request.year = request.session.get('year', settings.YEAR)
         request.rusyear = request.session.get('rusyear',
                                               settings.RUSMAIL_YEAR)
@@ -47,6 +50,8 @@ class TutorMiddleware(object):
             lambda: get_tutorprofile(request))
         request.tutor = SimpleLazyObject(lambda: get_tutor(request))
         request.rus = SimpleLazyObject(lambda: get_rus(request))
+
+        return self.get_response(request)
 
     # def process_response(self, request, response):
     #     return response

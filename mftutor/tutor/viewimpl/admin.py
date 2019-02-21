@@ -3,7 +3,7 @@ from django import forms
 import django.forms
 from django.views.generic import FormView
 from django.forms.formsets import BaseFormSet
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib.auth.models import User
 from ..models import Tutor, TutorGroup, TutorProfile, RusClass, BoardMember
 

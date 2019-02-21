@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 
 class NewsPost(models.Model):
@@ -8,7 +8,7 @@ class NewsPost(models.Model):
         ('alle', 'Tutorhjemmesidens forside'),
         ('rus', 'Rushjemmesidens forside'),
     )
-    author = models.ForeignKey(User, verbose_name='Forfatter')
+    author = models.ForeignKey(User, models.CASCADE, verbose_name='Forfatter')
     title = models.CharField(max_length=200, verbose_name='Titel')
     posted = models.DateTimeField(verbose_name='Dato')
     body = models.TextField(verbose_name='Indhold')

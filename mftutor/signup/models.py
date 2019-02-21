@@ -34,14 +34,14 @@ class TutorApplication(models.Model):
         TutorGroup, through='TutorApplicationGroup')
     assigned_groups = models.ManyToManyField(
         TutorGroup, related_name='tutorapplication_assigned_set')
-    profile = models.ForeignKey(TutorProfile, null=True, blank=True)
+    profile = models.ForeignKey(TutorProfile, models.CASCADE, null=True, blank=True)
 
     comments = models.TextField(blank=True)
 
 
 class TutorApplicationGroup(models.Model):
-    application = models.ForeignKey(TutorApplication)
-    group = models.ForeignKey(TutorGroup)
+    application = models.ForeignKey(TutorApplication, models.CASCADE)
+    group = models.ForeignKey(TutorGroup, models.CASCADE)
     priority = models.IntegerField()
 
     class Meta:
@@ -49,5 +49,5 @@ class TutorApplicationGroup(models.Model):
 
 
 class AssignedGroupLeader(models.Model):
-    application = models.ForeignKey(TutorApplication)
-    group = models.OneToOneField(TutorGroup)
+    application = models.ForeignKey(TutorApplication, models.CASCADE)
+    group = models.OneToOneField(TutorGroup, models.CASCADE)

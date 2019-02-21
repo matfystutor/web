@@ -1,8 +1,9 @@
 from django.conf.urls import url
+from django.contrib.auth.views import PasswordChangeView
 
 from .auth import tutorbest_required, tutor_required
 from .views import (
-    logout_view, login_view, profile_view, tutor_password_change_view,
+    logout_view, login_view, profile_view,
     tutors_view, TutorAdminView, switch_user, FrontView,
     BoardAdminView, GroupLeaderView, ResetPasswordView, BoardMemberListView,
     TutorDumpView, TutorDumpLDIFView)
@@ -21,7 +22,7 @@ urlpatterns = [
     url(r'^login/$', login_view, name='tutor_login'),
     url(r'^login/\?err=(?P<err>.*)$', login_view, name='login_error'),
     url(r'^profile/$', tutor_required(profile_view), name='profile_view'),
-    url(r'^profile/password/$', tutor_required(tutor_password_change_view), name='password_change'),
+    url(r'^profile/password/$', tutor_required(PasswordChangeView.as_view()), name='password_change'),
     url(r'^aliases/me/$', tutor_required(MyGroupsView.as_view()), name='groups_view'),
     url(r'^tutoradmin/$', tutorbest_required(TutorAdminView.as_view()), name='tutor_admin'),
     url(r'^gruppeansvarlige/$', tutorbest_required(GroupLeaderView.as_view()), name='groupleader_admin'),
