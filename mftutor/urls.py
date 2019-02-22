@@ -3,38 +3,35 @@ from django.conf import settings
 from django.conf.urls import include, url
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
+from django.urls import path
 
 from mftutor.reg.views import burtavle_frameset, burtavle
 
 admin.autodiscover()
 
 urlpatterns = [
-    # Examples:
-    # url(r'^$', 'mftutor.views.home', name='home'),
-    # url(r'^mftutor/', include('mftutor.foo.urls')),
-
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
-    url(r'^admin/', admin.site.urls),
-    url(r'^news/', include('mftutor.news.urls')),
-    url(r'^', include('mftutor.page.urls')),
-    url(r'^', include('mftutor.tutor.urls')),
-    url(r'^groups/', include('mftutor.groups.urls')),
-    url(r'^signup/', include('mftutor.signup.urls')),
-    url(r'^events/', include('mftutor.events.urls')),
-    url(r'^email/', include('mftutor.tutormail.urls')),
-    url(r'^shirt/', include('mftutor.shirt.urls')),
-    url(r'^document/', include('mftutor.documents.urls')),
-    url(r'^confirmation/', include('mftutor.confirmation.urls')),
-    url(r'^rus/', include('mftutor.rus.urls')),
-    url(r'^reg/', include('mftutor.reg.urls')),
-    url(r'^burtavle/frame/$', burtavle, name="burtavle"),
-    url(r'^burtavle/$', burtavle_frameset, name="burtavle_frameset"),
-    url(r'^dump/', include('mftutor.dump.urls')),
-    url(r'^browser/', include('mftutor.browser.urls')),
-    url(r'^tutorhold/', include('mftutor.rusclass.urls')),
+    path('admin/', admin.site.urls),
+    path('news/', include('mftutor.news.urls')),
+    path('', include('mftutor.page.urls')),
+    path('', include('mftutor.tutor.urls')),
+    path('groups/', include('mftutor.groups.urls')),
+    path('signup/', include('mftutor.signup.urls')),
+    path('events/', include('mftutor.events.urls')),
+    path('email/', include('mftutor.tutormail.urls')),
+    path('shirt/', include('mftutor.shirt.urls')),
+    path('document/', include('mftutor.documents.urls')),
+    path('confirmation/', include('mftutor.confirmation.urls')),
+    path('rus/', include('mftutor.rus.urls')),
+    path('reg/', include('mftutor.reg.urls')),
+    path('burtavle/frame/', burtavle, name="burtavle"),
+    path('burtavle/', burtavle_frameset, name="burtavle_frameset"),
+    path('dump/', include('mftutor.dump.urls')),
+    path('browser/', include('mftutor.browser.urls')),
+    path('tutorhold/', include('mftutor.rusclass.urls')),
 ]
 
 try:
@@ -43,13 +40,13 @@ except ImportError:
     pass
 else:
     urlpatterns += [
-        url(r'^__debug__/', include(debug_toolbar.urls)),
+        path('__debug__/', include(debug_toolbar.urls)),
     ]
 
 if settings.DEBUG:
     # Temporary media (user uploaded static files)
     # serving from dev server
     urlpatterns.append(
-        url(r'^media/(?P<path>.*)$',
+        path('media/<path>',
             django.views.static.serve,
             {'document_root': settings.MEDIA_ROOT}))

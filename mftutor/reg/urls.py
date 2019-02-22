@@ -1,4 +1,5 @@
 from django.conf.urls import url
+from django.urls import path
 
 from .views import ArrivedStatsView
 from .views import BurStartView
@@ -19,58 +20,58 @@ from .views import StudentnumberListView, StudentnumberView
 from ..tutor.auth import tutorbur_required
 
 urlpatterns = [
-    url(r'^$', tutorbur_required(BurStartView.as_view()),
+    path('', tutorbur_required(BurStartView.as_view()),
         name='bur_start'),
 
-    url(r'^import/$', tutorbur_required(ChooseSessionView.as_view()),
+    path('import/', tutorbur_required(ChooseSessionView.as_view()),
         name='import_session_choose'),
-    url(r'^import/new/$', tutorbur_required(NewSessionView.as_view()),
+    path('import/new/', tutorbur_required(NewSessionView.as_view()),
         name='import_session_new'),
-    url(r'^import/(?P<pk>\d+)/$', tutorbur_required(EditSessionView.as_view()),
+    path('import/<int:pk>/', tutorbur_required(EditSessionView.as_view()),
         name='import_session_edit'),
 
-    url(r'^ruslist/$', tutorbur_required(RusListView.as_view()),
+    path('ruslist/', tutorbur_required(RusListView.as_view()),
         name='reg_rus_list'),
-    url(r'^ruslist/new/$', tutorbur_required(RusCreateView.as_view()),
+    path('ruslist/new/', tutorbur_required(RusCreateView.as_view()),
         name='reg_new_rus'),
-    url(r'^ruslist/rpc/$', tutorbur_required(RusListRPC.as_view()),
+    path('ruslist/rpc/', tutorbur_required(RusListRPC.as_view()),
         name='reg_rpc'),
-    url(r'^ruslist/changes/$', tutorbur_required(RusChangesView.as_view()),
+    path('ruslist/changes/', tutorbur_required(RusChangesView.as_view()),
         name='reg_changes'),
-    url(r'^ruslist/changes/csv/$', tutorbur_required(RusChangesTableView.as_view()),
+    path('ruslist/changes/csv/', tutorbur_required(RusChangesTableView.as_view()),
         name='reg_changes_csv'),
 
-    url(r'^handout/$', tutorbur_required(HandoutListView.as_view()),
+    path('handout/', tutorbur_required(HandoutListView.as_view()),
         name='handout_list'),
-    url(r'^handout/new/$', tutorbur_required(HandoutNewView.as_view()),
+    path('handout/new/', tutorbur_required(HandoutNewView.as_view()),
         name='handout_new'),
-    url(r'^handout/(?P<handout>\d+)/$', tutorbur_required(HandoutSummaryView.as_view()),
+    path('handout/<int:handout>/', tutorbur_required(HandoutSummaryView.as_view()),
         name='handout_summary'),
-    url(r'^handout/(?P<pk>\d+)/crossref/$', tutorbur_required(HandoutCrossReference.as_view()),
+    path('handout/<int:pk>/crossref/', tutorbur_required(HandoutCrossReference.as_view()),
         name='handout_crossref'),
-    url(r'^handout/(?P<pk>\d+)/edit/$', tutorbur_required(HandoutEditView.as_view()),
+    path('handout/<int:pk>/edit/', tutorbur_required(HandoutEditView.as_view()),
         name='handout_edit'),
-    url(r'^handout/(?P<handout>\d+)/(?P<rusclass>[a-z0-9]+)/$', tutorbur_required(HandoutResponseView.as_view()),
+    path('handout/<int:handout>/<rusclass>/', tutorbur_required(HandoutResponseView.as_view()),
         name='handout_response'),
-    url(r'^handout/(?P<handout>\d+)/(?P<rusclass>[a-z0-9]+)/delete/$',
+    path('handout/<int:handout>/<rusclass>/delete/',
         tutorbur_required(HandoutResponseDeleteView.as_view()), name='handout_response_delete'),
 
-    url(r'^info/$',
+    path('info/',
         RusInfoListView.as_view(), name='rusinfo_list'),
-    url(r'^info/(?P<handle>[a-z0-9]+)/$',
+    path('info/<handle>/',
         RusInfoView.as_view(), name='rusinfo'),
-    url(r'^info/(?P<handle>[a-z0-9]+)/dump/$',
+    path('info/<handle>/dump/',
         RusInfoDumpView.as_view(), name='rusinfodump'),
 
-    url(r'^burtavle/$',
+    path('burtavle/',
         tutorbur_required(LightboxAdminView.as_view()), name='burtavle_admin'),
 
-    url(r'^stats/$',
+    path('stats/',
         ArrivedStatsView.as_view(), name='arrived_stats'),
 
-    url(r'^studentnumber/$',
+    path('studentnumber/',
         tutorbur_required(StudentnumberListView.as_view()), name='studentnumber_list'),
 
-    url(r'^studentnumber/(?P<pk>\d+)/$',
+    path('studentnumber/<int:pk>/',
         tutorbur_required(StudentnumberView.as_view()), name='studentnumber_set'),
 ]

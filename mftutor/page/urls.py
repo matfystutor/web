@@ -1,7 +1,7 @@
-from django.conf.urls import url
+from django.urls import path
 from django.views.generic import TemplateView
 
-urlpatterns = [url('^' + x + '/', TemplateView.as_view(template_name=x + '.html'), name=x) for x in (
+urlpatterns = [path(x + '/', TemplateView.as_view(template_name=x + '.html'), name=x) for x in (
     'vedtaegter',
     'gruppekatalog',
     'rus2tur',
