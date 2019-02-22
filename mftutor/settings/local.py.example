@@ -3,20 +3,11 @@ from .base import *
 # Disable in production
 DEBUG = True
 
-#ADMINS = ( ('Mathias Rav', 'mathiasrav@gmail.com'), )
+#ADMINS = ( ('Navn', 'email@example.com'), )
 #MANAGERS = ADMINS
 
 # For inspiration on ways to spell ENGINE, see
 # https://docs.djangoproject.com/en/1.4/ref/settings/#std:setting-DATABASES
-
-DATABASES['default'] = {
-    'ENGINE': 'django.db.backends.sqlite3',
-    'NAME': 'db.sqlite3',
-    'USER': '',
-    'PASSWORD': '',
-    'HOST': '',
-    'PORT': '',
-}
 
 #DATABASES['default'] = {
 #    'ENGINE': 'django.db.backends.mysql',
@@ -43,13 +34,6 @@ RUSMAIL_YEAR = 2013
 
 # set to production in production
 BODY_CLASS = 'test'
-
-DEBUG_TOOLBAR_CONFIG = {
-    'INTERCEPT_REDIRECTS': False,
-}
-
-# Disable in production
-ACTIVATION_DEBUG = True
 
 # Enable in production
 #STATIC_ROOT = root('../static')

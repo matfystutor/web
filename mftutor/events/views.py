@@ -1,18 +1,18 @@
-# vim:set fileencoding=utf-8:
 import re
 
-from django.views.generic import DetailView, ListView, FormView, View
-from django.shortcuts import render_to_response, get_object_or_404
-from django.urls import reverse
-from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect, Http404
-from .. import settings
-from mftutor.tutor.models import Tutor, TutorProfile
-from .models import Event, EventParticipant
-from .forms import RSVPForm, RSVPFormAjax, BulkImportForm, EventParticipantForm
-import mftutor.events.bulk
+from django.shortcuts import get_object_or_404, render
+from django.template import RequestContext
+from django.urls import reverse
+from django.views.generic import DetailView, ListView, FormView, View
 
+import mftutor.events.bulk
+from mftutor.tutor.models import Tutor, TutorProfile
 from mftutor.tutormail.views import EmailFormView
+from .forms import RSVPForm, RSVPFormAjax, BulkImportForm, EventParticipantForm
+from .models import Event, EventParticipant
+from .. import settings
+
 
 def event_detail_view(request, eventid):
     event = get_object_or_404(Event.objects.filter(pk=eventid))
@@ -54,7 +54,8 @@ def event_detail_view(request, eventid):
     decline.sort(key=lambda tu: tu.profile.name)
     no_answer.sort(key=lambda tu: tu.profile.name)
 
-    return render_to_response(
+    return render(
+        request,
         'event.html',
         {
             'event': event,
