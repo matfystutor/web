@@ -182,7 +182,7 @@ INSTALLED_APPS = (
     'mftutor.shirt',
     'mftutor.confirmation',
     'mftutor.documents',
-    # 'mftutor.sampledata',
+    'mftutor.sampledata',
     'mftutor.rus',
     'mftutor.reg',
     'mftutor.dump',
