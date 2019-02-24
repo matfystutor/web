@@ -62,7 +62,7 @@ def random_study():
 def new_random_profile(year):
     sn = random_student_number(year)
     while TutorProfile.objects.filter(studentnumber__exact=sn).exists():
-        sn = random_student_number()
+        sn = random_student_number(year)
 
     first_name = random_first_name()
     last_name = random_last_name()
@@ -90,11 +90,11 @@ def new_random_profile(year):
 
     return tp
 
-def get_group(handle, name):
+def get_group(year, handle, name):
     try:
-        return TutorGroup.objects.get(handle__exact=handle)
+        return TutorGroup.objects.get(handle=handle, year=year)
     except TutorGroup.DoesNotExist:
-        tg = TutorGroup(handle=handle, name=name, visible=True)
+        tg = TutorGroup(handle=handle, year=year, name=name, visible=True)
         tg.save()
         return tg
 
@@ -105,5 +105,5 @@ def new_random_tutor(year):
             year=year,
             )
     tu.save()
-    tu.groups.add(get_group(*random.choice(GROUP)))
-    tu.groups.add(get_group(*random.choice(GROUP)))
+    tu.groups.add(get_group(year, *random.choice(GROUP)))
+    tu.groups.add(get_group(year, *random.choice(GROUP)))
