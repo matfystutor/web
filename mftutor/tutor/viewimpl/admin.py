@@ -1,11 +1,13 @@
 # encoding: utf-8
-from django import forms
 import django.forms
-from django.views.generic import FormView
+from django import forms
+from django.contrib.auth.models import User
 from django.forms.formsets import BaseFormSet
 from django.urls import reverse
-from django.contrib.auth.models import User
+from django.views.generic import FormView
+
 from ..models import Tutor, TutorGroup, TutorProfile, RusClass, BoardMember
+
 
 def classy(cl, size=10):
     return forms.TextInput(attrs={'class':cl, 'size':size})
@@ -47,17 +49,21 @@ class TutorFormSet(BaseFormSet):
 
     def __init__(self, **kwargs):
         self.year = kwargs.pop('year')
+        self.rus_class = forms.ModelChoiceField(
+            label='Rushold', required=False,
+            queryset=RusClass.objects.filter(year__exact=self.year))
+        self.rus_class.choices = list(self.rus_class.choices)
+        self.tutor_group = GroupModelMultipleChoiceField(
+            label='Grupper', required=False,
+            queryset=TutorGroup.objects.filter(visible=True, year=self.year))
+        self.tutor_group.choices = list(self.tutor_group.choices)
         super(TutorFormSet, self).__init__(**kwargs)
 
     def add_fields(self, form, index):
         super(TutorFormSet, self).add_fields(form, index)
         form.year = self.year
-        form.fields['rusclass'] = forms.ModelChoiceField(
-            label='Rushold', required=False,
-            queryset=RusClass.objects.filter(year__exact=self.year))
-        form.fields['groups'] = GroupModelMultipleChoiceField(
-            label='Grupper', required=False,
-            queryset=TutorGroup.objects.filter(visible=True, year=self.year))
+        form.fields['rusclass'] = self.rus_class
+        form.fields['groups'] = self.tutor_group
 
 
 class TutorAdminView(FormView):
@@ -92,12 +98,12 @@ class TutorAdminView(FormView):
         return kwargs
 
     def get_initial(self):
-        tutors = Tutor.objects.filter(year=self.request.year)
-        tutors = tutors.select_related('profile')
+        tutors = Tutor.objects.filter(year=self.request.year).select_related('profile').prefetch_related('groups')
+
         result = []
         for tutor in tutors:
             result.append(self.get_initial_for_tutor(tutor))
-
+        print('data built!')
         return result
 
     def get_success_url(self):
