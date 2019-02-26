@@ -1,5 +1,5 @@
-from django.contrib.auth.views import PasswordChangeView
-from django.urls import path
+from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView
+from django.urls import path, reverse_lazy
 
 from .auth import tutorbest_required, tutor_required
 from .views import (
@@ -22,7 +22,10 @@ urlpatterns = [
     path('login/', login_view, name='tutor_login'),
     path('login/?err=<err>', login_view, name='login_error'),
     path('profile/', tutor_required(profile_view), name='profile_view'),
-    path('profile/password/', tutor_required(PasswordChangeView.as_view()), name='password_change'),
+    path('profile/password/',
+         tutor_required(PasswordChangeView.as_view(success_url=reverse_lazy('front'))),
+         name='password_change'
+         ),
     path('aliases/me/', tutor_required(MyGroupsView.as_view()), name='groups_view'),
     path('tutoradmin/', tutorbest_required(TutorAdminView.as_view()), name='tutor_admin'),
     path('gruppeansvarlige/', tutorbest_required(GroupLeaderView.as_view()), name='groupleader_admin'),
