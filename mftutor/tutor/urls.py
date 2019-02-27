@@ -1,10 +1,10 @@
-from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView
-from django.urls import path, reverse_lazy
+from django.contrib.auth.views import PasswordChangeView
+from django.urls import path, reverse_lazy, include
 
 from .auth import tutorbest_required, tutor_required
 from .views import (
     logout_view, login_view, profile_view,
-    tutors_view, TutorAdminView, switch_user, FrontView,
+    tutors_view, TutorAdminView, FrontView,
     BoardAdminView, GroupLeaderView, ResetPasswordView, BoardMemberListView,
     TutorDumpView, TutorDumpLDIFView)
 from ..aliases.views import MyGroupsView
@@ -31,5 +31,5 @@ urlpatterns = [
     path('gruppeansvarlige/', tutorbest_required(GroupLeaderView.as_view()), name='groupleader_admin'),
     path('resetpassword/', tutorbest_required(ResetPasswordView.as_view()), name='reset_password'),
     path('boardadmin/<int:year>/', tutorbest_required(BoardAdminView.as_view()), name='board_admin'),
-    path('su/<new_user>/', switch_user),
+    path('su/', include('django_su.urls')),
 ]

@@ -8,6 +8,7 @@ from django.views.generic import TemplateView
 class TemplateResponseForbidden(TemplateResponse):
     status_code = 403
 
+
 rusclass_required_error = TemplateView.as_view(
     response_class=TemplateResponseForbidden,
     template_name='rusclass_required.html')
@@ -24,6 +25,7 @@ groupleader_required_error = TemplateView.as_view(
     response_class=TemplateResponseForbidden,
     template_name='groupleader_required.html')
 
+
 # Decorator
 def tutorbest_required(fn):
     @functools.wraps(fn)
@@ -37,6 +39,7 @@ def tutorbest_required(fn):
         return fn(request, *args, **kwargs)
 
     return wrapper
+
 
 # Decorator
 def groupleader_required(fn):
@@ -53,6 +56,7 @@ def groupleader_required(fn):
         return fn(request, *args, **kwargs)
 
     return wrapper
+
 
 # Decorator
 def tutor_required(fn):
@@ -82,16 +86,3 @@ def tutorbur_required(fn):
             return fn(request, *args, **kwargs)
 
     return wrapper
-
-
-class SwitchUserBackend(django.contrib.auth.backends.ModelBackend):
-    def authenticate(self, username, current_user):
-        if not current_user.is_superuser:
-            return None
-
-        from django.contrib.auth.models import User
-
-        try:
-            return User.objects.get(username=username)
-        except User.DoesNotExist:
-            return None
