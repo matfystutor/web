@@ -9,14 +9,14 @@ DEBUG = True
 # For inspiration on ways to spell ENGINE, see
 # https://docs.djangoproject.com/en/1.4/ref/settings/#std:setting-DATABASES
 
-#DATABASES['default'] = {
-#    'ENGINE': 'django.db.backends.mysql',
-#    'NAME': 'mftutor',
-#    'USER': 'mftutor',
-#    'PASSWORD': 'hunter2',
-#    'HOST': '',
-#    'PORT': '',
-#}
+DATABASES['default'] = {
+    'ENGINE': 'django.db.backends.sqlite3',
+    'NAME': 'db.sqlite3',
+    'USER': '',
+    'PASSWORD': '',
+    'HOST': '',
+    'PORT': '',
+}
 
 # Generate using pwgen -sy 50 1
 SECRET_KEY = '...'

@@ -1,5 +1,5 @@
 Django==2.1.7
-Pillow==2.8.1
+Pillow==5.4.1
 django-debug-toolbar==1.11
 django-wysiwyg==0.7.0
 sqlparse==0.2.4
