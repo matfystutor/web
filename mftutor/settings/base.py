@@ -114,6 +114,7 @@ TEMPLATES = [
                 'mftutor.tutor.context_processors.tutor_data',
                 'mftutor.tutor.context_processors.settings',
                 'mftutor.events.context_processors.site',
+                'django_su.context_processors.is_su',
             ],
             'loaders': [
                 'django.template.loaders.filesystem.Loader',
@@ -164,6 +165,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
+    'django_su',
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
@@ -235,7 +237,7 @@ TIDY_NEWS_HTML = False
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'mftutor.tutor.auth.SwitchUserBackend',
+    'django_su.backends.SuBackend',
 )
 
 SITE_URL = 'http://example.com'

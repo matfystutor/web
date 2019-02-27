@@ -18,6 +18,7 @@ Kildekoden er frit tilgængelig: https://github.com/matfystutor/web/
   {% block head %}{% endblock %}
 </head>
 <body class="{{ BODY_CLASS }} {% block bodyclass %}{% endblock %}">
+{% include "su/is_su.html" %}
 <div id="background">
 <div id="main">
   {% block header %}
