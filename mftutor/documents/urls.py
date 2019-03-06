@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.urls import path, re_path
 
 from .feed import MinutesFeed
 from .views import (
@@ -6,17 +6,17 @@ from .views import (
     EditDocumentView, DeleteDocumentView)
 
 urlpatterns = [
-    url(r'^guides/(?:(?P<year>\d+)/)?$',
-        GuidesView.as_view(), name='list_guides'),
-    url(r'^referater/(?:(?P<year>\d+)/)?$',
-        MinutesView.as_view(), name='list_referater'),
-    url(r'^referater/feed/$', MinutesFeed(), name='referater_feed'),
-    url(r'^udgivelser/(?:(?P<year>\d+)/)?$',
-        PublicationsView.as_view(), name='list_udgivelser'),
-    url(r'^upload/$', UploadDocumentView.as_view(), name='upload_document'),
-    url(r'^edit/(?P<pk>\d+)/$',
-        EditDocumentView.as_view(), name='edit_document'),
-    url(r'^delete/(?P<pk>\d+)/$',
-        DeleteDocumentView.as_view(),
-        name='document_delete'),
+    re_path('guides/(?:(?P<year>\d+)/)?$',
+            GuidesView.as_view(), name='list_guides'),
+    re_path(r'^referater/(?:(?P<year>\d+)/)?$',
+            MinutesView.as_view(), name='list_referater'),
+    path('referater/feed/', MinutesFeed(), name='referater_feed'),
+    re_path(r'^udgivelser/(?:(?P<year>\d+)/)?$',
+            PublicationsView.as_view(), name='list_udgivelser'),
+    path('upload/', UploadDocumentView.as_view(), name='upload_document'),
+    path('edit/<int:pk>/',
+         EditDocumentView.as_view(), name='edit_document'),
+    path('delete/<int:pk>/',
+         DeleteDocumentView.as_view(),
+         name='document_delete'),
 ]
