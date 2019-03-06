@@ -5,11 +5,11 @@
 
 {% block content %}
 <div class="datebox">
-    <span class="month">{{ event.start_date|date:"M"|upper }}</span>
-    <span class="day">{{ event.start_date|date:"j" }}</span>
+    <span class="month">{{ rsvp.event.start_date|date:"M"|upper }}</span>
+    <span class="day">{{ rsvp.event.start_date|date:"j" }}</span>
 </div>
-<h1>{{ event.title }}</h1>
-<h2>{{ tutor.profile.name }}</h2>
+<h1>{{ rsvp.event.title }}</h1>
+<h2>{{ rsvp.tutor.profile.name }}</h2>
 
 <form method="post">{% csrf_token %}
     {{ form.as_p }}

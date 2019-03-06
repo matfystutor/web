@@ -197,34 +197,30 @@ class EventParticipantEditView(FormView):
     template_name = "event_rsvp.html"
     form_class = EventParticipantForm
 
-    def get_context_data(self, **kwargs):
-        context_data = (super(EventParticipantEditView, self)
-                        .get_context_data(**kwargs))
+    def get_rsvp(self):
         event = get_object_or_404(
             Event.objects.filter(pk=self.kwargs['event']))
         tutor = get_object_or_404(
             Tutor.objects.filter(pk=self.kwargs['tutor']))
         rsvp, created = EventParticipant.objects.get_or_create(
             event=event, tutor=tutor)
-        context_data['event'] = event
-        context_data['tutor'] = tutor
-        context_data['rsvp'] = rsvp
-        return context_data
+        return rsvp
 
-    def get_initial(self):
-        context_data = self.get_context_data()
-        return {
-            'status': context_data['rsvp'].status or 'none',
-            'notes': context_data['rsvp'].notes or '',
+    def get_context_data(self, **kwargs):
+        rsvp = self.get_rsvp()
+        self.initial = {
+            'status': rsvp.status or 'none',
+            'notes': rsvp.notes or '',
         }
+        kwargs['rsvp'] = rsvp
+        return super().get_context_data(**kwargs)
 
     def get_success_url(self):
-        context_data = self.get_context_data()
-        return reverse('event_rsvps', kwargs={'pk': context_data['event'].pk})
+        rsvp = self.get_rsvp()
+        return reverse('event_rsvps', kwargs={'pk': rsvp.event.pk})
 
     def form_valid(self, form):
-        context_data = self.get_context_data()
-        rsvp = context_data['rsvp']
+        rsvp = self.get_rsvp()
         data = form.cleaned_data
         if data['status'] == 'none':
             rsvp.delete()
@@ -232,7 +228,7 @@ class EventParticipantEditView(FormView):
             rsvp.status = data['status']
             rsvp.notes = data['notes']
             rsvp.save()
-        return super(EventParticipantEditView, self).form_valid(form)
+        return super().form_valid(form)
 
 
 class ReminderEmailView(EmailFormView):
