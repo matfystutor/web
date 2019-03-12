@@ -136,7 +136,7 @@ class RSVPFormView(FormView):
         return reverse('events')
 
     def form_valid(self, form):
-        event = Event.objects.get(pk__exact=self.args[0])
+        event = Event.objects.get(pk__exact=self.kwargs['pk'])
         try:
             ep = EventParticipant.objects.get(
                 tutor=self.request.tutor, event=event)
