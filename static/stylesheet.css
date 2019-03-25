@@ -501,6 +501,7 @@ li.nickname {
 }
 
 .tutortable .name { width: 14em; }
+.tutortable .nickname { display: none; }
 .tutortable .street { width: 14em; }
 .tutortable .city { width: 8em; }
 .tutortable .phone { width: 5em; }
