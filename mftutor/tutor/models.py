@@ -35,8 +35,12 @@ class TutorProfile(models.Model):
     email = models.EmailField(
         max_length=75, verbose_name="E-mailadresse")
 
+    nickname = models.CharField(
+       max_length=20, blank=True, verbose_name="Kaldenavn")
+
     study = models.CharField(
         max_length=60, blank=True, verbose_name="Studieretning")
+    
     studentnumber = models.CharField(
         max_length=20, unique=True, blank=True, null=True,
         verbose_name="Årskortnummer")
@@ -192,6 +196,7 @@ class Tutor(models.Model):
     id = models.AutoField(primary_key=True)
     profile = models.ForeignKey(TutorProfile, models.CASCADE)
     year = models.IntegerField(verbose_name="Tutorår")
+
     groups = models.ManyToManyField(
         TutorGroup, verbose_name="Arbejdsgrupper", blank=True)
     early_termination = models.DateTimeField(

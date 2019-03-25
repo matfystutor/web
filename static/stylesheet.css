@@ -460,6 +460,10 @@ body.board .tutorlist .tutoraddress {
 	display: none;
 }
 
+li.nickname {
+	font-style: italic;
+}
+
 .tutorlist .tutoraddress.selected li.street, .tutorlist .tutoraddress.selected li.city {
 	display: block;
 }

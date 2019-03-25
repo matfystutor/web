@@ -62,6 +62,7 @@ class TutorListView(TemplateView):
                 'phone': t.profile.phone,
                 'email': t.profile.email,
                 'study': t.profile.study,
+                'nickname': t.profile.nickname,
             }
 
         tutors = [make_tutor_dict(t) for t in tutors]
@@ -112,6 +113,7 @@ class TutorDumpView(TutorListView):
                 'name': p['full_name'],
                 'email': p['email'],
                 'phone': p['phone'],
+                'nickname': p['nickname'],
             }
             for p in context_data['tutor_list']
         ]
