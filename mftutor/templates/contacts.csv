@@ -1,3 +1,3 @@
-Name	E-Mail Address	Mobile Phone
-{% for p in person_list %}{{ p.name }}	{{ p.email }}	{{ p.phone }}
+Name	E-Mail Address	Mobile Phone	Nickname
+{% for p in person_list %}{{ p.name }}	{{ p.email }}	{{ p.phone }}	{{ p.nickname }}
 {% endfor %}

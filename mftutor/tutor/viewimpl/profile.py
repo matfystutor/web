@@ -9,6 +9,7 @@ from mftutor.shirt.views import SelectShirt
 
 class ProfileForm(forms.Form):
     name = forms.CharField(label='Navn')
+    nickname = forms.CharField(label='Kaldenavn')
     street = forms.CharField(label='Gade')
     city = forms.CharField(label='Postnr. og by')
     phone = forms.CharField(label='Telefon')
@@ -40,6 +41,7 @@ class ProfileView(FormView):
             sp.save()
         return {
             'name': tp.name,
+            'nickname': tp.nickname,
             'street': tp.street,
             'city': tp.city,
             'phone': tp.phone,
@@ -61,6 +63,7 @@ class ProfileView(FormView):
             last_name = ''
         u.first_name = first_name
         u.last_name = last_name
+        tp.nickname = form.cleaned_data['nickname']
         tp.street = form.cleaned_data['street']
         tp.city = form.cleaned_data['city']
         tp.phone = form.cleaned_data['phone']
