@@ -26,5 +26,5 @@ mftutor/settings folder.
 
 You can now create the tables and run the server.
 
-    python manage.py syncdb
+    python manage.py migrate
     python manage.py runserver
