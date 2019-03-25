@@ -32,6 +32,7 @@ urlpatterns = [
     path('dump/', include('mftutor.dump.urls')),
     path('browser/', include('mftutor.browser.urls')),
     path('tutorhold/', include('mftutor.rusclass.urls')),
+    path('tutorbog/', include('mftutor.tutorbog.urls')),
 ]
 
 try:
