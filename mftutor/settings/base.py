@@ -169,6 +169,8 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+    'constance',
+    'constance.backends.database',
 
     'django_wysiwyg',
     'debug_toolbar',
@@ -275,3 +277,10 @@ GF_GROUPS = ('best', 'koor', 'webfar', 'oekonomi', 'gris')
 
 THUMBNAIL_KVSTORE = 'sorl.thumbnail.kvstores.dbm_kvstore.KVStore'
 THUMBNAIL_DBM_FILE = '/home/mftutor/web/thumbnails/thumbnail_kvstore'
+
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+
+CONSTANCE_CONFIG = {
+    'TUTORBOG_SECRET': ('', 'Svaret til krydsorden i tutorbogen'),
+    'TUTORBOG_SURVEY_URL': ('', 'URL til tutorbog surveyen'),
+}
