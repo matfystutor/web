@@ -5,3 +5,4 @@ django-wysiwyg==0.7.0
 sqlparse==0.2.4
 sorl-thumbnail==12.3
 django-su==0.8.0
+django-constance[database]==2.4.0
