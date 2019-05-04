@@ -18,8 +18,8 @@ import sys
 import site
 
 prev_sys_path = list(sys.path)
-site.addsitedir('/home/mftutor/web/web-venv/lib/python3.5/site-packages')
-sys.path.append('/home/mftutor/web/web')
+# site.addsitedir('/home/mftutor/web/web-venv/lib/python3.5/site-packages')
+# sys.path.append('/home/mftutor/web/web')
 # reorder sys.path so new directories from the addsitedir show up first
 new_sys_path = [p for p in sys.path if p not in prev_sys_path]
 for item in new_sys_path:
