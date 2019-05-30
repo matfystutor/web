@@ -64,8 +64,9 @@ Kildekoden er frit tilgængelig: https://github.com/matfystutor/web/
         <li><a href="{% url 'password_change' %}">Ændre kodeord</a></li>
         <li><a href="{% url 'events' %}">Tilmeldinger</a></li>
         <!--<li><a href="{% url 'shirt_preference' %}">T-shirt-størrelse</a></li>-->
-        <!--<li><a href="{% url 'own_confirmation'
-          %}">Tutorbekræftelse</a></li>-->
+        {%  if config.ENABLE_CONFIRMATION %}
+            <li><a href="{% url 'own_confirmation' %}">Tutorbekræftelse</a></li>
+        {% endif %}
       </ul>
       </li>
       {% else %}

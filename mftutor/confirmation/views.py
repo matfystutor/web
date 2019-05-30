@@ -1,6 +1,5 @@
 # vim: set fileencoding=utf8:
-
-
+from constance import config
 from django.urls import reverse
 from django import forms
 from django.db.models import Q
@@ -72,6 +71,9 @@ class OwnConfirmationView(UpdateView):
     def dispatch(self, request, *args, **kwargs):
         if not request.tutor:
             return tutor_required_error(request)
+
+        if not config.ENABLE_CONFIRMATION and not request.user.is_superuser and not request.tutor.is_tutorbest(year=request.year):
+            return tutorbest_required_error(request)
 
         return super(OwnConfirmationView, self).dispatch(request, *args, **kwargs)
 

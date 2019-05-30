@@ -7,8 +7,6 @@ class OwnConfirmationForm(forms.ModelForm):
 
     study = forms.CharField(widget=full_width_text_field, required=True,
             label='Studium samt sidefag/tilvalg')
-    tutortype = forms.ChoiceField(choices=(('BUR', 'Burtutor'), ('HOLD', 'Holdtutor'),), required=True,
-            label='Tutor type')
     experience = forms.CharField(widget=full_width_text_field, required=False,
             label='I hvor mange år har du været holdtutor før i år?')
     priorities = forms.CharField(widget=full_width_text_field, required=False,
@@ -26,7 +24,7 @@ class OwnConfirmationForm(forms.ModelForm):
 
     class Meta:
         fields = ('study', 'tutortype', 'experience', 'priorities', 'firstaid', 'resits', 'rusfriends', 'previous_tutor',  '' 'comment')
-        exclude = ('tutor', 'internal_notes')
+        exclude = ('tutor', 'tutortype', 'internal_notes')
         model = Confirmation
 
 class EditNoteForm(forms.Form):

@@ -115,6 +115,7 @@ TEMPLATES = [
                 'mftutor.tutor.context_processors.settings',
                 'mftutor.events.context_processors.site',
                 'django_su.context_processors.is_su',
+                'constance.context_processors.config',
             ],
             'loaders': [
                 'django.template.loaders.filesystem.Loader',
@@ -283,4 +284,5 @@ CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 CONSTANCE_CONFIG = {
     'TUTORBOG_SECRET': ('', 'Svaret til krydsorden i tutorbogen'),
     'TUTORBOG_SURVEY_URL': ('', 'URL til tutorbog surveyen'),
+    'ENABLE_CONFIRMATION': (False, 'Er tutorbekræftelser aktive?', bool),
 }

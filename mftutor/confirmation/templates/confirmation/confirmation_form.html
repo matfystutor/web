@@ -1,97 +1,62 @@
 {% extends "base.html" %}
 {% block title %}Tutorbekræftelse{% endblock %}
-{% block bottom %}
-<script
-  src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-  integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g="
-  crossorigin="anonymous"></script>
-<script>
 
-    // function that hides/shows holdstuff upon holdtutor value
-    function check_field_value(new_val) {
-        console.log(new_val);
-        if(new_val == 'HOLD') {
-            $('#holdstuff').removeClass('hidden');
-        } else {
-            $('#holdstuff').addClass('hidden');
-        }
-    }
-    // this is executed once when the page loads
-    $(document).ready(function() {
-
-        // set things up so my function will be called when type field changes
-        $('#id_tutortype').change( function() {
-            check_field_value(this.value);
-        });
-        check_field_value($('#id_tutortype').val());
-    });
-
-</script>
-{% endblock %}
 {% block content %}
-<h1>Tutorbekræftelse</h1>
+    <h1>Tutorbekræftelse</h1>
 
-{% if success %}
-<p class="success_message">Din tutorbekræftelse er modtaget!</p>
-{% endif %}
+    {% if success %}
+        <p class="success_message">Din tutorbekræftelse er modtaget!</p>
+    {% endif %}
 
-{% if error %}
-<p>{{ error }}</p>
-{% endif %}
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
 
-<form method="post">{% csrf_token %}
-{% if form.non_field_errors %}
-{{ form.non_field_errors }}
-{% endif %}
-<p>
-<label>{{ form.study.label }}<br>
-{{ form.study }}
-</label>
-</p>
-
-<p>
-<label>{{ form.tutortype.label }}<br>
-{{ form.tutortype }}
-</label>
-</p>
-<div id="holdstuff">
-<p>
-<label>{{ form.experience.label }}<br>
-{{ form.experience }}
-</label>
-</p>
-<p>
-<label>{{ form.priorities.label }}<br>
-{{ form.priorities }}
-</label>
-</p>
-<p>
-<label>{{ form.firstaid.label }}<br>
-{{ form.firstaid }}
-</label>
-</p>
-<p>
-<label>{{ form.resits.label }}<br>
-{{ form.resits }}
-</label>
-</p>
-<p>
-<label>{{ form.rusfriends.label }}<br>
-{{ form.rusfriends }}
-</label>
-</p>
-<p>
-<label>{{ form.previous_tutor.label }}<br>
-{{ form.previous_tutor }}
-</label>
-</p>
-</div>
-<p>
-<label>{{ form.comment.label }}<br>
-{{ form.comment }}
-</label>
-</p>
-<input type="submit" value="Indsend tutorbekræftelse" />
-</form>
+    <form method="post">{% csrf_token %}
+        {% if form.non_field_errors %}
+            {{ form.non_field_errors }}
+        {% endif %}
+        <p>
+            <label>{{ form.study.label }}<br>
+                {{ form.study }}
+            </label>
+        </p>
+        <p>
+            <label>{{ form.experience.label }}<br>
+                {{ form.experience }}
+            </label>
+        </p>
+        <p>
+            <label>{{ form.priorities.label }}<br>
+                {{ form.priorities }}
+            </label>
+        </p>
+        <p>
+            <label>{{ form.firstaid.label }}<br>
+                {{ form.firstaid }}
+            </label>
+        </p>
+        <p>
+            <label>{{ form.resits.label }}<br>
+                {{ form.resits }}
+            </label>
+        </p>
+        <p>
+            <label>{{ form.rusfriends.label }}<br>
+                {{ form.rusfriends }}
+            </label>
+        </p>
+        <p>
+            <label>{{ form.previous_tutor.label }}<br>
+                {{ form.previous_tutor }}
+            </label>
+        </p>
+        <p>
+            <label>{{ form.comment.label }}<br>
+                {{ form.comment }}
+            </label>
+        </p>
+        <input type="submit" value="Indsend tutorbekræftelse"/>
+    </form>
 
 {% endblock %}
