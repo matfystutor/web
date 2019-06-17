@@ -111,6 +111,7 @@ function navneleg() {
 
         switch (guess) {
             case currentName.toLowerCase():
+            case fullName.toLowerCase():
             case als.toLowerCase():
                 status.innerHTML = "Korrekt! Det fulde navn er " + fullName +
                     (als.toLowerCase() === fullName.toLowerCase() ? "." : " og kaldenavn er " + als + ".");
