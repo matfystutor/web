@@ -3,9 +3,9 @@ from django import forms
 from django.views.generic import FormView
 from django.core.exceptions import ValidationError
 
+from mftutor.settings import STUDIES
 from mftutor.shirt.models import ShirtPreference
 from mftutor.shirt.views import SelectShirt
-
 
 class ProfileForm(forms.Form):
     name = forms.CharField(label='Navn')
@@ -14,7 +14,7 @@ class ProfileForm(forms.Form):
     city = forms.CharField(label='Postnr. og by')
     phone = forms.CharField(label='Telefon')
     email = forms.EmailField(label='Email')
-    study = forms.CharField(label='Studium')
+    study = forms.ChoiceField(label='Studium', choices=[(s, s) for s in STUDIES])
     tshirt1 = forms.CharField(widget=SelectShirt, label='T-Shirt Størrelse 1')
     tshirt2 = forms.CharField(widget=SelectShirt, label='T-Shirt Størrelse 2')
     picture = forms.ImageField(
@@ -39,6 +39,7 @@ class ProfileView(FormView):
         except ShirtPreference.DoesNotExist:
             sp = ShirtPreference(profile=tp)
             sp.save()
+
         return {
             'name': tp.name,
             'nickname': tp.nickname,
@@ -68,7 +69,14 @@ class ProfileView(FormView):
         tp.city = form.cleaned_data['city']
         tp.phone = form.cleaned_data['phone']
         u.email = tp.email = form.cleaned_data['email']
-        tp.study = form.cleaned_data['study']
+
+        study = form.cleaned_data['study']
+        if study in STUDIES:
+            tp.study = study
+        else:
+            form.add_error('study', "Ugyldigt studium")
+            return self.form_invalid(form)
+
         sp.choice1 = form.cleaned_data['tshirt1']
         sp.choice2 = form.cleaned_data['tshirt2']
 

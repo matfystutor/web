@@ -286,3 +286,5 @@ CONSTANCE_CONFIG = {
     'TUTORBOG_SURVEY_URL': ('', 'URL til tutorbog surveyen'),
     'ENABLE_CONFIRMATION': (False, 'Er tutorbekræftelser aktive?', bool),
 }
+
+STUDIES = ["", "Datalogi", "Matematik", "Fysik", "Nannoscience"]
