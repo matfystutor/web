@@ -18,19 +18,14 @@ def here(x):
     return os.path.join(BASE_DIR, x)
 
 sys.path.append(os.path.join(
-    BASE_DIR, 'prodekanus/venv/lib/python3.5/site-packages'))
+    BASE_DIR, 'web-venv/lib/python3.5/site-packages'))
 sys.path.append(BASE_DIR)
 os.environ['DJANGO_SETTINGS_MODULE'] = 'mftutor.settings'
 
 import django
 from django import db
 from django.core.handlers.wsgi import WSGIRequest
-from django.contrib.sessions.middleware import SessionMiddleware
-from django.contrib.auth import get_user
 
-from mftutor.tutor.models import TutorProfile, Tutor, Rus
-
-django.setup()
 
 # def check_password(environ, user, password):
 #     db.reset_queries()
@@ -82,8 +77,11 @@ def allow_access(environ, host):
     db.reset_queries()
     environ['wsgi.input'] = None
     request = WSGIRequest(environ)
+    django.setup()
+    from django.contrib.sessions.middleware import SessionMiddleware
     SessionMiddleware().process_request(request)
+    from django.contrib.auth import get_user
     user = get_user(request)
-    allowed = user.is_authenticated()
+    allowed = user.is_authenticated
     db.connection.close()
     return allowed
