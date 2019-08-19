@@ -1,4 +1,5 @@
 var navneleg_activated = false;
+var timoutInProgress = false;
 
 function navneleg() {
     if (navneleg_activated) return;
@@ -7,33 +8,40 @@ function navneleg() {
 
     var tutorelements = document.getElementsByClassName('tutoraddress');
     var tutors = [];
-
+    //Extracting all tutornames, aliases and images from the website
     for (var i = 0, l = tutorelements.length; i < l; ++i) {
         var tutor = tutorelements[i];
         var name = tutor.getElementsByClassName('name')[0].innerHTML.trim();
         var pic = tutor.getElementsByClassName('tutorpicture');
         var alias = name;
+        
+        //Remove the '"' from the alias if tutor has an alias
         if (tutor.getElementsByClassName('nickname').length > 0) {
             alias = tutor.getElementsByClassName('nickname')[0].innerHTML;
             alias = alias.substr(1, alias.length - 2);
         }
 
+        //If tutor has an image add them to the game pool
         if (pic.length !== 0) {
             pic = pic[0].src;
-            tutors.push({'name': name, 'pic': pic, 'alias': alias});
+            tutors.push({
+                'name': name,
+                'pic': pic,
+                'alias': alias
+            });
         }
     }
 
     var remainingTutors;
     var level = 1;
 
+    //Used to add all tutors to the game again
     var reset_tutors = function reset_tutors() {
         remainingTutors = [];
         tutors.forEach(tutor => remainingTutors.push(tutor));
-    };
+    }();
 
-    reset_tutors();
-
+    //Find the art image hidden on the page and prepare for streak
     var arto = document.getElementById('arto');
     if (arto) document.body.appendChild(arto);
     var content = document.getElementById('content');
@@ -43,8 +51,7 @@ function navneleg() {
         '<p id="navneleg_container" style="position: relative; height: 130px"> + ' +
         '<img style="max-width: 130px; max-height: 130px" id="navneleg_tutorpicture"><\/p>\n' +
         '<p><input id="navneleg_input"><\/p>\n' +
-        '<p><input type="button" id="navneleg_submit" value="Indsend gæt"><\/p>\n'
-    ;
+        '<p><input type="button" id="navneleg_submit" value="Indsend gæt"><\/p>\n';
 
     if (arto) {
         var container = document.getElementById('navneleg_container');
@@ -56,8 +63,11 @@ function navneleg() {
     }
 
     var currentIdx;
-    var wins = 0, losses = 0, streak = 0;
+    var wins = 0,
+        losses = 0,
+        streak = 0;
 
+    //Prepare needed document elements
     var stats = document.getElementById('navneleg_stats');
     var status = document.getElementById('navneleg_status');
     var pic = document.getElementById('navneleg_tutorpicture');
@@ -70,6 +80,69 @@ function navneleg() {
     };
 
     var next_timer = null;
+
+    var clear_next_timer = function clear_next_timer() {
+        if (next_timer) {
+            clearTimeout(next_timer);
+            next_timer = null;
+        }
+    };
+
+    var set_next_timer = function set_next_timer() {
+            clear_next_timer();
+            next_timer = setTimeout(next_tutor, 2000);
+    };
+
+    var submit = function submit() {
+        if (!timoutInProgress) {
+            var fullName = remainingTutors[currentIdx].name;
+            var currentName = remainingTutors[currentIdx].name.replace(/ .*/, '');
+            var als = remainingTutors[currentIdx].alias;
+            var guess = input.value.toLowerCase();
+            
+            switch (guess) {
+                case currentName.toLowerCase():
+                case fullName.toLowerCase():
+                case als.toLowerCase():
+                    guessResponse(status, fullName, als, true);
+
+                    remainingTutors.splice(currentIdx, 1);
+                    
+                    if (remainingTutors.length === 0) {
+                        reset_tutors();
+                        ++level;
+                        status.innerHTML = "Welcome to experience level " + level + ".";
+                    }
+                    ++wins;
+                    ++streak;
+                    break;
+                
+                case 'jeppe' || 'henrijeppe':
+                    status.innerHTML = "Korrekt! Ish...";
+                    break;
+                
+                default:
+                    let partOfName = false;
+                    fullName.split(" ").forEach(s => {
+                        if (guess == s.toLowerCase())
+                            partOfName = true;
+                    })
+
+                    guessResponse(status, fullName, als, partOfName);
+
+                    if (partOfName) {
+                        ++wins;
+                        ++streak;
+                    } else {
+                        ++losses;
+                        streak = 0;
+                    }
+            }
+            set_next_timer();
+        }
+    };
+
+    submitButton.onclick = submit;
 
     var next_tutor = function next_tutor() {
         next_timer = null;
@@ -88,62 +161,23 @@ function navneleg() {
         }
         document.title = "Navneleg" + levelText + "! " + wins + "/" + losses + " (" + streak + ")";
         status.innerHTML = "Hvem er følgende tutor? Indtast fornavnet eller et kendt kaldenavn.";
+
         input.focus();
-    };
+        timoutInProgress = false;
+    }();
 
-    var clear_next_timer = function clear_next_timer() {
-        if (next_timer) {
-            clearTimeout(next_timer);
-            next_timer = null;
-        }
-    };
-
-    var set_next_timer = function set_next_timer() {
-        clear_next_timer();
-        next_timer = setTimeout(next_tutor, 2000);
-    };
-
-    var submit = function submit() {
-        var fullName = remainingTutors[currentIdx].name;
-        var currentName = remainingTutors[currentIdx].name.replace(/ .*/, '');
-        var als = remainingTutors[currentIdx].alias;
-        var guess = input.value.toLowerCase();
-
-        switch (guess) {
-            case currentName.toLowerCase():
-            case fullName.toLowerCase():
-            case als.toLowerCase():
-                status.innerHTML = "Korrekt! Det fulde navn er " + fullName +
-                    (als.toLowerCase() === fullName.toLowerCase() ? "." : " og kaldenavn er " + als + ".");
-                remainingTutors.splice(currentIdx, 1);
-                if (remainingTutors.length === 0) {
-                    reset_tutors();
-                    ++level;
-                    status.innerHTML = "Welcome to experience level " + level + ".";
-                }
-                ++wins;
-                ++streak;
-                break;
-            case 'jeppe' || 'henrijeppe':
-                status.innerHTML = "Korrekt! Ish...";
-                break;
-            default:
-                status.innerHTML = "Nej, det var " + fullName +
-                    (als.toLowerCase() === fullName.toLowerCase() ? "." : " og kaldenavn er " + als + ".");
-                ++losses;
-                streak = 0;
-        }
-        set_next_timer();
-    };
-    submitButton.onclick = submit;
-    next_tutor();
-
-    input.onkeydown = function (e) {
+    input.onkeydown = function(e) {
         if (next_timer == null && e.keyCode === 13) {
             submit();
         }
         e.stopPropagation();
     };
+
+    var guessResponse = function guessResponse(status, fullName, als, correct) {
+        let tmp = correct ? "Korrekt! Det fulde navn er " : "Nej, det var ";
+        status.innerHTML =  tmp + fullName + (als.toLowerCase() === fullName.toLowerCase() ? "." : " og kaldenavn er " + als + ".");
+    };
+
 }
 
 function win_key_down(e) {
@@ -155,5 +189,6 @@ function win_key_down(e) {
     }
     return true;
 }
+
 
 window.addEventListener('keydown', win_key_down, false);
