@@ -195,9 +195,9 @@ class EditSessionView(UpdateView):
     def get_object(self):
         return ImportSession.objects.get(pk=self.kwargs.get('pk'))
 
-    def get_context_data(self, form, **kwargs):
-        context_data = super(EditSessionView, self).get_context_data(
-            form=form, **kwargs)
+    def get_context_data(self, **kwargs):
+        context_data = super(EditSessionView, self).get_context_data(**kwargs)
+        form = context_data['form']
         if form.instance:
             context_data['lines'] = ImportLine.objects.filter(
                 session=form.instance)
