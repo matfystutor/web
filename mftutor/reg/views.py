@@ -1561,28 +1561,45 @@ class LightboxAdminView(LightboxView):
 class ArrivedStatsView(TemplateView):
     template_name = 'reg/arrived_stats.html'
 
+    tk = {
+        2007: 602,
+        2008: 596,
+        2009: 605,
+        2010: 652,
+        2011: 717,
+        2012: 761,
+        2013: 810,
+        2014: 781,
+        2015: 788,
+        2016: 647,
+        2017: 649,
+    }
+
     @staticmethod
     def kot_optag():
         return {
             year: dict(zip('mat mok nano it fys dat'.split(), numbers))
             for year, numbers in [
-                (2007, [67, 29, 41, '-', 80, 73]),
-                (2008, [65, 28, 39, 50, 67, 114]),
-                (2009, [54, 26, 35, 52, 75, 108]),
-                (2010, [77, 37, 34, 53, 106, 114]),
-                (2011, [75, 61, 45, 70, 109, 155]),
-                (2012, [100, 83, 47, 69, 114, 154]),
-                (2013, [113, 74, 74, 70, 116, 155]),
-                (2014, [72, 81, 56, 65, 103, 170]),
-                (2015, [72, 86, 54, 68, 116, 185]),
-                (2016, [77, 67, 52, 52, 110, 130]),
+                (2007, [67, 29, 41, '-', 80, 73, 602]),
+                (2008, [65, 28, 39, 50, 67, 114, 596]),
+                (2009, [54, 26, 35, 52, 75, 108, 605]),
+                (2010, [77, 37, 34, 53, 106, 114, 652]),
+                (2011, [75, 61, 45, 70, 109, 155, 717]),
+                (2012, [100, 83, 47, 69, 114, 154, 761]),
+                (2013, [113, 74, 74, 70, 116, 155, 810]),
+                (2014, [72, 81, 56, 65, 103, 170, 781]),
+                (2015, [72, 86, 54, 68, 116, 185, 788]),
+                (2016, [77, 67, 52, 52, 110, 130, 647]),
+                (2017, [99, 85, 44, 52, 111, 156, 649]),
+                (2018, [91, 91, 52, 46, 77, 182, '-']),
+                (2019, [71, 78, 21, 42, 80, 155, '-']),
             ]
         }
 
     @staticmethod
     def get_year_list():
         kot = ArrivedStatsView.kot_optag()
-        old_study = 'dat fys mat mok nano it'.split()
+        old_study = 'dat fys mat mok nano it tk'.split()
         old_data = dict(
             [(2012, dict(zip(old_study,
                              [(142, 153), (114, 115), (65, 71),
@@ -1631,6 +1648,11 @@ class ArrivedStatsView(TemplateView):
                     'count': count,
                     'arrived': arrived,
                 })
+            cells.append({
+                'handle': 'tk',
+                'name': 'TK',
+                'value': ArrivedStatsView.tk.get(year, '-'),
+            })
             rows.append({
                 'year': year,
                 'cells': cells,

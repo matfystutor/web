@@ -32,7 +32,11 @@ Uddannelses- og Forskningsministeriet</a>.
     <tr>
         <td>{{ row.year }}</td>
         {% for cell in row.cells %}
+        {% if cell.value %}
+        <td>{{ cell.value }}</td>
+        {% else %}
         <td>{{ cell.kot }}/{{ cell.count }}/{{ cell.arrived }}</td>
+        {% endif %}
         {% endfor %}
     </tr>
     {% endfor %}
