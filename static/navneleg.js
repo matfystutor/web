@@ -39,7 +39,9 @@ function navneleg() {
     var reset_tutors = function reset_tutors() {
         remainingTutors = [];
         tutors.forEach(tutor => remainingTutors.push(tutor));
-    }();
+    };
+
+    reset_tutors();
 
     //Find the art image hidden on the page and prepare for streak
     var arto = document.getElementById('arto');
@@ -90,6 +92,7 @@ function navneleg() {
 
     var set_next_timer = function set_next_timer() {
             clear_next_timer();
+            timoutInProgress = true;
             next_timer = setTimeout(next_tutor, 2000);
     };
 
@@ -164,7 +167,9 @@ function navneleg() {
 
         input.focus();
         timoutInProgress = false;
-    }();
+    };
+
+    next_tutor();
 
     input.onkeydown = function(e) {
         if (next_timer == null && e.keyCode === 13) {
