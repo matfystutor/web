@@ -1629,6 +1629,7 @@ class ArrivedStatsView(TemplateView):
         for year in years:
             cells = []
             kot_year = kot.get(year, {})
+            sum_kot = sum_count = sum_arrived = 0
             for official_name, handle, internal_name in settings.RUSCLASS_BASE:
                 kot_study = kot_year.get(handle, '-')
 
@@ -1648,6 +1649,19 @@ class ArrivedStatsView(TemplateView):
                     'count': count,
                     'arrived': arrived,
                 })
+                if isinstance(kot_study, int):
+                    sum_kot += kot_study
+                if isinstance(count, int):
+                    sum_count += count
+                if isinstance(arrived, int):
+                    sum_arrived += arrived
+            cells.append({
+                'handle': 'sum',
+                'name': '\u03A3',
+                'kot': sum_kot,
+                'count': count,
+                'arrived': sum_arrived,
+            })
             cells.append({
                 'handle': 'tk',
                 'name': 'TK',
