@@ -1242,10 +1242,9 @@ class RusInfoForm(forms.Form):
         self.rus_list = rus_list
 
         field_ctors = {
-            'reset_password': forms.BooleanField,
             'email': forms.EmailField,
         }
-        widget_ctors = {'reset_password': forms.CheckboxInput}
+        widget_ctors = {}
         sizes = {'street': 20, 'city': 15, 'email': 25, 'phone': 10}
 
         for rus in rus_list:
@@ -1262,14 +1261,7 @@ class RusInfoForm(forms.Form):
     def clean(self):
         cleaned_data = super(RusInfoForm, self).clean()
         for rus in self.rus_list:
-            password_field = 'rus_%s_reset_password' % rus.pk
-            email_field = 'rus_%s_email' % rus.pk
             phone_field = 'rus_%s_phone' % rus.pk
-            if (cleaned_data[password_field]
-                    and not cleaned_data[email_field]):
-                msg = ('Du skal indtaste en emailadresse ' +
-                       'for at nulstille kodeordet.')
-                self.add_error(email_field, msg)
 
             try:
                 phone = cleaned_data[phone_field]
@@ -1284,7 +1276,7 @@ class RusInfoView(FormView):
     form_class = RusInfoForm
     template_name = 'reg/rusinfo_form.html'
 
-    fields = ('street', 'city', 'email', 'phone', 'reset_password')
+    fields = ('street', 'city', 'email', 'phone')
 
     def get_form_kwargs(self):
         kwargs = super(RusInfoView, self).get_form_kwargs()
@@ -1344,7 +1336,6 @@ class RusInfoView(FormView):
                 in_city = data['rus_%s_city' % rus.pk]
                 in_email = data['rus_%s_email' % rus.pk]
                 in_phone = data['rus_%s_phone' % rus.pk]
-                in_password = data['rus_%s_reset_password' % rus.pk]
                 in_profile = (in_street, in_city, in_email, in_phone)
                 cur_profile = (rus.profile.street, rus.profile.city,
                                rus.profile.email, rus.profile.phone)
@@ -1355,35 +1346,6 @@ class RusInfoView(FormView):
                     rus.profile.email = in_email
                     rus.profile.phone = in_phone
                     rus.profile.save()
-                    changes += 1
-
-                if in_password:
-                    if not rus.profile.studentnumber:
-                        e = forms.ValidationError(
-                            'Rus har intet årskortnummer')
-                        form.add_error('rus_%s_reset_password' % rus.pk, e)
-                        continue
-                    pwlength = 8
-                    try:
-                        p = subprocess.Popen(
-                            ['/usr/bin/pwgen', '--capitalize', '--numerals',
-                             str(pwlength), '1'],
-                            stdin=subprocess.PIPE,
-                            stdout=subprocess.PIPE,
-                            stderr=subprocess.PIPE)
-                        pw, err = p.communicate()
-                        pw = pw.strip()
-                    except:
-                        letters = string.ascii_letters + string.digits
-                        pw = 'r'+''.join(
-                            random.choice(letters) for i in range(pwlength))
-                    rus.profile.user.set_password(pw)
-
-                    msg = make_password_reset_message(
-                        rus.profile, self.request.tutorprofile, pw)
-                    messages.append(msg)
-
-                    rus.profile.user.save()
                     changes += 1
 
         send_messages(messages)
