@@ -1621,7 +1621,7 @@ class ArrivedStatsView(TemplateView):
                 'handle': 'sum',
                 'name': '\u03A3',
                 'kot': sum_kot,
-                'count': count,
+                'count': sum_count,
                 'arrived': sum_arrived,
             })
             cells.append({
