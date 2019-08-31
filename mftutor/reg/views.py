@@ -8,7 +8,7 @@ import datetime
 import subprocess
 
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -1587,6 +1587,9 @@ class ArrivedStatsView(TemplateView):
             set(Rus.objects.values_list('year', flat=True).distinct()) |
             set(kot.keys()) |
             set(old_data.keys()))
+        rusclass_count = {}
+        for year in RusClass.objects.values_list("year", flat=True):
+            rusclass_count[year] = rusclass_count.get(year, 0) + 1
         rows = []
         for year in years:
             cells = []
@@ -1623,6 +1626,11 @@ class ArrivedStatsView(TemplateView):
                 'kot': sum_kot,
                 'count': sum_count,
                 'arrived': sum_arrived,
+            })
+            cells.append({
+                'handle': 'hold',
+                'name': 'Hold',
+                'value': rusclass_count.get(year, '-'),
             })
             cells.append({
                 'handle': 'tk',
