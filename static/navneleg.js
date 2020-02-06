@@ -186,8 +186,10 @@ function navneleg() {
 }
 
 function win_key_down(e) {
-    if (!e) e = window.event;
-    if (e.keyCode === 78) {
+  if (navneleg_activated)
+    return
+  if (!e) e = window.event;
+  if (e.keyCode === 78) {
         navneleg();
         e.preventDefault();
         return false;
