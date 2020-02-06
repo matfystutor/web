@@ -22,7 +22,7 @@ function navneleg() {
         }
 
         //If tutor has an image add them to the game pool
-        if (pic.length !== 0) {
+        if (pic) {
             pic = pic[0].src;
             tutors.push({
                 'name': name,
