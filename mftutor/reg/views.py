@@ -1535,6 +1535,7 @@ class ArrivedStatsView(TemplateView):
         2015: 788,
         2016: 647,
         2017: 649,
+        2018: 642,
     }
 
     @staticmethod
