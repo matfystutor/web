@@ -10,7 +10,7 @@ class OwnConfirmationForm(forms.ModelForm):
     experience = forms.CharField(widget=full_width_text_field, required=False,
             label='I hvor mange år har du været holdtutor før i år?')
     priorities = forms.CharField(widget=full_width_text_field, required=False,
-            label='Prioriteret rækkefølge af de fem studieretninger, du ønsker at være holdtutor for: mat, møk, fys, nano, dat')
+            label='Prioriteret rækkefølge af de seks studieretninger, du ønsker at være holdtutor for: mat, møk, fys, nano, dat, dav')
     firstaid = forms.CharField(widget=forms.Textarea, required=False,
             label='Har du førstehjælpsbevis eller førstehjælpskursus? Hvis ja, hvilket, og hvor gammelt er det?')
     resits = forms.CharField(widget=forms.Textarea, required=False,
@@ -19,11 +19,14 @@ class OwnConfirmationForm(forms.ModelForm):
             label='Kender du nogen studerende, der skal til at starte på mat/fys? Hvis ja, anfør navn og fag')
     comment = forms.CharField(widget=forms.Textarea, required=False,
             label='Kommentar')
+    considerations = forms.CharField(widget=forms.Textarea, required=False,
+            label='Skal der tages nogle særlige hensyn for dig i forbindelse med corona?')
     previous_tutor = forms.CharField(widget=forms.Textarea, required=False,
             label='Har du tidligere søgt om at blive holdtutor og er ikke blevet det?')
 
     class Meta:
-        fields = ('study', 'tutortype', 'experience', 'priorities', 'firstaid', 'resits', 'rusfriends', 'previous_tutor',  '' 'comment')
+        fields = ('study', 'tutortype', 'experience', 'priorities', 'firstaid', 'considerations', 'resits', 'rusfriends'
+                  , 'previous_tutor',  '' 'comment')
         exclude = ('tutor', 'tutortype', 'internal_notes')
         model = Confirmation
 
