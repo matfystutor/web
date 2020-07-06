@@ -1,8 +1,7 @@
 *.pyc
 .*.swp
 .swp
-/prodekanus/static
-/prodekanus/upload
+/static/upload
 /mftutor/settings/local.py
 *.aux
 *.log
