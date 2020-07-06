@@ -287,4 +287,4 @@ CONSTANCE_CONFIG = {
     'ENABLE_CONFIRMATION': (False, 'Er tutorbekræftelser aktive?', bool),
 }
 
-STUDIES = ["", "Datalogi", "Matematik", "Fysik", "Nannoscience"]
+STUDIES = ["Matematik/Økonomi", "Datalogi", "Matematik", "Fysik", "Nanoscience", "Datascience"]
