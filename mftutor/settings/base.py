@@ -287,4 +287,8 @@ CONSTANCE_CONFIG = {
     'ENABLE_CONFIRMATION': (False, 'Er tutorbekræftelser aktive?', bool),
 }
 
+<<<<<<< HEAD
 STUDIES = ["", "Matematik/Økonomi", "Datalogi", "Matematik", "Fysik", "Nanoscience", "Datavidenskab"]
+=======
+STUDIES = ["", "Datalogi", "Matematik", "Fysik", "Nannoscience"]
+>>>>>>> parent of 4f7d04b... Fix studies and add Datascience
