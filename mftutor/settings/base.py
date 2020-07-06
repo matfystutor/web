@@ -1,5 +1,4 @@
 # coding: utf-8
-from django.conf import global_settings
 
 # Django settings for mftutor project.
 
@@ -69,7 +68,7 @@ STATIC_URL = '/static/'
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = STATIC_URL+'upload/'
+MEDIA_URL = STATIC_URL + 'upload/'
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
@@ -88,7 +87,7 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -287,4 +286,4 @@ CONSTANCE_CONFIG = {
     'ENABLE_CONFIRMATION': (False, 'Er tutorbekræftelser aktive?', bool),
 }
 
-STUDIES = ["", "Datalogi", "Matematik", "Fysik", "Nannoscience"]
+STUDIES = ["", "Matematik/Økonomi", "Datalogi", "Matematik", "Fysik", "Nanoscience", "Datavidenskab"]
