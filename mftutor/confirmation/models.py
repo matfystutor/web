@@ -24,6 +24,8 @@ class Confirmation(models.Model):
             verbose_name='Bekendte nye studerende')
     comment = models.CharField(max_length=500, blank=True,
             verbose_name='Kommentar')
+    considerations = models.CharField(max_length=500, blank=True,
+            verbose_name='Hensyn')
     previous_tutor = models.CharField(max_length=500, blank=True,
             verbose_name='Har du tidligere været tutor?')
     internal_notes = models.CharField(max_length=500, blank=True,
