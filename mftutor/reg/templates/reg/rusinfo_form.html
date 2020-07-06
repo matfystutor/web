@@ -51,9 +51,6 @@ window.addEventListener('load', hook_inputs, false);
 {% block content %}
 <h1>{{ rusclass }}</h1>
 
-<p>For at lave et nyt kodeord til en rus, skal du indtaste russens emailadresse,
-vælge "Nulstil kodeord", og så vil der blive sendt et nyt kodeord til den valgte email.</p>
-
 <p>De kontaktoplysninger, du indtaster her, vil blive synlige for alle tutorer
 og russer der logger ind på rushjemmesiden.</p>
 
@@ -89,7 +86,6 @@ Eksporter til Google Contacts
 <th>Årskort</th>
 <th>Postnr. og by</th>
 <th>Email</th>
-<th>Nulstil kodeord</th>
 </tr>
 </thead>
 <tbody>
@@ -101,9 +97,6 @@ Eksporter til Google Contacts
     <td>{{ rus.profile.studentnumber|default_if_none:"" }}</td>
     <td>{{ rus.city_field }} {{ rus.city_field.errors }}</td>
     <td>{{ rus.email_field }} {{ rus.email_field.errors }}</td>
-    <td>{% if rus.profile.studentnumber %}{{ rus.reset_password_field }}
-        {% endif %}
-        {{ rus.reset_password_field.errors }}</td>
 </tr>
 {% endfor %}
 </tbody>

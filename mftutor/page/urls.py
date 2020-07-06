@@ -5,7 +5,6 @@ urlpatterns = [path(x + '/', TemplateView.as_view(template_name=x + '.html'), na
     'vedtaegter',
     'gruppekatalog',
     'rus2tur',
-    'sponsor',
     'kontakt',
     'todo',
     'intro',

@@ -356,7 +356,7 @@ Det er selvfølgelig altid muligt at melde sig ud af tutorgruppen hvis man ikke 
 
 Yderligere regler:
 
-- Som holdtutor må man ikke være sammen med en af sine egne russer før *efter* rusturen.
+- Som holdtutor må man ikke være sammen med en af russerne før *efter* rusturen.
 - På rusturen er det *ikke* tilladt at være nøgen i hyttens køkken.
 
 {% endblock %}

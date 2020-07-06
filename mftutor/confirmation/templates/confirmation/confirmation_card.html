@@ -40,7 +40,7 @@
     .confirmation .studylong,
     .confirmation .tutor, .confirmation .experience,
     .confirmation .resits, .confirmation .priorities, .confirmation .firstaid,
-    .confirmation .rusfriends, .confirmation .comment,
+    .confirmation .rusfriends, .confirmation .comment, .considerations,
     .confirmation .internal_notes {
         margin-left: 100px;
     }
@@ -76,6 +76,7 @@
     <div class="experience">Erfaring: {{ confirmation.experience }}</div>
     <div class="firstaid">Førstehjælp: {{ confirmation.firstaid }}</div>
     <div class="resits">Reeksamener: {{ confirmation.resits }}</div>
+    <div class="considerations">hensyn: {{confirmation.considerations}}></div>
     <div class="rusfriends">Kendte russer: {{ confirmation.rusfriends|linebreaksbr }}</div>
     <div class="comment">Kommentar: {{ confirmation.comment|linebreaksbr }}</div>
     <div class="previous_tutor">Tidligere ansøgt: {{ confirmation.previous_tutor}}</div>

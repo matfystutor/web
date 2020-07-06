@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block header %}
-<div id="rusheader" style="position: relative"><a href="/"><img src="{{ STATIC_URL }}matfystutor_2018_header.jpg" /></a>
-</div>
+<div id="header" style="position: relative"><a href="{% url 'rus_start' %}"><img src="{{ STATIC_URL }}images/header.jpg" /></a>
+  </div>
 {% endblock %}
 {% block menu %}
 <li class="trigger">

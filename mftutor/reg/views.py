@@ -8,7 +8,7 @@ import datetime
 import subprocess
 
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -195,9 +195,9 @@ class EditSessionView(UpdateView):
     def get_object(self):
         return ImportSession.objects.get(pk=self.kwargs.get('pk'))
 
-    def get_context_data(self, form, **kwargs):
-        context_data = super(EditSessionView, self).get_context_data(
-            form=form, **kwargs)
+    def get_context_data(self, **kwargs):
+        context_data = super(EditSessionView, self).get_context_data(**kwargs)
+        form = context_data['form']
         if form.instance:
             context_data['lines'] = ImportLine.objects.filter(
                 session=form.instance)
@@ -1242,10 +1242,9 @@ class RusInfoForm(forms.Form):
         self.rus_list = rus_list
 
         field_ctors = {
-            'reset_password': forms.BooleanField,
             'email': forms.EmailField,
         }
-        widget_ctors = {'reset_password': forms.CheckboxInput}
+        widget_ctors = {}
         sizes = {'street': 20, 'city': 15, 'email': 25, 'phone': 10}
 
         for rus in rus_list:
@@ -1262,14 +1261,7 @@ class RusInfoForm(forms.Form):
     def clean(self):
         cleaned_data = super(RusInfoForm, self).clean()
         for rus in self.rus_list:
-            password_field = 'rus_%s_reset_password' % rus.pk
-            email_field = 'rus_%s_email' % rus.pk
             phone_field = 'rus_%s_phone' % rus.pk
-            if (cleaned_data[password_field]
-                    and not cleaned_data[email_field]):
-                msg = ('Du skal indtaste en emailadresse ' +
-                       'for at nulstille kodeordet.')
-                self.add_error(email_field, msg)
 
             try:
                 phone = cleaned_data[phone_field]
@@ -1284,7 +1276,7 @@ class RusInfoView(FormView):
     form_class = RusInfoForm
     template_name = 'reg/rusinfo_form.html'
 
-    fields = ('street', 'city', 'email', 'phone', 'reset_password')
+    fields = ('street', 'city', 'email', 'phone')
 
     def get_form_kwargs(self):
         kwargs = super(RusInfoView, self).get_form_kwargs()
@@ -1344,7 +1336,6 @@ class RusInfoView(FormView):
                 in_city = data['rus_%s_city' % rus.pk]
                 in_email = data['rus_%s_email' % rus.pk]
                 in_phone = data['rus_%s_phone' % rus.pk]
-                in_password = data['rus_%s_reset_password' % rus.pk]
                 in_profile = (in_street, in_city, in_email, in_phone)
                 cur_profile = (rus.profile.street, rus.profile.city,
                                rus.profile.email, rus.profile.phone)
@@ -1355,35 +1346,6 @@ class RusInfoView(FormView):
                     rus.profile.email = in_email
                     rus.profile.phone = in_phone
                     rus.profile.save()
-                    changes += 1
-
-                if in_password:
-                    if not rus.profile.studentnumber:
-                        e = forms.ValidationError(
-                            'Rus har intet årskortnummer')
-                        form.add_error('rus_%s_reset_password' % rus.pk, e)
-                        continue
-                    pwlength = 8
-                    try:
-                        p = subprocess.Popen(
-                            ['/usr/bin/pwgen', '--capitalize', '--numerals',
-                             str(pwlength), '1'],
-                            stdin=subprocess.PIPE,
-                            stdout=subprocess.PIPE,
-                            stderr=subprocess.PIPE)
-                        pw, err = p.communicate()
-                        pw = pw.strip()
-                    except:
-                        letters = string.ascii_letters + string.digits
-                        pw = 'r'+''.join(
-                            random.choice(letters) for i in range(pwlength))
-                    rus.profile.user.set_password(pw)
-
-                    msg = make_password_reset_message(
-                        rus.profile, self.request.tutorprofile, pw)
-                    messages.append(msg)
-
-                    rus.profile.user.save()
                     changes += 1
 
         send_messages(messages)
@@ -1561,28 +1523,46 @@ class LightboxAdminView(LightboxView):
 class ArrivedStatsView(TemplateView):
     template_name = 'reg/arrived_stats.html'
 
+    tk = {
+        2007: 602,
+        2008: 596,
+        2009: 605,
+        2010: 652,
+        2011: 717,
+        2012: 761,
+        2013: 810,
+        2014: 781,
+        2015: 788,
+        2016: 647,
+        2017: 649,
+        2018: 642,
+    }
+
     @staticmethod
     def kot_optag():
         return {
             year: dict(zip('mat mok nano it fys dat'.split(), numbers))
             for year, numbers in [
-                (2007, [67, 29, 41, '-', 80, 73]),
-                (2008, [65, 28, 39, 50, 67, 114]),
-                (2009, [54, 26, 35, 52, 75, 108]),
-                (2010, [77, 37, 34, 53, 106, 114]),
-                (2011, [75, 61, 45, 70, 109, 155]),
-                (2012, [100, 83, 47, 69, 114, 154]),
-                (2013, [113, 74, 74, 70, 116, 155]),
-                (2014, [72, 81, 56, 65, 103, 170]),
-                (2015, [72, 86, 54, 68, 116, 185]),
-                (2016, [77, 67, 52, 52, 110, 130]),
+                (2007, [67, 29, 41, '-', 80, 73, 602]),
+                (2008, [65, 28, 39, 50, 67, 114, 596]),
+                (2009, [54, 26, 35, 52, 75, 108, 605]),
+                (2010, [77, 37, 34, 53, 106, 114, 652]),
+                (2011, [75, 61, 45, 70, 109, 155, 717]),
+                (2012, [100, 83, 47, 69, 114, 154, 761]),
+                (2013, [113, 74, 74, 70, 116, 155, 810]),
+                (2014, [72, 81, 56, 65, 103, 170, 781]),
+                (2015, [72, 86, 54, 68, 116, 185, 788]),
+                (2016, [77, 67, 52, 52, 110, 130, 647]),
+                (2017, [99, 85, 44, 52, 111, 156, 649]),
+                (2018, [91, 91, 52, 46, 77, 182, '-']),
+                (2019, [71, 78, 21, 42, 80, 155, '-']),
             ]
         }
 
     @staticmethod
     def get_year_list():
         kot = ArrivedStatsView.kot_optag()
-        old_study = 'dat fys mat mok nano it'.split()
+        old_study = 'dat fys mat mok nano it tk'.split()
         old_data = dict(
             [(2012, dict(zip(old_study,
                              [(142, 153), (114, 115), (65, 71),
@@ -1608,10 +1588,14 @@ class ArrivedStatsView(TemplateView):
             set(Rus.objects.values_list('year', flat=True).distinct()) |
             set(kot.keys()) |
             set(old_data.keys()))
+        rusclass_count = {}
+        for year in RusClass.objects.values_list("year", flat=True):
+            rusclass_count[year] = rusclass_count.get(year, 0) + 1
         rows = []
         for year in years:
             cells = []
             kot_year = kot.get(year, {})
+            sum_kot = sum_count = sum_arrived = 0
             for official_name, handle, internal_name in settings.RUSCLASS_BASE:
                 kot_study = kot_year.get(handle, '-')
 
@@ -1631,6 +1615,29 @@ class ArrivedStatsView(TemplateView):
                     'count': count,
                     'arrived': arrived,
                 })
+                if isinstance(kot_study, int):
+                    sum_kot += kot_study
+                if isinstance(count, int):
+                    sum_count += count
+                if isinstance(arrived, int):
+                    sum_arrived += arrived
+            cells.append({
+                'handle': 'sum',
+                'name': '\u03A3',
+                'kot': sum_kot,
+                'count': sum_count,
+                'arrived': sum_arrived,
+            })
+            cells.append({
+                'handle': 'hold',
+                'name': 'Hold',
+                'value': rusclass_count.get(year, '-'),
+            })
+            cells.append({
+                'handle': 'tk',
+                'name': 'TK',
+                'value': ArrivedStatsView.tk.get(year, '-'),
+            })
             rows.append({
                 'year': year,
                 'cells': cells,
