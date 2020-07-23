@@ -16,6 +16,8 @@ static_pages = [path(x + '/', TemplateView.as_view(template_name='rus/'+x+'.html
         'rusbrev',
         'rse',
         'bogliste',
+        'dinData',
+
         )]
 urlpatterns = static_pages + [
     path('', RusStartView.as_view(), name='rus_start'),
