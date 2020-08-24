@@ -261,6 +261,7 @@ RUSCLASS_BASE = (
     ('NA', 'nano', 'Nano'),
     ('IT', 'it', 'It'),
     ('DA', 'dat', 'Dat'),
+    ('DAV', 'dav', 'Dav'),
 )
 
 # Prefix of email addresses going to tutors of a certain rusclass
