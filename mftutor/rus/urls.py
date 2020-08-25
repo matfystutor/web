@@ -24,8 +24,8 @@ urlpatterns = static_pages + [
     path('profil/', ProfileView.as_view(), name='rus_profil'),
     re_path(r'^nyheder/(?:(?P<year>\d+)/(?:(?P<month>\d+)/(?:(?P<day>\d+)/(?:(?P<pk>\d+)/)?)?)?)?$', RusNewsView.as_view(), name='rus_nyheder'),
     path('holdtutorer/', login_required(TutorListView.as_view()), name='rus_holdtutorer'),
-    path('holdlister/', RusClassView.as_view(), name='rus_holdlister'),
-    path('holdlister/<handle>/', RusClassDetailView.as_view(), name='rus_holdlister'),
-    path('holdlister/<handle>.tex', RusClassDetailsPrintView.as_view(), name='rus_holdlister_print'),
+    path('holdlisterne/', RusClassView.as_view(), name='rus_holdlisterne'),
+    path('holdlisterne/<handle>/', RusClassDetailView.as_view(), name='rus_holdlisterne'),
+    path('holdlisterne/<handle>.tex', RusClassDetailsPrintView.as_view(), name='rus_holdlister_print'),
     path('kodeord/', login_required(RusPasswordChangeView.as_view()), name='rus_password_change'),
 ]
