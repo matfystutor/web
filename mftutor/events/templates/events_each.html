@@ -51,6 +51,7 @@ til {{ event.end_date|date:"l j. F"|lower }}
 {% endif %}
 {% if event.rsvp_status == "yes" %}Kommer{% endif %}
 {% if event.rsvp_status == "no" %}Kommer ikke{% endif %}
+{% if event.rsvp_status == "sandwich1" %}sandwich1{% endif %}
 {% endif %}
 {% endif %}
 </div>

@@ -56,7 +56,7 @@ class EventParticipant(models.Model):
     tutor = models.ForeignKey(Tutor, models.CASCADE, related_name="events")
     status = models.CharField(
         verbose_name='Svar', max_length=10,
-        choices=(('yes', 'Kommer'), ('no', 'Kommer ikke')))
+        choices=(('yes', 'Kommer'), ('no', 'Kommer ikke'), ('sandwich1', 'sandwich1')))
     notes = models.TextField(blank=True, verbose_name='Noter')
 
     def __unicode__(self):
