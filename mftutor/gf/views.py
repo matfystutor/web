@@ -13,9 +13,13 @@ class BallotList(TemplateView):
     template_name = "mftutor/gf/ballot_list.html"
 
     def get_context_data(self, **kwargs):
+        if self.request.tutor is None or self.request.tutor.profile is None:
+            qs = BallotLink.objects.none()
+        else:
+            qs = BallotLink.objects.filter(profile=self.request.tutor.profile)
         return super().get_context_data(
             **kwargs,
-            ballots=BallotLink.objects.filter(profile=self.request.tutor.profile),
+            ballots=qs,
         )
 
 
