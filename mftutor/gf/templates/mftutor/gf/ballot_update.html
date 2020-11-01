@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Generalforsamling{% endblock %}
+{% block content %}
+<h1>Generalforsamling</h1>
+{% if saved %}
+<p class="success_message">
+Stemmesedler er blevet opdateret.
+<a href="{% url 'ballot_list' %}">Tilbage til dine stemmesedler</a>
+</p>
+{% endif %}
+<p>Der er {{ tutor_count }} tutorer med stemmeret.</p>
+<form method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" />
+</form>
+{% endblock %}

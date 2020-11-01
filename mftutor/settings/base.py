@@ -195,6 +195,7 @@ INSTALLED_APPS = (
     'mftutor.signup',
     'mftutor.groups',
     'mftutor.tutorbog',
+    'mftutor.gf',
 )
 
 # A sample logging configuration. The only tangible logging
