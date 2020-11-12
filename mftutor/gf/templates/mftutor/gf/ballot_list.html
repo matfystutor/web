@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Generalforsamling{% endblock %}
+{% block content %}
+<h1>Generalforsamling</h1>
+<p>Her er links til dine stemmesedler til generalforsamlingen.</p>
+<p>Alle links indeholder et unikt token og må derfor ikke deles med andre.</p>
+<ul>
+	{% for o in ballots %}
+	<li><a href="{{ o.url }}" rel="noopener" target="_blank">{{ o.name }}</a></li>
+        {% empty %}
+        <li>Der er ikke nogen stemmesedler</li>
+	{% endfor %}
+</ul>
+{% if tutor.is_tutorbest %}<a href="{% url "ballot_update" %}">Tutorbest: Tilføj stemmesedler</a>{% endif %}
+{% endblock %}
