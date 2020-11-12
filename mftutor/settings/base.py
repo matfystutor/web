@@ -276,7 +276,7 @@ DEFAULT_ASB_EMAIL_DOMAIN = 'stud.asb.dk'
 PERSONAL_EMAIL_SENDER = 'Mat/Fys-Tutorgruppen <webfar@matfystutor.dk>'
 
 # Email aliases that change with the GF in November
-GF_GROUPS = ('best', 'koor', 'webfar', 'oekonomi', 'gris', 'burmor')
+GF_GROUPS = ('best', 'webfar', 'oekonomi', 'gris', 'burmor', 'form', 'nf', 'gruppeansvarlig')
 
 THUMBNAIL_KVSTORE = 'sorl.thumbnail.kvstores.dbm_kvstore.KVStore'
 THUMBNAIL_DBM_FILE = '/home/mftutor/web/thumbnails/thumbnail_kvstore'
