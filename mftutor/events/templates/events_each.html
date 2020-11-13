@@ -36,11 +36,6 @@ til {{ event.end_date|date:"l j. F"|lower }}
 	    {% if event.rsvp_status == "none" %}<option value="">Vælg...</option>{% endif %}
 	    <option value="yes"{% if event.rsvp_status == "yes" %} selected{% endif %}>Kommer</option>
 	    <option value="no"{% if event.rsvp_status == "no" %} selected{% endif %}>Kommer ikke</option>
-                <option value="sandwich1"{% if event.rsvp_status == "sandwich1" %} selected{% endif %}>Lakse sandwich</option>
-        <option value="sandwich2"{% if event.rsvp_status == "sandwich2" %} selected{% endif %}>Italiensk pølse sandwich</option>
-        <option value="sandwich3"{% if event.rsvp_status == "sandwich3" %} selected{% endif %}>Kylling/bacon sandwich</option>
-        <option value="sandwich4"{% if event.rsvp_status == "sandwich4" %} selected{% endif %}>Roastbeef sandwich</option>
-                <option value="sandwich5"{% if event.rsvp_status == "sandwich5" %} selected{% endif %}>Vegansk sandwich</option>
 	</select>
 	<span class="saved"></span>
     </form>
@@ -56,11 +51,6 @@ til {{ event.end_date|date:"l j. F"|lower }}
 {% endif %}
 {% if event.rsvp_status == "yes" %}Kommer{% endif %}
 {% if event.rsvp_status == "no" %}Kommer ikke{% endif %}
-{% if event.rsvp_status == "sandwich1" %}Lakse sandwich{% endif %}
-    {% if event.rsvp_status == "sandwich2" %}Italiensk pølse sandwich{% endif %}
-    {% if event.rsvp_status == "sandwich3" %}Kylling/bacon sandwich{% endif %}
-    {% if event.rsvp_status == "sandwich4" %}Roastbeef sandwich{% endif %}
-    {% if event.rsvp_status == "sandwich5" %}Vegansk sandwich{% endif %}
 {% endif %}
 {% endif %}
 </div>

@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='eventparticipant',
             name='status',
-            field=models.CharField(choices=[('yes', 'Kommer'), ('no', 'Kommer ikke'), ('sandwich1', 'Lakse sandwich'), ('sandwich2', 'italiensk pølse sandwich'), ('sandwich3', 'Kylling/bacon sandwich'), ('sandwich4', 'Roastbeef sandwich'), ('sandwich5', 'Vegansk sandwich')], max_length=10, verbose_name='Svar'),
+            field=models.CharField(choices=[('yes', 'Kommer'), ('no', 'Kommer ikke')], max_length=10, verbose_name='Svar'),
         ),
     ]

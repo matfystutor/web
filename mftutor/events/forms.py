@@ -26,11 +26,7 @@ class RSVPForm(forms.ModelForm):
 class RSVPFormAjax(forms.Form):
     status = forms.ChoiceField(choices=(
         ('yes', 'Kommer',),
-        ('sandwich1', 'Lakse sandwich'),
-        ('sandwich2', 'Italiensk pølse sandwich',),
-        ('sandwich3', 'Kylling/bacon sandwich',),
-        ('sandwich4', 'Roastbeef sandwich',),
-        ('sandwich5', 'Vegansk sandwich',),
+        ('no', 'Kommer ikke'),
     ))
 
 
@@ -48,11 +44,6 @@ class EventParticipantForm(forms.Form):
     status = forms.ChoiceField(choices=(
         ('yes', 'Kommer'),
         ('no', 'Kommer ikke'),
-        ('sandwich1', 'Lakse sandwich'),
-        ('sandwich2', 'Italiensk pølse sandwich',),
-        ('sandwich3', 'Kylling/bacon sandwich',),
-        ('sandwich4', 'Roastbeef sandwich',),
-        ('sandwich5', 'Vegansk sandwich',),
         ('none', 'Intet svar (slet notat)'),
     ))
     notes = forms.CharField(widget=forms.Textarea, required=False)
