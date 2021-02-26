@@ -35,6 +35,8 @@ class TutorProfile(models.Model):
     email = models.EmailField(
         max_length=75, verbose_name="E-mailadresse")
 
+    burBrevSignup = models.BooleanField(verbose_name="Tilmeldt Burets Nyhedsbrev", default=False)
+
     nickname = models.CharField(
        max_length=20, blank=True, verbose_name="Kaldenavn")
 

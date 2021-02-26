@@ -3,9 +3,12 @@ from django import forms
 from django.views.generic import FormView
 from django.core.exceptions import ValidationError
 
+from mftutor import settings
 from mftutor.settings import STUDIES
 from mftutor.shirt.models import ShirtPreference
 from mftutor.shirt.views import SelectShirt
+from mftutor.tutor.managers import TutorManager
+from mftutor.tutor.models import Tutor, TutorGroup
 
 class ProfileForm(forms.Form):
     name = forms.CharField(label='Navn')
@@ -17,6 +20,7 @@ class ProfileForm(forms.Form):
     study = forms.ChoiceField(label='Studium', choices=[(s, s) for s in STUDIES], required=False)
     tshirt1 = forms.CharField(widget=SelectShirt, label='T-Shirt Størrelse 1')
     tshirt2 = forms.CharField(widget=SelectShirt, label='T-Shirt Størrelse 2')
+    burBrevSignup = forms.BooleanField(label='Tilmed Burets Nyhedsbrev', required=False)
     picture = forms.ImageField(
         required=False,
         label='Billede')
@@ -49,7 +53,8 @@ class ProfileView(FormView):
             'email': tp.email,
             'study': tp.study,
             'tshirt1': sp.choice1,
-            'tshirt2': sp.choice2
+            'tshirt2': sp.choice2,
+            'burBrevSignup': tp.burBrevSignup
         }
 
     def form_valid(self, form):
@@ -72,6 +77,8 @@ class ProfileView(FormView):
 
         study = form.cleaned_data['study']
 
+        tp.burBrevSignup = form.cleaned_data['burBrevSignup']
+
         sp.choice1 = form.cleaned_data['tshirt1']
         sp.choice2 = form.cleaned_data['tshirt2']
 
@@ -89,6 +96,20 @@ class ProfileView(FormView):
         tp.save()
         sp.save()
 
+        # Add profile to burbrev if set
+        tutorManager = Tutor.objects.all()
+        groupManager = TutorGroup.objects.all()
+
+        try :
+            burBrevGroup = groupManager.get(handle="burbrev", year=settings.TUTORMAIL_YEAR)
+            tutor = tutorManager.get(profile=tp, year=settings.TUTORMAIL_YEAR)
+            if tp.burBrevSignup is True:
+                tutor.groups.add(burBrevGroup)   
+            else:
+                tutor.groups.remove(burBrevGroup)
+        except:
+            pass
+        
         # Since TutorProfile cleaning may have changed tp.phone,
         # throw away the bound form and recreate it with the profile data
         form = self.get_form_class()(initial=self.get_initial())
