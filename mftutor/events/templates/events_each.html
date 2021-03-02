@@ -41,7 +41,7 @@ til {{ event.end_date|date:"l j. F"|lower }}
     </form>
 </div>
 {% endif %}
-{% if not event.is_rsvp_possible %}m
+{% if not event.is_rsvp_possible %}
 {% if event.rsvp_status != 'none' %}
     {% if event.rsvp_title %}
         {{ event.rsvp_title }}:
