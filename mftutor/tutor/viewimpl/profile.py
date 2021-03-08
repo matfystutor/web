@@ -12,7 +12,7 @@ from mftutor.tutor.models import Tutor, TutorGroup
 
 class ProfileForm(forms.Form):
     name = forms.CharField(label='Navn')
-    nickname = forms.CharField(label='Kaldenavn')
+    nickname = forms.CharField(label='Kaldenavn', required=False)
     street = forms.CharField(label='Gade')
     city = forms.CharField(label='Postnr. og by')
     phone = forms.CharField(label='Telefon')
@@ -43,7 +43,6 @@ class ProfileView(FormView):
         except ShirtPreference.DoesNotExist:
             sp = ShirtPreference(profile=tp)
             sp.save()
-
         return {
             'name': tp.name,
             'nickname': tp.nickname,
@@ -75,7 +74,7 @@ class ProfileView(FormView):
         tp.phone = form.cleaned_data['phone']
         u.email = tp.email = form.cleaned_data['email']
 
-        study = form.cleaned_data['study']
+        tp.study = form.cleaned_data['study']
 
         tp.burBrevSignup = form.cleaned_data['burBrevSignup']
 
