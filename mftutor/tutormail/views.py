@@ -170,7 +170,7 @@ class EmailFormView(FormView):
         recipients += cc_emails
 
         if data['only_me']:
-            text += '\n' + repr(recipients)
+            # text += '\n' + repr(recipients)
             recipients = [get_tutorprofile_email(self.request.user.tutorprofile)]
 
         text = self.perform_wrapping(text, wrapping)
