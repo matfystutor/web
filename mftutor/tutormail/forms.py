@@ -16,11 +16,14 @@ class EmailForm(Form):
 
     send_study = BooleanField(required=False)
 
+    send_institute = BooleanField(required=False)
+
     sender_name = CharField()
     sender_email = CharField(widget=TextInput(attrs={'placeholder':'mailalias'}))
 
     studies = ChoiceField(
         choices=[(x, x) for x in STUDIES],
+        required=False
     )
 
     subject = CharField()
@@ -29,6 +32,11 @@ class EmailForm(Form):
 
     wrapping = ChoiceField(
         choices=[(x, x) for x in 'lines paragraphs none'.split()],
+    )
+
+    institutes = ChoiceField(
+        choices=[(x, x) for x in ['', 'Datalogi', 'IFA', 'IMF']],
+        required=False
     )
 
     # def clean(self):
