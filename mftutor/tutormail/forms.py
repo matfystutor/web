@@ -3,6 +3,7 @@
 import django
 from django.forms import Form, CharField, Textarea, TextInput, ValidationError, \
     ChoiceField, BooleanField
+from mftutor.settings import STUDIES
 
 
 class EmailForm(Form):
@@ -13,8 +14,14 @@ class EmailForm(Form):
 
     only_me = BooleanField(required=False)
 
+    send_study = BooleanField(required=False)
+
     sender_name = CharField()
     sender_email = CharField(widget=TextInput(attrs={'placeholder':'mailalias'}))
+
+    studies = ChoiceField(
+        choices=[(x, x) for x in STUDIES],
+    )
 
     subject = CharField()
 

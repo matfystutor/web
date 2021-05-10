@@ -32,6 +32,10 @@
     <input name="wrap" type="submit" value="Ombryd linjer" />
     <input name="send" type="submit" value="Send mail!" />
     <input name="only_me" type="submit" value="Send kun til mig" />
+
+    <p>Send til studie: {{ form.studies }}{{ form.studies.errors }}</p>
+
+    <input name="send_study" type="submit" value="Send til valgte studie" />
   </p>
 </form>
 

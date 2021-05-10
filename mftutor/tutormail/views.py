@@ -99,7 +99,7 @@ class EmailFormView(FormView):
                 raise ValueError('Line wrapping failed (no fixpoint)')
 
             return self.render_to_response(self.get_context_data(form=form))
-        elif request.POST.get('send') or request.POST.get('only_me'):
+        elif request.POST.get('send') or request.POST.get('only_me') or request.POST.get('send_study'):
             if form.is_valid():
                 return self.form_valid(form)
             else:
@@ -172,8 +172,18 @@ class EmailFormView(FormView):
         if data['only_me']:
             # text += '\n' + repr(recipients)
             recipients = [get_tutorprofile_email(self.request.user.tutorprofile)]
-
         text = self.perform_wrapping(text, wrapping)
+
+        if data['send_study']:
+            study = data['studies']
+            profiles = TutorProfile.objects.filter(
+                tutor__year__exact=year,
+                tutor__profile__study=study,
+                tutor__early_termination__isnull=True)
+            recipients = [get_tutorprofile_email(profile) for profile in profiles]
+            print(recipients)
+
+
 
         messages = []
         for recipient in recipients:
