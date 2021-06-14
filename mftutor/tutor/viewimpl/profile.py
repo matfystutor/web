@@ -20,7 +20,7 @@ class ProfileForm(forms.Form):
     study = forms.ChoiceField(label='Studium', choices=[(s, s) for s in STUDIES], required=False)
     tshirt1 = forms.CharField(widget=SelectShirt, label='T-Shirt Størrelse 1')
     tshirt2 = forms.CharField(widget=SelectShirt, label='T-Shirt Størrelse 2')
-    burBrevSignup = forms.BooleanField(label='Tilmed Burets Nyhedsbrev', required=False)
+    burBrevSignup = forms.BooleanField(label='Tilmeld Burets Nyhedsbrev', required=False)
     picture = forms.ImageField(
         required=False,
         label='Billede')
