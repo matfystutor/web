@@ -61,7 +61,6 @@
     <th>Førstehjælp</th>
     <th>Kendte russer</th>
     <th>Tidligere ansøgt</th>
-    <th>Hensyn</th>
     <th>Kommentar</th>
     <th>Notat</th>
 </tr>
@@ -79,7 +78,6 @@
     <td>{{ confirmation.firstaid }}</td>
     <td>{{ confirmation.rusfriends|linebreaksbr }}</td>
     <td>{{ confirmation.previous_tutor|linebreaksbr }}</td>
-    <td>{{ confirmation.consideration }}</td>
     <td>{{ confirmation.comment|linebreaksbr }}</td>
     <td><form method="post" style="display: none" action="{% url 'confirmation_edit_note' %}">{% csrf_token %}
             <input type="hidden" name="tutor" value="{{ confirmation.tutor.pk }}">

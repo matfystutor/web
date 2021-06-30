@@ -19,13 +19,11 @@ class OwnConfirmationForm(forms.ModelForm):
             label='Kender du nogen studerende, der skal til at starte på mat/fys? Hvis ja, anfør navn og fag')
     comment = forms.CharField(widget=forms.Textarea, required=False,
             label='Kommentar')
-    considerations = forms.CharField(widget=forms.Textarea, required=False,
-            label='Skal der tages nogle særlige hensyn for dig i forbindelse med corona?')
     previous_tutor = forms.CharField(widget=forms.Textarea, required=False,
             label='Har du tidligere søgt om at blive holdtutor og er ikke blevet det?')
 
     class Meta:
-        fields = ('study', 'tutortype', 'experience', 'priorities', 'firstaid', 'considerations', 'resits', 'rusfriends'
+        fields = ('study', 'tutortype', 'experience', 'priorities', 'firstaid', 'resits', 'rusfriends'
                   , 'previous_tutor',  '' 'comment')
         exclude = ('tutor', 'tutortype', 'internal_notes')
         model = Confirmation
