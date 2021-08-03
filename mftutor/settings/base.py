@@ -234,6 +234,8 @@ LOGIN_URL = '/login/'
 
 INTERNAL_IPS = ('127.0.0.1',)
 
+FILE_UPLOAD_PERMISSIONS = 0o644
+
 BODY_CLASS = 'production'
 
 # If True, use HTML Tidy to clean up news post HTML bodies.
