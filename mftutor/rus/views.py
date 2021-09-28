@@ -127,7 +127,6 @@ class RusClassDetailsPrintView(RusClassDetailView):
 class ProfileForm(forms.Form):
     street = forms.CharField(label='Adresse', required=False)
     city = forms.CharField(label='Postnr. og by', required=False)
-    email = forms.EmailField(label='Email', required=False)
     phone = forms.CharField(label='Telefon', required=False)
 
 
@@ -146,7 +145,6 @@ class ProfileView(FormView):
         return {
             'street': profile.street,
             'city': profile.city,
-            'email': profile.email,
             'phone': profile.phone,
         }
 
@@ -156,9 +154,7 @@ class ProfileView(FormView):
         with transaction.atomic():
             profile.street = data['street']
             profile.city = data['city']
-            profile.email = data['email']
             profile.phone = data['phone']
-            profile.user.email = profile.email
             profile.save()
             profile.user.save()
         return self.render_to_response(self.get_context_data(form=form, saved=True))
