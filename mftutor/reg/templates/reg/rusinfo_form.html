@@ -71,9 +71,6 @@ Eksporter til Google Contacts
 {% else %}
 <p>Ingen ændringer.</p>
 {% endif %}
-{% if emails %}
-<p>{{ emails }} email{{ emails|pluralize }} er sendt med kodeord.</p>
-{% endif %}
 {% endif %}
 {{ form.non_field_errors }}
 <form method="post">{% csrf_token %}
@@ -85,7 +82,6 @@ Eksporter til Google Contacts
 <th>Adresse</th>
 <th>Årskort</th>
 <th>Postnr. og by</th>
-<th>Email</th>
 </tr>
 </thead>
 <tbody>
@@ -96,7 +92,6 @@ Eksporter til Google Contacts
     <td>{{ rus.street_field }} {{ rus.street_field.errors }}</td>
     <td>{{ rus.profile.studentnumber|default_if_none:"" }}</td>
     <td>{{ rus.city_field }} {{ rus.city_field.errors }}</td>
-    <td>{{ rus.email_field }} {{ rus.email_field.errors }}</td>
 </tr>
 {% endfor %}
 </tbody>
