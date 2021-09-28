@@ -403,7 +403,6 @@ class RusListView(TemplateView):
 class RusCreateForm(forms.Form):
     name = forms.CharField(label='Navn')
     studentnumber = forms.CharField(label='Årskortnummer', required=False)
-    email = forms.CharField(required=False, label='Email')
     rusclass = forms.ModelChoiceField(
         queryset=RusClass.objects.all(), label='Hold')
     arrived = forms.BooleanField(required=False, label='Ankommet')
@@ -466,13 +465,12 @@ class RusCreateView(FormView):
             existing = TutorProfile.objects.filter(studentnumber=studentnumber)
             if existing.exists():
                 tutorprofile = existing.get()
-                d1 = (data['name'], data['email'])
-                d2 = (tutorprofile.name, tutorprofile.email)
+                d1 = data['name']
+                d2 = tutorprofile.name
                 if d1 != d2:
                     # Redisplay form
                     data = copy.deepcopy(data)
                     data['name'] = tutorprofile.name
-                    data['email'] = tutorprofile.email
                     # data['rusclass'] = data['rusclass'].pk
                     form = RusCreateForm(data=data, year=self.request.year)
                     form.add_error(
@@ -489,7 +487,7 @@ class RusCreateView(FormView):
                 tutorprofile = TutorProfile.objects.create(
                     studentnumber=data['studentnumber'],
                     name=data['name'],
-                    email=data['email'])
+                    email='mail@mail.com')
                 if data['studentnumber'] is not None:
                     tutorprofile.get_or_create_user()
                 tutorprofile.save()
@@ -1241,11 +1239,10 @@ class RusInfoForm(forms.Form):
         super(RusInfoForm, self).__init__(*args, **kwargs)
         self.rus_list = rus_list
 
-        field_ctors = {
-            'email': forms.EmailField,
-        }
+        field_ctors = {}
+
         widget_ctors = {}
-        sizes = {'street': 20, 'city': 15, 'email': 25, 'phone': 10}
+        sizes = {'street': 20, 'city': 15, 'phone': 10}
 
         for rus in rus_list:
             for field in fields:
@@ -1276,7 +1273,7 @@ class RusInfoView(FormView):
     form_class = RusInfoForm
     template_name = 'reg/rusinfo_form.html'
 
-    fields = ('street', 'city', 'email', 'phone')
+    fields = ('street', 'city', 'phone')
 
     def get_form_kwargs(self):
         kwargs = super(RusInfoView, self).get_form_kwargs()
@@ -1290,7 +1287,6 @@ class RusInfoView(FormView):
         for rus in self.rus_list:
             data['rus_%s_street' % rus.pk] = rus.profile.street
             data['rus_%s_city' % rus.pk] = rus.profile.city
-            data['rus_%s_email' % rus.pk] = rus.profile.email
             data['rus_%s_phone' % rus.pk] = rus.profile.phone
 
         return data
@@ -1334,16 +1330,14 @@ class RusInfoView(FormView):
             for rus in self.rus_list:
                 in_street = data['rus_%s_street' % rus.pk]
                 in_city = data['rus_%s_city' % rus.pk]
-                in_email = data['rus_%s_email' % rus.pk]
                 in_phone = data['rus_%s_phone' % rus.pk]
-                in_profile = (in_street, in_city, in_email, in_phone)
+                in_profile = (in_street, in_city, in_phone)
                 cur_profile = (rus.profile.street, rus.profile.city,
-                               rus.profile.email, rus.profile.phone)
+                                rus.profile.phone)
 
                 if in_profile != cur_profile:
                     rus.profile.street = in_street
                     rus.profile.city = in_city
-                    rus.profile.email = in_email
                     rus.profile.phone = in_phone
                     rus.profile.save()
                     changes += 1

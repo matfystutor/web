@@ -118,7 +118,7 @@ function add_note_delete_form(note, el) {
 ///////////////////////////////////////////////////////////////////////////////
 // Rus object containing an interpretation of a rus DOM node.
 ///////////////////////////////////////////////////////////////////////////////
-function Rus(pk, rusclass, initial_rusclass, arrived, studentnumber, name, street, city, phone, email) {
+function Rus(pk, rusclass, initial_rusclass, arrived, studentnumber, name, street, city, phone) {
     this.row = null;
     this.pk = pk;
     this.rusclass = rusclass;
@@ -129,7 +129,6 @@ function Rus(pk, rusclass, initial_rusclass, arrived, studentnumber, name, stree
     this.street = street;
     this.city = city;
     this.phone = phone;
-    this.email = email;
     this.notes = new NoteList();
 }
 
@@ -140,8 +139,8 @@ Rus.objects.all = [];
 Rus.objects.studentnumber_dict = {};
 Rus.objects.pk_dict = {};
 
-Rus.objects.create = function (pk, rusclass, initial_rusclass, arrived, studentnumber, name, street, city, phone, email) {
-    var rus = new Rus(pk, rusclass, initial_rusclass, arrived, studentnumber, name, street, city, phone, email);
+Rus.objects.create = function (pk, rusclass, initial_rusclass, arrived, studentnumber, name, street, city, phone) {
+    var rus = new Rus(pk, rusclass, initial_rusclass, arrived, studentnumber, name, street, city, phone);
     rus.objects.all.push(rus);
     return rus;
 };
@@ -206,7 +205,6 @@ TextColumn.prototype.get_value = function (rus) {
     case 'street': return rus.street;
     case 'city': return rus.city;
     case 'phone': return rus.phone;
-    case 'email': return rus.email;
     }
     throw oops('TextColumn.get_value: Unknown field ['+this.field_name+']');
 }
@@ -261,7 +259,6 @@ Rus.columns = [
     new TextColumn('street'),
     new TextColumn('city'),
     new TextColumn('phone'),
-    new TextColumn('email'),
     new NotesColumn()
 ];
 
@@ -370,7 +367,6 @@ Rus.objects.create_from_initial = function (dict) {
         dict['street'],
         dict['city'],
         dict['phone'],
-        dict['email']);
     Rus.objects.all.push(rus);
     Rus.objects.pk_dict[pk] = rus;
     if (studentnumber !== null)
@@ -664,7 +660,6 @@ RusClass.prototype.rerender = function () {
         '<th style="min-width: 10em">Adresse</th>\n'+
         '<th style="min-width: 10em">By</th>\n'+
         '<th style="min-width: 5em">Telefon</th>\n'+
-        '<th style="min-width: 7em">Email</th>\n'+
         '<th style="min-width: 1em">Note</th>\n'+
         '</tr>\n'+
         '</thead>\n'+
@@ -742,7 +737,6 @@ function update_rus(rpc_rus, version) {
     rus.street = rpc_rus['street'];
     rus.city = rpc_rus['city'];
     rus.phone = rpc_rus['phone'];
-    rus.email = rpc_rus['email'];
     rus.initial_rusclass = initial_rusclass;
     if (rus.studentnumber !== rpc_rus['studentnumber']) {
         if (rus.studentnumber !== null) {
@@ -946,7 +940,6 @@ og alle ændringer bliver synkroniseret med det samme.</p>
 <th style="min-width: 1em">Navn</th>
 <th style="min-width: 10em">Adresse</th>
 <th style="min-width: 5em">Telefon</th>
-<th style="min-width: 7em">Email</th>
 <th style="min-width: 1em">Note</th>
 </tr>
 </thead>
@@ -973,7 +966,6 @@ onsubmit="return reg_change_arrived('{% url 'reg_change_arrived_ajax' pk=rus.pk 
 <td>{{ rus.profile.get_full_name }}</td>
 <td>{{ rus.profile.street }} {{ rus.profile.city }}</td>
 <td>{{ rus.profile.phone }}</td>
-<td>{{ rus.profile.email }}</td>
 <td><a href="#notes-rus-{{ rus.pk }}" onclick="show_notes('notes-rus-{{ rus.pk }}'); return false">
 {% for note in rus.notes %}<div>{{ note.body }}</div>
 {% endfor %}
