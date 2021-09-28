@@ -487,7 +487,7 @@ class RusCreateView(FormView):
                 tutorprofile = TutorProfile.objects.create(
                     studentnumber=data['studentnumber'],
                     name=data['name'],
-                    email='mail@mail.com')
+                    email= studentnumber + '@post.au.dk')
                 if data['studentnumber'] is not None:
                     tutorprofile.get_or_create_user()
                 tutorprofile.save()
