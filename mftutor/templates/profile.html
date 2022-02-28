@@ -14,7 +14,7 @@
             <div>Nyt billede: <input type="file" name="picture"/></div>
         </div>
         {{ form.picture.errors }}
-        <div class="label"><label>Årskortnummer</label>:</div>
+        <div class="label"><label>Studienummer</label>:</div>
         <div class="field">{{ studentnumber }}</div>
         {% for field in form %}
             {% if field != form.picture %}
