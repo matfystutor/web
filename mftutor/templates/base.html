@@ -131,7 +131,7 @@ Kildekoden er frit tilgængelig: https://github.com/matfystutor/web/
       {% csrf_token %}
       <input type="hidden" name="next" value="{{ request_path }}" />
       <fieldset>
-        <input name="username" type="text" id="user-login" placeholder="Årskortnr" />
+        <input name="username" type="text" id="user-login" placeholder="Studienummer"/>
         <input name="password" type="password" id="password-login" placeholder="Password" />
         <input name="login" type="submit" class="submit-button" value="LOGIN" />
       </fieldset>
