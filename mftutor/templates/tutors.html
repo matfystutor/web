@@ -23,10 +23,10 @@ Vælg gruppe:
 {% endif %}
 <p>Vis som:
 <label>
-<input onclick="document.getElementsByClassName('tutorcontainer')[0].className = 'tutorcontainer tutorlist'"
+<input onclick="Array.from(document.getElementsByClassName('tutorcontainer')).forEach(c => {c.className = 'tutorcontainer tutortable';})"
 name="tutorcontainer" type="radio" value="tutorlist" checked="checked"> Liste</label>
 <label>
-<input onclick="document.getElementsByClassName('tutorcontainer')[0].className = 'tutorcontainer tutortable'"
+<input onclick="Array.from(document.getElementsByClassName('tutorcontainer')).forEach(c => {c.className = 'tutorcontainer tutortable';})"
 name="tutorcontainer" type="radio" value="tutortable"> Tabel</label>
 </p>
 <p>
