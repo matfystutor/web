@@ -17,6 +17,7 @@ from django.views.generic import (
     ListView, FormView, UpdateView, TemplateView, View)
 from django.views.generic.edit import ProcessFormView
 from django.contrib.auth.models import User
+from fpdf import FPDF  # fpdf class
 
 from .. import settings
 from ..tutor.models import RusClass, TutorProfile, Rus
@@ -35,6 +36,11 @@ from .email import make_password_reset_message, send_messages
 class BurStartView(TemplateView):
     template_name = 'reg/bur_start.html'
 
+
+# =============================================================================
+
+class KrydslisteView(TemplateView):
+    template_name = 'reg/krydsliste.html'
 
 # =============================================================================
 
@@ -1699,3 +1705,121 @@ class StudentnumberView(FormView):
         rus.profile.save()
         rus.profile.get_or_create_user()
         return HttpResponseRedirect(reverse('studentnumber_list'))
+
+    class PDF(FPDF):
+        w, h = 297, 420
+        header_font_size = 60
+        name_font_size = 14
+        line_width_l = 2
+        line_width_s = 0
+        box_height = 15
+        names_pr_page = int(round((h - 2 * box_height) / box_height))
+        max_name_lenght = 20
+
+        fields = [
+            {
+                'name': 'Navn:',
+                'amount': 20,
+                'draw_squares': False
+            }, {
+                'name': 'ØL:',
+                'amount': 30,
+                'draw_squares': True
+            }, {
+                'name': 'Vand:',
+                'amount': 20,
+                'draw_squares': True
+            }, {
+                'name': 'GD:',
+                'amount': 20,
+                'draw_squares': True
+            }
+        ]
+
+        cell_width = 0
+
+        # Draw the cross list header ( uses the data of fields for easy manipulation)
+        def create_header(self):
+            self.set_line_width(self.line_width_l)
+
+            # Create the header line
+            header_line_height = 2 * self.box_height
+            self.line(0, header_line_height, self.w, header_line_height)
+
+            # Draw the horizontal lines and write the headers
+            current_pos = 0
+            for f in self.fields:
+                self.set_line_width(self.line_width_s)
+                small_squares = f.get("amount")
+                # Draw lines in between fields if draw_square is set
+                if f.get("draw_squares"):
+                    for i in range(small_squares):
+                        current_pos += 1
+                        self.line(current_pos * self.cell_width, header_line_height, current_pos * self.cell_width,
+                                  self.h)
+                else:
+                    current_pos = current_pos + small_squares
+
+                # Draw the thick line at the end of the field
+                self.set_line_width(self.line_width_l)
+                w = current_pos * self.cell_width
+                self.line(w, 0, w, self.h)
+
+                # Write in the text
+                self.set_xy((current_pos - small_squares) * self.cell_width, 0)
+                self.set_font('Arial', 'B', self.header_font_size)
+                self.set_text_color(0, 0, 0)
+                self.multi_cell(w=self.cell_width * small_squares, h=header_line_height, align='C', txt=f.get('name'))
+
+        # Create the cross list this method creates all the pages and populates the data
+        def create(self, names):
+            # Calculate missing cells to fill out the entire page
+            total_cells = 0
+            for f in self.fields:
+                total_cells += f.get("amount")
+
+            self.cell_width = self.w / total_cells
+
+            missing_names = int(round(self.names_pr_page - (len(names) % self.names_pr_page)))
+
+            for i in range(missing_names):
+                names.append("")
+
+            first_field_size = self.fields[0].get("amount")
+            # Insert all the names and create new pages when one is filled out
+            for index in range(len(names)):
+                if index % self.names_pr_page == 0:
+                    self.add_page()
+                    self.create_header()
+                self.draw_name_box(index, names[index], first_field_size)
+
+        # Draw the name box at the given index
+        def draw_name_box(self, index, name, field_size):
+            height_y = ((index % self.names_pr_page) + 3) * self.box_height
+
+            self.set_line_width(self.line_width_l)
+            self.line(0, height_y, self.w, height_y)
+
+            self.set_line_width(self.line_width_s)
+            self.line(field_size * self.cell_width, height_y - self.box_height / 2, self.w,
+                      height_y - self.box_height / 2)
+
+            self.set_font_size(self.name_font_size)
+            self.text(x=1, y=height_y - 2, txt=self.minify_name(name))
+
+        def minify_name(self, name):
+            name_split = str.split(name, ' ')
+            for i in range(1, len(name_split) - 1):
+                name_split[i] = name_split[i][0] + "."
+            return ' '.join(name_split)[0:self.max_name_lenght]
+
+    if __name__ == '__main__':
+        names = [
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
+            'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
+            'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'Æ',
+            'Ø', 'Å', 'A B C',
+        ]
+        pdf = PDF(orientation='P', unit='mm', format='A3')
+        pdf.create(names)
+        pdf.output('test.pdf', 'F')
