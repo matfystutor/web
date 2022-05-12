@@ -55,10 +55,7 @@ class KrydslisteView(FormView):
         pdf.output('test.pdf', 'F')
         openPDF = open('test.pdf', 'rb').read()
         os.remove('test.pdf')
-        #print(stringPDF)
         return HttpResponse(openPDF, content_type='application/pdf')
-        #return FileResponse(open('test.pdf', 'rb'))
-        #return HttpResponse(stringPDF, content_type='application/pdf')
 # =============================================================================
 
 class ChooseSessionView(ListView):
