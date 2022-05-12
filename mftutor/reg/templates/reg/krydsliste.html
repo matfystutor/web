@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Krydsliste generator</h1>
+
+<form action="" method="POST">{% csrf_token %}
+    <textarea name='value' rows="10" cols="30" value=''
+        placeholder="Write the names of the people that are going on the trip here, each name on a new line"
+        style="width: 100%;"></textarea>
+    <input type="submit">
+</form>
+
+{% endblock %}

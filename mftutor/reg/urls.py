@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import ArrivedStatsView
+from .views import ArrivedStatsView, KrydslisteView
 from .views import BurStartView
 from .views import ChooseSessionView, NewSessionView, EditSessionView
 from .views import (
@@ -21,7 +21,8 @@ from ..tutor.auth import tutorbur_required
 urlpatterns = [
     path('', tutorbur_required(BurStartView.as_view()),
          name='bur_start'),
-
+    path('krydsliste/', KrydslisteView.as_view(),
+        name = 'krydsliste'),
     path('import/', tutorbur_required(ChooseSessionView.as_view()),
          name='import_session_choose'),
     path('import/new/', tutorbur_required(NewSessionView.as_view()),
