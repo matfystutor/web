@@ -1,18 +1,18 @@
 import io
 import subprocess
+import tempfile
 
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render_to_response
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.core.exceptions import ValidationError
-from django.template import RequestContext
 from django.template import Context
 from django.template.loader import get_template
 from django.core.mail import EmailMessage
 from django.core.mail import get_connection
 from django import forms
-from django.contrib.auth.views import PasswordChangeView
-from django.views.generic import UpdateView, TemplateView, FormView, ListView
+from django.views.generic import TemplateView, FormView, ListView
+from fpdf import FPDF
 
 from mftutor.tutor.models import TutorProfile, TutorGroup, \
     Tutor, BoardMember
@@ -368,3 +368,150 @@ class BoardMemberListView(ListView):
     def get_queryset(self):
         qs = BoardMember.objects.filter(tutor__year=self.request.year)
         return qs.select_related()
+
+
+class KrydslisteCreateForm(forms.Form):
+    value = forms.CharField(label='input')
+    check_rtd = forms.BooleanField(initial=False, required=False, label='check_rtd')
+
+
+class KrydslisteView(FormView):
+    template_name = 'krydsliste.html'
+    form_class = KrydslisteCreateForm
+
+    def form_valid(self, form):
+        KrydslisteCreateForm.check_rtd = form.cleaned_data['check_rtd']
+        pdf = PDF(orientation='P', unit='mm', format='A3')
+        if KrydslisteCreateForm.check_rtd:
+            pdf.fields.extend(
+                [{
+                    'name': 'RTD',
+                    'amount': 20,
+                    'draw_squares': True
+                }
+                ]
+            )
+        pdf.create(form.cleaned_data['value'].splitlines())
+        with tempfile.NamedTemporaryFile() as f:
+            res = pdf.output(f.name, 'F')
+            return HttpResponse(f.read(), content_type='application/pdf')
+
+
+class PDF(FPDF):
+    w, h = 297, 420
+    header_font_size = 60
+    name_font_size = 24
+    line_width_l = 2
+    line_width_s = 0
+    box_height = 15
+    names_pr_page = int(round((h - 2 * box_height) / box_height))
+    max_name_length = 20
+
+    fields = [
+        {
+            'name': 'Navn',
+            'amount': 20,
+            'draw_squares': False
+        }, {
+            'name': 'Øl',
+            'amount': 30,
+            'draw_squares': True
+        }, {
+            'name': 'Vand',
+            'amount': 20,
+            'draw_squares': True
+        }, {
+            'name': 'GD',
+            'amount': 20,
+            'draw_squares': True
+        },
+    ]
+
+    cell_width = 0
+
+    # Draw the cross list header ( uses the data of fields for easy manipulation)
+    def create_header(self):
+        self.set_line_width(self.line_width_l)
+
+        # Create the header line
+        header_line_height = 2 * self.box_height
+        self.line(0, header_line_height, self.w, header_line_height)
+
+        # Draw the horizontal lines and write the headers
+        current_pos = 0
+        for f in self.fields:
+            self.set_line_width(self.line_width_s)
+            small_squares = f.get("amount")
+            # Draw lines in between fields if draw_square is set
+            if f.get("draw_squares"):
+                for i in range(small_squares):
+                    current_pos += 1
+                    self.line(current_pos * self.cell_width, header_line_height, current_pos * self.cell_width,
+                              self.h)
+            else:
+                current_pos = current_pos + small_squares
+
+            # Draw the thick line at the end of the field
+            self.set_line_width(self.line_width_l)
+            w = current_pos * self.cell_width
+            self.line(w, 0, w, self.h)
+
+            # Write in the text
+            self.set_xy((current_pos - small_squares) * self.cell_width, 0)
+            self.set_font('Arial', "", self.header_font_size)
+            self.set_text_color(0, 0, 0)
+            self.multi_cell(w=self.cell_width * small_squares, h=header_line_height, align='C', txt=f.get('name'))
+
+    # Create the cross list this method creates all the pages and populates the data
+    def create(self, names):
+        # Calculate missing cells to fill out the entire page
+        total_cells = 0
+        for f in self.fields:
+            total_cells += f.get("amount")
+
+        self.cell_width = self.w / total_cells
+
+        missing_names = int(round(self.names_pr_page - (len(names) % self.names_pr_page)))
+
+        for i in range(missing_names):
+            names.append("")
+
+        first_field_size = self.fields[0].get("amount")
+        # Insert all the names and create new pages when one is filled out
+        for index in range(len(names)):
+            if index % self.names_pr_page == 0:
+                self.add_page()
+                self.create_header()
+            self.draw_name_box(index, names[index], first_field_size)
+
+    # Draw the name box at the given index
+    def draw_name_box(self, index, name, field_size):
+        height_y = ((index % self.names_pr_page) + 3) * self.box_height
+
+        self.set_line_width(self.line_width_l)
+        self.line(0, height_y, self.w, height_y)
+
+        self.set_line_width(self.line_width_s)
+        self.line(field_size * self.cell_width, height_y - self.box_height / 2, self.w,
+                  height_y - self.box_height / 2)
+
+        self.set_font_size(self.name_font_size)
+        self.text(x=1, y=height_y - 5, txt=self.minify_name(name))
+
+    def minify_name(self, name):
+        name_split = str.split(name, ' ')
+        for i in range(1, len(name_split) - 1):
+            name_split[i] = name_split[i][0] + "."
+        return ' '.join(name_split)[0:self.max_name_length]
+
+
+if __name__ == '__main__':
+    names = [
+        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
+        'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
+        'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'Æ',
+        'Ø', 'Å', 'A B C',
+    ]
+    pdf = PDF(orientation='P', unit='mm', format='A3')
+    pdf.create(names)
+    pdf.output('test.pdf', 'F')

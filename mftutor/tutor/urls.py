@@ -6,7 +6,7 @@ from .views import (
     logout_view, login_view, profile_view,
     tutors_view, TutorAdminView, FrontView,
     BoardAdminView, GroupLeaderView, ResetPasswordView, BoardMemberListView,
-    TutorDumpView, TutorDumpLDIFView)
+    TutorDumpView, TutorDumpLDIFView, KrydslisteView)
 from ..aliases.views import MyGroupsView
 
 urlpatterns = [
@@ -32,4 +32,6 @@ urlpatterns = [
     path('resetpassword/', tutorbest_required(ResetPasswordView.as_view()), name='reset_password'),
     path('boardadmin/<int:year>/', tutorbest_required(BoardAdminView.as_view()), name='board_admin'),
     path('su/', include('django_su.urls')),
+    path('krydsliste/', KrydslisteView.as_view(),
+         name='krydsliste'),
 ]
