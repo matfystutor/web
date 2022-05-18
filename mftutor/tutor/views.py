@@ -287,6 +287,7 @@ class GroupLeaderView(GroupLeaderViewBase):
 
 class ResetPasswordForm(forms.Form):
     studentnumbers = forms.CharField(widget=forms.Textarea)
+
     # confirm = forms.BooleanField(required=False)
 
     def clean_studentnumbers(self):
@@ -381,16 +382,7 @@ class KrydslisteView(FormView):
 
     def form_valid(self, form):
         KrydslisteCreateForm.check_rtd = form.cleaned_data['check_rtd']
-        pdf = PDF(orientation='P', unit='mm', format='A3')
-        if KrydslisteCreateForm.check_rtd:
-            pdf.fields.extend(
-                [{
-                    'name': 'RTD',
-                    'amount': 20,
-                    'draw_squares': True
-                }
-                ]
-            )
+        pdf = PDF(orientation='P', unit='mm', format='A3', rtd=KrydslisteCreateForm.check_rtd)
         pdf.create(form.cleaned_data['value'].splitlines())
         with tempfile.NamedTemporaryFile() as f:
             res = pdf.output(f.name, 'F')
@@ -407,25 +399,35 @@ class PDF(FPDF):
     names_pr_page = int(round((h - 2 * box_height) / box_height))
     max_name_length = 20
 
-    fields = [
-        {
-            'name': 'Navn',
-            'amount': 20,
-            'draw_squares': False
-        }, {
-            'name': 'Øl',
-            'amount': 30,
-            'draw_squares': True
-        }, {
-            'name': 'Vand',
-            'amount': 20,
-            'draw_squares': True
-        }, {
-            'name': 'GD',
-            'amount': 20,
-            'draw_squares': True
-        },
-    ]
+    def __init__(self, *args, rtd=None, **kwargs):
+        super(PDF, self).__init__(*args, **kwargs)
+
+        self.fields = [
+            {
+                'name': 'Navn',
+                'amount': 20,
+                'draw_squares': False
+            }, {
+                'name': 'Øl',
+                'amount': 30,
+                'draw_squares': True
+            }, {
+                'name': 'Vand',
+                'amount': 20,
+                'draw_squares': True
+            }, {
+                'name': 'GD',
+                'amount': 20,
+                'draw_squares': True
+            },
+        ]
+
+        if rtd:
+            self.fields.append({
+                'name': 'RTD',
+                'amount': 20,
+                'draw_squares': True
+            })
 
     cell_width = 0
 
@@ -512,6 +514,6 @@ if __name__ == '__main__':
         'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'Æ',
         'Ø', 'Å', 'A B C',
     ]
-    pdf = PDF(orientation='P', unit='mm', format='A3')
+    pdf = PDF(orientation='P', unit='mm', format='A3', rtd=False)
     pdf.create(names)
     pdf.output('test.pdf', 'F')
