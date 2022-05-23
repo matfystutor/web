@@ -392,7 +392,7 @@ class KrydslisteView(FormView):
 class PDF(FPDF):
     w, h = 297, 420
     header_font_size = 60
-    name_font_size = 24
+    name_font_size = 20
     line_width_l = 2
     line_width_s = 0
     box_height = 15
@@ -505,15 +505,3 @@ class PDF(FPDF):
         for i in range(1, len(name_split) - 1):
             name_split[i] = name_split[i][0] + "."
         return ' '.join(name_split)[0:self.max_name_length]
-
-
-if __name__ == '__main__':
-    names = [
-        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
-        'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
-        'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'Æ',
-        'Ø', 'Å', 'A B C',
-    ]
-    pdf = PDF(orientation='P', unit='mm', format='A3', rtd=False)
-    pdf.create(names)
-    pdf.output('test.pdf', 'F')
