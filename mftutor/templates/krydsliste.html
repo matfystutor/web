@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Krydsliste generator</h1>
+<div>
+    <form action="" method="POST">{% csrf_token %}
+        <textarea name='value' rows="10" cols="30" value=''
+                  placeholder="Skriv navnene på de folk der skal med på turen her, hvert navn skal være på en ny linje..."
+                  style="width: 50%;"></textarea>
+        <div>
+            <label>
+                <input id="id_check_rtd" name="check_rtd" type="checkbox">
+                Skal der være mulighed for at krydse RTD?
+            </label>
+        </div>
+
+        <div>
+            <input type="submit" value="Generer PDF" style="width: 20%; height: %;">
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -3,12 +3,10 @@ import re
 import copy
 import json
 import random
-import string
 import datetime
-import subprocess
 
 from django.db import transaction
-from django.db.models import Q, Count
+from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -16,7 +14,6 @@ from django import forms
 from django.views.generic import (
     ListView, FormView, UpdateView, TemplateView, View)
 from django.views.generic.edit import ProcessFormView
-from django.contrib.auth.models import User
 
 from .. import settings
 from ..tutor.models import RusClass, TutorProfile, Rus
@@ -27,7 +24,7 @@ from mftutor.reg.models import (
     ImportSession, ImportLine, Note, ChangeLogEntry, Handout,
     HandoutRusResponse, HandoutClassResponse)
 from .models import LightboxRusClassState, LightboxNote
-from .email import make_password_reset_message, send_messages
+from .email import send_messages
 
 
 # =============================================================================
@@ -115,7 +112,7 @@ class EditSessionForm(forms.ModelForm):
 
         # Named groups we expect in the input
         expected = frozenset(('rusclass', 'name', 'studentnumber'))
-        expected_string = ', '.join('(?P<'+k+'>...)' for k in expected) + '.'
+        expected_string = ', '.join('(?P<' + k + '>...)' for k in expected) + '.'
 
         if regex and lines:
             r = re.compile(regex)
@@ -246,8 +243,8 @@ class EditSessionView(UpdateView):
             context_data = super(EditSessionView, self).get_context_data(
                 form=form)
             context_data['error'] = (
-                'Årskortnummer/-numre er ikke unikke: %s' %
-                ', '.join(studentnumbers_duplicate))
+                    'Årskortnummer/-numre er ikke unikke: %s' %
+                    ', '.join(studentnumbers_duplicate))
             return self.render_to_response(context_data)
 
         # Save form and perform bulk delete/insert of lines
@@ -346,7 +343,7 @@ class RusListView(TemplateView):
         return [{
             'handle': rusclass.handle,
             'internal_name': rusclass.internal_name,
-            } for rusclass in self.get_rusclass_list()]
+        } for rusclass in self.get_rusclass_list()]
 
     def get_rus_list_data(self):
         return [rus.json_of() for rus in self.get_rus_list()]
@@ -625,7 +622,7 @@ class RusListRPC(View):
         if action not in self.ACTIONS:
             raise RPCError("Unknown action %u" % action)
 
-        fn = getattr(self, 'action_'+action)
+        fn = getattr(self, 'action_' + action)
 
         import inspect
         args, varargs, keywords, defaults = inspect.getargspec(fn)
@@ -681,8 +678,8 @@ class RusChangesView(TemplateView):
         from django.db.models import F
         rus_year = Rus.objects.filter(year=self.request.year)
         rus_list = (
-            list(rus_year.exclude(rusclass=F('initial_rusclass'))) +
-            list(rus_year.filter(initial_rusclass__isnull=True)))
+                list(rus_year.exclude(rusclass=F('initial_rusclass'))) +
+                list(rus_year.filter(initial_rusclass__isnull=True)))
         return rus_list
 
 
@@ -1166,6 +1163,7 @@ class HandoutCrossReference(FormView):
                         rus_dict[sn]['rus'].profile.name)
             except KeyError:
                 return ('', '')
+
         # Studentnumbers not in the input
         missing_input_sns = sorted(
             set(rr_dict.keys()) - set(studentnumbers),
@@ -1576,7 +1574,7 @@ class ArrivedStatsView(TemplateView):
              (2007, dict(zip(old_study,
                              [('-', '-'), ('-', '-'), ('-', '-'),
                               ('-', '-'), ('-', '-'), ('-', '-')]))),
-            ]
+             ]
         )
         years = sorted(
             set(Rus.objects.values_list('year', flat=True).distinct()) |
