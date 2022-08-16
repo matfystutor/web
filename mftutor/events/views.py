@@ -102,7 +102,7 @@ class EventListView(ListView):
 
     def get_queryset(self):
         qs = Event.objects.filter(start_date__year=self.get_year())
-        return qs.order_by('start_date')
+        return qs.order_by('start_date', 'start_time')
 
     def get_context_data(self, **kwargs):
         d = super(EventListView, self).get_context_data(**kwargs)
