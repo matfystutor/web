@@ -6,9 +6,8 @@
 
 <ol>
     {% for tutor in tutors %}
-    <li>{{ tutor.profile.name }}: {{ tutor.choice1 }}, {{ tutor.choice2 }}
-    (oprettet {{ tutor.choice_created }}, ændret {{ tutor.choice_updated }})</li>
+    <li>{{ tutor.profile.name }}: {{ tutor.choice1 }}, {{ tutor.choice2 }}</li>
     {% endfor %}
 </ol>
-
+<!-- (oprettet { { tutor.choice_created }}, ændret { { tutor.choice_updated }}) -->
 {% endblock %}

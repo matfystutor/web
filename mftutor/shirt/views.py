@@ -6,8 +6,10 @@ from django.views.generic import FormView, UpdateView, TemplateView
 from .models import ShirtOption, ShirtPreference
 from mftutor.tutor.models import Tutor
 
+
 class ShirtOptionForm(forms.Form):
     choices = forms.CharField(widget=forms.Textarea)
+
 
 class ShirtOptionView(FormView):
     form_class = ShirtOptionForm
@@ -18,7 +20,7 @@ class ShirtOptionView(FormView):
         for so in ShirtOption.objects.all():
             choices.append(so.choice)
         return {'choices':
-                '\n'.join(choices)}
+                    '\n'.join(choices)}
 
     def get_success_url(self):
         return reverse('shirt_options')
@@ -34,10 +36,12 @@ class ShirtOptionView(FormView):
             ShirtOption(**c).save()
         return super(ShirtOptionView, self).form_valid(form)
 
+
 class SelectShirt(forms.Select):
     def render(self, *args, **kwargs):
         self.choices = [(so.choice, so.choice) for so in ShirtOption.objects.all()]
         return super(SelectShirt, self).render(*args, **kwargs)
+
 
 class ShirtPreferenceForm(forms.ModelForm):
     choice1 = forms.CharField(widget=SelectShirt, label='T-shirt 1')
@@ -58,6 +62,7 @@ class ShirtPreferenceForm(forms.ModelForm):
     class Meta:
         model = ShirtPreference
         fields = ('choice1', 'choice2')
+
 
 class ShirtPreferenceView(UpdateView):
     model = ShirtPreference
@@ -96,7 +101,9 @@ class ShirtChoicesView(TemplateView):
             tu.choice2 = s.choice2
             tu.choice_created = s.created
             tu.choice_updated = s.updated
-        tutors.sort(key=lambda tu: (0, tu.profile.name) if tu.choice_updated is None or tu.choice1 in ('', 'Ingen') else (1, tu.choice_updated))
+        tutors.sort(
+            key=lambda tu: (0, tu.profile.name) if tu.choice_updated is None or tu.choice1 in ('', 'Ingen') else (
+            1, tu.choice_updated))
         return tutors
 
     def get_context_data(self, **kwargs):
