@@ -1,6 +1,6 @@
 Django==2.2.13
 Pillow==6.2.2
-django-debug-toolbar==1.11
+django-debug-toolbar==1.11.1
 django-wysiwyg==0.7.0
 sqlparse==0.2.4
 sorl-thumbnail==12.3
