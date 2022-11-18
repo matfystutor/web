@@ -2,9 +2,9 @@ from django.contrib.syndication.views import Feed
 from .models import NewsPost
 
 class NewsFeed(Feed):
-    title = 'Mat/Fys-Tutorgruppen'
+    title = 'Mat/Fys-Tutorforeningen'
     link = '/news/'
-    description = 'Forsidenyheder fra Mat/Fys-Tutorgruppens bestyrelse.'
+    description = 'Forsidenyheder fra Mat/Fys-Tutorforeningens bestyrelse.'
 
     def items(self):
         return NewsPost.objects.order_by('-posted')[:5]

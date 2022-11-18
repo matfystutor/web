@@ -149,7 +149,7 @@ def make_mails(not_tutor, joker_numbers, no_mail, passwords):
 
     webfar_sender = '"%s" <webfar@matfystutor.dk>' % webfar.name
     burfar_sender = '"%s" <best@matfystutor.dk>' % burfar.name
-    best_sender = '"Mat/Fys-Tutorgruppen" <best@matfystutor.dk>'
+    best_sender = '"Mat/Fys-Tutorforeningen" <best@matfystutor.dk>'
 
     from django.template import Template, Context
     from django.template.loader import get_template
@@ -162,7 +162,7 @@ def make_mails(not_tutor, joker_numbers, no_mail, passwords):
     tpl_joker = get_template('emails/jokers.html')
     tpl_joker_subject = Template('Du er blevet tutor!')
     tpl_afvist = get_template('emails/afvist.txt')
-    tpl_afvist_subject = Template('Fra tutorgruppen')
+    tpl_afvist_subject = Template('Fra tutorforeningen')
 
     def email(tutor):
         return tutor.profile.email

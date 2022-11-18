@@ -8,7 +8,7 @@
 
 ### Stk. 1
 
-Foreningens navn er Mat/Fys-Tutorgruppen.
+Foreningens navn er Mat/Fys-Tutorforeningen.
 
 ### Stk. 2
 
@@ -84,7 +84,7 @@ Medlemmer skal deltage aktivt i de arbejdsgrupper de indgår i.
 
 ### Stk. 2
 
-Medlemmer deltager aktivt i de arrangementer som Mat/Fys-Tutorgruppen
+Medlemmer deltager aktivt i de arrangementer som Mat/Fys-Tutorforeningen
 afholder.
 
 ### Stk. 3
@@ -338,7 +338,7 @@ og erstatter alle tidligere vedtægter.
 
 ### Følgende er de yderligere regler der er udstukket af den siddende bestyrelse (jf. §3 stk. 3 i ovenstående vedtægter).
 
-For at være tutor i Mat/Fys-Tutorgruppen, skal man overholde de regler, der står i foreningens vedtægter, §4.
+For at være tutor i Mat/Fys-Tutorforeningen, skal man overholde de regler, der står i foreningens vedtægter, §4.
 
 Desuden skal man overholde de retningslinjer, der er udarbejdet i samarbejde med fakultetet.
 
@@ -350,9 +350,9 @@ Som holdtutor skal man derudover også deltage i rusdagene og så vidt muligt al
 
 To advarsler medfører en ekskludering. Bestyrelsen kan i særlige tilfælde vælge at dispensere herfra.
 
-Ved ekskludering vil man ikke have adgang til de resterende arrangermenter, der vil blive afholdt i Mat/Fys-Tutorgruppen i det pågældende tutorår.
+Ved ekskludering vil man ikke have adgang til de resterende arrangermenter, der vil blive afholdt i Mat/Fys-Tutorforeningen i det pågældende tutorår.
 
-Det er selvfølgelig altid muligt at melde sig ud af tutorgruppen hvis man ikke kan/ønsker at deltage i tutorarbejdet mere. Dette gøres ved at kontakte bestyrelsen.
+Det er selvfølgelig altid muligt at melde sig ud af tutorforeningen hvis man ikke kan/ønsker at deltage i tutorarbejdet mere. Dette gøres ved at kontakte bestyrelsen.
 
 Yderligere regler:
 

@@ -3,9 +3,9 @@ from django.contrib.syndication.views import Feed
 from .models import Document
 
 class MinutesFeed(Feed):
-    title = 'Mat/Fys-Tutorgruppen - referater'
+    title = 'Mat/Fys-Tutorforeningen - referater'
     link = '/document/referater/'
-    description = 'Referater fra Mat/Fys-Tutorgruppens møder.'
+    description = 'Referater fra Mat/Fys-Tutorforeningens møder.'
 
     def items(self):
         qs = Document.objects.filter(type__exact='referater')
@@ -18,4 +18,4 @@ class MinutesFeed(Feed):
         return self.item_title(item)
 
     def item_author_name(self, item):
-        return "Mat/Fys-Tutorgruppen"
+        return "Mat/Fys-Tutorforeningen"

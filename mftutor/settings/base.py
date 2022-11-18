@@ -274,7 +274,7 @@ TUTORS_PREFIX = 'tutor+'
 DEFAULT_EMAIL_DOMAIN = 'post.au.dk'
 DEFAULT_ASB_EMAIL_DOMAIN = 'stud.asb.dk'
 
-PERSONAL_EMAIL_SENDER = 'Mat/Fys-Tutorgruppen <webfar@matfystutor.dk>'
+PERSONAL_EMAIL_SENDER = 'Mat/Fys-Tutorforeningen <webfar@matfystutor.dk>'
 
 # Email aliases that change with the GF in November
 GF_GROUPS = ('best', 'webfar', 'oekonomi', 'gris', 'burmor', 'form', 'nf', 'gruppeansvarlig')

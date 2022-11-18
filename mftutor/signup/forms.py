@@ -48,7 +48,7 @@ class SignupImportForm(forms.Form):
         ignored_fields = set([
             '', 'Tidspunkt', 'Timestamp',
             'Tidsstempel', 'Sidefag',
-            "Der m\u00e5 l\u00e6gges sobre billeder af mig p\u00e5 Mat/Fys-tutorgruppens facebook side",
+            "Der m\u00e5 l\u00e6gges sobre billeder af mig p\u00e5 Mat/Fys-tutorforeningens facebook side",
             "Antal \u00e5r som tutor",
             "Hvorn\u00e5r var du rus p\u00e5 mat/fys?"])
 

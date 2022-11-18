@@ -220,7 +220,7 @@ def create_emails(passwords, tp_dict, tutorgroups, leaders):
         email = EmailMessage(
             subject=subject,
             body=email_body,
-            from_email='"Mat/Fys-Tutorgruppen" <best@matfystutor.dk>',
+            from_email='"Mat/Fys-Tutorforeningen" <best@matfystutor.dk>',
             to=[tp.email],
         )
 
