@@ -17,8 +17,9 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 def here(x):
     return os.path.join(BASE_DIR, x)
 
+import glob
 sys.path.append(os.path.join(
-    BASE_DIR, 'web-venv/lib/python3.5/site-packages'))
+    BASE_DIR, min(glob.glob('/home/mftutor/web/web-venv/lib/python*/site-packages'))))
 sys.path.append(BASE_DIR)
 os.environ['DJANGO_SETTINGS_MODULE'] = 'mftutor.settings'
 
