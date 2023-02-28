@@ -1528,6 +1528,9 @@ class ArrivedStatsView(TemplateView):
         2016: 647,
         2017: 649,
         2018: 642,
+        2019: 512,
+        2020: 94,
+        2021: 705,
     }
 
     @staticmethod
