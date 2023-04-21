@@ -2,7 +2,7 @@ Django==2.2.13
 Pillow==6.2.2
 django-debug-toolbar==1.11
 django-wysiwyg==0.7.0
-sqlparse==0.2.4
+sqlparse==0.4.4
 sorl-thumbnail==12.3
 django-su==0.8.0
 django-constance[database]==2.4.0
