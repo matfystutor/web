@@ -94,7 +94,7 @@ function set_height() {
 <div class="column">
 {% for rusclass in study.rusclasses %}
 <div class="state {{ rusclass.rusclass.handle }} {{ rusclass.color }}">
-{{ rusclass.rusclass }}</div>
+{{ rusclass.rusclass }}<div style="color:black; font-size: 15px">{{ rusclass.note }}</div></div>
 {% endfor %}
 </div>
 {% endfor %}
