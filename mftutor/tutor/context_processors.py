@@ -25,4 +25,11 @@ def settings(request):
     return {
         'BODY_CLASS': BODY_CLASS,
         'BURET': 'Buret™',
+        'firstDate0Stormøde': '14',
+        'secondDate0Stormøde': '15',
+        'måned0Stormøde': 'februar',
+        'årstal0Stormøde': '2023',
+        'date1Stormøde': '1',
+        'måned1Stormøde': 'marts',
+        'årstal1Stormøde': '2023',
     }
