@@ -21,7 +21,7 @@ class ProfileForm(forms.Form):
     tshirt1 = forms.CharField(widget=SelectShirt, label='T-Shirt Størrelse 1')
     tshirt2 = forms.CharField(widget=SelectShirt, label='T-Shirt Størrelse 2')
     burBrevSignup = forms.BooleanField(label='Tilmeld Burets Nyhedsbrev', required=False)
-    hemmeligSangbogSignup = forms.BooleanField(label='Tilmeld hemmelig sangbog', required=False)
+    #hemmeligSangbogSignup = forms.BooleanField(label='Tilmeld hemmelig sangbog', required=False)
     picture = forms.ImageField(
         required=False,
         label='Billede')
