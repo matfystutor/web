@@ -55,7 +55,7 @@ class ProfileView(FormView):
             'tshirt1': sp.choice1,
             'tshirt2': sp.choice2,
             'burBrevSignup': tp.burBrevSignup,
-            'hemmeligSangbogSignup': tp.hemmeligSangbogSignup
+            #'hemmeligSangbogSignup': tp.hemmeligSangbogSignup
         }
 
     def form_valid(self, form):
