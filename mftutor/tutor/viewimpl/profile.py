@@ -80,7 +80,7 @@ class ProfileView(FormView):
 
         tp.burBrevSignup = form.cleaned_data['burBrevSignup']
 
-        tp.hemmeligSangbogSignup = form.cleaned_data['hemmeligSangbogSignup']
+        #tp.hemmeligSangbogSignup = form.cleaned_data['hemmeligSangbogSignup']
 
         sp.choice1 = form.cleaned_data['tshirt1']
         sp.choice2 = form.cleaned_data['tshirt2']
@@ -112,6 +112,7 @@ class ProfileView(FormView):
                 tutor.groups.remove(burBrevGroup)
         except:
             pass
+        '''
         try :
             hemmeligSangbogSignup = groupManager.get(handle="hemmeligsangbog", year=settings.TUTORMAIL_YEAR)
             tutor = tutorManager.get(profile=tp, year=settings.TUTORMAIL_YEAR)
@@ -121,6 +122,7 @@ class ProfileView(FormView):
                 tutor.groups.remove(hemmeligSangbogSignup)
         except:
             pass
+            '''
         
         # Since TutorProfile cleaning may have changed tp.phone,
         # throw away the bound form and recreate it with the profile data
