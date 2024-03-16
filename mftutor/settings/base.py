@@ -101,12 +101,15 @@ TEMPLATES = [
         ],
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.template.context_processors.debug',
                 'django.template.context_processors.i18n',
                 'django.template.context_processors.media',
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
+                'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'mftutor.rus.context_processors.rus_data',
                 'mftutor.tutor.context_processors.login_form',
@@ -175,6 +178,8 @@ INSTALLED_APPS = (
     'django_wysiwyg',
     'debug_toolbar',
     'sorl.thumbnail',
+    'jfu',
+    'versatileimagefield',
 
     'mftutor.tutor',
     'mftutor.news',
@@ -195,6 +200,7 @@ INSTALLED_APPS = (
     'mftutor.groups',
     'mftutor.tutorbog',
     'mftutor.gf',
+    'mftutor.gallery',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -288,6 +294,7 @@ CONSTANCE_CONFIG = {
     'TUTORBOG_SECRET': ('', 'Svaret til krydsorden i tutorbogen'),
     'TUTORBOG_SURVEY_URL': ('', 'URL til tutorbog surveyen'),
     'ENABLE_CONFIRMATION': (False, 'Er tutorbekræftelser aktive?', bool),
+    'GFYEAR': (2024, 'Året hvor nuværende BEST blev valgt'),
 }
 
 STUDIES = ["", "Matematik-økonomi", "Datalogi", "Matematik", "Fysik", "Nanoscience", "Datavidenskab"]

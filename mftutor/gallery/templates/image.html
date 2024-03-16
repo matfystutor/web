@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block title %}{{ album.title }}{% endblock title %}
+{% block navbar_class %}navbar-static-top{% endblock navbar_class %}
+
+{% block js %}
+  <script src="{% static "gallery/jquery.touchswipe.min.js" %}"></script>
+  <script src="{% static "gallery/tkgal.js" %}"></script>
+  {% if edit_visibility %}
+  <script src="{% static "gallery/tkgal-visibility.js" %}"></script>
+  <style>
+  .select_visibility label { font-weight: normal; }
+  .select_visibility ul { list-style-type: none; }
+  .select_visibility li:nth-child(1) label { font-weight: bold; }
+  .select_visibility li:nth-child(2) label { font-weight: bold; }
+  .select_visibility input[type=radio] { margin: 0 0.2em 0.25em -1.6em; }
+  </style>
+  {% endif %}
+{% endblock js %}
+
+{% block canonical_url %}{% url 'image' gfyear=album.gfyear album_slug=album.slug image_slug=start_file.slug %}{% endblock canonical_url %}
+
+{% block opengraph %}
+  <meta property="og:type" content="{% if start_file.type == "I" %}image{% elif start_file.type == "V" %}video{% elif start_file.type == "A" %}audio{% else %}website{% endif %}" />
+  <meta property="og:image" content="{% if start_file.type == "I" %}{{ start_file.file.thumbnail.2280x2280.url }}{% else %}{{ STATIC_URL }}TKlogo.jpg{% endif %}" />
+  <meta property="og:description" content="Fra TÅGEKAMMERETs galleri for &#8217;{{ album.title }}&#8217;.{% if start_file.date %} Taget {{ start_file.date }}.{% endif %}" />
+{% endblock opengraph %}
+
+{% block raw_content %}
+{% if edit_visibility %}
+<form id="tkgal-form" style="height: 100%" method="post" action="{% url 'set_image_visibility' %}" onsubmit="$(window).off('beforeunload')">{% csrf_token %}
+{% endif %}
+<div id="tkgal-container" role="main">
+	{% for file, next_file, prev_file in file_orders %}
+	<div class="{% if file != start_file %}hidden{% endif %}" data-permlink="{{ file.slug }}">
+		<div class="mediawrapper">
+		{% if file.type == "I" %}
+			<img alt="{{ album.slug }}/{{ file.slug }}"
+				{% if file != start_file %}data-{% endif %}srcset=
+					"{{ file.file.thumbnail.400x400.url }} 400w,
+					{{ file.file.thumbnail.720x720.url }} 720w,
+					{{ file.file.thumbnail.940x940.url }} 940w,
+					{{ file.file.thumbnail.1140x1140.url }} 1140w,
+					{{ file.file.thumbnail.2280x2280.url }} 2280w"
+				{% if file != start_file %}data-{% endif %}sizes="100vw"
+			    {% if file != start_file %}data-src=
+					"{{ file.file.thumbnail.720x720.url }}"
+				src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+				{% else %}
+				src="{{ file.file.thumbnail.720x720.url }}"
+				{% endif %}
+				title="{{ file.caption }}">
+		{% elif file.type == "A" %}
+			<audio controls
+				{% if file != start_file %}data-{% endif %}src=
+				"{{ file.file.url }}">
+				Your browser does not support the audio element.
+			</audio>
+		{% elif file.type == "V" %}
+			<video controls
+				{% if file != start_file %}data-{% endif %}src=
+				"{{ file.file.url }}">
+				Your browser does not support the video tag.
+			</video>
+		{% else %}
+			<div class="lg-file-download text-center">
+				<a class="btn btn-default btn-lg" href="{{ file.file.url }}">
+					{% bootstrap_icon "download-alt" %}
+					{{ file.slug }}
+					({{ file.file.size|filesizeformat }})
+				</a>
+			</div>
+		{% endif %}
+			<div class="overlay overlay-top">
+        <ol class="breadcrumb">
+					<li><a href="{% url 'gfyear' gfyear=album.gfyear  %}">{{ album.gfyear|gfyearPPslash_gallery }}</a></li>
+					<li><a id="albumlink" href="{% url 'album' gfyear=album.gfyear album_slug=album.slug %}">{{ album.title }}</a></li>
+					<li>{{ forloop.counter }} af {{ file_count }}{% if file.type == "I" %} <span class="hidden-xs">billede{{ file_count|pluralize:"r" }}</span>{% endif %}</li>
+				</ol>
+				{% if edit_visibility %}
+				<div class="select_visibility">{{ file.visibility_field }}</div>
+				<input type="submit" name="r{{ file.pk }}" value="Gem album" style="background-color: transparent"/>
+				{% endif %}
+			</div>
+			<div class="overlay overlay-bottom">
+				<div class="row">
+					<div class="col-sm-4 hidden-xs text-left">{{ file.date|default_if_none:"" }}</div>
+					<div class="col-sm-4 col-xs-12 text-center">
+			    {% if file_count > 1 %}
+						<a class="tkgal-control tkgal-prev"
+							rel="prev"
+							href="{{ prev_file.slug }}">Forrige</a> |
+						<a class="tkgal-control tkgal-next"
+							rel="next"
+							href="{{ next_file.slug }}">Næste</a>
+					{% endif %}
+					</div>
+				  <div class="col-sm-4 hidden-xs text-right"><a href="{{ file.file.url }}" download>{% bootstrap_icon "download-alt" %} ({{ file.file.size|filesizeformat }})</a></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	{% endfor %}
+</div>
+{% if edit_visibility %}</form>{% endif %}
+
+<div class="container">
+    <div id="tkgal-caption-container">
+        {% for file, next_file, prev_file in file_orders %}
+		    <p class="hidden" data-permlink="{{ file.slug }}">{{ file.caption }}</p>
+        {% endfor %}
+    </div>
+    {% include 'footer.html' %}
+</div>
+{% endblock raw_content %}
