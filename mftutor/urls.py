@@ -17,6 +17,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('news/', include('mftutor.news.urls')),
     path('', include('mftutor.page.urls')),
+    path('gallery/', include('mftutor.gallery.urls')),
     path('', include('mftutor.tutor.urls')),
     path('groups/', include('mftutor.groups.urls')),
     path('signup/', include('mftutor.signup.urls')),

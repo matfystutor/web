@@ -1,0 +1,45 @@
+{% extends 'jfu/upload_form.html' %}
+
+{% block CSS_BOOTSTRAP %}
+<link
+    rel="stylesheet"
+    href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css"
+>
+{% endblock %}
+
+{% block UPLOAD_FORM_BUTTON_BAR_CONTROL %}
+<button type="reset" class="btn btn-warning cancel">
+  <i class="glyphicon glyphicon-ban-circle"></i>
+  <span>Cancel upload</span>
+</button>
+{% endblock %}
+
+{% block JS_INIT %}
+
+        $('#fileupload').fileupload({
+
+            formData: [
+                { name: "csrfmiddlewaretoken", value: "{{ csrf_token }}" },
+                { name: "object_id", value: "{{ object_id }}" },
+            ],
+
+            {% block JS_OPTS %}
+              autoUpload: true,
+            {% endblock %}
+
+        });
+{% endblock JS_INIT %}
+
+
+{% comment %}
+  Remove all blueimp gallery related stuf.
+{% endcomment %}
+
+{% block CSS_BLUEIMP_GALLERY %}
+{% endblock %}
+
+{% block MODAL_GALLERY %}
+{% endblock %}
+
+{% block JS_BLUEIMP_GALLERY %}
+{% endblock %}
