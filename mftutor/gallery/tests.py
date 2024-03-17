@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
 from django.urls import reverse
 from django.test import TestCase, override_settings
-from mftutor.page import views
+from mftutor.gallery import views
 from mftutor.gallery.models import Album, Image
 import tempfile
 
