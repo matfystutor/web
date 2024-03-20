@@ -298,3 +298,14 @@ CONSTANCE_CONFIG = {
 }
 
 STUDIES = ["", "Matematik-økonomi", "Datalogi", "Matematik", "Fysik", "Nanoscience", "Datavidenskab"]
+
+VERSATILEIMAGEFIELD_RENDITION_KEY_SETS = {
+    'gallery': [
+        ('gallery_253', 'crop__253x253'),
+        ('image_400', 'thumbnail__400x400'),
+        ('image_720', 'thumbnail__720x720'),
+        ('image_940', 'thumbnail__940x940'),
+        ('image_1140', 'thumbnail__1140x1140'),
+        ('image_2280', 'thumbnail__2280x2280'),
+    ],
+}

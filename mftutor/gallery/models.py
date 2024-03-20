@@ -158,29 +158,6 @@ class Image(BaseMedia):
             else:
                 self.slug = self.date.strftime('%Y%m%d%H%M%S_%f')[:len("YYYYmmddHHMMSS_ff")]
 
-    def save(self, *args, **kwargs):
-        """
-        This saves the Image, tries to prewarm VersatileImageField and deletes
-        itself again if it fails. Ideally this would be done in clean(), but
-        VersatileImageField cannot prewarm before it is saved and does not have
-        a clean that checks if the warming is bound to succeed.
-
-        """
-        super().save(*args, **kwargs)
-        image_warmer = VersatileImageFieldWarmer(
-            instance_or_queryset=self, rendition_key_set="gallery", image_attr="file"
-        )
-
-        num_created, failed_to_create = image_warmer.warm()
-        if failed_to_create:
-
-            self.delete()  # Hey! Look at me!
-
-            logger.warning(
-                "Prewarming during save() of %s failed. Deleting again." % self
-            )
-            raise ValidationError("Corrupt image. Deleting")
-
 
 class GenericFile(BaseMedia):
     class Meta:
