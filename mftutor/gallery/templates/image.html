@@ -66,7 +66,7 @@
 		{% else %}
 			<div class="lg-file-download text-center">
 				<a class="btn btn-default btn-lg" href="{{ file.file.url }}">
-					{% bootstrap_icon "download-alt" %}
+					download-alt
 					{{ file.slug }}
 					({{ file.file.size|filesizeformat }})
 				</a>
@@ -74,7 +74,7 @@
 		{% endif %}
 			<div class="overlay overlay-top">
         <ol class="breadcrumb">
-					<li><a href="{% url 'gfyear' gfyear=album.gfyear  %}">{{ album.gfyear|gfyearPPslash_gallery }}</a></li>
+					<li><a href="{% url 'gfyear' gfyear=album.gfyear  %}">{{ album.gfyear }}</a></li>
 					<li><a id="albumlink" href="{% url 'album' gfyear=album.gfyear album_slug=album.slug %}">{{ album.title }}</a></li>
 					<li>{{ forloop.counter }} af {{ file_count }}{% if file.type == "I" %} <span class="hidden-xs">billede{{ file_count|pluralize:"r" }}</span>{% endif %}</li>
 				</ol>
@@ -96,7 +96,7 @@
 							href="{{ next_file.slug }}">Næste</a>
 					{% endif %}
 					</div>
-				  <div class="col-sm-4 hidden-xs text-right"><a href="{{ file.file.url }}" download>{% bootstrap_icon "download-alt" %} ({{ file.file.size|filesizeformat }})</a></div>
+				  <div class="col-sm-4 hidden-xs text-right"><a href="{{ file.file.url }}" download>download-alt ({{ file.file.size|filesizeformat }})</a></div>
 				</div>
 			</div>
 		</div>
