@@ -751,3 +751,15 @@ table.eventtable {
 	font-size: 20px;
 }
 
+@media screen and (max-width: 768px) {
+	#themeButton {
+		position: absolute;
+		top: 110px;
+		right: -10px;
+		width: 30px;
+		height: 50px;
+		background-color: #222;
+	}
+}
+
+
