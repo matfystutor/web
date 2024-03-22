@@ -750,3 +750,17 @@ table.eventtable{
     background-color: #444;
     color: white;
 }
+#themeButton {
+	position: absolute;
+	top: 110px;
+	right: 150px;
+	width: 100px;
+	height: 40px;
+	background-color: white;
+	color: #222;
+}
+
+#themeButton::before {
+    content: "🌙";
+	font-size: 20px;
+}

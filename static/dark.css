@@ -1,0 +1,753 @@
+/* vim:set noet ts=3 sts=3 sw=3: */
+html,body {
+	margin: 0;
+	font-family: Lucida-Grande, Calibri, Arial, Verdana, Sans-Serif;
+	color: #ccc;
+	background-color: #333;
+}
+
+img {
+	border: 0;
+}
+
+a {
+	text-decoration: none;
+	color: #4CAF50;
+}
+
+#menu a, #menu .link_button:focus {
+	outline: none;
+	-moz-outline: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+.clear {
+	clear: both;
+}
+
+#background {
+	background-color: #333;
+	width: auto;
+	height: 550px;
+}
+
+body.test #background {
+	background-color: #ff0;
+	height: 80px;
+	background-image: none;
+}
+
+#main {
+	min-width: 700px;
+	max-width: 1400px;
+	margin: 0 auto;
+	padding: 10px 4%;
+}
+
+body.wide #main {
+	padding-left: 0;
+	padding-right: 0;
+	overflow-x: scroll;
+	resize: horizontal;
+}
+
+body.fullwidth #main {
+	max-width: none;
+	padding-left: 0;
+	padding-right: 0;
+}
+
+.spacer {
+	height: 10px;
+}
+
+.success_message {
+	border: 1px solid #666;
+	background-color: #090;
+	padding: 1em;
+}
+
+.error_message {
+	border: 1px solid #666;
+	background-color: #f00;
+	padding: 1em;
+}
+
+.errorlist {
+	border: 1px solid #666;
+	background-color: #f00;
+	padding: 1em;
+}
+
+#header, #rusheader {
+	background-color: #222;
+	width: 696px;
+	height: 146px;
+	border-radius: 7px;
+	box-shadow: rgba(255, 255, 255, 0.3) 0 1px 2px;
+	border: solid 2px #222;
+	overflow: hidden;
+	margin: 0 auto;
+}
+
+.loginout {
+	float: right;
+	padding-right: 1em;
+}
+
+#login a {
+	color: white;
+	text-decoration: underline;
+}
+
+#content {
+	margin-top: 10px;
+	background-color: #222;
+	border-radius: 7px;
+	box-shadow: rgba(255, 255, 255, 0.3) 0 1px 2px;
+	border: solid 2px #222;
+	padding: 20px;
+}
+
+.entry-wrapper {
+	margin: 20px;
+	border-bottom: dashed 1px #555;
+}
+
+h1 {
+	margin: 0px;
+}
+
+/*
+h3 {
+	margin: 0px;
+	font-size: 12px;
+	font-weight: normal;
+	color: #C5C5C5;
+}
+*/
+
+.vedt h2 {
+	text-align: center;
+}
+
+.vedt h3 {
+	font-size: 100%;
+	margin: 0 1em 0 0;
+	padding: 0;
+	float: left;
+}
+
+/* customer submit form styles */
+
+#login fieldset {
+	padding: 0;
+	margin: 0;
+	border: none;
+	height: 44px;
+	text-align: right;
+}
+
+#login fieldset a {
+	margin-left: .5em;
+}
+
+#login input {
+	border: none;
+	border-radius: 4px;
+	font-size: 11px;
+	line-height: 11px;
+	outline: none;
+	background-color: #555;
+	color: #999;
+	width: 80px;
+	height: 22px;
+	padding-left: 5px;
+	-webkit-box-sizing: border-box;
+   	-moz-box-sizing: border-box;
+   	box-sizing: border-box;
+}
+
+.win.ie input {
+	line-height: 22px;
+	padding: 6px;
+}
+
+#login input:focus {
+	border: none;
+	color: white;
+}
+
+#login input.submit-button {
+	width: 50px;
+	height: 22px;
+	cursor: pointer;
+	background-color: #333;
+	border: none;
+	color: #ccc;
+	font-size: 11px;
+	line-height: 17px;
+}
+
+.gecko #login input.submit-button {
+	height: 23px;
+}
+
+.win.chrome #login input.submit-button {
+	height: 21px;
+	line-height: 21px;
+}
+
+.mac.chrome #login input.submit-button {
+	height: 21px;
+	line-height: 18px;
+	margin-top: 10px;
+}
+
+.win.ie #login input.submit-button {
+	line-height: 11px;
+}
+
+.win.ie9 #login input.submit-button {
+	line-height: 12px;
+}
+
+/* Menu */
+
+#menu {
+	margin-top: 10px;
+	height: 44px;
+	line-height: 44px;
+	color: white;
+	background-color: #222;
+	border-radius: 7px;
+	box-shadow: rgba(255, 255, 255, 0.3) 0 1px 2px;
+	border: solid 2px #222;
+	font-size: 14px;
+}
+
+#menu-list {
+	float: left;
+	margin-left: 5px;
+	height: 0;
+}
+
+ul.topnav {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	float: left;
+	height: 44px;
+	line-height: 44px;
+	color: white;
+	background-color: #222;
+}
+
+ul.topnav li {
+	float: left;
+	margin: 0;
+	padding: 0px 20px 0px 20px;
+	border-right: solid 1px #333;
+	position: relative; /*--Declare X and Y axis base for sub navigation--*/
+}
+
+ul.topnav li a{
+	color: #fff;
+	display: block;
+	text-decoration: none;
+	float: left;
+}
+
+ul.topnav li ul.subnav {
+	list-style: none;
+	position: absolute; /*--Important - Keeps subnav from affecting main navigation flow--*/
+	left: -1px;
+	top: 44px;
+	background-color: #222;
+	margin: 0;
+	padding: 0;
+	display: none;
+	float: left;
+	border-radius: 0px 0px 7px 7px;
+	box-shadow: rgba(255, 255, 255, 0.3) 0 1px 2px;
+	border: solid 1px #333;
+	font-size: 12px;
+	z-index: 1;
+}
+
+ul.topnav li ul.subnav li{
+	height: 30px;
+	line-height: 30px;
+	margin: 0;
+	padding: 0;
+	clear: both;
+	border-right: none;
+	border-top: solid 1px #333;
+}
+
+html ul.topnav li ul.subnav li a {
+	float: left;
+	width: 100px;
+	background: #222;
+	padding-left: 20px;
+	border-radius: 0px 0px 7px 7px;
+	cursor: pointer;
+}
+
+.trigger:hover ul.subnav {
+	display: block;
+	}
+
+.trigger ul.subnav {
+	display: none;
+}
+
+html ul.topnav li ul.subnav li a:hover { /*--Hover effect for subnav links--*/
+	text-decoration: underline;
+}
+
+.groupselect {
+	text-align: right;
+}
+
+.tutorlist {
+	clear: both;
+}
+
+.tutorlist .tutoraddress {
+	float: left;
+	width: 360px;
+	margin: 5px 15px;
+	padding: 0;
+	height: 130px;
+	position: relative;
+	word-wrap: break-word;
+	border: 1px solid #777;
+	color: #ccc;
+}
+
+.tutorlist .tutoraddress.selected {
+	width: 752px;
+}
+
+body.board .tutorlist .tutoraddress {
+	width: 290px;
+}
+
+#groupleadlabel {
+	margin-bottom: 3px;
+}
+
+.tutorlist .tutoraddress {
+	font-size: 90%;
+	position: relative;
+}
+
+/* Tutor pictures.
+ * When the client has JavaScript disabled, the following CSS will resize and
+ * crop images to 130px in height and at most 130px in width. Image will be
+ * anchored at the top left corner.
+ * When the client has JavaScript enabled, a piece of JS will detect if the
+ * image is portrait (height > width). If so, the image will get the "portrait"
+ * class.
+ * In any case, the JavaScript will center the image in the 130px x 130px
+ * container.
+ */
+.tutorlist .tutoraddress .pic {
+	position: absolute;
+	top: 0; left: 0;
+	width: 130px;
+	height: 130px;
+	background-color: #222;
+	overflow: hidden;
+	text-align: center;
+}
+
+.tutorlist .tutoraddress .pic img {
+	height: 100%;
+}
+
+.tutorlist .tutoraddress .pic img.portrait {
+	height: auto;
+	width: 100%;
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+
+.tutorlist .detailscontainer {
+	margin-left: 140px;
+	white-space: nowrap;
+}
+
+.tutorlist .detailsmagic, .tutorlist .details {
+	vertical-align: middle;
+	display: inline-block;
+}
+
+.tutorlist .detailsmagic {
+	height: 130px;
+}
+
+.tutorlist .details {
+	width: 100%;
+}
+
+.tutorlist .tutoraddress .name {
+	font-weight: bold;
+	font-size: 105%;
+	color: #4CAF50;
+}
+
+.tutors .tutorlist .tutoraddress .name, .tutors .tutorlist .tutoraddress li {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.board .tutorlist .tutoraddress .name, .board .tutorlist .tutoraddress li {
+	white-space: normal;
+}
+
+.tutorlist .tutoraddress a {
+	color: inherit;
+}
+
+.tutorlist .tutoraddress ul, .tutorlist .tutoraddress li {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+.tutorlist .tutoraddress.selected li:before {
+	display: inline-block;
+	content: attr(title);
+	color: #999;
+	width: 100px;
+}
+
+.tutorlist .tutoraddress li.street, .tutorlist .tutoraddress li.city {
+	display: none;
+}
+
+li.nickname {
+	font-style: italic;
+}
+
+.tutorlist .tutoraddress.selected li.street, .tutorlist .tutoraddress.selected li.city {
+	display: block;
+}
+
+.tutors .tutorlist .tutoraddress .name {
+	cursor: pointer;
+}
+
+.tutors .tutorlist .tutoraddress.selected .name {
+	cursor: auto;
+}
+
+.tutortable .pic {
+	display: none;
+}
+
+.tutortable .tutoraddress {
+	display: block;
+	clear: both;
+}
+
+.tutortable ul, .tutortable li {
+	display: block;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+.tutortable .name, .tutortable li {
+	float: left;
+	width: 12.6em;
+	overflow: hidden;
+	white-space: nowrap;
+	margin-right: 0.8em;
+}
+
+.tutortable .name { width: 14em; }
+.tutortable .nickname { display: none; }
+.tutortable .street { width: 14em; }
+.tutortable .city { width: 8em; }
+.tutortable .phone { width: 5em; }
+.tutortable .email { width: 13em; }
+.tutortable .study { width: 5em; }
+.tutortable .studentnumber { width: 6em; margin-right: 0; }
+
+/* */
+table.uploadform, table.uploadform td {
+	margin: 0;
+	padding: 0;
+}
+
+table.uploadform td {
+	border: 0;
+	border-bottom: 1px solid #999;
+	padding: 5px 0;
+	vertical-align: top;
+	width: 50%;
+}
+
+table.uploadform td.left {
+	width: 348px;
+}
+
+table.uploadform td.right {
+	width: 348px;
+}
+
+table.uploadform input.field, table.uploadform textarea {
+	width: 350px;
+}
+
+table.uploadform textarea {
+	height: 100px;
+}
+
+/* Hvis man ønsker alternerende tabel baggrund */
+td.altTabBg1, td.altTabBg2 {
+	color: black;
+}
+
+td.altTabBg1 {
+	background-color: #777;
+}
+
+.eventsevent {
+	padding: 20px 0;
+	overflow: auto; /*floatfix*/
+}
+
+.newsItem h2, .newsBody, .eventsevent {
+	border-bottom: 3px solid #555;
+}
+
+.newsItem h2 {
+	margin-bottom: .5em;
+	padding-bottom: .5em;
+}
+
+.newsItem + .newsItem {
+	margin-top: 2em;
+}
+
+.newsItem h2 {
+	margin-top: 0;
+}
+
+.newsBy {
+	font-size: 90%;
+	display: flex;
+}
+
+.newsBy .dato {
+	margin: 0 1em;
+}
+
+.newsBy .dato a:link, .newsBy .dato a:visited {
+	color: inherit;
+}
+
+.newsBy .dato a:hover {
+	color: #4CAF50;
+}
+
+.newsBody {
+	padding: .5em 0;
+	color: #ccc;
+	margin: 0;
+}
+
+.twocol .field {
+	margin-left: 200px;
+}
+
+.twocol .errorlist {
+	margin: 0 0 10px 160px;
+	font-size: 90%;
+	line-height: normal;
+}
+
+.twocol .label {
+	float: left;
+	width: 150px;
+	text-align: right;
+	white-space: nowrap;
+}
+
+.twocol {
+	line-height: 30px;
+}
+
+.datebox {
+	float: left;
+	width: 40px;
+	text-align: center;
+	margin-right: 10px;
+	border: 1px solid #666;
+	border-bottom-color: #999;
+	border-right-color: #999;
+}
+
+.datebox .month {
+	display: block;
+	background-color: #4CAF50;
+	color: white;
+	font-weight: bold;
+	font-size: 10px;
+	line-height: 150%;
+}
+
+.stormoede .month { background-color: #C33; }
+.fest .month { background-color: #D92; }
+.rkfw .month { background-color: #D92; }
+.rkfl .month { background-color: #C39; }
+
+.datebox .day
+{
+	display: block;
+	background-color: #333;
+	color: white;
+	font-weight: bold;
+	font-size: 16px;
+	line-height: 150%;
+}
+
+.eventsevent .eventtitle {
+	font-weight: bold;
+	color: #4CAF50;
+}
+
+.eventtitle, .eventtime {
+	margin-left: 50px;
+	color: #ccc;
+}
+
+.referat {
+	clear: both;
+	margin: 0 0 1em 0;
+}
+
+.link_button {
+	background: none;
+	border: none;
+	color: #4CAF50;
+	cursor: pointer;
+	margin: 0;
+	padding: 0;
+	vertical-align: top;
+	font-family: inherit;
+	font-size: 100%;
+}
+
+.link_button:hover {
+	text-decoration: underline;
+}
+
+#menu .link_button {
+	color: white;
+	vertical-align: baseline;
+}
+
+.person_list {
+	width: 100%;
+}
+
+.person_list td,
+.person_list th {
+	padding: 2px .5em;
+}
+
+.person_list .heading td {
+	text-align: center;
+}
+
+.person_list td,
+.person_list th {
+	border-bottom: 1px solid #666;
+}
+
+.person_list .phone {
+	font-weight: bold;
+}
+
+a[href^="tel:"] {
+	color: inherit;
+}
+
+table.eventtable {
+	text-align: left;
+}
+
+.eventtable td {
+	padding: 5px;
+	border-bottom: 1px dotted #666;
+	color: #ccc;
+}
+
+.eventtable th {
+	background-color: #444;
+	font-weight: bold;
+	color: #4CAF50;
+}
+
+.profile_nottutor {
+	color: #666;
+}
+
+.hidden {
+	display: none;
+}
+
+/* groups */
+#groupsTable {
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	border-collapse: collapse;
+	width: 100%;
+}
+
+#groupsTable td,
+#groupsTable th {
+	border: 1px solid #666;
+	padding: 8px;
+	color: #ccc;
+}
+
+#groupsTable tr:nth-child(even) {
+	background-color: #222;
+}
+
+#groupsTable tr:hover {
+	background-color: #333;
+}
+
+#groupsTable th {
+	padding-top: 12px;
+	padding-bottom: 12px;
+	text-align: left;
+	background-color: #444;
+	color: #4CAF50;
+}
+#themeButton {
+	position: absolute;
+	top: 110px;
+	right: 150px;
+	width: 100px;
+	height: 40px;
+	background-color: #222;
+	color: white;
+}
+
+#themeButton::before {
+    content: "☀️";
+	font-size: 20px;
+}
+
