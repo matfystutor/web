@@ -15,6 +15,8 @@ Kildekoden er frit tilgængelig: https://github.com/matfystutor/web/
   <meta name="viewport" content="width=750px" />
   <script type="text/javascript" src="{{ STATIC_URL }}css_browser_selector.js"></script>
   <script type="text/javascript" src="{{ STATIC_URL }}change_style.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}script.js"></script>
+{% block head %}{% endblock %}
 </head>
 <body class="{{ BODY_CLASS }} {% block bodyclass %}{% endblock %}">
 {% include "su/is_su.html" %}
