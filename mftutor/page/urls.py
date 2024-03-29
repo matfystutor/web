@@ -12,5 +12,6 @@ urlpatterns = [path(x + '/', TemplateView.as_view(template_name=x + '.html'), na
     'gallery',
     'feeds',
     'GDPR',
+    'sangboeger',
 
 )]
