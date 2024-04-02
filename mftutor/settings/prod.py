@@ -32,7 +32,7 @@ ADMINS = (
 
 # Media files
 
-PICTURE_ROOT = '/Pictures/mftutor/gallery/'
+MEDIA_ROOT = '/Pictures/mftutor/gallery/'
 
 # Logging
 

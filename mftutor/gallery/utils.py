@@ -1,5 +1,6 @@
 from PIL.ExifTags import TAGS
 from constance import config
+from mftutor.settings.local import YEAR
 from datetime import datetime
 from django.utils.timezone import get_current_timezone
 from django.utils.text import slugify as dslugify
@@ -24,7 +25,7 @@ def file_name(instance, path):
     return '/'.join([gfyear, album_slug, newFilename])
 
 def get_gfyear():
-    return config.GFYEAR
+    return YEAR
 
 def get_exif_date(filename):
     logger.debug('get_exif_date: called with filename: %s' % filename)
