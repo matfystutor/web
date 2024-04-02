@@ -74,6 +74,8 @@ MEDIA_URL = '/upload/'
 # Example: "/home/media/media.lawrence.com/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'prodekanus/upload')
 
+PICTURE_ROOT = os.path.join(BASE_DIR, '../gallery/')
+
 # Additional locations of static files
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
