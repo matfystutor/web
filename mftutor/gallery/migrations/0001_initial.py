@@ -43,7 +43,7 @@ class Migration(migrations.Migration):
             name='Image',
             fields=[
                 ('basemedia_ptr', models.OneToOneField(auto_created=True, to='gallery.BaseMedia', primary_key=True, serialize=False, parent_link=True, on_delete=models.CASCADE)),
-                ('image', versatileimagefield.fields.VersatileImageField(upload_to=mftutor.gallery.models.file_name)),
+                ('image', models.ImageField(blank=True, null=True, upload_to=mftutor.gallery.models.file_name)),
             ],
             bases=('gallery.basemedia',),
         ),

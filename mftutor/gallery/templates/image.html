@@ -23,7 +23,7 @@
 
 {% block opengraph %}
   <meta property="og:type" content="{% if start_file.type == "I" %}image{% elif start_file.type == "V" %}video{% elif start_file.type == "A" %}audio{% else %}website{% endif %}" />
-  <meta property="og:image" content="{% if start_file.type == "I" %}{{ start_file.file.thumbnail.2280x2280.url }}{% else %}{{ STATIC_URL }}TKlogo.jpg{% endif %}" />
+  <meta property="og:image" content="{% if start_file.type == "I" %}{{ start_file.file.url }}{% else %}{{ STATIC_URL }}TKlogo.jpg{% endif %}" />
   <meta property="og:description" content="Fra TÅGEKAMMERETs galleri for &#8217;{{ album.title }}&#8217;.{% if start_file.date %} Taget {{ start_file.date }}.{% endif %}" />
 {% endblock opengraph %}
 
@@ -38,17 +38,17 @@
 		{% if file.type == "I" %}
 			<img alt="{{ album.slug }}/{{ file.slug }}"
 				{% if file != start_file %}data-{% endif %}srcset=
-					"{{ file.file.thumbnail.400x400.url }} 400w,
-					{{ file.file.thumbnail.720x720.url }} 720w,
-					{{ file.file.thumbnail.940x940.url }} 940w,
-					{{ file.file.thumbnail.1140x1140.url }} 1140w,
-					{{ file.file.thumbnail.2280x2280.url }} 2280w"
+					"{{ file.file.url }} 400w,
+					{{ file.file.url }} 720w,
+					{{ file.file.url }} 940w,
+					{{ file.file.url }} 1140w,
+					{{ file.file.url }} 2280w"
 				{% if file != start_file %}data-{% endif %}sizes="100vw"
 			    {% if file != start_file %}data-src=
-					"{{ file.file.thumbnail.720x720.url }}"
+					"{{ file.file.url }}"
 				src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
 				{% else %}
-				src="{{ file.file.thumbnail.720x720.url }}"
+				src="{{ file.file.url }}"
 				{% endif %}
 				title="{{ file.caption }}">
 		{% elif file.type == "A" %}
