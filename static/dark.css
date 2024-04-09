@@ -736,30 +736,3 @@ table.eventtable {
 	background-color: #444;
 	color: #4CAF50;
 }
-#themeButton {
-	position: absolute;
-	top: 110px;
-	right: 150px;
-	width: 100px;
-	height: 40px;
-	background-color: #222;
-	color: white;
-}
-
-#themeButton::before {
-    content: "☀️";
-	font-size: 20px;
-}
-
-@media screen and (max-width: 768px) {
-	#themeButton {
-		position: absolute;
-		top: 110px;
-		right: -10px;
-		width: 30px;
-		height: 50px;
-		background-color: #222;
-	}
-}
-
-
