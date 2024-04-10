@@ -16,7 +16,7 @@ from .views import (
     RusChangesTableView,
 )
 from .views import StudentnumberListView, StudentnumberView
-from ..tutor.auth import tutorbur_required
+from ..tutor.auth import tutorbur_required, tutor_required
 
 urlpatterns = [
     path('', tutorbur_required(BurStartView.as_view()),
@@ -38,17 +38,17 @@ urlpatterns = [
     path('ruslist/changes/csv/', tutorbur_required(RusChangesTableView.as_view()),
          name='reg_changes_csv'),
 
-    path('handout/', tutorbur_required(HandoutListView.as_view()),
+    path('handout/', tutor_required(HandoutListView.as_view()),
          name='handout_list'),
     path('handout/new/', tutorbur_required(HandoutNewView.as_view()),
          name='handout_new'),
-    path('handout/<int:handout>/', tutorbur_required(HandoutSummaryView.as_view()),
+    path('handout/<int:handout>/', tutor_required(HandoutSummaryView.as_view()),
          name='handout_summary'),
     path('handout/<int:pk>/crossref/', tutorbur_required(HandoutCrossReference.as_view()),
          name='handout_crossref'),
     path('handout/<int:pk>/edit/', tutorbur_required(HandoutEditView.as_view()),
          name='handout_edit'),
-    path('handout/<int:handout>/<rusclass>/', tutorbur_required(HandoutResponseView.as_view()),
+    path('handout/<int:handout>/<rusclass>/', tutor_required(HandoutResponseView.as_view()),
          name='handout_response'),
     path('handout/<int:handout>/<rusclass>/delete/',
          tutorbur_required(HandoutResponseDeleteView.as_view()), name='handout_response_delete'),
