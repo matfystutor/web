@@ -288,6 +288,7 @@ CONSTANCE_CONFIG = {
     'TUTORBOG_SECRET': ('', 'Svaret til krydsorden i tutorbogen'),
     'TUTORBOG_SURVEY_URL': ('', 'URL til tutorbog surveyen'),
     'ENABLE_CONFIRMATION': (False, 'Er tutorbekræftelser aktive?', bool),
+    'IS_STUDYSTART': (False, 'Er det rusuge?', bool),
 }
 
 STUDIES = ["", "Matematik-økonomi", "Datalogi", "Matematik", "Fysik", "Nanoscience", "Datavidenskab"]

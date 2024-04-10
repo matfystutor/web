@@ -17,17 +17,20 @@
 
 {% block content %}
 <h1>{{ handout }}</h1>
-
+{% if tutor.is_tutorbur %}
 <p><a href="{% url 'handout_edit' pk=handout.pk %}">Rediger</a></p>
-
+{% endif %}
 <p><a href="{% url 'handout_list' %}">Tilmeldinger</a>
 &rarr; <strong>{{ handout }}</strong></p>
 
+    {% if tutor.is_tutorbur %}
 <p>Besvarelser: {{ class_response_count }}/{{ class_total_count }}</p>
 <p>Valgt i alt: {{ rus_checked_count }}/{{ rus_total_count }}</p>
+    {% endif %}
 
 <table class="response_summary">
 <tbody>
+{% if tutor.is_tutorbur %}
 {% for rusclass in classes %}
 <tr>
 	<td>{{ rusclass.internal_name }}</td>
@@ -44,13 +47,15 @@
 </tr>
 </tbody>
 </table>
+    {% endif %}
 
 <table class="response_table" cellspacing="0">
 <col span="4" />
 {% for rusclass in classes %}
+        {% if rusclass == tutor.rusclass or tutor.is_tutorbur %}
 <tr><td colspan="4">
 <h2><a href="{% url 'handout_response' handout=handout.pk rusclass=rusclass.handle %}">{{ rusclass }}</a></h2>
-
+{% endif %}
 {% if rusclass.has_response %}
 <p>Oprettet {{ rusclass.response.created }}. Sidst ændret {{ rusclass.response.updated }}.</p>
 {% if rusclass.response.note %}
