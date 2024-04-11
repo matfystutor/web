@@ -137,7 +137,7 @@ class Handout(models.Model):
         ('Holdets time', 'note'),
         ('Holdrepræsentant', 'note'),
         ('Hytteansvarlig', 'note'),
-        ('Spis en rus-adresse', 'note'),
+        ('Rustesammenaften', 'note'),
         ('TK-intro tid', 'note'),
         ('TØ-instruktor', 'note'),
         ('Læsegrupper', 'subset'),
