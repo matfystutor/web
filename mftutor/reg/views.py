@@ -879,7 +879,7 @@ class HandoutSummaryView(TemplateView):
 class HandoutResponseForm(forms.Form):
     note = forms.CharField(required=False, widget=forms.Textarea)
     color = forms.ChoiceField(choices=HandoutClassResponse.COLORS,
-                              label='Farve', widget=forms.RadioSelect, required=False)
+                              label='Farve', widget=forms.RadioSelect)
 
     def __init__(self, *args, **kwargs):
         rus_list = kwargs.pop('rus_list')
@@ -905,7 +905,7 @@ class HandoutResponseView(FormView):
         if self.handout_response.pk:
             color = self.handout_response.color
         else:
-            color = 'green'
+            color = 'blue'
         data = {
             'note': self.handout_response.note,
             'color': color
