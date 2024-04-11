@@ -76,6 +76,8 @@ Formularen er gemt.
 {% if tutor.is_tutorbur %}
     <p>{{ form.color.label }}:
     {% for choice in form.color %}{{ choice }}{% endfor %}</p>
+    {% else %}
+    {{ form.color.3 }}
     {% endif %}
 {% if display_rus_list %}
 <p>Tip: Hvis du holder shift inde, kan du markere/afmarkere flere russer samtidigt.</p>
