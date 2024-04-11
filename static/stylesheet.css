@@ -750,6 +750,10 @@ table.eventtable{
     background-color: #444;
     color: white;
 }
+.handout_table a {
+    color: black;
+    display: block;
+}
 
 /* dark theme */
 @media (prefers-color-scheme: dark) {
@@ -1484,7 +1488,7 @@ table.eventtable {
 }
 
 #groupsTable tr:nth-child(even) {
-	background-color: #222;
+	background-color: #efefef;
 }
 
 #groupsTable tr:hover {
@@ -1497,6 +1501,10 @@ table.eventtable {
 	text-align: left;
 	background-color: #444;
 	color: #4CAF50;
+}
+
+.handout_table a{
+	color: #117900;
 }
 	
 }
