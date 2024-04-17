@@ -1488,7 +1488,7 @@ table.eventtable {
 }
 
 #groupsTable tr:nth-child(even) {
-	background-color: #efefef;
+	background-color: #222;
 }
 
 #groupsTable tr:hover {
