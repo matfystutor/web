@@ -15,12 +15,15 @@ Kildekoden er frit tilgængelig: https://github.com/matfystutor/web/
   <meta name="viewport" content="width=750px" />
   <script type="text/javascript" src="{{ STATIC_URL }}css_browser_selector.js"></script>
   <script type="text/javascript" src="{{ STATIC_URL }}script.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}darkModeState.js"></script>
+    <script> window.onload = setTheme()</script>
   {% block head %}{% endblock %}
 </head>
 <body class="{{ BODY_CLASS }} {% block bodyclass %}{% endblock %}">
 {% include "su/is_su.html" %}
 <div id="background">
 <div id="main">
+<button class="button" id="themeButton" onclick="switchTheme()"></button>
   {% block header %}
   <div id="header" style="position: relative"><a href="/"><img src="{{ STATIC_URL }}images/header.jpg" /></a>
   </div>
