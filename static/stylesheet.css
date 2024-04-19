@@ -864,6 +864,7 @@ table.eventtable {
 	}
 
 	#main {
+		background-color: #222;
 		min-width: 700px;
 		max-width: 1400px;
 		margin: 0 auto;
