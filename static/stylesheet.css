@@ -1,5 +1,5 @@
 /* vim:set noet ts=3 sts=3 sw=3: */
-:root, root.light {
+html.light {
 	html, body {
 		margin: 0;
 		font-family: Lucida-Grande, Calibri, Arial, Verdana, Sans-Serif;
@@ -27,6 +27,19 @@
 
 	.clear {
 		clear: both;
+	}
+
+	#background {
+		background-color: #eee;
+		background-image: -moz-linear-gradient(top, rgb(221, 221, 221) 0%, rgb(238, 238, 238) 100%); /* FF3.6+ */
+		background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgb(221, 221, 221)), color-stop(100%, rgb(238, 238, 238))); /* Chrome,Safari4+ */
+		background-image: -webkit-linear-gradient(top, rgb(221, 221, 221) 0%, rgb(238, 238, 238) 100%); /* Chrome10+,Safari5.1+ */
+		background-image: -o-linear-gradient(top, rgb(221, 221, 221) 0%, rgb(238, 238, 238) 100%); /* Opera 11.10+ */
+		background-image: -ms-linear-gradient(top, rgb(221, 221, 221) 0%, rgb(238, 238, 238) 100%); /* IE10+ */
+		background-image: linear-gradient(to bottom, rgb(221, 221, 221) 0%, rgb(238, 238, 238) 100%); /* W3C */
+		background-repeat: repeat-x;
+		width: auto;
+		height: 550px;
 	}
 
 	body.test #background {
@@ -188,7 +201,6 @@
 	width: auto;
 	height: 550px;
 }
-
 /** customer submit form styles **/
 
 #login fieldset {
@@ -827,7 +839,7 @@ table.eventtable {
 }
 /* dark theme */
 
-:root.dark {
+html.dark {
 	html,body {
 		margin: 0;
 		font-family: Lucida-Grande, Calibri, Arial, Verdana, Sans-Serif;
@@ -856,6 +868,21 @@ table.eventtable {
 	.clear {
 		clear: both;
 	}
+	
+	#background {
+		background-color: #333; /* Dark background color */
+		background-image: -moz-linear-gradient(top, rgb(50, 50, 50) 0%, rgb(30, 30, 30) 100%); /* FF3.6+ */
+		background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgb(50, 50, 50)), color-stop(100%, rgb(30, 30, 30))); /* Chrome,Safari4+ */
+		background-image: -webkit-linear-gradient(top, rgb(50, 50, 50) 0%, rgb(30, 30, 30) 100%); /* Chrome10+,Safari5.1+ */
+		background-image: -o-linear-gradient(top, rgb(50, 50, 50) 0%, rgb(30, 30, 30) 100%); /* Opera 11.10+ */
+		background-image: -ms-linear-gradient(top, rgb(50, 50, 50) 0%, rgb(30, 30, 30) 100%); /* IE10+ */
+		background-image: linear-gradient(to bottom, rgb(50, 50, 50) 0%, rgb(30, 30, 30) 100%); /* W3C */
+		background-repeat: repeat-x;
+		width: auto;
+		height: 550px;
+		color: #fff; /* Text color for better visibility */
+	}
+
 
 	body.test #background {
 		background-color: #ff0;
@@ -973,6 +1000,7 @@ table.eventtable {
 		height: 40px;
 		background-color: #222;
 		color: white;
+		border: outset black;
 	}
 
 	#themeButton::before {
