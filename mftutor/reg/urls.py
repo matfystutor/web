@@ -15,7 +15,7 @@ from .views import (
     RusListView, RusCreateView, RusListRPC, RusChangesView,
     RusChangesTableView,
 )
-from .views import StudentnumberListView, StudentnumberView
+from .views import StudentnumberListView, StudentnumberView, tutorNumbersView
 from ..tutor.auth import tutorbur_required, tutor_required
 
 urlpatterns = [
@@ -71,4 +71,6 @@ urlpatterns = [
 
     path('studentnumber/<int:pk>/',
          tutorbur_required(StudentnumberView.as_view()), name='studentnumber_set'),
+    path('tutornumbers/',
+         tutorbur_required(tutorNumbersView.as_view()), name='tutor_numbers'),
 ]

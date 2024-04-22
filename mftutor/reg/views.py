@@ -16,7 +16,7 @@ from django.views.generic import (
 from django.views.generic.edit import ProcessFormView
 
 from .. import settings
-from ..tutor.models import RusClass, TutorProfile, Rus
+from ..tutor.models import RusClass, TutorProfile, Rus, Tutor
 from mftutor.tutor.auth import (
     tutor_required_error, rusclass_required_error, tutorbest_required_error)
 
@@ -1694,3 +1694,14 @@ class StudentnumberView(FormView):
         rus.profile.save()
         rus.profile.get_or_create_user()
         return HttpResponseRedirect(reverse('studentnumber_list'))
+
+class tutorNumbersView(TemplateView):
+    template_name = 'reg/tutor_numbers.html'
+
+    def get_context_data(self, **kwargs):
+        context_data = super(tutorNumbersView, self).get_context_data(**kwargs)
+        context_data['tutors'] = sorted(Tutor.objects.filter(year=self.request.year),
+                                        key=lambda x: x.rusclass.handle if x.rusclass else '')
+        context_data['tutorprofiles'] = TutorProfile.objects.filter(tutor__year=self.request.year)
+        context_data['rusclasses'] = RusClass.objects.filter(year=self.request.year)
+        return context_data
