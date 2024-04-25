@@ -837,6 +837,11 @@ table.eventtable {
 	color: black;
 	display: block;
 }
+
+#tutor_phonenumbers {
+	font-size: 20px;
+	list-style: none;
+}
 /* dark theme */
 
 html.dark {

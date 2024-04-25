@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import ArrivedStatsView
+from .views import ArrivedStatsView, tutorNumbersView
 from .views import BurStartView
 from .views import ChooseSessionView, NewSessionView, EditSessionView
 from .views import (
@@ -71,4 +71,7 @@ urlpatterns = [
 
     path('studentnumber/<int:pk>/',
          tutorbur_required(StudentnumberView.as_view()), name='studentnumber_set'),
+
+    path('tutornumbers/',
+         tutorbur_required(tutorNumbersView.as_view()), name='tutor_numbers'),
 ]
