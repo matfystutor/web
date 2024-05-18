@@ -187,6 +187,9 @@ html.light {
 	#groupsTable tr:hover {
 		background-color: #ddd;
 	}
+	.confirmationtable tbody tr:nth-child(odd) {
+		background-color: #eee;
+	}
 }
 
 #background {
@@ -873,7 +876,7 @@ html.dark {
 	.clear {
 		clear: both;
 	}
-	
+
 	#background {
 		background-color: #333; /* Dark background color */
 		background-image: -moz-linear-gradient(top, rgb(50, 50, 50) 0%, rgb(30, 30, 30) 100%); /* FF3.6+ */
@@ -1025,4 +1028,9 @@ html.dark {
 	.newsBody {
 		color: white;
 	}
+
+	.confirmationtable tbody tr:nth-child(odd) {
+		background-color: #555;
+	}
+
 }
