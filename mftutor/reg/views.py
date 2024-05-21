@@ -905,7 +905,7 @@ class HandoutResponseView(FormView):
         if self.handout_response.pk:
             color = self.handout_response.color
         else:
-            color = 'blue'
+            color = 'green'
         data = {
             'note': self.handout_response.note,
             'color': color

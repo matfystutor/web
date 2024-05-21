@@ -181,7 +181,7 @@ class HandoutClassResponse(models.Model):
 
     handout = models.ForeignKey(Handout, models.CASCADE)
     rusclass = models.ForeignKey(RusClass, models.CASCADE)
-    color = models.CharField(max_length=10, choices=COLORS, default='blue')
+    color = models.CharField(max_length=10, choices=COLORS, default='green')
     note = models.TextField(blank=True)
 
     created = models.DateTimeField(auto_now_add=True, verbose_name="Oprettet")
