@@ -5,33 +5,34 @@
 {% block canonical_url %}{% url 'gfyear' gfyear=show_year %}{% endblock canonical_url %}
 
 {% block content %}
-<div class="row">
-  <div class="panel-group" id="accordition" role="tablist" aria-multiselectable="true">
+<div>
+  <div>
   {% for year in years %}
-    <div class="panel panel-default">
-      <div class="panel-heading" role="tab" id="heading{{year}}">
-        <h4 class="panel-title">
+    <div class="row border">
+      <div class="gallery-header">
+        <h4 style="padding-left: 20px;">
             <a {% if year == show_year %} data-toggle="collapse" href="#collapse{{year}}"
                {% else %} href="{{year}}" {% endif %}>
             {{ year }}
           </a>
         </h4>
-      </div> <!-- panel-heading -->
+      </div>
       <div id="collapse{{year}}" class="panel-collapse collapse{% if year == show_year %} in{% endif %}" role="tabpanel" aria-labelledby="heading{{year}}">
         {% if year == show_year %}
         <div class="panel-body">
-          <div class="row">
-            <div class="col-xs-12">
+          <div>
+            <hr>
+            <div>
             {% for album, firstFile in albumSets %}
               {% ifchanged album.eventalbum %}{% if not album.eventalbum %}
             </div>
-            <div class="col-xs-12">
+            <div>
               <hr>
               <h4>Årets gang:</h4>
             </div>
-            <div class="col-xs-12">
+            <div>
               {% endif %}{% endifchanged %}
-              <div class="col-xs-6 col-sm-4 col-md-3">
+              <div class="gallery-elem border">
                 <a class="thumbnail" href="{% url 'album' gfyear=album.gfyear album_slug=album.slug %}">
                   <div class="thumbcap">
                     {% if firstFile.type == "I" %}
@@ -53,7 +54,7 @@
       </div> <!-- collapse{{year}} -->
     </div> <!-- panel panel-default  -->
   {% empty %}
-    <div class="col-xs-12">
+    <div>
       <p>Ingen albums med billeder fundet.</p>
     </div>
   {% endfor %}

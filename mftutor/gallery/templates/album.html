@@ -20,22 +20,22 @@ hvoraf {{ new_count }} er ny{{ new_count|pluralize:'e' }}.
     <input name="set_all_new_visible" type="submit" value="Gør alle nye billeder synlige" style="background-color: transparent" />
 </form>
 {% endif %}
-<div class="row">
-  <div class="col-xs-12 col-sm-7 col-md-6">
-    <ol class="breadcrumb imagetitle">
+<div class="row border">
+  <div>
+    <ol class="breadcrumb">
       <li><a href="{% url 'gfyear' gfyear=album.gfyear  %}">{{ album.gfyear }}</a></li>
       <li class="active">{{ album.title }}</li>
     </ol>
   </div>
-  <div class="col-xs-12 col-sm-5 col-md-6 text-right">
-      <p class="imagetitle">
+  <div>
+      <p>
           {{ files|length }} billede{{ files|length|pluralize:"r" }}{% if album.publish_date %} fra d. {{ album.publish_date }}{% endif %}
       </p>
   </div>
 </div>
-<div class="row">
+<div class="panel-body">
   {% for file in files %}
-  <div class="col-xs-6 col-sm-4 col-md-3">
+  <div class="gallery-elem border">
     <a class="thumbnail" href="{% url 'image' gfyear=album.gfyear album_slug=album.slug image_slug=file.slug %}" alt="Se billede">
       <div class="thumbcap">
           <img src="{{ file.file.url }}" alt="{{ album.title }}">
@@ -43,9 +43,9 @@ hvoraf {{ new_count }} er ny{{ new_count|pluralize:'e' }}.
     </a>
   </div> <!-- col-xs-6 -->
   {% empty %}
-  <div class="col-xs-12"> <p>Albummet '{{ album.title }}' har ingen billeder endnu.</p></div>
+  <div> <p>Albummet '{{ album.title }}' har ingen billeder endnu.</p></div>
   {% endfor %}
-  <div class="col-xs-12">
+  <div style="width: 100%; display: flex; padding-left: 20px;">
     <a href="{% url 'gfyear' gfyear=album.gfyear  %}">Tilbage til {{ album.gfyear }}</a>
   </div>
 </div> <!-- row -->
