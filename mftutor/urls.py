@@ -1,4 +1,5 @@
 import django.views.static
+from django.conf.urls.static import static
 from django.conf import settings
 from django.conf.urls import include, url
 # Uncomment the next two lines to enable the admin:
@@ -17,6 +18,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('news/', include('mftutor.news.urls')),
     path('', include('mftutor.page.urls')),
+    path('gallery/', include('mftutor.gallery.urls')),
     path('', include('mftutor.tutor.urls')),
     path('groups/', include('mftutor.groups.urls')),
     path('signup/', include('mftutor.signup.urls')),
@@ -48,7 +50,4 @@ else:
 if settings.DEBUG:
     # Temporary media (user uploaded static files)
     # serving from dev server
-    urlpatterns.append(
-        path('media/<path>',
-            django.views.static.serve,
-            {'document_root': settings.MEDIA_ROOT}))
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

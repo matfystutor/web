@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block title %}{{ album.title }}{% endblock title %}
+{% block navbar_class %}navbar-static-top{% endblock navbar_class %}
+
+{% block js %}
+  <script src="{% static "gallery/jquery.touchswipe.min.js" %}"></script>
+  <script src="{% static "gallery/tkgal.js" %}"></script>
+  {% if edit_visibility %}
+  <script src="{% static "gallery/tkgal-visibility.js" %}"></script>
+  <style>
+  .select_visibility label { font-weight: normal; }
+  .select_visibility ul { list-style-type: none; }
+  .select_visibility li:nth-child(1) label { font-weight: bold; }
+  .select_visibility li:nth-child(2) label { font-weight: bold; }
+  .select_visibility input[type=radio] { margin: 0 0.2em 0.25em -1.6em; }
+  </style>
+  {% endif %}
+{% endblock js %}
+
+{% block canonical_url %}{% url 'image' gfyear=album.gfyear album_slug=album.slug image_slug=start_file.slug %}{% endblock canonical_url %}
+
+{% block opengraph %}
+  <meta property="og:type" content="{% if start_file.type == "I" %}image{% elif start_file.type == "V" %}video{% elif start_file.type == "A" %}audio{% else %}website{% endif %}" />
+  <meta property="og:image" content="{% if start_file.type == "I" %}{{ start_file.file.url }}{% else %}{{ STATIC_URL }}TKlogo.jpg{% endif %}" />
+  <meta property="og:description" content="Fra TÅGEKAMMERETs galleri for &#8217;{{ album.title }}&#8217;.{% if start_file.date %} Taget {{ start_file.date }}.{% endif %}" />
+{% endblock opengraph %}
+
+{% block content %}
+{% if edit_visibility %}
+<form id="tkgal-form" style="height: 100%" method="post" action="{% url 'set_image_visibility' %}" onsubmit="$(window).off('beforeunload')">{% csrf_token %}
+{% endif %}
+<div id="tkgal-container" role="main">
+	{% for file, next_file, prev_file in file_orders %}
+	<div class="{% if file != start_file %}hidden{% endif %}" data-permlink="{{ file.slug }}">
+		<div class="mediawrapper">
+			<img alt="{{ album.slug }}/{{ file.slug }}"
+				src="{{ file.file.url }}">
+			<div class="overlay overlay-top">
+        <ol class="breadcrumb">
+					<li><a href="{% url 'gfyear' gfyear=album.gfyear  %}">{{ album.gfyear }}</a></li>
+					<li><a id="albumlink" href="{% url 'album' gfyear=album.gfyear album_slug=album.slug %}">{{ album.title }}</a></li>
+					<li>{{ forloop.counter }} af {{ file_count }}{% if file.type == "I" %} <span class="hidden-xs">billede{{ file_count|pluralize:"r" }}</span>{% endif %}</li>
+				</ol>
+				{% if edit_visibility %}
+				<div class="select_visibility">{{ file.visibility_field }}</div>
+				<input type="submit" name="r{{ file.pk }}" value="Gem album" style="background-color: transparent"/>
+				{% endif %}
+			</div>
+			<div class="overlay overlay-bottom">
+				<div class="row">
+					<div class="col-sm-4 hidden-xs text-left">{{ file.date|default_if_none:"" }}</div>
+					<div class="col-sm-4 col-xs-12 text-center">
+			    {% if file_count > 1 %}
+						<a class="tkgal-control tkgal-prev"
+							rel="prev"
+							href="{{ prev_file.slug }}">Forrige</a> |
+						<a class="tkgal-control tkgal-next"
+							rel="next"
+							href="{{ next_file.slug }}">Næste</a>
+					{% endif %}
+					</div>
+				  <div class="col-sm-4 hidden-xs text-right"><a href="{{ file.file.url }}" download>download-alt ({{ file.file.size|filesizeformat }})</a></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	{% endfor %}
+</div>
+{% if edit_visibility %}</form>{% endif %}
+
+<div class="container">
+    <div id="tkgal-caption-container">
+        {% for file, next_file, prev_file in file_orders %}
+		    <p class="hidden" data-permlink="{{ file.slug }}">{{ file.caption }}</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}

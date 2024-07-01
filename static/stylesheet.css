@@ -1034,3 +1034,78 @@ html.dark {
 	}
 
 }
+
+/* Style the list */
+ol.breadcrumb {
+	padding: 10px 16px;
+	list-style: none;
+}
+  
+/* Display list items side by side */
+ol.breadcrumb li {
+	display: inline;
+	font-size: 18px;
+}
+  
+/* Add a slash symbol (/) before/behind each list item */
+ol.breadcrumb li+li:before {
+	padding: 8px;
+	color: black;
+	content: "/\00a0";
+}
+  
+/* Add a color to all links inside the list */
+ol.breadcrumb li a {
+	color: #117900;
+	text-decoration: none;
+}
+  
+/* Add a color on mouse-over */
+ol.breadcrumb li a:hover {
+	text-decoration: underline;
+}
+
+.border {
+	border: 1px solid #ccc; 
+	border-radius: 5px; 
+}
+
+.row {
+	margin: 10px; 
+	background: rgba(0, 0, 0, 0.1);
+}
+
+.panel-collapse {
+	display: flex;
+}
+
+.panel-body {
+	float: left; 
+	width: 100%;
+}
+
+.gallery-elem {
+	margin: 10px; 
+	float: left; 
+	width: 220px; 
+	height: 220px;
+}
+
+.thumbnail {
+	position: relative;
+}
+
+.thumbcap img {
+	width: 220px; 
+	height: 220px; 
+	object-fit: cover;
+}
+
+.caption {
+	text-align: center; 
+	position: absolute; 
+	bottom: 4px; 
+	left: 0px; 
+	right: 0px;
+	background: rgba(255, 255, 255, 0.7); 
+}
