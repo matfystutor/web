@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ show_year }}{% endblock title %}
+
+{% block canonical_url %}{% url 'gfyear' gfyear=show_year %}{% endblock canonical_url %}
+
+{% block content %}
+<div>
+  <div>
+  {% for year in years %}
+    <div class="row border">
+      <div class="gallery-header">
+        <h4 style="padding-left: 20px;">
+            <a {% if year == show_year %} data-toggle="collapse" href="#collapse{{year}}"
+               {% else %} href="{{year}}" {% endif %}>
+            {{ year }}
+          </a>
+        </h4>
+      </div>
+      <div id="collapse{{year}}" class="panel-collapse collapse{% if year == show_year %} in{% endif %}" role="tabpanel" aria-labelledby="heading{{year}}">
+        {% if year == show_year %}
+        <div class="panel-body">
+          <div>
+            <hr>
+            <div>
+            {% for album, firstFile in albumSets %}
+              {% ifchanged album.eventalbum %}{% if not album.eventalbum %}
+            </div>
+            <div>
+              <hr>
+              <h4>Årets gang:</h4>
+            </div>
+            <div>
+              {% endif %}{% endifchanged %}
+              <div class="gallery-elem border">
+                <a class="thumbnail" href="{% url 'album' gfyear=album.gfyear album_slug=album.slug %}">
+                  <div class="thumbcap">
+                    {% if firstFile.type == "I" %}
+                      <img src="{{ firstFile.file.url }}" alt="{{ album.title }}">
+                    {% endif %}
+                    <div class="caption">
+                      <h5>{{ album.title }}
+                        <small>{{ album.count }} billede{{ album.count|pluralize:"r" }}</small>
+                      </h5>
+                    </div>
+                  </div>
+                </a>
+              </div> <!-- col-xs-6 thumb -->
+              {% endfor %}
+            </div>
+          </div> <!-- row-->
+        </div> <!-- panel-body -->
+        {% endif %}
+      </div> <!-- collapse{{year}} -->
+    </div> <!-- panel panel-default  -->
+  {% empty %}
+    <div>
+      <p>Ingen albums med billeder fundet.</p>
+    </div>
+  {% endfor %}
+  </div> <!-- panel-group -->
+</div> <!-- row -->
+{% endblock content%}

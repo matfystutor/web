@@ -103,10 +103,13 @@ TEMPLATES = [
             'context_processors': [
                 'django.contrib.auth.context_processors.auth',
                 'django.template.context_processors.debug',
+                'django.template.context_processors.static',
+                'django.template.context_processors.request',
                 'django.template.context_processors.i18n',
                 'django.template.context_processors.media',
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
+                'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'mftutor.rus.context_processors.rus_data',
                 'mftutor.tutor.context_processors.login_form',
@@ -175,6 +178,7 @@ INSTALLED_APPS = (
     'django_wysiwyg',
     'debug_toolbar',
     'sorl.thumbnail',
+    'jfu',
 
     'mftutor.tutor',
     'mftutor.news',
@@ -195,6 +199,7 @@ INSTALLED_APPS = (
     'mftutor.groups',
     'mftutor.tutorbog',
     'mftutor.gf',
+    'mftutor.gallery',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -280,7 +285,10 @@ PERSONAL_EMAIL_SENDER = 'Mat/Fys-Tutorforeningen <webfar@matfystutor.dk>'
 GF_GROUPS = ('best', 'webfar', 'oekonomi', 'gris', 'burmor', 'form', 'nf', 'gruppeansvarlig')
 
 THUMBNAIL_KVSTORE = 'sorl.thumbnail.kvstores.dbm_kvstore.KVStore'
-THUMBNAIL_DBM_FILE = '/home/mftutor/web/thumbnails/thumbnail_kvstore'
+#THUMBNAIL_DBM_FILE = '/home/mftutor/web/thumbnails/thumbnail_kvstore'
+THUMBNAIL_DBM_FILE = '/Users/andersseverinsen/Library/CloudStorage/OneDrive-Aarhusuniversitet/Uni/tutor/thumbnails/thumbnail_kvstore'
+
+THUMBNAIL_DEBUG = True
 
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 
@@ -288,7 +296,19 @@ CONSTANCE_CONFIG = {
     'TUTORBOG_SECRET': ('', 'Svaret til krydsorden i tutorbogen'),
     'TUTORBOG_SURVEY_URL': ('', 'URL til tutorbog surveyen'),
     'ENABLE_CONFIRMATION': (False, 'Er tutorbekræftelser aktive?', bool),
+    'GFYEAR': (2024, 'Året hvor nuværende BEST blev valgt'),
     'IS_STUDYSTART': (False, 'Er det rusuge?', bool),
 }
 
 STUDIES = ["", "Matematik-økonomi", "Datalogi", "Matematik", "Fysik", "Nanoscience", "Datavidenskab"]
+
+VERSATILEIMAGEFIELD_RENDITION_KEY_SETS = {
+    'gallery': [
+        ('gallery_253', 'crop__253x253'),
+        ('image_400', 'thumbnail__400x400'),
+        ('image_720', 'thumbnail__720x720'),
+        ('image_940', 'thumbnail__940x940'),
+        ('image_1140', 'thumbnail__1140x1140'),
+        ('image_2280', 'thumbnail__2280x2280'),
+    ],
+}

@@ -1,6 +1,7 @@
 *.pyc
 .*.swp
 .swp
+/media
 /prodekanus/static
 /prodekanus/upload
 /mftutor/settings/local.py
