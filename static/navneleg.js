@@ -50,7 +50,7 @@ function navneleg() {
     content.innerHTML = '<h1>Navneleg<\/h1>\n' +
         '<p id="navneleg_stats"><\/p>\n' +
         '<p id="navneleg_status"><\/p>\n' +
-        '<p id="navneleg_container" style="position: relative; height: 130px"> + ' +
+        '<p id="navneleg_container" style="position: relative; height: 130px">' +
         '<img style="max-width: 130px; max-height: 130px" id="navneleg_tutorpicture"><\/p>\n' +
         '<p><input id="navneleg_input"><\/p>\n' +
         '<p><input type="button" id="navneleg_submit" value="Indsend gæt"><\/p>\n';
@@ -120,7 +120,8 @@ function navneleg() {
                     ++streak;
                     break;
                 
-                case 'jeppe' || 'henrijeppe':
+                case 'jeppe':
+                case'henrijeppe':
                     status.innerHTML = "Korrekt! Ish...";
                     break;
                 

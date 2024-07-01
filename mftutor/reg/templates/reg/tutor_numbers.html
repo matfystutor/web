@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Tutorers telefonnumre{% endblock %}
+
+{% block content %}
+
+    <h1>Holdtutorers telefonnumre</h1>
+    {% for rusclass in rusclasses %}
+        <h2>{{ rusclass }}</h2>
+        {% for tutor in tutors%}
+            {%  for tutorprofile in tutorprofiles %}
+                {% if tutor.id == tutorprofile.id and tutor.rusclass == rusclass %}
+                    <li id="tutor_phonenumbers">{{ tutorprofile.name}}: {{ tutorprofile.phone }}</li>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    {% endfor %}
+    </ul>
+
+{% endblock %}
