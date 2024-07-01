@@ -1072,7 +1072,6 @@ ol.breadcrumb li a:hover {
 
 .row {
 	margin: 10px; 
-	background: rgba(0, 0, 0, 0.1);
 }
 
 .panel-collapse {
@@ -1091,13 +1090,25 @@ ol.breadcrumb li a:hover {
 	height: 220px;
 }
 
-.thumbnail {
+.thumbnail, .mediawrapper {
 	position: relative;
 }
 
 .thumbcap img {
 	width: 220px; 
 	height: 220px; 
+	object-fit: cover;
+}
+
+.mediawrapper {
+	position: relative;
+	width: 100%;
+	text-align: center;
+}
+
+.mediawrapper img {
+	width: 750px; 
+	height: 750px; 
 	object-fit: cover;
 }
 
@@ -1108,4 +1119,30 @@ ol.breadcrumb li a:hover {
 	left: 0px; 
 	right: 0px;
 	background: rgba(255, 255, 255, 0.7); 
+}
+
+.overlay-top {
+	text-align: left; 
+	position: absolute; 
+	top: 0px; 
+	left: 0px; 
+	right: 0px;
+	background: rgba(255, 255, 255, 0.7); 
+}
+
+.overlay-bottom {
+	position: absolute; 
+	bottom: 0px; 
+	left: 0px; 
+	right: 0px;
+	background: rgba(255, 255, 255, 0.7);
+	padding-top: 15px;
+}
+
+.text-left {
+	float: left;
+}
+
+.text-right {
+	float: right;
 }

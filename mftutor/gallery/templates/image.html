@@ -31,14 +31,14 @@
 {% if edit_visibility %}
 <form id="tkgal-form" style="height: 100%" method="post" action="{% url 'set_image_visibility' %}" onsubmit="$(window).off('beforeunload')">{% csrf_token %}
 {% endif %}
-<div id="tkgal-container" role="main">
+<div id="gal-container" role="main">
 	{% for file, next_file, prev_file in file_orders %}
 	<div class="{% if file != start_file %}hidden{% endif %}" data-permlink="{{ file.slug }}">
 		<div class="mediawrapper">
 			<img alt="{{ album.slug }}/{{ file.slug }}"
 				src="{{ file.file.url }}">
-			<div class="overlay overlay-top">
-        <ol class="breadcrumb">
+			<div class="overlay-top">
+        		<ol class="breadcrumb">
 					<li><a href="{% url 'gfyear' gfyear=album.gfyear  %}">{{ album.gfyear }}</a></li>
 					<li><a id="albumlink" href="{% url 'album' gfyear=album.gfyear album_slug=album.slug %}">{{ album.title }}</a></li>
 					<li>{{ forloop.counter }} af {{ file_count }}{% if file.type == "I" %} <span class="hidden-xs">billede{{ file_count|pluralize:"r" }}</span>{% endif %}</li>
@@ -48,10 +48,11 @@
 				<input type="submit" name="r{{ file.pk }}" value="Gem album" style="background-color: transparent"/>
 				{% endif %}
 			</div>
-			<div class="overlay overlay-bottom">
+			<div class="overlay-bottom">
 				<div class="row">
-					<div class="col-sm-4 hidden-xs text-left">{{ file.date|default_if_none:"" }}</div>
-					<div class="col-sm-4 col-xs-12 text-center">
+					<div class="text-left">{{ file.date|default_if_none:"" }}</div>
+					<div class="text-right"><a href="{{ file.file.url }}" download>download-alt ({{ file.file.size|filesizeformat }})</a></div>
+					<div class="text-center">
 			    {% if file_count > 1 %}
 						<a class="tkgal-control tkgal-prev"
 							rel="prev"
@@ -61,7 +62,6 @@
 							href="{{ next_file.slug }}">Næste</a>
 					{% endif %}
 					</div>
-				  <div class="col-sm-4 hidden-xs text-right"><a href="{{ file.file.url }}" download>download-alt ({{ file.file.size|filesizeformat }})</a></div>
 				</div>
 			</div>
 		</div>

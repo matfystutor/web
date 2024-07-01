@@ -20,7 +20,7 @@ hvoraf {{ new_count }} er ny{{ new_count|pluralize:'e' }}.
     <input name="set_all_new_visible" type="submit" value="Gør alle nye billeder synlige" style="background-color: transparent" />
 </form>
 {% endif %}
-<div class="row border">
+<div class="row">
   <div>
     <ol class="breadcrumb">
       <li><a href="{% url 'gfyear' gfyear=album.gfyear  %}">{{ album.gfyear }}</a></li>
