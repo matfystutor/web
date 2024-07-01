@@ -5,9 +5,11 @@
 .response_green { background-color: #9f9; }
 .response_yellow { background-color: #ff8; }
 .response_red { background-color: #fbb; }
+.response_blue { background-color: #0000FF; }
 tr:nth-child(2n) .response_green { background-color: #7d7; }
 tr:nth-child(2n) .response_yellow { background-color: #dd6; }
 tr:nth-child(2n) .response_red { background-color: #d99; }
+tr:nth-child(2n) .response_blue { background-color: #3B5998;}
 .handout_table td {
     text-align: center;
     min-width: 2em;
@@ -22,18 +24,24 @@ tr:nth-child(2n) .response_red { background-color: #d99; }
 {% block content %}
 <h1>Tilmeldingslister</h1>
 
-<p>Her kan du gemme og hente tilmeldingslister, som holdtutorerne afleverer i rusdagene.</p>
+<p>Her kan du gemme tilmeldingslister, som I skal aflevere i rusdagene.</p>
 
+    {% if tutor.is_tutorbur %}
 <p><a href="{% url 'handout_new' %}">Ny tilmeldingsliste</a></p>
+    {% endif %}
 
 {% if handouts %}
 <table class="handout_table">
 <thead>
 <tr>
 <th>&nbsp;</th>
-{% for rusclass in rusclasses %}
-<th>{{ rusclass.official_name }}</th>
-{% endfor %}
+    {% if tutor.is_tutorbur %}
+        {% for rusclass in rusclasses %}
+        <th>{{ rusclass.official_name }}</th>
+        {% endfor %}
+{% else %}
+<th>{{ tutor.rusclass }}</th>
+    {% endif %}
 </tr>
 </thead>
 <tbody>
@@ -41,12 +49,14 @@ tr:nth-child(2n) .response_red { background-color: #d99; }
 <tr>
     <th><a href="{% url 'handout_summary' handout=handout.pk %}">{{ handout }}</a></th>
 {% for response in handout.row %}
+    {% if tutor.rusclass == response.rusclass or tutor.is_tutorbur %}
 <td class="response_{{ response.color }}">
 <a href="{% url 'handout_response' handout=response.handout.pk rusclass=response.rusclass.handle %}">
 {% if response.pk %}
 ret
 {% else %}
 ny
+        {% endif %}
 {% endif %}
 </a>
 </td>

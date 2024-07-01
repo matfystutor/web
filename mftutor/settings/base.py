@@ -297,6 +297,7 @@ CONSTANCE_CONFIG = {
     'TUTORBOG_SURVEY_URL': ('', 'URL til tutorbog surveyen'),
     'ENABLE_CONFIRMATION': (False, 'Er tutorbekræftelser aktive?', bool),
     'GFYEAR': (2024, 'Året hvor nuværende BEST blev valgt'),
+    'IS_STUDYSTART': (False, 'Er det rusuge?', bool),
 }
 
 STUDIES = ["", "Matematik-økonomi", "Datalogi", "Matematik", "Fysik", "Nanoscience", "Datavidenskab"]

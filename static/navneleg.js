@@ -120,7 +120,8 @@ function navneleg() {
                     ++streak;
                     break;
                 
-                case 'jeppe' || 'henrijeppe':
+                case 'jeppe':
+                case'henrijeppe':
                     status.innerHTML = "Korrekt! Ish...";
                     break;
                 

@@ -14,14 +14,16 @@
 
 {% block content %}
 <h1>{{ handout }}</h1>
-
+{% if tutor.is_tutorbur %}
 <p><a href="{% url 'handout_edit' pk=handout.pk %}">Rediger</a></p>
+    {% endif %}
 
 <p><a href="{% url 'handout_list' %}">Tilmeldinger</a>
 &rarr; <strong>{{ handout }}</strong></p>
 
+    {% if tutor.is_tutorbur %}
 <p>Besvarelser: {{ class_response_count }}/{{ class_total_count }}</p>
-
+{% endif %}
 <table class="response_table" cellspacing="0">
 <col width="80" />
 <col width="*" />
@@ -30,10 +32,12 @@
 <th>Note</th>
 </tr>
 {% for rusclass in classes %}
+    {% if rusclass == tutor.rusclass or tutor.is_tutorbur %}
 <tr>
 <td style="text-align: center"><a href="{% url 'handout_response' handout=handout.pk rusclass=rusclass.handle %}">{{ rusclass }}</a></td>
 <td>{{ rusclass.response.note }}</td>
 </tr>
+    {% endif %}
 {% endfor %}
 </table>
 
