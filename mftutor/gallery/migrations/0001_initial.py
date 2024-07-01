@@ -1,6 +1,5 @@
 from django.db import migrations, models
 import datetime
-import versatileimagefield.fields
 import mftutor.gallery.models
 
 
