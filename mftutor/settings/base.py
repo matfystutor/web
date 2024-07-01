@@ -59,20 +59,20 @@ TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, 'prodekanus/static')
+STATIC_ROOT = os.path.join(BASE_DIR, '../static/')
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
 STATIC_URL = '/static/'
 
+# Absolute filesystem path to the directory that will hold user-uploaded files.
+# Example: "/home/media/media.lawrence.com/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = '/upload/'
-
-# Absolute filesystem path to the directory that will hold user-uploaded files.
-# Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, 'prodekanus/upload')
+MEDIA_URL = '/media/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -179,7 +179,6 @@ INSTALLED_APPS = (
     'debug_toolbar',
     'sorl.thumbnail',
     'jfu',
-    'versatileimagefield',
 
     'mftutor.tutor',
     'mftutor.news',
@@ -286,7 +285,10 @@ PERSONAL_EMAIL_SENDER = 'Mat/Fys-Tutorforeningen <webfar@matfystutor.dk>'
 GF_GROUPS = ('best', 'webfar', 'oekonomi', 'gris', 'burmor', 'form', 'nf', 'gruppeansvarlig')
 
 THUMBNAIL_KVSTORE = 'sorl.thumbnail.kvstores.dbm_kvstore.KVStore'
-THUMBNAIL_DBM_FILE = '/home/mftutor/web/thumbnails/thumbnail_kvstore'
+#THUMBNAIL_DBM_FILE = '/home/mftutor/web/thumbnails/thumbnail_kvstore'
+THUMBNAIL_DBM_FILE = '/Users/andersseverinsen/Library/CloudStorage/OneDrive-Aarhusuniversitet/Uni/tutor/thumbnails/thumbnail_kvstore'
+
+THUMBNAIL_DEBUG = True
 
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 

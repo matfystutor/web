@@ -1,4 +1,5 @@
 import django.views.static
+from django.conf.urls.static import static
 from django.conf import settings
 from django.conf.urls import include, url
 # Uncomment the next two lines to enable the admin:
@@ -49,7 +50,4 @@ else:
 if settings.DEBUG:
     # Temporary media (user uploaded static files)
     # serving from dev server
-    urlpatterns.append(
-        path('media/<path>',
-            django.views.static.serve,
-            {'document_root': settings.MEDIA_ROOT}))
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

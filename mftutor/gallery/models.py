@@ -8,11 +8,10 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.html import format_html
 from model_utils.managers import InheritanceManager
 from sorl.thumbnail import get_thumbnail
-from versatileimagefield.fields import VersatileImageField
-from versatileimagefield.image_warmer import VersatileImageFieldWarmer
 import os
 import logging
 from mftutor.gallery.utils import file_name, get_exif_date, get_gfyear, slugify
+from mftutor.settings.base import MEDIA_ROOT
 
 FORCEDORDERMAX = 10000
 
@@ -138,11 +137,17 @@ class Image(BaseMedia):
         select_on_save = True
 
     objects = models.Manager()
-    file = models.ImageField(upload_to=file_name)
+    file = models.ImageField(
+        upload_to=file_name, 
+        blank=True,
+        )
 
     def admin_thumbnail(self):
-        return format_html('<img src="{}" />',
-                           get_thumbnail(self.file, '150x150').url)
+        #print("Test:")
+        #img_path = os.path.join(MEDIA_ROOT, str(self.file))
+        #print(str(img_path))
+        return format_html('<img src="{}" height="150" />',
+                           self.file.url)
 
     admin_thumbnail.short_description = 'Thumbnail'
 

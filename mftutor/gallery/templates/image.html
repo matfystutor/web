@@ -27,7 +27,7 @@
   <meta property="og:description" content="Fra TÅGEKAMMERETs galleri for &#8217;{{ album.title }}&#8217;.{% if start_file.date %} Taget {{ start_file.date }}.{% endif %}" />
 {% endblock opengraph %}
 
-{% block raw_content %}
+{% block content %}
 {% if edit_visibility %}
 <form id="tkgal-form" style="height: 100%" method="post" action="{% url 'set_image_visibility' %}" onsubmit="$(window).off('beforeunload')">{% csrf_token %}
 {% endif %}
@@ -35,43 +35,8 @@
 	{% for file, next_file, prev_file in file_orders %}
 	<div class="{% if file != start_file %}hidden{% endif %}" data-permlink="{{ file.slug }}">
 		<div class="mediawrapper">
-		{% if file.type == "I" %}
 			<img alt="{{ album.slug }}/{{ file.slug }}"
-				{% if file != start_file %}data-{% endif %}srcset=
-					"{{ file.file.url }} 400w,
-					{{ file.file.url }} 720w,
-					{{ file.file.url }} 940w,
-					{{ file.file.url }} 1140w,
-					{{ file.file.url }} 2280w"
-				{% if file != start_file %}data-{% endif %}sizes="100vw"
-			    {% if file != start_file %}data-src=
-					"{{ file.file.url }}"
-				src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-				{% else %}
-				src="{{ file.file.url }}"
-				{% endif %}
-				title="{{ file.caption }}">
-		{% elif file.type == "A" %}
-			<audio controls
-				{% if file != start_file %}data-{% endif %}src=
-				"{{ file.file.url }}">
-				Your browser does not support the audio element.
-			</audio>
-		{% elif file.type == "V" %}
-			<video controls
-				{% if file != start_file %}data-{% endif %}src=
-				"{{ file.file.url }}">
-				Your browser does not support the video tag.
-			</video>
-		{% else %}
-			<div class="lg-file-download text-center">
-				<a class="btn btn-default btn-lg" href="{{ file.file.url }}">
-					download-alt
-					{{ file.slug }}
-					({{ file.file.size|filesizeformat }})
-				</a>
-			</div>
-		{% endif %}
+				src="{{ file.file.url }}">
 			<div class="overlay overlay-top">
         <ol class="breadcrumb">
 					<li><a href="{% url 'gfyear' gfyear=album.gfyear  %}">{{ album.gfyear }}</a></li>
@@ -111,6 +76,5 @@
 		    <p class="hidden" data-permlink="{{ file.slug }}">{{ file.caption }}</p>
         {% endfor %}
     </div>
-    {% include 'footer.html' %}
 </div>
-{% endblock raw_content %}
+{% endblock content %}
