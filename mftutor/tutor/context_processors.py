@@ -33,6 +33,7 @@ def settings(request):
         'måned1Stormøde': 'februar',
         'årstal1Stormøde': '2025',
         'firstDateRusuge': '20',
+        'middleDateRusuge': '22',
         'månedRusuge': 'august',
         'firstDateBurMobil': '5',
         'månedBurMobil': 'august',
