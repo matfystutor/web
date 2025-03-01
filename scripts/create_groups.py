@@ -13,48 +13,32 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'mftutor.settings'
 
 from mftutor.tutor.models import TutorGroup
 
-input_string = """arbejdstutor	Arbejdstutor
-cslab	CS-labrundvisning
-csdias	Dias - CS
-ifadias	Dias - IFA
-imfdias	Dias - IMF
+input_string = """
+buret   Buret
+cs	CS-Oplæg
 eval	Evaluering
-form	Formand
 gruppeansvarlige	Gruppeansvarlige
-guide	Guide
-holdetstime	Holdets time
 hytte	Hytte
 hoestfest	Høstfest
-ifalab	IFA-Labrundvisning
-nanolab	iNANO-labrundvisning
-inko	Indkøb
+labfys	IFA-Labrundvisning
+labnano	iNANO-labrundvisning
+indkoeb	Indkøb og bus
 korrektur	Korrektur
-latex	LaTeX
-legebog	Legebog
-lokale	Lokale
+latech	LaTeCh Support
+legedag	Legegruppen
 parxafari	ParXafari
 grise	Praktiske Grise
-rkfl3	RKFL^3
-rkfw	RKFW
-rus2turguide	Rus2Turs-guide
-rusguide	Rusguide
-rusteater	Rusteater
-sangbog	Sangbog
+rkfw	RKFW og Rus2tursguide
+rusrevy	Rusrevy
 sol	SOL
-sponsor	Sponsor
 sportsdag	Sportsdag
-texmaster	TeX Master
-tutorbog	Tutorbog
 tutorfest	Tutorfest
 tutorsmiley	Tutorsmiley
-datalogitoe	TØ i rusdagene - datalogi
-toefysik	TØ i rusdagene - fysik
-toematoek	TØ i rusdagene - mat/øk
-toemat	TØ i rusdagene - matematik
-toenano	TØ i rusdagene - nano
-web	Web
-hacker	Wiki"""
-year = 2017
+dattoe	TØ i rusdagene - datalogi
+fystoe	TØ i rusdagene - fysik
+nanotoe	TØ i rusdagene - nano
+"""
+year = 2025
 qs = TutorGroup.objects.filter(year=year)
 existing_handles = set(g.handle for g in qs)
 for line in input_string.splitlines():
