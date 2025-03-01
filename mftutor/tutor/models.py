@@ -37,7 +37,7 @@ class TutorProfile(models.Model):
 
     burBrevSignup = models.BooleanField(verbose_name="Tilmeldt Burets Nyhedsbrev", default=False)
 
-    #hemmeligSangbogSignup = models.BooleanField(verbose_name="Tilmeld hemmelig sangbog", default=False)
+    hemmeligSangbogSignup = models.BooleanField(verbose_name="Tilmeld hemmelig sangbog", default=False)
 
     nickname = models.CharField(
        max_length=20, blank=True, verbose_name="Kaldenavn")
