@@ -21,7 +21,7 @@ class ProfileForm(forms.Form):
     tshirt1 = forms.CharField(widget=SelectShirt, label='T-Shirt Størrelse 1')
     tshirt2 = forms.CharField(widget=SelectShirt, label='T-Shirt Størrelse 2')
     burBrevSignup = forms.BooleanField(label='Tilmeld Burets Nyhedsbrev', required=False)
-    #hemmeligSangbogSignup = forms.BooleanField(label='Tilmeld hemmelig sangbog', required=False)
+    hemmeligSangbogSignup = forms.BooleanField(label='Tilmeld hemmelig sangbog', required=False)
     picture = forms.ImageField(
         required=False,
         label='Billede')
@@ -55,7 +55,7 @@ class ProfileView(FormView):
             'tshirt1': sp.choice1,
             'tshirt2': sp.choice2,
             'burBrevSignup': tp.burBrevSignup,
-            #'hemmeligSangbogSignup': tp.hemmeligSangbogSignup
+            'hemmeligSangbogSignup': tp.hemmeligSangbogSignup
         }
 
     def form_valid(self, form):
@@ -80,7 +80,7 @@ class ProfileView(FormView):
 
         tp.burBrevSignup = form.cleaned_data['burBrevSignup']
 
-        #tp.hemmeligSangbogSignup = form.cleaned_data['hemmeligSangbogSignup']
+        tp.hemmeligSangbogSignup = form.cleaned_data['hemmeligSangbogSignup']
 
         sp.choice1 = form.cleaned_data['tshirt1']
         sp.choice2 = form.cleaned_data['tshirt2']
