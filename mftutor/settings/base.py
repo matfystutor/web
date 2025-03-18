@@ -292,3 +292,5 @@ CONSTANCE_CONFIG = {
 }
 
 STUDIES = ["", "Matematik-økonomi", "Datalogi", "Matematik", "Fysik", "Nanoscience", "Datavidenskab"]
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
