@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class TutorbogConfig(AppConfig):
-    name = 'tutorbog'
+    name = 'mftutor.tutorbog'

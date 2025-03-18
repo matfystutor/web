@@ -3,8 +3,6 @@
 import re
 import json
 
-from django.utils import six
-
 from django.http.response import HttpResponse
 from django.template.response import TemplateResponse
 from django import forms
@@ -53,10 +51,10 @@ class TutorListForm(forms.Form):
             handle = e['handle']
             if not isinstance(tutors, list):
                 raise forms.ValidationError("%d.tutors is not a list" % i)
-            if not isinstance(handle, six.string_types):
+            if not isinstance(handle, str):
                 raise forms.ValidationError("%d.handle is not a string" % i)
             for j, a in enumerate(tutors):
-                if not isinstance(a, six.string_types):
+                if not isinstance(a, str):
                     raise forms.ValidationError(
                         "%d.tutors.%d is not a string" % (i, j))
         return o

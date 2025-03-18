@@ -1,0 +1,9 @@
+Django>=3.2,<3.2.99
+Pillow
+django-debug-toolbar
+django-wysiwyg
+sqlparse
+sorl-thumbnail<=12.9.0
+django-su
+django-constance[database]
+fpdf

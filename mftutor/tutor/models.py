@@ -5,7 +5,6 @@
 
 import re
 
-from django.utils.encoding import python_2_unicode_compatible
 from django.db import models, IntegrityError
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
@@ -16,7 +15,6 @@ from mftutor.tutor import tutorpicture_upload_to
 
 
 # User data for the project that does not vary from year to year
-@python_2_unicode_compatible
 class TutorProfile(models.Model):
     objects = TutorProfileManager()
 
@@ -128,7 +126,6 @@ class TutorProfile(models.Model):
 
 
 # "Arbejdsgruppe"
-@python_2_unicode_compatible
 class TutorGroup(models.Model):
     objects = models.Manager()
     visible_groups = VisibleTutorGroups()
@@ -155,7 +152,6 @@ class TutorGroup(models.Model):
 
 
 # "Rushold"
-@python_2_unicode_compatible
 class RusClass(models.Model):
     objects = RusClassManager()
 
@@ -193,7 +189,6 @@ class RusClass(models.Model):
 
 
 # Membership of a user for a single year
-@python_2_unicode_compatible
 class Tutor(models.Model):
     objects = TutorManager()
 
@@ -322,7 +317,6 @@ class TutorInTutorGroup(models.Model):
     tutor = models.ForeignKey(Tutor, models.CASCADE)
 
 
-@python_2_unicode_compatible
 class BoardMember(models.Model):
     id = models.AutoField(primary_key=True)
     tutor = models.ForeignKey(Tutor, models.CASCADE)
