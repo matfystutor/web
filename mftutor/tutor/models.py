@@ -131,7 +131,7 @@ class TutorGroup(models.Model):
     visible_groups = VisibleTutorGroups()
 
     handle = models.CharField(
-        max_length=20, verbose_name="Kort navn",
+        max_length=30, verbose_name="Kort navn",
         help_text="Bruges i gruppens emailadresse")
     name = models.CharField(
         max_length=40, verbose_name="Langt navn",
