@@ -228,14 +228,26 @@ class TutorAdminView(FormView):
 
 BOARD_POSITIONS = (
     'Formand',
-    'Koordineringsgruppen',
-    'Koordineringsgruppen',
-    'Økonomiansvarlig',
+    'Næstformand',
+    'Gruppeansvarligansvarlig',
+    'Kassere',
     'Praktiske grise-ansvarlig',
     'Buransvarlig',
     'Webansvarlig',
     'Menig',
     'Menig',
+)
+
+SHORT_BOARD_POSITIONS = (
+    'form',
+    'nf',
+    'gruppeansvarligansvarlig',
+    'kass',
+    'grise',
+    'burmor',
+    'webfar',
+    'menige',
+    'menige',
 )
 
 
@@ -246,18 +258,21 @@ class BoardAdminForm(django.forms.Form):
         super(BoardAdminForm, self).__init__(*args, **kwargs)
 
         self.board_members = []
-        for i, title in enumerate(BOARD_POSITIONS):
+        for i, (title, short_title) in enumerate(zip(BOARD_POSITIONS, SHORT_BOARD_POSITIONS)):
             board_member = {
                 'tutor': django.forms.IntegerField(
                     required=True, label='Tutor'),
                 'title': django.forms.CharField(
                     initial=title, required=True, label='Titel'),
+                'short_title': django.forms.CharField(
+                    initial=short_title, required=True, label='Kort titel'),
             }
             self.board_members.append(board_member)
 
         for i, board_member in enumerate(self.board_members):
             self.fields['tutor%d' % i] = board_member['tutor']
             self.fields['title%d' % i] = board_member['title']
+            self.fields['short_title%d' % i] = board_member['short_title']
 
     def clean(self):
         for i, board_member in enumerate(self.board_members):
@@ -271,6 +286,7 @@ class BoardAdminForm(django.forms.Form):
             if not tutor_pk:
                 del self.cleaned_data['tutor%d' % i]
                 del self.cleaned_data['title%d' % i]
+                del self.cleaned_data['short_title%d' % i]
             else:
                 try:
                     self.cleaned_data['tutor%d' % i] = (
@@ -281,7 +297,7 @@ class BoardAdminForm(django.forms.Form):
 
     def __iter__(self):
         for i, bm in enumerate(self.board_members):
-            yield [self['tutor%d' % i], self['title%d' % i]]
+            yield [self['tutor%d' % i], self['title%d' % i], self['short_title%d' % i]]
 
 
 
@@ -313,11 +329,13 @@ class BoardAdminView(FormView):
         year = int(self.kwargs['year'])
         board_members = BoardMember.objects.filter(tutor__year=year)
         initial = {}
-        for i, title in enumerate(BOARD_POSITIONS):
+        for i, (title, short_title) in enumerate(zip(BOARD_POSITIONS, SHORT_BOARD_POSITIONS)):
             initial['title%d' % i] = title
+            initial['short_title%d' % i] = short_title
         for i, board_member in enumerate(board_members):
             initial['tutor%d' % i] = board_member.tutor.profile.pk
             initial['title%d' % i] = board_member.title
+            initial['short_title%d' % i] = board_member.short_title
         return initial
 
     def form_valid(self, form):
@@ -341,6 +359,7 @@ class BoardAdminView(FormView):
             bm = BoardMember(
                 tutor=tutor,
                 title=form.cleaned_data['title%d' % i],
+                short_title=form.cleaned_data['short_title%d' % i],
                 position=i + 1,
             )
             bm.save()

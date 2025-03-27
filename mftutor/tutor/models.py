@@ -322,9 +322,10 @@ class BoardMember(models.Model):
     tutor = models.ForeignKey(Tutor, models.CASCADE)
     position = models.IntegerField(verbose_name="Rækkefølge")
     title = models.CharField(max_length=50, verbose_name="Titel")
+    short_title = models.CharField(max_length=50, verbose_name="email titel")
 
     def __str__(self):
-        return "%s %s" % (self.title, self.tutor)
+        return "%s %s %s" % (self.title, self.short_title, self.tutor)
 
     class Meta:
         ordering = ['tutor__year', 'position']

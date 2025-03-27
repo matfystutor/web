@@ -54,10 +54,10 @@ tutor_year.admin_order_field = 'tutor__year'
 
 
 class BoardAdmin(admin.ModelAdmin):
-    list_display = (board_full_name, tutor_year, 'title', 'position')
+    list_display = (board_full_name, tutor_year, 'title', 'position', 'short_title')
     list_filter = ('tutor__year',)
-    search_fields = ['tutor__profile__name', 'title']
-    list_editable = ('title', 'position',)
+    search_fields = ['tutor__profile__name', 'title', 'short_title']
+    list_editable = ('title', 'position', 'short_title')
 
 
 class RusClassAdmin(admin.ModelAdmin):
