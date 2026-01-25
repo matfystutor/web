@@ -3,6 +3,7 @@ from django.views.generic import TemplateView
 
 urlpatterns = [path(x + '/', TemplateView.as_view(template_name=x + '.html'), name=x) for x in (
     'vedtaegter',
+    'regler',
     'princippapir',
     'gruppekatalog',
     'rus2tur',
