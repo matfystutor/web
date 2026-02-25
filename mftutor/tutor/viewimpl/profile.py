@@ -21,7 +21,7 @@ class ProfileForm(forms.Form):
     tshirt1 = forms.CharField(widget=SelectShirt, label='T-Shirt Størrelse 1')
     tshirt2 = forms.CharField(widget=SelectShirt, label='T-Shirt Størrelse 2')
     burBrevSignup = forms.BooleanField(label='Tilmeld Burets Nyhedsbrev', required=False)
-    hemmeligSangbogSignup = forms.BooleanField(label='Tilmeld hemmelig sangbog', required=False)
+    #hemmeligSangbogSignup = forms.BooleanField(label='Tilmeld hemmelig sangbog', required=False)
     picture = forms.ImageField(
         required=False,
         label='Billede')
@@ -80,7 +80,7 @@ class ProfileView(FormView):
 
         tp.burBrevSignup = form.cleaned_data['burBrevSignup']
 
-        tp.hemmeligSangbogSignup = form.cleaned_data['hemmeligSangbogSignup']
+        #tp.hemmeligSangbogSignup = form.cleaned_data['hemmeligSangbogSignup']
 
         sp.choice1 = form.cleaned_data['tshirt1']
         sp.choice2 = form.cleaned_data['tshirt2']
@@ -113,7 +113,7 @@ class ProfileView(FormView):
         except:
             pass
         
-        try :
+        """try :
             hemmeligSangbogSignup = groupManager.get(handle="hemmeligsangbog", year=settings.TUTORMAIL_YEAR)
             tutor = tutorManager.get(profile=tp, year=settings.TUTORMAIL_YEAR)
             if tp.hemmeligSangbogSignup is True:
@@ -121,7 +121,7 @@ class ProfileView(FormView):
             else:
                 tutor.groups.remove(hemmeligSangbogSignup)
         except:
-            pass
+            pass"""
             
         
         # Since TutorProfile cleaning may have changed tp.phone,
