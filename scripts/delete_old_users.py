@@ -19,16 +19,18 @@ delete = False
 accounts_to_delete = 0
 
 for tutor_profile in TutorProfile.objects.all():
-    last_login = tutor_profile.user.last_login
-    if last_login is None:
-        if delete:
-            tutor_profile.user.delete()
-            tutor_profile.delete()
-        else:
-            accounts_to_delete += 1
+    user = tutor_profile.user
+    if user is None:
         continue
 
-    delta_time = abs(last_login - dt.datetime.now(dt.timezone.utc))
+    last_login = user.last_login
+    if last_login is None:
+        if user.date_joined is not None:
+            delta_time = abs(user.date_joined - dt.datetime.now(dt.timezone.utc))
+        else:
+            continue
+    else:
+        delta_time = abs(last_login - dt.datetime.now(dt.timezone.utc))
 
     if delta_time.days >= 3*365 and delete:
         if delete:
