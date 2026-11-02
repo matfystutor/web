@@ -12,7 +12,7 @@
     <span class="month">{{ document.published|date:"M"|upper }}</span>
     <span class="day">{{ document.published|date:"j" }}</span>
 </div>
-<strong><a href="{{MEDIA_URL}}{{document.doc_file}}">{{ document.title }}</a></strong>
+<strong><a href="{{ document.doc_file.url }}">{{ document.title }}</a></strong>
 	{% if tutor.is_tutorbest %}(<a href="{% url 'edit_document' document.pk %}">ret</a>){% endif %}
 	<br>
 {{ document.published|date:"l j. F"|lower|capfirst }}

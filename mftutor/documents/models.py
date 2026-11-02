@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import os
+import re
+import unicodedata
+
+
 from django.db import models
 
 from mftutor import settings
@@ -10,8 +15,30 @@ class ReferaterManager(models.Manager):
             type__exact='referater').order_by('-year', '-published')
 
 
+TRANSLITERATION = {'æ': 'ae', 'ø': 'oe', 'å': 'aa',
+                   'Æ': 'AE', 'Ø': 'OE', 'Å': 'AA'}
+
+def safe_filename(filename):
+    """Make an uploaded filename safe to use in an URL
+
+    Danish letters are transliterated, other accents are stripped.
+    Any remaining character that is not a letter, digit, dot, underscore or dash
+    (for examples spaces) is replaced with an underscore.
+    """
+
+    filename = unicodedata.normalize('NFC', os.path.basename(filename))
+    name, ext = os.path.splitext(filename)
+    for char, replacement in TRANSLITERATION.items():
+        name = name.replace(char, replacement)
+    name = unicodedata.normalize('NFKD', name).encode('ascii', 'ignore').decode('ascii')
+    name = re.sub(r'[^A-Za-z0-9._-]+', '_', name).strip('._') or 'dokument'
+    ext = re.sub(r'[^A-Za-z0-9.]', '', ext.lower())
+    return name + ext
+
+
+
 def Document_upload_to(doc, filename):
-    return 'docs/%s/%s/%s' % (doc.year, doc.type, filename)
+    return 'docs/%s/%s/%s' % (doc.year, doc.type, safe_filename(filename))
 
 
 class Document(models.Model):
@@ -46,4 +73,4 @@ class Document(models.Model):
         return '[Document %s: %s]' % (self.type, self.title)
 
     def get_absolute_url(self):
-        return settings.MEDIA_URL + str(self.doc_file)
+        return self.doc_file.url 
